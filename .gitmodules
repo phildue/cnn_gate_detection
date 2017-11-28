@@ -1,0 +1,6 @@
+[submodule "dvlab"]
+	path = dvlab
+	url = https://github.com/phildue/dvlab.git
+[submodule "samplegen"]
+	path = samplegen
+	url = https://github.com/phildue/samplegen
