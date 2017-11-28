@@ -4,3 +4,6 @@
 [submodule "samplegen"]
 	path = samplegen
 	url = https://github.com/phildue/samplegen
+[submodule "droneutils"]
+	path = droneutils
+	url = https://github.com/phildue/droneutils.git
