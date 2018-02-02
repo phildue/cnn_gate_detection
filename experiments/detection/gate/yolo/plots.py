@@ -1,10 +1,11 @@
 import os
 import sys
+from os.path import expanduser
 
 import numpy as np
 
 
-PROJECT_ROOT = '/home/phil/dronevision'
+PROJECT_ROOT = expanduser('~') + '/dronevision'
 
 WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
              PROJECT_ROOT + '/droneutils/src/python',

@@ -1,8 +1,9 @@
 import os
 import sys
+from os.path import expanduser
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-PROJECT_ROOT = '/home/phil/dronevision'
+PROJECT_ROOT = expanduser('~') + '/dronevision'
 
 WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
              PROJECT_ROOT + '/droneutils/src/python',
