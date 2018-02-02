@@ -1,0 +1,624 @@
+@article{Abolafia2018,
+	abstract = {We consider the task of program synthesis in the presence of a reward function over the output of programs, where the goal is to find programs with maximal rewards. We employ an iterative optimization scheme, where we train an RNN on a dataset of K best programs from a priority queue of the generated programs so far. Then, we synthesize new programs and add them to the priority queue by sampling from the RNN. We benchmark our algorithm, called priority queue train-ing (or PQT), against genetic algorithm and reinforcement learning baselines on a simple but expressive Turing complete programming language called BF. Our ex-perimental results show that our simple PQT algorithm significantly outperforms the baselines. By adding a program length penalty to the reward function, we are able to synthesize short, human readable programs.},
+	archivePrefix = {arXiv},
+	arxivId = {arXiv:1801.03526v1},
+	author = {Abolafia, Daniel A and Norouzi, Mohammad and Le, Quoc V and Brain, Google},
+	eprint = {arXiv:1801.03526v1},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Abolafia et al. - 2018 - NEURAL PROGRAM SYNTHESIS WITH PRIORITY QUEUE TRAINING.pdf:pdf},
+	mendeley-groups = {Other},
+	title = {{NEURAL PROGRAM SYNTHESIS WITH PRIORITY QUEUE TRAINING}},
+	url = {https://arxiv.org/pdf/1801.03526.pdf},
+	year = {2018}
+}
+@article{Zhang,
+	abstract = {Which image is more similar to the reference image? Reference Patch 1 Patch 0 Reference Patch 1 Patch 0 Reference Patch 1 Patch 0 L2/PSNR, SSIM, FSIM Random Networks Unsupervised Networks Self-Supervised Networks Supervised Networks Humans Figure 1: Which patch (left or right) is " closer " to the middle patch in these examples? In each case, the tradi-tional metrics (L2/PSNR, SSIM, FSIM) disagree with human judgments. But deep networks, even across architectures (Squeezenet [18], AlexNet [25], VGG [48]) and supervision type (supervised [44], self-supervised [12, 37, 40, 59], and even unsupervised [24]), provide an emergent embedding which agrees surprisingly well with humans. We further cal-ibrate existing deep embeddings on a large-scale database of perceptual judgments; models and data can be found at https://www.github.com/richzhang/PerceptualSimilarity. Abstract While it is nearly effortless for humans to quickly assess the perceptual similarity between two images, the under-lying processes are thought to be quite complex. Despite this, the most widely used perceptual metrics today, such as PSNR and SSIM, are simple, shallow functions, and fail to account for many nuances of human perception. Recently, the deep learning community has found that features of the VGG network trained on the ImageNet classification task has been remarkably useful as a training loss for image synthesis. But how perceptual are these so-called " percep-tual losses " ? What elements are critical for their success? To answer these questions, we introduce a new Full Refer-ence Image Quality Assessment (FR-IQA) dataset of per-ceptual human judgments, orders of magnitude larger than previous datasets. We systematically evaluate deep features across different architectures and tasks and compare them with classic metrics. We find that deep features outperform all previous metrics by huge margins. More surprisingly, this result is not restricted to ImageNet-trained VGG fea-tures, but holds across different deep architectures and lev-els of supervision (supervised, self-supervised, or even un-supervised). Our results suggest that perceptual similarity is an emergent property shared across deep visual represen-tations.},
+	author = {Zhang, Richard and Isola, Phillip and Efros, Alexei A and Shechtman, Eli and Wang, Oliver and Research, Adobe},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Zhang et al. - Unknown - The Unreasonable Effectiveness of Deep Features as a Perceptual Metric.pdf:pdf},
+	mendeley-groups = {Other},
+	title = {{The Unreasonable Effectiveness of Deep Features as a Perceptual Metric}},
+	url = {https://arxiv.org/pdf/1801.03924.pdf}
+}
+@article{Li,
+	abstract = {Deploying deep neural networks on mobile devices is a chal-lenging task. Current model compression methods such as matrix decomposition effectively reduce the deployed model size, but still cannot satisfy real-time processing requirement. This paper first discovers that the major obstacle is the ex-cessive execution time of non-tensor layers such as pooling and normalization without tensor-like trainable parameters. This motivates us to design a novel acceleration framework: DeepRebirth through " slimming " existing consecutive and parallel non-tensor and tensor layers. The layer slimming is executed at different substructures: (a) streamline slimming by merging the consecutive non-tensor and tensor layer ver-tically; (b) branch slimming by merging non-tensor and ten-sor branches horizontally. The proposed optimization oper-ations significantly accelerate the model execution and also greatly reduce the run-time memory cost since the slimmed model architecture contains less hidden layers. To maximally avoid accuracy loss, the parameters in new generated layers are learned with layer-wise fine-tuning based on both theoret-ical analysis and empirical verification. As observed in the ex-periment, DeepRebirth achieves more than 3x speed-up and 2.5x run-time memory saving on GoogLeNet with only 0.4{\%} drop of top-5 accuracy on ImageNet. Furthermore, by com-bining with other model compression techniques, DeepRe-birth offers an average of 65ms inference time on the CPU of Samsung Galaxy S6 with 86.5{\%} top-5 accuracy, 14{\%} faster than SqueezeNet which only has a top-5 accuracy of 80.5{\%}.},
+	author = {Li, Dawei and Wang, Xiaolong and Kong, Deguang},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Li, Wang, Kong - Unknown - DeepRebirth Accelerating Deep Neural Network Execution on Mobile Devices.pdf:pdf},
+	mendeley-groups = {Other},
+	title = {{DeepRebirth: Accelerating Deep Neural Network Execution on Mobile Devices}},
+	url = {https://arxiv.org/pdf/1708.04728.pdf}
+}
+@article{Fong,
+	abstract = {In an effort to understand the meaning of the intermedi-ate representations captured by deep networks, recent pa-pers have tried to associate specific semantic concepts to individual neural network filter responses, where interest-ing correlations are often found, largely by focusing on ex-tremal filter responses. In this paper, we show that this ap-proach can favor easy-to-interpret cases that are not neces-sarily representative of the average behavior of a represen-tation. A more realistic but harder-to-study hypothesis is that se-mantic representations are distributed, and thus filters must be studied in conjunction. In order to investigate this idea while enabling systematic visualization and quantification of multiple filter responses, we introduce the Net2Vec frame-work, in which semantic concepts are mapped to vectorial embeddings based on corresponding filter responses. By studying such embeddings, we are able to show that 1., in most cases, multiple filters are required to code for a con-cept, that 2., often filters are not concept specific and help encode multiple concepts, and that 3., compared to single filter activations, filter embeddings are able to better char-acterize the meaning of a representation and its relationship to other concepts.},
+	author = {Fong, Ruth and Vedaldi, Andrea},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Fong, Vedaldi - Unknown - Net2Vec Quantifying and Explaining how Concepts are Encoded by Filters in Deep Neural Networks.pdf:pdf},
+	mendeley-groups = {Other},
+	title = {{Net2Vec: Quantifying and Explaining how Concepts are Encoded by Filters in Deep Neural Networks}},
+	url = {https://arxiv.org/pdf/1801.03454.pdf}
+}
+@article{Bentzen2018,
+	abstract = {We present a formalization and computational implemen-tation of the second formulation of Kant's categorical im-perative. This ethical principle requires an agent to never treat someone merely as a means but always also as an end. Here we interpret this principle in terms of how persons are causally affected by actions. We introduce Kantian causal agency models in which moral patients, actions, goals, and causal influence are represented, and we show how to formal-ize several readings of Kant's categorical imperative that cor-respond to Kant's concept of strict and wide duties towards oneself and others. Stricter versions handle cases where an action directly causally affects oneself or others, whereas the wide version maximizes the number of persons being treated as an end. We discuss limitations of our formalization by pointing to one of Kant's cases that the machinery cannot handle in a satisfying way.},
+	archivePrefix = {arXiv},
+	arxivId = {arXiv:1801.03160v1},
+	author = {Bentzen, Martin Mose and Lindner, Felix},
+	eprint = {arXiv:1801.03160v1},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Bentzen, Lindner - 2018 - A Formalization of Kant's Second Formulation of the Categorical Imperative.pdf:pdf},
+	mendeley-groups = {Other},
+	title = {{A Formalization of Kant's Second Formulation of the Categorical Imperative}},
+	url = {https://arxiv.org/pdf/1801.03160.pdf},
+	year = {2018}
+}
+@article{Tang,
+	abstract = {—Deep CNN-based object detection systems have achieved remarkable success on several large-scale object detection benchmarks. However, training such detectors requires a large number of labeled bounding boxes, which are more difficult to obtain than image-level annotations. Previous work addresses this issue by transforming image-level classifiers into object detectors. This is done by modeling the differences between the two on categories with both image-level and bounding box annotations, and transferring this information to convert classifiers to detectors for categories without bounding box annotations. We improve this previous work by incorporating knowledge about object similarities from visual and semantic domains during the transfer process. The intuition behind our proposed method is that visually and semantically similar categories should exhibit more common transferable properties than dissimilar categories, e.g. a better detector would result by transforming the differences between a dog classifier and a dog detector onto the cat class, than would by transforming from the violin class. Experimental results on the challenging ILSVRC2013 detection dataset demonstrate that each of our proposed object similarity based knowledge transfer methods outperforms the baseline methods. We found strong evidence that visual similarity and semantic relatedness are complementary for the task, and when combined notably improve detection, achieving state-of-the-art detection performance in a semi-supervised setting.},
+	author = {Tang, Yuxing and Wang, Josiah and Wang, Xiaofang and Gao, Boyang and Delland, Emmanuel and Gaizauskas, Robert and Chen, Liming},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Tang et al. - Unknown - Large Scale Semi-supervised Object Detection Using Visual and Semantic Knowledge Transfer.pdf:pdf},
+	keywords = {Index Terms—Object detection,convolutional neural networks,semantic similarity,semi-supervised learning,transfer learning,visual similarity},
+	mendeley-groups = {Thesis/Detection},
+	title = {{Large Scale Semi-supervised Object Detection Using Visual and Semantic Knowledge Transfer}},
+	url = {https://arxiv.org/pdf/1801.03145.pdf}
+}
+@article{Jha,
+	abstract = {In this paper, we describe the mechanical design, system overview, integration and control techniques associated with SKALA, a unique large-sized robot for carrying a person with physical disabilities, up and down staircases. As a reg-ular wheelchair is unable to perform such a maneuver, the system functions as a non-conventional wheelchair with sev-eral intelligent features. We describe the unique mechanical design and the design choices associated with it. We show-case the embedded control architecture that allows for sev-eral different modes of teleoperation, all of which have been described in detail. We further investigate the architecture associated with the autonomous operation of the system.},
+	author = {Jha, Siddharth and Chaudhary, Himanshu and Kharagpur, Iit and Satardey, Swapnil and Kumar, Piyush and Roy, Ankush and Deshmukh, Aditya},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Jha et al. - Unknown - Design, Analysis {\&}amp Prototyping of a Semi-Automated Staircase-Climbing Rehabilitation Robot.pdf:pdf},
+	keywords = {Caterpillar Drive,Embedded systems,Keywords Mechatronics,Rehabilitation Robotics,Sen-sors and actuators,Stair-Climbing Wheelchair},
+	title = {{Design, Analysis {\&} Prototyping of a Semi-Automated Staircase-Climbing Rehabilitation Robot}},
+	url = {https://arxiv.org/pdf/1801.03425.pdf}
+}
+@article{Li2017,
+	abstract = {Recently, learning equivariant representations has attracted considerable research attention. Dieleman et al. introduce four operations which can be inserted to CNN to learn deep representations equivariant to rotation. However, feature maps should be copied and rotated four times in each layer in their approach, which causes much running time and memory overhead. In order to address this problem, we propose Deep Rotation Equivariant Network(DREN) consisting of cycle layers, isotonic layers and decycle layers.Our proposed layers apply rotation transformation on filters rather than feature maps, achieving a speed up of more than 2 times with even less memory overhead. We evaluate DRENs on Rotated MNIST and CIFAR-10 datasets and demonstrate that it can improve the performance of state-of-the-art architectures. Our codes are released on GitHub.},
+	archivePrefix = {arXiv},
+	arxivId = {1705.08623},
+	author = {Li, Junying and Yang, Zichen and Liu, Haifeng and Cai, Deng},
+	eprint = {1705.08623},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Li et al. - 2017 - Deep Rotation Equivariant Network.pdf:pdf},
+	month = {may},
+	title = {{Deep Rotation Equivariant Network}},
+	url = {http://arxiv.org/abs/1705.08623},
+	year = {2017}
+}
+@article{Rena,
+	abstract = {—State-of-the-art object detection networks depend on region proposal algorithms to hypothesize object locations. Advances like SPPnet [1] and Fast R-CNN [2] have reduced the running time of these detection networks, exposing region proposal computation as a bottleneck. In this work, we introduce a Region Proposal Network (RPN) that shares full-image convolutional features with the detection network, thus enabling nearly cost-free region proposals. An RPN is a fully convolutional network that simultaneously predicts object bounds and objectness scores at each position. The RPN is trained end-to-end to generate high-quality region proposals, which are used by Fast R-CNN for detection. We further merge RPN and Fast R-CNN into a single network by sharing their convolutional features—using the recently popular terminology of neural networks with " attention " mechanisms, the RPN component tells the unified network where to look. For the very deep VGG-16 model [3], our detection system has a frame rate of 5fps (including all steps) on a GPU, while achieving state-of-the-art object detection accuracy on PASCAL VOC 2007, 2012, and MS COCO datasets with only 300 proposals per image. In ILSVRC and COCO 2015 competitions, Faster R-CNN and RPN are the foundations of the 1st-place winning entries in several tracks. Code has been made publicly available.},
+	author = {Ren, Shaoqing and He, Kaiming and Girshick, Ross and Sun, Jian},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Ren et al. - Unknown - Faster R-CNN Towards Real-Time Object Detection with Region Proposal Networks(3).pdf:pdf},
+	keywords = {Convolutional Neural Network,Index Terms—Object Detection,Region Proposal},
+	title = {{Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks}},
+	url = {https://arxiv.org/pdf/1506.01497.pdf}
+}
+@article{Mohta2017,
+	abstract = {One of the most challenging tasks for a flying robot is to autonomously navigate between target locations quickly and reliably while avoiding obstacles in its path, and with little to no a-priori knowledge of the operating environment. This challenge is addressed in the present paper. We describe the system design and software architecture of our proposed solution, and showcase how all the distinct components can be integrated to enable smooth robot operation. We provide critical insight on hardware and software component selection and development, and present results from extensive experimental testing in real-world warehouse environments. Experimental testing reveals that our proposed solution can deliver fast and robust aerial robot autonomous navigation in cluttered, GPS-denied environments.},
+	archivePrefix = {arXiv},
+	arxivId = {1712.02052},
+	author = {Mohta, Kartik and Watterson, Michael and Mulgaonkar, Yash and Liu, Sikang and Qu, Chao and Makineni, Anurag and Saulnier, Kelsey and Sun, Ke and Zhu, Alex and Delmerico, Jeffrey and Karydis, Konstantinos and Atanasov, Nikolay and Loianno, Giuseppe and Scaramuzza, Davide and Daniilidis, Kostas and Taylor, Camillo Jose and Kumar, Vijay},
+	eprint = {1712.02052},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Mohta et al. - 2017 - Fast, Autonomous Flight in GPS-Denied and Cluttered Environments.pdf:pdf},
+	month = {dec},
+	title = {{Fast, Autonomous Flight in GPS-Denied and Cluttered Environments}},
+	url = {http://arxiv.org/abs/1712.02052},
+	year = {2017}
+}
+@article{Elhoseiny,
+	abstract = {In the Object Recognition task, there exists a di-chotomy between the categorization of objects and estimating object pose, where the former ne-cessitates a view-invariant representation, while the latter requires a representation capable of capturing pose information over different cate-gories of objects. With the rise of deep archi-tectures, the prime focus has been on object cat-egory recognition. Deep learning methods have achieved wide success in this task. In contrast, object pose estimation using these approaches has received relatively less attention. In this work, we study how Convolutional Neural Net-works (CNN) architectures can be adapted to the task of simultaneous object recognition and pose estimation. We investigate and analyze the layers of various CNN models and extensively compare between them with the goal of discovering how the layers of distributed representations within CNNs represent object pose information and how this contradicts with object category representa-tions. We extensively experiment on two recent large and challenging multi-view datasets and we achieve better than the state-of-the-art.},
+	author = {Elhoseiny, Mohamed and El-Gaaly, Tarek and Bakry, Amr and Elgammal, Ahmed},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Elhoseiny et al. - Unknown - A Comparative Analysis and Study of Multiview CNN Models for Joint Object Categorization and Pose Estimatio.pdf:pdf},
+	title = {{A Comparative Analysis and Study of Multiview CNN Models for Joint Object Categorization and Pose Estimation}},
+	url = {http://proceedings.mlr.press/v48/elhoseiny16.pdf}
+}
+@article{Brachmann,
+	abstract = {In recent years, the task of estimating the 6D pose of object instances and complete scenes, i.e. camera localiza-tion, from a single input image has received considerable attention. Consumer RGB-D cameras have made this fea-sible, even for difficult, texture-less objects and scenes. In this work, we show that a single RGB image is sufficient to achieve visually convincing results. Our key concept is to model and exploit the uncertainty of the system at all stages of the processing pipeline. The uncertainty comes in the form of continuous distributions over 3D object coor-dinates and discrete distributions over object labels. We give three technical contributions. Firstly, we develop a regularized, auto-context regression framework which iter-atively reduces uncertainty in object coordinate and object label predictions. Secondly, we introduce an efficient way to marginalize object coordinate distributions over depth. This is necessary to deal with missing depth information. Thirdly, we utilize the distributions over object labels to de-tect multiple objects simultaneously with a fixed budget of RANSAC hypotheses. We tested our system for object pose estimation and camera localization on commonly used data sets. We see a major improvement over competing systems.},
+	author = {Brachmann, Eric and Michel, Frank and Krull, Alexander and Yang, Michael Ying and Gumhold, Stefan and Rother, Carsten},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Brachmann et al. - Unknown - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image(2).pdf:pdf},
+	title = {{Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}cvpr{\_}2016/papers/Brachmann{\_}Uncertainty-Driven{\_}6D{\_}Pose{\_}CVPR{\_}2016{\_}paper.pdf}
+}
+@article{Savarese,
+	abstract = {We propose a novel and robust model to represent and learn generic 3D object categories. We aim to solve the problem of true 3D object categorization for handling arbi-trary rotations and scale changes. Our approach is to cap-ture a compact model of an object category by linking to-gether diagnostic parts of the objects from different viewing points. We emphasize on the fact that our " parts " are large and discriminative regions of the objects that are composed of many local invariant features. Instead of recovering a full 3D geometry, we connect these parts through their mu-tual homographic transformation. The resulting model is a compact summarization of both the appearance and geom-etry information of the object class. We propose a frame-work in which learning is done via minimal supervision compared to previous works. Our results on categorization show superior performances to state-of-the-art algorithms such as [23]. Furthermore, we have compiled a new 3D ob-ject dataset that consists of 10 different object categories. We have tested our algorithm on this dataset and have ob-tained highly promising results.},
+	author = {Savarese, Silvio and Fei-Fei, Li},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Savarese, Fei-Fei - Unknown - 3D generic object categorization, localization and pose estimation(2).pdf:pdf},
+	title = {{3D generic object categorization, localization and pose estimation}},
+	url = {http://vision.stanford.edu/documents/SavareseFei-Fei{\_}ICCV2007.pdf}
+}
+@article{Peng,
+	abstract = {Crowdsourced 3D CAD models are becoming easily ac-cessible online, and can potentially generate an infinite number of training images for almost any object category. We show that augmenting the training data of contemporary Deep Convolutional Neural Net (DCNN) models with such synthetic data can be effective, especially when real train-ing data is limited or not well matched to the target domain. Most freely available CAD models capture 3D shape but are often missing other low level cues, such as realistic object texture, pose, or background. In a detailed analysis, we use synthetic CAD-rendered images to probe the ability of DCNN to learn without these cues, with surprising findings. In particular, we show that when the DCNN is fine-tuned on the target detection task, it exhibits a large degree of in-variance to missing low-level cues, but, when pretrained on generic ImageNet classification, it learns better when the low-level cues are simulated. We show that our synthetic DCNN training approach significantly outperforms previ-ous methods on the PASCAL VOC2007 dataset when learn-ing in the few-shot scenario and improves performance in a domain shift scenario on the Office benchmark.},
+	author = {Peng, Xingchao and Sun, Baochen and Ali, Karim and Saenko, Kate},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Peng et al. - Unknown - Learning Deep Object Detectors from 3D Models.pdf:pdf},
+	title = {{Learning Deep Object Detectors from 3D Models}},
+	url = {http://www.karimali.org/publications/PSAS{\_}ICCV15.pdf}
+}
+@article{Mueller,
+	abstract = {We present an approach for real-time, robust and accu-rate hand pose estimation from moving egocentric RGB-D cameras in cluttered real environments. Existing meth-ods typically fail for hand-object interactions in cluttered scenes imaged from egocentric viewpoints—common for virtual or augmented reality applications. Our approach uses two subsequently applied Convolutional Neural Net-works (CNNs) to localize the hand and regress 3D joint locations. Hand localization is achieved by using a CNN to estimate the 2D position of the hand center in the input, even in the presence of clutter and occlusions. The localized hand position, together with the corresponding input depth value, is used to generate a normalized cropped image that is fed into a second CNN to regress relative 3D hand joint locations in real time. For added accuracy, robustness and temporal stability, we refine the pose estimates using a kine-matic pose tracking energy. To train the CNNs, we intro-duce a new photorealistic dataset that uses a merged reality approach to capture and synthesize large amounts of anno-tated data of natural hand interaction in cluttered scenes. Through quantitative and qualitative evaluation, we show that our method is robust to self-occlusion and occlusions by objects, particularly in moving egocentric perspectives.},
+	author = {Mueller, Franziska and Sridhar, Srinath and Mehta, Dushyant and Casas, Dan and Sotnychenko, Oleksandr and Theobalt, Christian},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Mueller et al. - Unknown - Real-time Hand Tracking under Occlusion from an Egocentric RGB-D Sensor.pdf:pdf},
+	title = {{Real-time Hand Tracking under Occlusion from an Egocentric RGB-D Sensor}},
+	url = {https://arxiv.org/pdf/1704.02201.pdf}
+}
+@article{Lepetit2005,
+	abstract = {Many applications require tracking of complex 3D objects. These include visual servoing of robotic arms on specific target objects, Aug-mented Reality systems that require real-time registration of the object to be augmented, and head tracking systems that sophisticated inter-faces can use. Computer Vision offers solutions that are cheap, practical and non-invasive. This survey reviews the different techniques and approaches that have been developed by industry and research. First, important math-ematical tools are introduced: Camera representation, robust estima-tion and uncertainty estimation. Then a comprehensive study is given of the numerous approaches developed by the Augmented Reality and Robotics communities, beginning with those that are based on point or planar fiducial marks and moving on to those that avoid the need to engineer the environment by relying on natural features such as edges, texture or interest. Recent advances that avoid manual initialization and failures due to fast motion are also presented. The survery con-cludes with the different possible choices that should be made when},
+	author = {Lepetit, Vincent and Fua, Pascal},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lepetit, Fua - 2005 - Monocular Model-Based 3D Tracking of Rigid Objects A Survey(3).pdf:pdf},
+	journal = {Computer Graphics and Vision},
+	number = {1},
+	pages = {1--89},
+	title = {{Monocular Model-Based 3D Tracking of Rigid Objects: A Survey}},
+	url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.699.8962{\&}rep=rep1{\&}type=pdf},
+	volume = {1},
+	year = {2005}
+}
+@article{Rad,
+	abstract = {We introduce a novel method for 3D object detection and pose estimation from color images only. We first use seg-mentation to detect the objects of interest in 2D even in presence of partial occlusions and cluttered background. By contrast with recent patch-based methods, we rely on a " holistic " approach: We apply to the detected objects a Convolutional Neural Network (CNN) trained to predict their 3D poses in the form of 2D projections of the corners of their 3D bounding boxes, as proposed in [3] for the pose of objects' parts. This, however, is not sufficient for han-dling objects from the recent T-LESS dataset: These objects exhibit an axis of rotational symmetry, and the similarity of two images of such an object under two different poses makes training the CNN challenging. We solve this prob-lem by restricting the range of poses used for training, and by introducing a classifier to identify the range of a pose at run-time before estimating it. We also use an optional ad-ditional step that refines the predicted poses as in [17] for hand pose estimation. We improve the state-of-the-art on the LINEMOD dataset from 73.7{\%} [2] to 89.3{\%} of correctly registered RGB frames. We are also the first to report re-sults on the Occlusion dataset [1] using color images only. We obtain 54{\%} of frames passing the Pose 6D criterion on average on several sequences of the T-LESS dataset, com-pared to the 67{\%} of the state-of-the-art [10] on the same sequences which uses both color and depth. The full ap-proach is also scalable, as a single network can be trained for multiple objects simultaneously.},
+	author = {Rad, Mahdi and Lepetit, Vincent},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Rad, Lepetit - Unknown - BB8 A Scalable, Accurate, Robust to Partial Occlusion Method for Predicting the 3D Poses of Challenging Objects.pdf:pdf},
+	title = {{BB8: A Scalable, Accurate, Robust to Partial Occlusion Method for Predicting the 3D Poses of Challenging Objects without Using Depth}},
+	url = {https://arxiv.org/pdf/1703.10896.pdf}
+}
+@article{Hodan,
+	abstract = {We introduce T-LESS, a new public dataset for estimat-ing the 6D pose, i.e. translation and rotation, of texture-less rigid objects. The dataset features thirty industry-relevant objects with no significant texture and no discriminative color or reflectance properties. The objects exhibit sym-metries and mutual similarities in shape and/or size. Com-pared to other datasets, a unique property is that some of the objects are parts of others. The dataset includes training and test images that were captured with three synchronized sensors, specifically a structured-light and a time-of-flight RGB-D sensor and a high-resolution RGB camera. There are approximately 39K training and 10K test images from each sensor. Additionally, two types of 3D models are pro-vided for each object, i.e. a manually created CAD model and a semi-automatically reconstructed one. Training im-ages depict individual objects against a black background. Test images originate from twenty test scenes having vary-ing complexity, which increases from simple scenes with several isolated objects to very challenging ones with mul-tiple instances of several objects and with a high amount of clutter and occlusion. The images were captured from a sys-tematically sampled view sphere around the object/scene, and are annotated with accurate ground truth 6D poses of all modeled objects. Initial evaluation results indicate that the state of the art in 6D object pose estimation has ample room for improvement, especially in difficult cases with sig-nificant occlusion. The T-LESS dataset is available online at cmp.felk.cvut.cz/t-less.},
+	author = {Hodaň, Tom{\'{a}}{\v{s}} and Haluza, Pavel and Obdr{\v{z}}{\'{a}}lek, St{\v{e}}p{\'{a}}n and Matas, Jiř{\'{i}} and Lourakis, Manolis and Zabulis, Xenophon},
+	doi = {10.1109/WACV.2017.103},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Hodaň et al. - Unknown - T-LESS An RGB-D Dataset for 6D Pose Estimation of Texture-less Objects.pdf:pdf},
+	title = {{T-LESS: An RGB-D Dataset for 6D Pose Estimation of Texture-less Objects}},
+	url = {https://pdfs.semanticscholar.org/e2a8/4869c68e73f76c2d326cb2b97c9795562f0c.pdf}
+}
+@article{Doumanoglou,
+	abstract = {In this paper we tackle the problem of estimating the 3D pose of object instances, using convolutional neural networks. State of the art methods usually solve the challenging problem of regression in angle space indirectly, focusing on learning discriminative features that are later fed into a separate architecture for 3D pose estimation. In contrast, we propose an end-to-end learning framework for directly regressing object poses by exploiting Siamese Networks. For a given image pair, we enforce a similarity measure between the representation of the sample images in the feature and pose space respectively, that is shown to boost regression performance. Furthermore, we argue that our pose-guided feature learning using our Siamese Regression Network generates more discriminative features that outperform the state of the art. Last, our feature learning formulation provides the ability of learning features that can perform under severe occlusions, demonstrating high performance on our novel hand-object dataset.},
+	author = {Doumanoglou, Andreas and Balntas, Vassileios and Kouskouridas, Rigas and Kim, Tae-Kyun},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Doumanoglou et al. - Unknown - Siamese Regression Networks with Efficient mid-level Feature Extraction for 3D Object Pose Estimation.pdf:pdf},
+	title = {{Siamese Regression Networks with Efficient mid-level Feature Extraction for 3D Object Pose Estimation}},
+	url = {https://arxiv.org/pdf/1607.02257.pdf}
+}
+@article{Turan2017,
+	abstract = {We present a robust deep learning based 6 degrees-of-freedom (DoF) localization system for endoscopic capsule robots. Our system mainly focuses on localization of endoscopic capsule robots inside the GI tract using only visual information captured by a mono camera integrated to the robot. The proposed system is a 23-layer deep convolutional neural network (CNN) that is capable to esti-mate the pose of the robot in real time using a standard CPU. The dataset for the evaluation of the system was recorded inside a surgical human stomach model with realistic surface texture, softness, and surface liquid properties so that the pre-trained CNN architecture can be transferred confidently into a real endoscopic scenario. An average error of 7.1{\%} and 3.4{\%} for translation and rotation has been obtained, respectively. The results accomplished from the ex-periments demonstrate that a CNN pre-trained with raw 2D endoscopic images performs accurately inside the GI tract and is robust to various challenges posed by reflection distortions, lens imperfections, vignetting, noise, motion blur, low resolution, and lack of unique landmarks to track.},
+	archivePrefix = {arXiv},
+	arxivId = {arXiv:1705.05435v1},
+	author = {Turan, Mehmet and Almalioglu, Yasin and Konukoglu, Ender and Sitti, Metin},
+	eprint = {arXiv:1705.05435v1},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Turan et al. - 2017 - A Deep Learning Based 6 Degree-of-Freedom Localization Method for Endoscopic Capsule Robots.pdf:pdf},
+	keywords = {CNN,Capsule endoscope robot,deep learning,localization},
+	title = {{A Deep Learning Based 6 Degree-of-Freedom Localization Method for Endoscopic Capsule Robots}},
+	url = {https://arxiv.org/pdf/1705.05435.pdf},
+	year = {2017}
+}
+@article{Lepetit2005,
+	abstract = {Monocular Model-Based 3D Tracking of Rigid Objects: A Survey},
+	author = {Lepetit, Vincent and Fua, Pascal},
+	doi = {10.1561/0600000001},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lepetit, Fua - 2005 - Monocular Model-Based 3D Tracking of Rigid Objects A Survey(2).pdf:pdf},
+	issn = {1572-2740},
+	journal = {Foundations and Trends{\textregistered} in Computer Graphics and Vision},
+	keywords = {3D reconstruction and image-based modeling,Computer Graphics},
+	number = {1},
+	pages = {1--89},
+	publisher = {Now Publishers, Inc.},
+	title = {{Monocular Model-Based 3D Tracking of Rigid Objects: A Survey}},
+	url = {http://www.nowpublishers.com/article/Details/CGV-001},
+	volume = {1},
+	year = {2005}
+}
+@article{Chen,
+	abstract = {—In this work we address the task of semantic image segmentation with Deep Learning and make three main contributions that are experimentally shown to have substantial practical merit. First, we highlight convolution with upsampled filters, or 'atrous convolution', as a powerful tool in dense prediction tasks. Atrous convolution allows us to explicitly control the resolution at which feature responses are computed within Deep Convolutional Neural Networks. It also allows us to effectively enlarge the field of view of filters to incorporate larger context without increasing the number of parameters or the amount of computation. Second, we propose atrous spatial pyramid pooling (ASPP) to robustly segment objects at multiple scales. ASPP probes an incoming convolutional feature layer with filters at multiple sampling rates and effective fields-of-views, thus capturing objects as well as image context at multiple scales. Third, we improve the localization of object boundaries by combining methods from DCNNs and probabilistic graphical models. The commonly deployed combination of max-pooling and downsampling in DCNNs achieves invariance but has a toll on localization accuracy. We overcome this by combining the responses at the final DCNN layer with a fully connected Conditional Random Field (CRF), which is shown both qualitatively and quantitatively to improve localization performance. Our proposed " DeepLab " system sets the new state-of-art at the PASCAL VOC-2012 semantic image segmentation task, reaching 79.7{\%} mIOU in the test set, and advances the results on three other datasets: PASCAL-Context, PASCAL-Person-Part, and Cityscapes. All of our code is made publicly available online.},
+	author = {Chen, Liang-Chieh and Papandreou, George and Kokkinos, Iasonas and Murphy, Kevin and Yuille, Alan L},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Chen et al. - Unknown - DeepLab Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected CRFs.pdf:pdf},
+	keywords = {Atrous Convolution,Conditional Random Fields,Index Terms—Convolutional Neural Networks,Semantic Segmentation},
+	title = {{DeepLab: Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected CRFs}},
+	url = {https://arxiv.org/pdf/1606.00915.pdf}
+}
+@article{Badrinarayanan,
+	abstract = {—We present a novel and practical deep fully convolutional neural network architecture for semantic pixel-wise segmentation termed SegNet. This core trainable segmentation engine consists of an encoder network, a corresponding decoder network followed by a pixel-wise classification layer. The architecture of the encoder network is topologically identical to the 13 convolutional layers in the VGG16 network [1]. The role of the decoder network is to map the low resolution encoder feature maps to full input resolution feature maps for pixel-wise classification. The novelty of SegNet lies is in the manner in which the decoder upsamples its lower resolution input feature map(s). Specifically, the decoder uses pooling indices computed in the max-pooling step of the corresponding encoder to perform non-linear upsampling. This eliminates the need for learning to upsample. The upsampled maps are sparse and are then convolved with trainable filters to produce dense feature maps. We compare our proposed architecture with the widely adopted FCN [2] and also with the well known DeepLab-LargeFOV [3], DeconvNet [4] architectures. This comparison reveals the memory versus accuracy trade-off involved in achieving good segmentation performance. SegNet was primarily motivated by scene understanding applications. Hence, it is designed to be efficient both in terms of memory and computational time during inference. It is also significantly smaller in the number of trainable parameters than other competing architectures and can be trained end-to-end using stochastic gradient descent. We also performed a controlled benchmark of SegNet and other architectures on both road scenes and SUN RGB-D indoor scene segmentation tasks. These quantitative assessments show that SegNet provides good performance with competitive inference time and most efficient inference memory-wise as compared to other architectures. We also provide a Caffe implementation of SegNet and a web demo at},
+	author = {Badrinarayanan, Vijay and Kendall, Alex and Cipolla, Roberto},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Badrinarayanan, Kendall, Cipolla - Unknown - SegNet A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation.pdf:pdf},
+	keywords = {Decoder,Encoder,Index Terms—Deep Convolutional Neural Networks,Indoor Scenes,Pooling,Road Scenes,Semantic Pixel-Wise Segmentation,Upsampling},
+	title = {{SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation}},
+	url = {http://mi.eng.cam.ac.uk/projects/segnet/.}
+}
+@article{Garon,
+	abstract = {Fig. 1. From an input RGBD sequence (top), our method leverages a deep neural network to automatically track the 6-DOF pose of an object even under significant clutter and occlusion (bottom). We demonstrate, through extensive experiments on a novel dataset of real objects with known ground truth pose, that our approach outperforms the state of the art both in terms of accuracy and robustness to occlusions. Abstract—We present a temporal 6-DOF tracking method which leverages deep learning to achieve state-of-the-art performance on challenging datasets of real world capture. Our method is both more accurate and more robust to occlusions than the existing best performing approaches while maintaining real-time performance. To assess its efficacy, we evaluate our approach on several challenging RGBD sequences of real objects in a variety of conditions. Notably, we systematically evaluate robustness to occlusions through a series of sequences where the object to be tracked is increasingly occluded. Finally, our approach is purely data-driven and does not require any hand-designed features: robust tracking is automatically learned from data.},
+	author = {Garon, Mathieu and Lalonde, Jean-Fran{\c{c}}ois},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Garon, Lalonde - Unknown - Deep 6-DOF Tracking.pdf:pdf},
+	keywords = {Augmented Reality,Deep Learning,Index Terms—Tracking},
+	title = {{Deep 6-DOF Tracking}},
+	url = {https://arxiv.org/pdf/1703.09771.pdf}
+}
+@article{Kehl,
+	abstract = {We present a 3D object detection method that uses regressed descriptors of locally-sampled RGB-D patches for 6D vote casting. For regression, we employ a convolutional auto-encoder that has been trained on a large collection of random local patches. During testing, scene patch descriptors are matched against a database of synthetic model view patches and cast 6D object votes which are subsequently filtered to refined hypotheses. We evaluate on three datasets to show that our method generalizes well to previously unseen input data, delivers robust detection results that compete with and surpass the state-of-the-art while being scalable in the number of objects.},
+	author = {Kehl, Wadim and Milletari, Fausto and Tombari, Federico and Ilic, Slobodan and Navab, Nassir},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Kehl et al. - Unknown - Deep Learning of Local RGB-D Patches for 3D Object Detection and 6D Pose Estimation.pdf:pdf},
+	title = {{Deep Learning of Local RGB-D Patches for 3D Object Detection and 6D Pose Estimation}},
+	url = {http://campar.in.tum.de/pub/kehl2016eccv/kehl2016eccv.pdf}
+}
+@article{Rastegari,
+	abstract = {We propose two efficient approximations to standard convolutional neural networks: Binary-Weight-Networks and XNOR-Networks. In Binary-Weight-Networks, the filters are approximated with binary values resulting in 32× mem-ory saving. In XNOR-Networks, both the filters and the input to convolutional layers are binary. XNOR-Networks approximate convolutions using primarily bi-nary operations. This results in 58× faster convolutional operations and 32× memory savings. XNOR-Nets offer the possibility of running state-of-the-art networks on CPUs (rather than GPUs) in real-time. Our binary networks are simple, accurate, efficient, and work on challenging visual tasks. We evaluate our approach on the ImageNet classification task. The classification accuracy with a Binary-Weight-Network version of AlexNet is only 2.9{\%} less than the full-precision AlexNet (in top-1 measure). We compare our method with recent network binarization methods, BinaryConnect and BinaryNets, and outperform these methods by large margins on ImageNet, more than 16{\%} in top-1 accuracy.},
+	author = {Rastegari, Mohammad and Ordonez, Vicente and Redmon, Joseph and Farhadi, Ali},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Rastegari et al. - Unknown - XNOR-Net ImageNet Classification Using Binary Convolutional Neural Networks.pdf:pdf},
+	keywords = {Binary Convolution,Binary Deep Learning,Binary Neural Networks,Convolutional Neural Network,Deep Learning},
+	title = {{XNOR-Net: ImageNet Classification Using Binary Convolutional Neural Networks}},
+	url = {https://pjreddie.com/media/files/papers/xnor.pdf}
+}
+@article{Redmon,
+	abstract = {We introduce YOLO9000, a state-of-the-art, real-time object detection system that can detect over 9000 object categories. First we propose various improvements to the YOLO detection method, both novel and drawn from prior work. The improved model, YOLOv2, is state-of-the-art on standard detection tasks like PASCAL VOC and COCO. At 67 FPS, YOLOv2 gets 76.8 mAP on VOC 2007. At 40 FPS, YOLOv2 gets 78.6 mAP, outperforming state-of-the-art methods like Faster RCNN with ResNet and SSD while still running significantly faster. Finally we propose a method to jointly train on object detection and classification. Using this method we train YOLO9000 simultaneously on the COCO detection dataset and the ImageNet classification dataset. Our joint training allows YOLO9000 to predict detections for object classes that don't have labelled detection data. We validate our approach on the ImageNet detection task. YOLO9000 gets 19.7 mAP on the ImageNet detection validation set despite only having detection data for 44 of the 200 classes. On the 156 classes not in COCO, YOLO9000 gets 16.0 mAP. But YOLO can detect more than just 200 classes; it predicts detections for more than 9000 different object categories. And it still runs in real-time.},
+	archivePrefix = {arXiv},
+	arxivId = {1612.08242},
+	author = {Szegedy, Christian and Reed, Scott and Sermanet, Pierre and Vanhoucke, Vincent and Rabinovich, Andrew and Simon, Marcel and Rodner, Erik and Denzler, Joachim and Redmon, Joseph and Farhadi, Ali and Ioffe, Sergey and Szegedy, Christian and Liu, Wei and Anguelov, Dragomir and Erhan, Dumitru and Szegedy, Christian and Reed, Scott and Fu, Cheng-yang and Berg, Alexander C and Ioffe, Sergey and Vanhoucke, Vincent and Alemi, Alex and Reed, Scott and Sermanet, Pierre and Vanhoucke, Vincent and Rabinovich, Andrew and Shlens, Jonathon and Wojna, Zbigniew and Iandola, Forrest N and Han, Song and Moskewicz, Matthew W and Ashraf, Khalid and Dally, William J and Keutzer, Kurt and He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian and Chen, Tianqi and Guestrin, Carlos},
+	doi = {10.1142/9789812771728_0012},
+	eprint = {1612.08242},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Redmon, Farhadi - Unknown - YOLO9000 Better, Faster, Stronger(2).pdf:pdf},
+	isbn = {1879-2057 (Electronic)$\backslash$n0001-4575 (Linking)},
+	issn = {0146-4833},
+	journal = {Data Mining with Decision Trees},
+	keywords = {convolutional neural network,deep learning,denoising auto-encoder,image denoising,large-scale machine learning,real-time object detection},
+	number = {3},
+	pages = {352350},
+	pmid = {23021419},
+	title = {{YOLO9000: Better, Faster, Stronger}},
+	url = {https://arxiv.org/abs/1612.08242},
+	volume = {7},
+	year = {2016}
+}
+@article{Felzenszwalb,
+	abstract = {This paper describes a discriminatively trained, multi-scale, deformable part model for object detection. Our sys-tem achieves a two-fold improvement in average precision over the best performance in the 2006 PASCAL person de-tection challenge. It also outperforms the best results in the 2007 challenge in ten out of twenty categories. The system relies heavily on deformable parts. While deformable part models have become quite popular, their value had not been demonstrated on difficult benchmarks such as the PASCAL challenge. Our system also relies heavily on new methods for discriminative training. We combine a margin-sensitive approach for data mining hard negative examples with a formalism we call latent SVM. A latent SVM, like a hid-den CRF, leads to a non-convex training problem. How-ever, a latent SVM is semi-convex and the training prob-lem becomes convex once latent information is specified for the positive examples. We believe that our training meth-ods will eventually make possible the effective use of more latent information such as hierarchical (grammar) models and models involving latent three dimensional pose.},
+	author = {Felzenszwalb, Pedro and Mcallester, David and Ramanan, Deva},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Felzenszwalb, Mcallester, Ramanan - Unknown - A Discriminatively Trained, Multiscale, Deformable Part Model.pdf:pdf},
+	title = {{A Discriminatively Trained, Multiscale, Deformable Part Model}},
+	url = {http://people.cs.uchicago.edu/{~}pff/papers/latent.pdf}
+}
+@article{Uijlings,
+	abstract = {This paper addresses the problem of generating possible object locations for use in object recognition. We introduce selective search which combines the strength of both an exhaustive search and segmentation. Like segmen-tation, we use the image structure to guide our sampling process. Like exhaustive search, we aim to capture all possi-ble object locations. Instead of a single technique to generate possible object locations, we diversify our search and use a variety of complementary image partitionings to deal with as many image conditions as possible. Our selective search results in a small set of data-driven, class-independent, high quality locations, yielding 99 {\%} recall and a Mean Average Best Overlap of 0.879 at 10,097 locations. The reduced num-ber of locations compared to an exhaustive search enables the use of stronger machine learning techniques and stronger appearance models for object recognition. In this paper we show that our selective search enables the use of the powerful Bag-of-Words model for recognition. The selective search software is made publicly available (Software:},
+	author = {Uijlings, J R R and {Van De Sande}, K E A and Gevers, T and Smeulders, A W M},
+	doi = {10.1007/s11263-013-0620-5},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Uijlings et al. - Unknown - Selective Search for Object Recognition(2).pdf:pdf},
+	journal = {Int J Comput Vis},
+	title = {{Selective Search for Object Recognition}},
+	url = {http://disi.}
+}
+@article{,
+	abstract = {A capsule is a group of neurons whose outputs represent different properties of the same entity. We describe a version of capsules in which each capsule has a logis-tic unit to represent the presence of an entity and a 4x4 pose matrix which could learn to represent the relationship between that entity and the viewer. A capsule in one layer votes for the pose matrix of many different capsules in the layer above by multiplying its own pose matrix by viewpoint-invariant transformation matri-ces that could learn to represent part-whole relationships. Each of these votes is weighted by an assignment coefficient. These coefficients are iteratively updated using the EM algorithm such that the output of each capsule is routed to a cap-sule in the layer above that receives a cluster of similar votes. The whole system is trained discriminatively by unrolling 3 iterations of EM between each pair of adjacent layers. On the smallNORB benchmark, capsules reduce the number of test errors by 45{\%} compared to the state-of-the-art. Capsules also show far more resistance to white box adversarial attack than our baseline convolutional neural network.},
+	archivePrefix = {arXiv},
+	arxivId = {1710.09829},
+	eprint = {1710.09829},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Unknown - Unknown - MATRIX CAPSULES WITH EM ROUTING.pdf:pdf},
+	title = {{Matrix Capsules With Em Routing}},
+	url = {https://openreview.net/pdf?id=HJWLfGWRb}
+}
+@article{Sermanet2014,
+	abstract = {We present an integrated framework for using Convolutional Networks for classi-fication, localization and detection. We show how a multiscale and sliding window approach can be efficiently implemented within a ConvNet. We also introduce a novel deep learning approach to localization by learning to predict object bound-aries. Bounding boxes are then accumulated rather than suppressed in order to increase detection confidence. We show that different tasks can be learned simul-taneously using a single shared network. This integrated framework is the winner of the localization task of the ImageNet Large Scale Visual Recognition Challenge 2013 (ILSVRC2013) and obtained very competitive results for the detection and classifications tasks. In post-competition work, we establish a new state of the art for the detection task. Finally, we release a feature extractor from our best model called OverFeat.},
+	archivePrefix = {arXiv},
+	arxivId = {arXiv:1312.6229v4},
+	author = {Sermanet, Pierre and Eigen, David and Zhang, Xiang and Mathieu, Michael and Fergus, Rob and Lecun, Yann},
+	eprint = {arXiv:1312.6229v4},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sermanet et al. - 2014 - OverFeat Integrated Recognition, Localization and Detection using Convolutional Networks.pdf:pdf},
+	keywords = {()},
+	title = {{OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks}},
+	url = {https://arxiv.org/pdf/1312.6229.pdf},
+	year = {2014}
+}
+@article{Liu,
+	abstract = {We present a method for detecting objects in images using a single deep neural network. Our approach, named SSD, discretizes the output space of bounding boxes into a set of default boxes over different aspect ratios and scales per feature map location. At prediction time, the network generates scores for the presence of each object category in each default box and produces adjustments to the box to better match the object shape. Additionally, the network combines pre-dictions from multiple feature maps with different resolutions to naturally handle objects of various sizes. SSD is simple relative to methods that require object proposals because it completely eliminates proposal generation and subsequent pixel or feature resampling stages and encapsulates all computation in a single network. This makes SSD easy to train and straightforward to integrate into sys-tems that require a detection component. Experimental results on the PASCAL VOC, COCO, and ILSVRC datasets confirm that SSD has competitive accuracy to methods that utilize an additional object proposal step and is much faster, while providing a unified framework for both training and inference. For 300 × 300 in-put, SSD achieves 74.3{\%} mAP 1 on VOC2007 test at 59 FPS on a Nvidia Titan X and for 512 × 512 input, SSD achieves 76.9{\%} mAP, outperforming a compa-rable state-of-the-art Faster R-CNN model. Compared to other single stage meth-ods, SSD has much better accuracy even with a smaller input image size. Code is available at: https://github.com/weiliu89/caffe/tree/ssd .},
+	author = {Liu, Wei and Anguelov, Dragomir and Erhan, Dumitru and Szegedy, Christian and Reed, Scott and Fu, Cheng-Yang and Berg, Alexander C},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Liu et al. - Unknown - SSD Single Shot MultiBox Detector.pdf:pdf},
+	keywords = {Convolutional Neural Network,Real-time Object Detection},
+	title = {{SSD: Single Shot MultiBox Detector}},
+	url = {https://www.cs.unc.edu/{~}wliu/papers/ssd.pdf}
+}
+@article{Wu,
+	abstract = {Object detection is a crucial task for autonomous driv-ing. In addition to requiring high accuracy to ensure safety, object detection for autonomous driving also requires real-time inference speed to guarantee prompt vehicle control, as well as small model size and energy efficiency to enable embedded system deployment. In this work, we propose SqueezeDet, a fully convolu-tional neural network for object detection that aims to si-multaneously satisfy all of the above constraints. In our network we use convolutional layers not only to extract fea-ture maps, but also as the output layer to compute bound-ing boxes and class probabilities. The detection pipeline of our model only contains a single forward pass of a neu-ral network, thus it is extremely fast. Our model is fully-convolutional, which leads to small model size and bet-ter energy efficiency. Finally, our experiments show that our model is very accurate, achieving state-of-the-art ac-curacy on the KITTI [9] benchmark. The source code of SqueezeDet is open-source released 1 .},
+	author = {Wu, Bichen and Iandola, Forrest and Jin, Peter H and Keutzer, Kurt},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Wu et al. - Unknown - SqueezeDet Unified, Small, Low Power Fully Convolutional Neural Networks for Real-Time Object Detection for Autono.pdf:pdf},
+	title = {{SqueezeDet: Unified, Small, Low Power Fully Convolutional Neural Networks for Real-Time Object Detection for Autonomous Driving}},
+	url = {https://arxiv.org/pdf/1612.01051.pdf}
+}
+@inproceedings{Kendall,
+	abstract = {We present a robust and real-time monocular six degree of freedom relocalization system. Our system trains a convolutional neural network to regress the 6-DOF camera pose from a single RGB image in an end-to-end manner with no need of additional engineering or graph optimisation. The algorithm can operate indoors and outdoors in real time, taking 5ms per frame to compute. It obtains approximately 2m and 6 degree accuracy for large scale outdoor scenes and 0.5m and 10 degree accuracy indoors. This is achieved using an efficient 23 layer deep convnet, demonstrating that convnets can be used to solve complicated out of image plane regression problems. This was made possible by leveraging transfer learning from large scale classification data. We show the convnet localizes from high level features and is robust to difficult lighting, motion blur and different camera intrinsics where point based SIFT registration fails. Furthermore we show how the pose feature that is produced generalizes to other scenes allowing us to regress pose with only a few dozen training examples. PoseNet code, dataset and an online demonstration is available on our project webpage, at http://mi.eng.cam.ac.uk/projects/relocalisation/},
+	archivePrefix = {arXiv},
+	arxivId = {1505.07427},
+	author = {Kendall, Alex and Grimes, Matthew and Cipolla, Roberto},
+	booktitle = {Proceedings of the IEEE International Conference on Computer Vision},
+	doi = {10.1109/ICCV.2015.336},
+	eprint = {1505.07427},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Kendall, Grimes, Cipolla - Unknown - PoseNet A Convolutional Network for Real-Time 6-DOF Camera Relocalization(2).pdf:pdf},
+	isbn = {9781467383912},
+	issn = {15505499},
+	keywords = {Deep,Monocular,Relocalization},
+	mendeley-groups = {Thesis/Localization},
+	mendeley-tags = {Deep,Monocular,Relocalization},
+	month = {may},
+	pages = {2938--2946},
+	title = {{PoseNet: A convolutional network for real-time 6-dof camera relocalization}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}iccv{\_}2015/papers/Kendall{\_}PoseNet{\_}A{\_}Convolutional{\_}ICCV{\_}2015{\_}paper.pdf http://arxiv.org/abs/1505.07427},
+	volume = {2015 Inter},
+	year = {2015}
+}
+@article{Zitnick,
+	abstract = {The use of object proposals is an effective recent approach for increasing the computational efficiency of object detection. We pro-pose a novel method for generating object bounding box proposals us-ing edges. Edges provide a sparse yet informative representation of an image. Our main observation is that the number of contours that are wholly contained in a bounding box is indicative of the likelihood of the box containing an object. We propose a simple box objectness score that measures the number of edges that exist in the box minus those that are members of contours that overlap the box's boundary. Using efficient data structures, millions of candidate boxes can be evaluated in a fraction of a second, returning a ranked set of a few thousand top-scoring propos-als. Using standard metrics, we show results that are significantly more accurate than the current state-of-the-art while being faster to compute. In particular, given just 1000 proposals we achieve over 96{\%} object recall at overlap threshold of 0.5 and over 75{\%} recall at the more challenging overlap of 0.7. Our approach runs in 0.25 seconds and we additionally demonstrate a near real-time variant with only minor loss in accuracy.},
+	author = {Zitnick, C Lawrence and Doll{\'{a}}r, Piotr},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Zitnick, Doll{\'{a}}r - Unknown - Edge Boxes Locating Object Proposals from Edges.pdf:pdf},
+	keywords = {edge detection,object detection,object proposals},
+	title = {{Edge Boxes: Locating Object Proposals from Edges}},
+	url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.453.5208{\&}rep=rep1{\&}type=pdf}
+}
+@article{Uijlings,
+	abstract = {This paper addresses the problem of generating possible object locations for use in object recognition. We introduce selective search which combines the strength of both an exhaustive search and segmentation. Like segmen-tation, we use the image structure to guide our sampling process. Like exhaustive search, we aim to capture all possi-ble object locations. Instead of a single technique to generate possible object locations, we diversify our search and use a variety of complementary image partitionings to deal with as many image conditions as possible. Our selective search results in a small set of data-driven, class-independent, high quality locations, yielding 99 {\%} recall and a Mean Average Best Overlap of 0.879 at 10,097 locations. The reduced num-ber of locations compared to an exhaustive search enables the use of stronger machine learning techniques and stronger appearance models for object recognition. In this paper we show that our selective search enables the use of the powerful Bag-of-Words model for recognition. The selective search software is made publicly available (Software:},
+	author = {Uijlings, J R R and {Van De Sande}, K E A and Gevers, T and Smeulders, A W M},
+	doi = {10.1007/s11263-013-0620-5},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Uijlings et al. - Unknown - Selective Search for Object Recognition(2).pdf:pdf},
+	journal = {Int J Comput Vis},
+	title = {{Selective Search for Object Recognition}},
+	url = {http://disi.}
+}
+@article{Dai,
+	abstract = {Convolutional neural networks (CNNs) are inherently limited to model geometric transformations due to the fixed geometric structures in its building modules. In this work, we introduce two new modules to enhance the transformation modeling capacity of CNNs, namely, deformable convolution and deformable RoI pooling. Both are based on the idea of augmenting the spatial sampling locations in the modules with additional offsets and learning the offsets from target tasks, without additional supervision. The new modules can readily replace their plain counterparts in existing CNNs and can be easily trained end-to-end by standard back-propagation, giving rise to deformable convolutional networks. Extensive experiments validate the effectiveness of our approach on sophisticated vision tasks of object detection and semantic segmentation. The code would be released.},
+	archivePrefix = {arXiv},
+	arxivId = {1703.06211},
+	author = {Dai, Jifeng and Qi, Haozhi and Xiong, Yuwen and Li, Yi and Zhang, Guodong and Hu, Han and Wei, Yichen},
+	doi = {10.1051/0004-6361/201527329},
+	eprint = {1703.06211},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Dai et al. - Unknown - Deformable Convolutional Networks.pdf:pdf},
+	isbn = {2004012439},
+	issn = {0004-6361},
+	pmid = {23459267},
+	title = {{Deformable Convolutional Networks}},
+	url = {http://arxiv.org/abs/1703.06211},
+	year = {2017}
+}
+@article{Ouyang,
+	abstract = {In this paper, we propose deformable deep convolutional neural networks for generic object detection. This new deep learning object detection framework has innovations in multiple aspects. In the proposed new deep architecture, a new deformation constrained pooling (def-pooling) layer models the deformation of object parts with geometric con-straint and penalty. A new pre-training strategy is proposed to learn feature representations more suitable for the object detection task and with good generalization capability. By changing the net structures, training strategies, adding and removing some key components in the detection pipeline, a set of models with large diversity are obtained, which significantly improves the effectiveness of model averag-ing. The proposed approach improves the mean averaged precision obtained by RCNN [14], which was the state-of-the-art, from 31{\%} to 50.3{\%} on the ILSVRC2014 detection test set. It also outperforms the winner of ILSVRC2014, GoogLeNet, by 6.1{\%}. Detailed component-wise analysis is also provided through extensive experimental evaluation, which provide a global view for people to understand the deep learning object detection pipeline.},
+	author = {Ouyang, Wanli and Wang, Xiaogang and Zeng, Xingyu and Qiu, Shi and Luo, Ping and Tian, Yonglong and Li, Hongsheng and Yang, Shuo and Wang, Zhe and Loy, Chen-Change and Tang, Xiaoou},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Ouyang et al. - Unknown - DeepID-Net Deformable Deep Convolutional Neural Networks for Object Detection.pdf:pdf},
+	title = {{DeepID-Net: Deformable Deep Convolutional Neural Networks for Object Detection}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}cvpr{\_}2015/papers/Ouyang{\_}DeepID-Net{\_}Deformable{\_}Deep{\_}2015{\_}CVPR{\_}paper.pdf}
+}
+@article{Girshick,
+	abstract = {Deformable part models (DPMs) and convolutional neu-ral networks (CNNs) are two widely used tools for vi-sual recognition. They are typically viewed as distinct ap-proaches: DPMs are graphical models (Markov random fields), while CNNs are " black-box " non-linear classifiers. In this paper, we show that a DPM can be formulated as a CNN, thus providing a synthesis of the two ideas. Our con-struction involves unrolling the DPM inference algorithm and mapping each step to an equivalent CNN layer. From this perspective, it is natural to replace the standard im-age features used in DPMs with a learned feature extractor. We call the resulting model a DeepPyramid DPM and ex-perimentally validate it on PASCAL VOC object detection. We find that DeepPyramid DPMs significantly outperform DPMs based on histograms of oriented gradients features (HOG) and slightly outperforms a comparable version of the recently introduced R-CNN detection system, while run-ning significantly faster.},
+	author = {Girshick, Ross and Iandola, Forrest and Darrell, Trevor and Malik, Jitendra},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Girshick et al. - Unknown - Deformable Part Models are Convolutional Neural Networks.pdf:pdf},
+	title = {{Deformable Part Models are Convolutional Neural Networks}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}cvpr{\_}2015/papers/Girshick{\_}Deformable{\_}Part{\_}Models{\_}2015{\_}CVPR{\_}paper.pdf}
+}
+@article{Liang,
+	abstract = {In recent years, the convolutional neural network (CNN) has achieved great success in many computer vision tasks. Partially inspired by neuroscience, CNN shares many prop-erties with the visual system of the brain. A prominent dif-ference is that CNN is typically a feed-forward architecture while in the visual system recurrent connections are abun-dant. Inspired by this fact, we propose a recurrent CNN (RCNN) for object recognition by incorporating recurrent connections into each convolutional layer. Though the in-put is static, the activities of RCNN units evolve over time so that the activity of each unit is modulated by the ac-tivities of its neighboring units. This property enhances the ability of the model to integrate the context informa-tion, which is important for object recognition. Like other recurrent neural networks, unfolding the RCNN through time can result in an arbitrarily deep network with a fixed number of parameters. Furthermore, the unfolded network has multiple paths, which can facilitate the learning pro-cess. The model is tested on four benchmark object recog-nition datasets: CIFAR-10, CIFAR-100, MNIST and SVHN. With fewer trainable parameters, RCNN outperforms the state-of-the-art models on all of these datasets. Increas-ing the number of parameters leads to even better perfor-mance. These results demonstrate the advantage of the re-current structure over purely feed-forward structure for ob-ject recognition.},
+	author = {Liang, Ming and Hu, Xiaolin},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Liang, Hu - Unknown - Recurrent Convolutional Neural Network for Object Recognition.pdf:pdf},
+	title = {{Recurrent Convolutional Neural Network for Object Recognition}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}cvpr{\_}2015/papers/Liang{\_}Recurrent{\_}Convolutional{\_}Neural{\_}2015{\_}CVPR{\_}paper.pdf}
+}
+@article{Forsyth,
+	author = {Forsyth, David},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Forsyth - Unknown - Object Detection with Discriminatively Trained Part-Based Models.pdf:pdf},
+	title = {{Object Detection with Discriminatively Trained Part-Based Models}},
+	url = {https://pdfs.semanticscholar.org/ad5a/b85d8f8302e04ec40e139d364574083aa951.pdf}
+}
+@article{Erhan,
+	abstract = {Deep convolutional neural networks have recently achieved state-of-the-art performance on a number of image recognition benchmarks, including the ImageNet Large-Scale Visual Recognition Challenge (ILSVRC-2012). The winning model on the localization sub-task was a network that predicts a single bounding box and a confidence score for each object category in the image. Such a model captures the whole-image context around the objects but cannot handle multiple instances of the same object in the image without naively replicating the number of outputs for each instance. In this work, we propose a saliency-inspired neural network model for detection, which predicts a set of class-agnostic bounding boxes along with a single score for each box, corresponding to its likelihood of containing any object of interest. The model naturally handles a variable number of instances for each class and allows for cross-class generalization at the highest levels of the network. We are able to obtain competitive recognition performance on VOC2007 and ILSVRC2012, while using only the top few predicted locations in each image and a small number of neural network evaluations.},
+	archivePrefix = {arXiv},
+	arxivId = {1312.2249},
+	author = {Erhan, Dumitru and Szegedy, Christian and Toshev, Alexander and Anguelov, Dragomir},
+	eprint = {1312.2249},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Erhan et al. - Unknown - Scalable Object Detection using Deep Neural Networks.pdf:pdf},
+	month = {dec},
+	title = {{Scalable Object Detection using Deep Neural Networks}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}cvpr{\_}2014/papers/Erhan{\_}Scalable{\_}Object{\_}Detection{\_}2014{\_}CVPR{\_}paper.pdf http://arxiv.org/abs/1312.2249},
+	year = {2013}
+}
+@article{Caicedo,
+	abstract = {We present an active detection model for localizing ob-jects in scenes. The model is class-specific and allows an agent to focus attention on candidate regions for identi-fying the correct location of a target object. This agent learns to deform a bounding box using simple transforma-tion actions, with the goal of determining the most spe-cific location of target objects following top-down reason-ing. The proposed localization agent is trained using deep reinforcement learning, and evaluated on the Pascal VOC 2007 dataset. We show that agents guided by the proposed model are able to localize a single instance of an object af-ter analyzing only between 11 and 25 regions in an image, and obtain the best detection results among systems that do not use object proposals for object localization.},
+	author = {Caicedo, Juan C and Lazebnik, Svetlana},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Caicedo, Lazebnik - Unknown - Active Object Localization with Deep Reinforcement Learning.pdf:pdf},
+	title = {{Active Object Localization with Deep Reinforcement Learning}},
+	url = {https://www.cv-foundation.org/openaccess/content{\_}iccv{\_}2015/papers/Caicedo{\_}Active{\_}Object{\_}Localization{\_}ICCV{\_}2015{\_}paper.pdf}
+}
+@article{Wu2016,
+	abstract = {Object detection is a crucial task for autonomous driving. In addition to requiring high accuracy to ensure safety, object detection for autonomous driving also requires real-time inference speed to guarantee prompt vehicle control, as well as small model size and energy efficiency to enable embedded system deployment. In this work, we propose SqueezeDet, a fully convolutional neural network for object detection that aims to simultaneously satisfy all of the above constraints. In our network we use convolutional layers not only to extract feature maps, but also as the output layer to compute bounding boxes and class probabilities. The detection pipeline of our model only contains a single forward pass of a neural network, thus it is extremely fast. Our model is fully-convolutional, which leads to small model size and better energy efficiency. Finally, our experiments show that our model is very accurate, achieving state-of-the-art accuracy on the KITTI benchmark.},
+	archivePrefix = {arXiv},
+	arxivId = {1612.01051},
+	author = {Wu, Bichen and Iandola, Forrest and Jin, Peter H. and Keutzer, Kurt},
+	doi = {10.1109/CVPRW.2017.60},
+	eprint = {1612.01051},
+	isbn = {9781538607336},
+	issn = {21607516},
+	journal = {IEEE Computer Society Conference on Computer Vision and Pattern Recognition Workshops},
+	month = {dec},
+	pages = {446--454},
+	title = {{SqueezeDet: Unified, Small, Low Power Fully Convolutional Neural Networks for Real-Time Object Detection for Autonomous Driving}},
+	url = {http://arxiv.org/abs/1612.01051},
+	volume = {2017-July},
+	year = {2016}
+}
+@article{Redmon,
+	abstract = {We present YOLO, a new approach to object detection. Prior work on object detection repurposes classifiers to perform detection. Instead, we frame object detection as a regression problem to spatially separated bounding boxes and associated class probabilities. A single neural network predicts bounding boxes and class probabilities directly from full images in one evaluation. Since the whole detection pipeline is a single network, it can be optimized end-to-end directly on detection performance. Our unified architecture is extremely fast. Our base YOLO model processes images in real-time at 45 frames per second. A smaller version of the network, Fast YOLO, processes an astounding 155 frames per second while still achieving double the mAP of other real-time detectors. Compared to state-of-the-art detection systems, YOLO makes more localization errors but is far less likely to predict false detections where nothing exists. Finally, YOLO learns very general representations of objects. It outperforms all other detection methods, including DPM and R-CNN, by a wide margin when generalizing from natural images to artwork on both the Picasso Dataset and the People-Art Dataset.},
+	annote = {- mostly localization error
+	- feature extraction, classification, localization is one pipeline
+	- single class detecters can be highly optimized
+	- uses google net convolutional layer
+	- image is split in SxS grid
+	- each grid proposes: B Bounding boxes, and C classes
+	- a bounding box gets "responsible" for a certain object if the center of it falls into the box, this is calculated by the highest intersection over union in that grid cell
+	- dropout, extensive data augmentation},
+	archivePrefix = {arXiv},
+	arxivId = {1506.02640},
+	author = {Redmon, Joseph and Divvala, Santosh and Girshick, Ross and Farhadi, Ali},
+	doi = {10.1109/CVPR.2016.91},
+	eprint = {1506.02640},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Redmon et al. - Unknown - You Only Look Once Unified, Real-Time Object Detection.pdf:pdf},
+	isbn = {978-1-4673-8851-1},
+	issn = {01689002},
+	pmid = {27295650},
+	title = {{You Only Look Once: Unified, Real-Time Object Detection}},
+	url = {http://arxiv.org/abs/1506.02640},
+	year = {2015}
+}
+@article{Krizhevsky2012,
+	abstract = {We trained a large, deep convolutional neural network to classify the 1.2 million high-resolution images in the ImageNet LSRVRC-2010 contest into the 1000 different classes. On the test data, we achieved top-1 and top-5 error rates of 37.5{\%} and 17.0{\%} which is considerably better than the previous state of the art. The neural network, which has 60 million paramters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three fully connected layers with a final 1000-way softmax. To make training faster, we used non-saturating neurons and a very efficient GPU implementation of the convolutional operation. To reduce overfitting in the fully-connected layers, we employed a recently-developed method called 'dropout' that proved to be effective. We also entered a variant of the model in the ILSVRC-2012 competition and achievd a top-5 test error rate of 15.3{\%}, compared to 26.2{\%} achieved by the second-best entry.},
+	annote = {- first "deep" network
+	- limited by cpu/gpu constraints
+	- applied image augmentation to increase sample size
+	- variable learning rate},
+	archivePrefix = {arXiv},
+	arxivId = {1102.0183},
+	author = {Krizhevsky, Alex and Sutskever, Ilya and Hinton, Geoffrey E},
+	doi = {http://dx.doi.org/10.1016/j.protcy.2014.09.007},
+	eprint = {1102.0183},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Krizhevsky, Sutskever, Hinton - Unknown - ImageNet Classification with Deep Convolutional Neural Networks.pdf:pdf},
+	isbn = {9781627480031},
+	issn = {10495258},
+	journal = {Advances In Neural Information Processing Systems},
+	pages = {1--9},
+	pmid = {7491034},
+	title = {{ImageNet Classification with Deep Convolutional Neural Networks}},
+	url = {http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf},
+	year = {2012}
+}
+@article{Viola2004,
+	abstract = {This paper describes a machine learning approach for visual object detection which is capable of processing images extremely rapidly and achieving high detection rates. This work is distin-guished by three key contributions. The first is the introduction of a new image representation called the Integral Image which allows the features used by our detector to be computed very quickly. The second is a learning algorithm, based on AdaBoost, which selects a small num-ber of critical visual features from a larger set and yields extremely efficient classifiers[6]. The third contribution is a method for combining increasingly more complex classifiers in a cascade which allows background regions of the image to be quickly discarded while spending more computation on promising object-like regions. The cascade can be viewed as an object specific focus-of-attention mechanism which unlike previous approaches provides statistical guarantees that discarded regions are unlikely to contain the object of interest. In the domain of face detec-tion the system yields detection rates comparable to the best previous systems. Used in real-time applications, the detector runs at 15 frames per second without resorting to image differencing or skin color detection.},
+	author = {Viola, P ; and Jones},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Viola, Jones - 2004 - Rapid Object Detection Using a Boosted Cascade of Simple Features.pdf:pdf},
+	title = {{Rapid Object Detection Using a Boosted Cascade of Simple Features}},
+	url = {http://www.merl.com},
+	year = {2004}
+}
+@article{Lienhart,
+	abstract = {Recently Viola et al. [5] have introduced a rapid object detection scheme based on a boosted cascade of simple features. In this paper we introduce a novel set of rotated haar-like features, which significantly enrich this basic set of simple haar-like features and which can also be calculated very efficiently. At a given hit rate our sample face detector shows off on average a 10{\%} lower false alarm rate by means of using these additional rotated features. We also present a novel post optimization procedure for a given boosted cascade improving on average the false alarm rate further by 12.5{\%}. Using both enhancements the number of false detections is only 24 at a hit rate of 82.3{\%} on the CMU face set [7].},
+	author = {Lienhart, Rainer and Maydt, Jochen},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lienhart, Maydt - Unknown - n Extended Set of Haar-like Features for Rapid Object Detection.pdf:pdf},
+	title = {{n Extended Set of Haar-like Features for Rapid Object Detection}},
+	url = {http://www.videoanalysis.org/Prof.{\_}Dr.{\_}Rainer{\_}Lienhart/Publications{\_}files/ICIP2002.pdf}
+}
+@article{Ren,
+	abstract = {State-of-the-art object detection networks depend on region proposal algorithms to hypothesize object locations. Advances like SPPnet [7] and Fast R-CNN [5] have reduced the running time of these detection networks, exposing region pro-posal computation as a bottleneck. In this work, we introduce a Region Pro-posal Network (RPN) that shares full-image convolutional features with the de-tection network, thus enabling nearly cost-free region proposals. An RPN is a fully-convolutional network that simultaneously predicts object bounds and ob-jectness scores at each position. RPNs are trained end-to-end to generate high-quality region proposals, which are used by Fast R-CNN for detection. With a simple alternating optimization, RPN and Fast R-CNN can be trained to share convolutional features. For the very deep VGG-16 model [19], our detection system has a frame rate of 5fps (including all steps) on a GPU, while achieving state-of-the-art object detection accuracy on PASCAL VOC 2007 (73.2{\%} mAP) and 2012 (70.4{\%} mAP) using 300 proposals per image. Code is available at https://github.com/ShaoqingRen/faster{\_}rcnn.},
+	author = {Ren, Shaoqing and He, Kaiming and Girshick, Ross and Sun, Jian},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Ren et al. - Unknown - Faster R-CNN Towards Real-Time Object Detection with Region Proposal Networks.pdf:pdf},
+	title = {{Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks}},
+	url = {http://papers.nips.cc/paper/5638-faster-r-cnn-towards-real-time-object-detection-with-region-proposal-networks.pdf}
+}
+@article{LeCun,
+	abstract = {M achine-learning technology powers many aspects of modern society: from web searches to content filtering on social net-works to recommendations on e-commerce websites, and it is increasingly present in consumer products such as cameras and smartphones. Machine-learning systems are used to identify objects in images, transcribe speech into text, match news items, posts or products with users' interests, and select relevant results of search. Increasingly, these applications make use of a class of techniques called deep learning. Conventional machine-learning techniques were limited in their ability to process natural data in their raw form. For decades, con-structing a pattern-recognition or machine-learning system required careful engineering and considerable domain expertise to design a fea-ture extractor that transformed the raw data (such as the pixel values of an image) into a suitable internal representation or feature vector from which the learning subsystem, often a classifier, could detect or classify patterns in the input. Representation learning is a set of methods that allows a machine to be fed with raw data and to automatically discover the representations needed for detection or classification. Deep-learning methods are representation-learning methods with multiple levels of representa-tion, obtained by composing simple but non-linear modules that each transform the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level. With the composition of enough such transformations, very complex functions can be learned. For classification tasks, higher layers of representation amplify aspects of the input that are important for discrimination and suppress irrelevant variations. An image, for example, comes in the form of an array of pixel values, and the learned features in the first layer of representation typically represent the presence or absence of edges at particular orientations and locations in the image. The second layer typically detects motifs by spotting particular arrangements of edges, regardless of small variations in the edge positions. The third layer may assemble motifs into larger combinations that correspond to parts of familiar objects, and subsequent layers would detect objects as combinations of these parts. The key aspect of deep learning is that these layers of features are not designed by human engineers: they are learned from data using a general-purpose learning procedure. Deep learning is making major advances in solving problems that have resisted the best attempts of the artificial intelligence commu-nity for many years. It has turned out to be very good at discovering intricate structures in high-dimensional data and is therefore applica-ble to many domains of science, business and government. In addition to beating records in image recognition},
+	author = {LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
+	doi = {10.1038/nature14539},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/LeCun, Bengio, Hinton - Unknown - Deep learning.pdf:pdf},
+	title = {{Deep learning}},
+	url = {http://pages.cs.wisc.edu/{~}dyer/cs540/handouts/deep-learning-nature2015.pdf}
+}
+@article{Naseer,
+	abstract = {— Precise localization of robots is imperative for their safe and autonomous navigation in both indoor and outdoor environments. In outdoor scenarios, the environment typically undergoes significant perceptual changes and requires robust methods for accurate localization. Monocular camera-based approaches provide an inexpensive solution to such challenging problems compared to 3D LiDAR-based methods. Recently, approaches have leveraged deep convolutional neu-ral networks (CNNs) to perform place recognition and they turn out to outperform traditional handcrafted features under challenging perceptual conditions. In this paper, we propose an approach for directly regressing a 6-DoF camera pose using CNNs and a single monocular RGB image. We leverage the idea of transfer learning for training our network as this technique has shown to perform better when the number of training samples are not very high. Furthermore, we propose novel data augmentation in 3D space for additional pose coverage which leads to more accurate localization. In contrast to the traditional visual metric localization approaches, our resulting map size is constant with respect to the database. During localization, our approach has a constant time complexity of O(1) and is independent of the database size and runs in real-time at∼80 Hz using a single GPU. We show the localization accuracy of our approach on publicly available datasets and that it outperforms CNN-based state-of-the-art methods.},
+	author = {Naseer, Tayyab and Burgard, Wolfram},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Naseer, Burgard - Unknown - Deep Regression for Monocular Camera-based 6-DoF Global Localization in Outdoor Environments.pdf:pdf},
+	title = {{Deep Regression for Monocular Camera-based 6-DoF Global Localization in Outdoor Environments}},
+	url = {http://ais.informatik.uni-freiburg.de/publications/papers/naseer17iros.pdf}
+}
+@article{Kendall,
+	abstract = {PoseNet: Convolutional neural network monocular camera relocalization. Relocalization results for an input image (top), the predicted camera pose of a visual reconstruction (middle), shown again overlaid in red on the original image (bottom). Our system relocalizes to within approximately 2m and 6 • for large outdoor scenes spanning 50, 000m 2 . For an online demonstration, please see our project webpage: mi.eng.cam.ac.uk/projects/relocalisation/ Abstract We present a robust and real-time monocular six de-gree of freedom relocalization system. Our system trains a convolutional neural network to regress the 6-DOF cam-era pose from a single RGB image in an end-to-end man-ner with no need of additional engineering or graph op-timisation. The algorithm can operate indoors and out-doors in real time, taking 5ms per frame to compute. It obtains approximately 2m and 6 • accuracy for large scale outdoor scenes and 0.5m and 10 • accuracy indoors. This is achieved using an efficient 23 layer deep convnet, demon-strating that convnets can be used to solve complicated out of image plane regression problems. This was made possi-ble by leveraging transfer learning from large scale classi-fication data. We show that the PoseNet localizes from high level features and is robust to difficult lighting, motion blur and different camera intrinsics where point based SIFT reg-istration fails. Furthermore we show how the pose feature that is produced generalizes to other scenes allowing us to regress pose with only a few dozen training examples.},
+	author = {Kendall, Alex and Grimes, Matthew and Cipolla, Roberto},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Kendall, Grimes, Cipolla - Unknown - PoseNet A Convolutional Network for Real-Time 6-DOF Camera Relocalization.pdf:pdf},
+	title = {{PoseNet: A Convolutional Network for Real-Time 6-DOF Camera Relocalization}},
+	url = {https://arxiv.org/pdf/1505.07427.pdf}
+}
+@misc{Lepetit,
+	author = {Lepetit, Vincent},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lepetit - Unknown - Using Deep Learning for ! Localization from Images.pdf:pdf},
+	title = {{Using Deep Learning for  ! Localization from Images}},
+	url = {https://www.labri.fr/perso/vlepetit/teaching/visum17/03{\_}localization.pdf}
+}
+@article{Rubio,
+	abstract = {— We propose a robust and efficient method to estimate the pose of a camera with respect to complex 3D textured models of the environment that can potentially contain more than 100, 000 points. To tackle this problem we follow a top down approach where we combine high-level deep network classifiers with low level geometric approaches to come up with a solution that is fast, robust and accurate. Given an input image, we initially use a pre-trained deep network to compute a rough estimation of the camera pose. This initial estimate constrains the number of 3D model points that can be seen from the camera viewpoint. We then establish 3D-to-2D corres-pondences between these potentially visible points of the model and the 2D detected image features. Accurate pose estimation is finally obtained from the 2D-to-3D correspondences using a novel PnP algorithm that rejects outliers without the need to use a RANSAC strategy, and which is between 10 and 100 times faster than other methods that use it. Two real experiments dealing with very large and complex 3D models demonstrate the effectiveness of the approach.},
+	author = {Rubio, A and Villamizar, M and Ferraz, L and Penate-Sanchez, A and Ramisa, A and Simo-Serra, E and Sanfeliu, A and Moreno-Noguer, F},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Rubio et al. - Unknown - Efficient Monocular Pose Estimation for Complex 3D Models.pdf:pdf},
+	title = {{Efficient Monocular Pose Estimation for Complex 3D Models}},
+	url = {http://www.iri.upc.edu/files/scidoc/1638-Efficient-monocular-pose-estimation-for-complex-3D-models.pdf}
+}
+@article{Kniaz,
+	abstract = {Accurate estimation of camera external orientation with respect to a known object is one of the central problems in photogrammetry and computer vision. In recent years this problem is gaining an increasing attention in the field of UAV autonomous flight. Such application requires a real-time performance and robustness of the external orientation estimation algorithm. The accuracy of the solution is strongly dependent on the number of reference points visible on the given image. The problem only has an analytical solution if 3 or more reference points are visible. However, in limited visibility conditions it is often needed to perform external orientation with only 2 visible reference points. In such case the solution could be found if the gravity vector direction in the camera coordinate system is known. A number of algorithms for external orientation estimation for the case of 2 known reference points and a gravity vector were developed to date. Most of these algorithms provide analytical solution in the form of polynomial equation that is subject to large errors in the case of complex reference points configurations. This paper is focused on the development of a new computationally effective and robust algorithm for external orientation based on positions of 2 known reference points and a gravity vector. The algorithm implementation for guidance of a Parrot AR.Drone 2.0 micro-UAV is discussed. The experimental evaluation of the algorithm proved its computational efficiency and robustness against errors in reference points positions and complex configurations.},
+	author = {Kniaz, V V},
+	doi = {10.5194/isprsarchives-XLI-B5-63-2016},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Kniaz - Unknown - ROBUST VISION-BASED POSE ESTIMATION ALGORITHM FOR AN UAV WITH KNOWN GRAVITY VECTOR.pdf:pdf},
+	keywords = {UAV,external orientation estimation,machine vision,motion capture system},
+	title = {{ROBUST VISION-BASED POSE ESTIMATION ALGORITHM FOR AN UAV WITH KNOWN GRAVITY VECTOR}},
+	url = {https://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XLI-B5/63/2016/isprs-archives-XLI-B5-63-2016.pdf}
+}
+@article{Erol2007,
+	abstract = {Direct use of the hand as an input device is an attractive method for providing natural human-computer interaction (HCI). Currently, the only technology that satisfies the advanced requirements of hand-based input for HCI is glove-based sensing. This technology, however, has several drawbacks including that it hinders the ease and naturalness with which the user can interact with the computer-controlled environment, and it requires long calibration and setup procedures. Computer vision (CV) has the potential to provide more natural, non-contact solutions. As a result, there have been considerable research efforts to use the hand as an input device for HCI. In particular, two types of research directions have emerged. One is based on gesture classification and aims to extract high-level abstract information corresponding to motion patterns or postures of the hand. The second is based on pose estimation systems and aims to capture the real 3D motion of the hand. This paper presents a literature review on the latter research direction, which is a very challenging problem in the context of HCI. {\textcopyright} 2007 Elsevier Inc. All rights reserved.},
+	archivePrefix = {arXiv},
+	arxivId = {1412.0065},
+	author = {Erol, Ali and Bebis, George and Nicolescu, Mircea and Boyle, Richard D and Twombly, Xander},
+	doi = {10.1016/j.cviu.2006.10.012},
+	eprint = {1412.0065},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Erol et al. - 2007 - Vision-based hand pose estimation A review.pdf:pdf},
+	isbn = {1077-3142},
+	issn = {10773142},
+	journal = {Computer Vision and Image Understanding},
+	keywords = {Gesture recognition,Gesture-based HCI,Hand pose estimation},
+	number = {1-2},
+	pages = {52--73},
+	pmid = {17533767},
+	title = {{Vision-based hand pose estimation: A review}},
+	url = {https://ac.els-cdn.com/S1077314206002281/1-s2.0-S1077314206002281-main.pdf?{\_}tid=60899afe-c307-11e7-b84d-00000aacb35e{\&}acdnat=1509982391{\_}fb739a4053e355313c7abb81c58a13a1},
+	volume = {108},
+	year = {2007}
+}
+@article{,
+	doi = {10.1016/J.CVIU.2006.10.012},
+	issn = {1077-3142},
+	journal = {Computer Vision and Image Understanding},
+	month = {oct},
+	number = {1-2},
+	pages = {52--73},
+	publisher = {Academic Press},
+	title = {{Vision-based hand pose estimation: A review}},
+	url = {http://www.sciencedirect.com/science/article/pii/S1077314206002281},
+	volume = {108},
+	year = {2007}
+}
+@article{Lepetit2005,
+	abstract = {Monocular Model-Based 3D Tracking of Rigid Objects: A Survey},
+	author = {Lepetit, Vincent and Fua, Pascal},
+	doi = {10.1561/0600000001},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lepetit, Fua - 2005 - Monocular Model-Based 3D Tracking of Rigid Objects A Survey(2).pdf:pdf},
+	issn = {1572-2740},
+	journal = {Foundations and Trends{\textregistered} in Computer Graphics and Vision},
+	keywords = {3D reconstruction and image-based modeling,Computer Graphics},
+	number = {1},
+	pages = {1--89},
+	publisher = {Now Publishers, Inc.},
+	title = {{Monocular Model-Based 3D Tracking of Rigid Objects: A Survey}},
+	url = {http://www.nowpublishers.com/article/Details/CGV-001},
+	volume = {1},
+	year = {2005}
+}
+@article{Murphy-Chutorian,
+	abstract = {— The capacity to estimate the head pose of another person is a common human ability that presents a unique chal-lenge for computer vision systems. Compared to face detection and recognition, which have been the primary foci of face-related vision research, identity-invariant head pose estimation has fewer rigorously evaluated systems or generic solutions. In this paper, we discuss the inherent difficulties in head pose estimation and present an organized survey describing the evolution of the field. Our discussion focuses on the advantages and disadvantages of each approach and spans 90 of the most innovative and characteristic papers that have been published on this topic. We compare these systems by focusing on their ability to estimate coarse and fine head pose, highlighting approaches that are well suited for unconstrained environments.},
+	author = {Murphy-Chutorian, Erik and Trivedi, Mohan Manubhai},
+	doi = {10.1109/TPAMI.2008.106},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Murphy-Chutorian, Trivedi - Unknown - IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE Head Pose Estimation in Computer Vi.pdf:pdf},
+	keywords = {Face Analysis,Facial Land Marks,Gesture Analysis,Human Computer In-terfaces,Index Terms— Head Pose Estimation},
+	title = {{IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE Head Pose Estimation in Computer Vision: A Survey}},
+	url = {https://pdfs.semanticscholar.org/cf87/e167446bd22e9422445dfed4f74a3f0579f9.pdf}
+}
+@article{Madsen2001,
+	author = {Madsen, O and Ayromlou, M and Beltran, C},
+	file = {:home/phil/Desktop/thesis/reads/Model-and-Vision-Based-Pose-Estimation-for-Mobile-Robots.pdf:pdf},
+	journal = {IASTED International Conference on Robotics and Applications},
+	keywords = {mobile robots,model based vision,pose estimation},
+	pages = {1--8},
+	title = {{Model and Vision Based Pose Estimation for Mobile Robots}},
+	url = {http://83.212.134.96/robotics/wp-content/uploads/2011/12/Model-and-Vision-Based-Pose-Estimation-for-Mobile-Robots.pdf},
+	year = {2001}
+}
+@article{Rudol2006,
+	author = {Rudol, Piotr and Wzorek, Mariusz and Conte, Gianpaolo and Doherty, Patrick},
+	file = {:home/phil/Desktop/thesis/reads/vision-based-pose-estimation-2010.pdf:pdf},
+	isbn = {9781424450404},
+	journal = {Image (Rochester, N.Y.)},
+	pages = {2030--2030},
+	title = {{Vision-based Pose Estimation for Autonomous Indoor Navigation of Micro Unmanned Aircraft Systems}},
+	volume = {12},
+	year = {2006}
+}
+@article{Bonin-font2008,
+	abstract = {Mobile robot vision-based navigation has been the source of countless research contributions, from the domains of both vision and control. Vision is becoming more and more common in applications such as localization, automatic map construction, autonomous navigation, path following, inspection, monitoring or risky situation detection. This survey presents those pieces of work, from the nineties until nowadays, which constitute a wide progress in visual navigation techniques for land, aerial and autonomous underwater vehicles. The paper deals with two major approaches: map-based navigation and mapless navigation. Map-based navigation has been in turn subdivided in metric map-based navigation and topological map-based navigation. Our outline to mapless navigation includes reactive techniques based on qualitative characteristics extraction, appearance-based localization, optical flow, features tracking, plane ground detection/tracking, etc... The recent concept of visual sonar has also been revised.},
+	author = {Bonin-font, Francisco and Ortiz, Alberto and Oliver, Gabriel and Alberto, Francisco Bonin-font and Gabriel, Ortiz},
+	doi = {10.1007/s10846-008-9235-4},
+	file = {:home/phil/Desktop/thesis/reads/vision-based-navigation-survey-2008.pdf:pdf},
+	isbn = {0921-0296},
+	issn = {0921-0296},
+	journal = {Journal of Intelligent and Robotic Systems},
+	keywords = {Mobile robots,Visual navigation,and feder funding,lista{\_}filtrada,mobile robots,supported by dpi 2005-09001-c03-02,this work is partially,toread,visual navigation},
+	pages = {263--296},
+	title = {{Visual Navigation for Mobile Robots: A Survey}},
+	url = {http://dx.doi.org/10.1007/s10846-008-9235-4{\%}5Cnhttp://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-42549109228{\&}partnerID=40{\&}rel=R8.0.0},
+	volume = {53},
+	year = {2008}
+}

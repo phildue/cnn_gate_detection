@@ -1,0 +1,43 @@
+@article{Redmon1,
+	abstract = {We introduce YOLO9000, a state-of-the-art, real-time object detection system that can detect over 9000 object categories. First we propose various improvements to the YOLO detection method, both novel and drawn from prior work. The improved model, YOLOv2, is state-of-the-art on standard detection tasks like PASCAL VOC and COCO. At 67 FPS, YOLOv2 gets 76.8 mAP on VOC 2007. At 40 FPS, YOLOv2 gets 78.6 mAP, outperforming state-of-the-art methods like Faster RCNN with ResNet and SSD while still running significantly faster. Finally we propose a method to jointly train on object detection and classification. Using this method we train YOLO9000 simultaneously on the COCO detection dataset and the ImageNet classification dataset. Our joint training allows YOLO9000 to predict detections for object classes that don't have labelled detection data. We validate our approach on the ImageNet detection task. YOLO9000 gets 19.7 mAP on the ImageNet detection validation set despite only having detection data for 44 of the 200 classes. On the 156 classes not in COCO, YOLO9000 gets 16.0 mAP. But YOLO can detect more than just 200 classes; it predicts detections for more than 9000 different object categories. And it still runs in real-time.},
+	archivePrefix = {arXiv},
+	arxivId = {1612.08242},
+	author = {Szegedy, Christian and Reed, Scott and Sermanet, Pierre and Vanhoucke, Vincent and Rabinovich, Andrew and Simon, Marcel and Rodner, Erik and Denzler, Joachim and Redmon, Joseph and Farhadi, Ali and Ioffe, Sergey and Szegedy, Christian and Liu, Wei and Anguelov, Dragomir and Erhan, Dumitru and Szegedy, Christian and Reed, Scott and Fu, Cheng-yang and Berg, Alexander C and Ioffe, Sergey and Vanhoucke, Vincent and Alemi, Alex and Reed, Scott and Sermanet, Pierre and Vanhoucke, Vincent and Rabinovich, Andrew and Shlens, Jonathon and Wojna, Zbigniew and Iandola, Forrest N and Han, Song and Moskewicz, Matthew W and Ashraf, Khalid and Dally, William J and Keutzer, Kurt and He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian and Chen, Tianqi and Guestrin, Carlos},
+	doi = {10.1142/9789812771728_0012},
+	eprint = {1612.08242},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Redmon, Farhadi - Unknown - YOLO9000 Better, Faster, Stronger(2).pdf:pdf},
+	isbn = {1879-2057 (Electronic)$\backslash$n0001-4575 (Linking)},
+	issn = {0146-4833},
+	journal = {Data Mining with Decision Trees},
+	keywords = {convolutional neural network,deep learning,denoising auto-encoder,image denoising,large-scale machine learning,real-time object detection},
+	number = {3},
+	pages = {352350},
+	pmid = {23021419},
+	title = {{YOLO9000: Better, Faster, Stronger}},
+	url = {https://arxiv.org/abs/1612.08242},
+	volume = {7},
+	year = {2016}
+}
+@article{Redmon2,
+	abstract = {We present YOLO, a new approach to object detection. Prior work on object detection repurposes classifiers to perform detection. Instead, we frame object detection as a regression problem to spatially separated bounding boxes and associated class probabilities. A single neural network predicts bounding boxes and class probabilities directly from full images in one evaluation. Since the whole detection pipeline is a single network, it can be optimized end-to-end directly on detection performance. Our unified architecture is extremely fast. Our base YOLO model processes images in real-time at 45 frames per second. A smaller version of the network, Fast YOLO, processes an astounding 155 frames per second while still achieving double the mAP of other real-time detectors. Compared to state-of-the-art detection systems, YOLO makes more localization errors but is far less likely to predict false detections where nothing exists. Finally, YOLO learns very general representations of objects. It outperforms all other detection methods, including DPM and R-CNN, by a wide margin when generalizing from natural images to artwork on both the Picasso Dataset and the People-Art Dataset.},
+	annote = {- mostly localization error
+	- feature extraction, classification, localization is one pipeline
+	- single class detecters can be highly optimized
+	- uses google net convolutional layer
+	- image is split in SxS grid
+	- each grid proposes: B Bounding boxes, and C classes
+	- a bounding box gets "responsible" for a certain object if the center of it falls into the box, this is calculated by the highest intersection over union in that grid cell
+	- dropout, extensive data augmentation},
+	archivePrefix = {arXiv},
+	arxivId = {1506.02640},
+	author = {Redmon, Joseph and Divvala, Santosh and Girshick, Ross and Farhadi, Ali},
+	doi = {10.1109/CVPR.2016.91},
+	eprint = {1506.02640},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Redmon et al. - Unknown - You Only Look Once Unified, Real-Time Object Detection.pdf:pdf},
+	isbn = {978-1-4673-8851-1},
+	issn = {01689002},
+	pmid = {27295650},
+	title = {{You Only Look Once: Unified, Real-Time Object Detection}},
+	url = {http://arxiv.org/abs/1506.02640},
+	year = {2015}
+}

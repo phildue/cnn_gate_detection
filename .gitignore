@@ -1,5 +1,13 @@
 .idea
 resource
+logs
+*.pkl
+*.aux
+*.bbl
+*.log
+*.synctex.gz
+*.blg
+*.out
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template

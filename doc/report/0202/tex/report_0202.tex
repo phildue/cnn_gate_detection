@@ -1,0 +1,213 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\usepackage{hyperref}
+\usepackage[a4paper,margin=0.5in]{geometry}
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Gate Detection} % Title
+
+\author{Philipp \textsc{Duernay}} % Author name
+
+\date{\today} % Date for the report
+
+\begin{document}
+\maketitle
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Recap}
+In the last meeting from 09.01.2018 several next steps were defined:
+\begin{enumerate}
+	\item \textbf{Data Generation}. In the first experiments the data generation was limited to one gate, placed on randomly selected backgrounds from the Pascal VOC dataset. As these also contained a lot of people, the background was often not very realistic. In the new dataset more realistic backgrounds should be chosen. The new data should also contain a various amount of gates placed at different positions.
+	\item \textbf{Evaluation}. In the first experiment the performance was evaluated in terms of mean average precision/ precision-recall. A detection was marked "correct" when the intersection-over-union between the true and the predicted bounding box exceeded 0.4. This allows limited interpretability as the false positive rate is not covered. An intersection-over-union of 0.4 might be to inaccurate if we want to use the bounding box for navigation. In the this step further evaluation should be done.
+	\item \textbf{Effect of Pose} In the last evaluation no real effect of the camera pose was measurable. This is quite unlikely and should be investigated.
+	\item \textbf{New Methods} So far only the Yolo-Object\cite{Redmon} detector was evaluated. We also want to compare the results to other methods.
+\end{enumerate}
+
+\section{New Datasets}
+To place multiple gates in one image 3D-models of the gates are placed randomly in a 3D environment. That way it is made sure the gates don't overlap in a physically impossible way. Then shots are taken from various positions in the scene. An example can be seen in \autoref{fig:background}.
+
+For the new dataset data was gathered from different datasets that contained images of cities, roads, traffic signs and the like. Also some pictures of fences, gates and in industrial environments were added. Thus more human like structures with shapes similar to gates should make the set more realistic/challenging. An example can be seen in \autoref{fig:background}. 
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.24\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{gates}
+
+		\label{fig:gates}
+	\end{minipage}
+	%\hspace{3cm}
+	\begin{minipage}{0.24\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{background3}
+	\end{minipage}
+	\begin{minipage}{0.24\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{background2}
+	\end{minipage}
+		\begin{minipage}{0.24\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{background}
+		\end{minipage}
+	\caption{New Data}
+			\label{fig:background}
+\end{figure}
+
+\section{New Methods}
+
+For comparison the smaller version of Yolo a network with 9 layers was tested. Unfortunately, the results are just random. The Single Shot Multibox Detector \cite{Liu} is in the making but not fully implemented yet.
+
+\section{Experiments}
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{result1}
+	\end{minipage}
+	\begin{minipage}{0.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{result2}
+	\end{minipage}
+
+			\begin{minipage}{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{result3}
+		\end{minipage}
+			\begin{minipage}{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{result4}
+		\end{minipage}
+		\caption{Various outputs of Yolo-Object-Detector. True labels in green, correct (IoU $\geq$ 0.4) detections in white, wrong predictions in red. The thickness of the lines is based on the detectors confidence (4 levels). The highest confidence between 0.75 and 1 corresponds to the thickness of the ground truth boxes (green)}
+		\label{fig:exps}
+\end{figure}
+Several experiments were conducted. Some example outputs can be seen in \autoref{fig:exps} and \autoref{fig:stream}. 
+
+\subsection{Bounding Box Detection} 
+In this experiment the detectors are tested on various backgrounds, with various amount of gates. Performance is evaluated in terms of "bounding box overlaps". If the intersection-over-union between true and predicted box exceeds a certain threshold, the detection is marked as "correct". The precision-recall plot can be seen in \autoref{fig:precision-recall}. Localization Error is calculated for all correct boxes. That is the absolute difference in pixels between the predicted and true box center, width and height. The mean localization error is:
+
+$$c_x = 4.56 +/- 4.89 \quad c_y = 6.19 +/- 6.41 \quad w = 10.35 +/- 10.93 \quad h = 12.23 +/- 15.58$$
+$$\epsilon_L = 8.33 +/- 10.78$$
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{precision-recall}
+	\caption{Precision-Recall over 1000 samples}
+	\label{fig:precision-recall}
+\end{figure}
+
+\subsection{Single Gate Detection} 
+In this experiment only one gate is placed in the image and only the predicted box with the highest confidence is taken into account. The camera "flies" around the object. The trajectory is kept pretty simple since the first experiments did not motivate to make it more challenging.
+
+Examples are shown in \autoref{fig:stream} or in the videos at \url{https://www.youtube.com/watch?v=N1b9XJnOq1I} and \url{https://www.youtube.com/watch?v=lJ3_zQvKd8M}. Boxes with a confidence value of more than 30\% are displayed. The box with the highest confidence is displayed in blue the true box in green. Hence, we want the blue box to be where the green one is. Its best to watch them first to get some impression.
+
+In \autoref{fig:locerror} the localization error is displayed to see how wrong the predicted box is. Interesting is that sometimes the gate is detected at a high distance but when it comes closer it gets not detected anymore. Sometimes also a step towards the gate can cause the detector to produce a bounding box at a random position. Right in front of the gate the boxes are pretty inaccurate. In the video one can also see how more and more (random) boxes are predicted the closer we get to the gate. The model also seems to like the upper left corner. This also needs further investigation.
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.25\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{stream1}
+			
+	\end{minipage}
+	%\hspace{3cm}
+	\begin{minipage}{0.25\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{stream2}
+	\end{minipage}
+	\caption{The two backgrounds for the "Single Gate Detection". Boxes with a confidence value of more than 30\% are displayed. The box with the highest confidence is displayed in blue.}
+	\label{fig:stream}
+\end{figure}
+
+
+\begin{figure}[ht]
+	\centering
+	\begin{minipage}{0.4\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{loc-error-stream1}
+	\end{minipage}
+	%\hspace{3cm}
+	\begin{minipage}{0.4\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{loc-error-stream2}
+	\end{minipage}
+	\caption{The mean localization error of the box with the highest confidence for both streams left and right respectively to \autoref{fig:stream}. The localization error is the mean distance between all 4 coordinates (center x, center y, width and height). A correct bounding box usually has a localization error between 0 and 20. Hence, everything above is pretty bad. Note that the localization error is only calculated when a box is actually predicted.}
+	\label{fig:locerror}
+\end{figure}
+
+
+\section{Thoughts \& Conclusions}
+\begin{enumerate}
+	\item \textbf{Performance Drop.} The performance dropped quite a bit compared to the last evaluation. There are several potential reasons for that:
+	\begin{itemize}
+		\item In the last set there was only one gate which was always close to the center of the image. The model "just" needed to predict a bounding box somewhere in that region and it was pretty likely to be correct. This was quite independent of direction or distance.
+		\item In the last set there were only a few images without a gate. Hence, the learning problem basically simplified to finding \textbf{the} gate in the image instead of actually detecting various amounts of gates.
+		\item In the last set the backgrounds were easier.
+	\end{itemize} 
+	
+	\item \textbf{Results on Video.} Assuming we would use the box with the highest confidence for navigation we would crash pretty quickly. This happens even for the quite simple background in the second video. The model seems to predict on strong contrasts rather than color. For training Yolo data augmentation is used. That includes randomly changing the color of the images. Although we would loose generalizability we could reduce the augmentation and thus potentially improve detection performance.
+	
+	\item \textbf{Results at Low Distance.} At low distances the model performs not good. A reason could be the anchor boxes used by Yolo. The model seems to perform best at distances where the anchor boxes ratios fall into the ratios of the gate bounding boxes. SSD uses additional convolutional layers at higher scales to tackle this problem. This could also work for the given setting.  
+\end{enumerate}
+\section{Next Steps}
+\begin{enumerate}
+		\item \textbf{Get Real(er) Data.}
+		\item \textbf{Visualize what model has learned.}
+		\item \textbf{Implement SSD}
+		\item \textbf{Reading.}
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliographystyle{abbrv}
+
+\bibliography{bib}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
