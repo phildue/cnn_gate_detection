@@ -10,7 +10,7 @@ from models.Yolo.Yolo import Yolo
 from fileaccess.GateGenerator import GateGenerator
 from fileaccess.utils import save
 
-name = 'set06'
+name = 'set04'
 
 # Image Source
 BATCH_SIZE = 100
