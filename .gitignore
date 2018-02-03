@@ -10,7 +10,7 @@ downloads
 *.synctex.gz
 *.blg
 *.out
-
+*.h5
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
