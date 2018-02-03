@@ -19,7 +19,7 @@ from evaluation.BasicEvaluator import BasicEvaluator
 
 BATCH_SIZE = 100
 n_batches = 6
-result_path = 'logs/yolo-gate-mult-05/'
+result_path = 'logs/yolo-nocolor/'
 stream_path = '/stream/2/'
 if not os.path.exists(result_path + stream_path):
     os.makedirs(result_path + stream_path)
@@ -28,7 +28,7 @@ experiment_file = 'test-stream2-iou0.4.pkl'
 generator = GateGenerator(directory='resource/samples/stream_valid2/', batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format='bgr')
 
-yolo = Yolo(class_names=['gate'], weight_file='logs/yolo-gate-mult-05/yolo-gate-adam.h5', conf_thresh=0.3)
+yolo = Yolo(class_names=['gate'], weight_file='logs/yolo-nocolor/yolo-gate-adam.h5', conf_thresh=0.3)
 #
 # EvaluatorPrecisionRecall(yolo, iou_thresh=0.6).evaluate_generator(set, n_batches=n_batches,
 #                                                                   out_file=result_path + experiment_file)

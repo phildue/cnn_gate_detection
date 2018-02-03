@@ -1,0 +1,27 @@
+Participants - Guido de Croon, Christoph de Wagter
+
+Camera Localization
+
+Investigate both methods
+(1) Explore object detection -> PnP
+(2) Learn DoF directly
+
+Be aware of error. A pixel error can lead to a 1m error in position.
+
+Dataset generation:
+- Pasting of images (simulate whole camera, choose parameters and paste image)
+- Zoo (determinate drone position with fixed cameras, plus related position of gates) Be aware of delay!
+
+Software:
+Paparazzi (Autopilot)
+Unreal / UnrealCV
+Cazibo (Simulator)
+GsbSim (Simulate dynamics)
+
+ToDos:
+
+- Object detection algorithms (Deep & Traditional)
+- Check latest Snapdragon
+- Look for round gates
+- Dataset generation/Training should be easy and reusable
+- Ask David about server access for learning at ewi

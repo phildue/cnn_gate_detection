@@ -1,6 +1,8 @@
 .idea
 resource
 logs
+research
+downloads
 *.pkl
 *.aux
 *.bbl

@@ -1,9 +1,10 @@
-[submodule "dvlab"]
-	path = dvlab
-	url = https://github.com/phildue/dvlab.git
-[submodule "samplegen"]
-	path = samplegen
-	url = https://github.com/phildue/samplegen
-[submodule "droneutils"]
-	path = droneutils
+
+[submodule "tools/utils"]
+	path = tools/utils
 	url = https://github.com/phildue/droneutils.git
+[submodule "tools/samplegen"]
+	path = tools/samplegen
+	url = https://github.com/phildue/samplegen
+[submodule "tools/lab"]
+	path = tools/lab
+	url = https://github.com/phildue/gatedetector.git
