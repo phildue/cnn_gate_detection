@@ -6,12 +6,6 @@ from backend.visuals import plot_training_history
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 PROJECT_ROOT = '/home/phil/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
 os.chdir(PROJECT_ROOT)
 
 from models.Yolo.TinyYolo import TinyYolo

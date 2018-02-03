@@ -1,22 +1,12 @@
-import os
-import sys
-from os.path import expanduser
-
 import numpy as np
 
-PROJECT_ROOT = expanduser('~') + '/dronevision'
+from workdir import work_dir
 
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
+work_dir()
 
 from fileaccess.utils import load
 from evaluation.EvaluatorPrecisionRecall import EvaluatorPrecisionRecall
 from backend.plots.PlotPrecisionRecall import PlotPrecisionRecall
-from visualization.PositionPlotCreator import PositionPlotCreator
 from evaluation.ResultsByConfidence import ResultByConfidence
 
 result_path = 'logs/tiny-yolo-gate-mult-2/'

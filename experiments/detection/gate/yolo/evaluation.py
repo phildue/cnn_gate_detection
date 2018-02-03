@@ -1,21 +1,10 @@
-import os
-import sys
-from os.path import expanduser
+from workdir import work_dir
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-PROJECT_ROOT = expanduser('~') + '/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
+work_dir()
 
 from models.Yolo.Yolo import Yolo
 from fileaccess.GateGenerator import GateGenerator
 from evaluation.MetricDetection import MetricDetection
-from evaluation.MetricLocalization import MetricLocalization
 from evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 
 BATCH_SIZE = 100

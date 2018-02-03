@@ -3,6 +3,7 @@ resource
 logs
 research
 downloads
+tools/dvvirtual
 *.pkl
 *.aux
 *.bbl

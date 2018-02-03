@@ -1,22 +1,8 @@
-import os
-import sys
-
 # os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-from os.path import expanduser
 
-PROJECT_ROOT = expanduser('~') + '/dronevision'
+from workdir import work_dir
 
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
-
-result_path = 'logs/yolo-gate-mult/'
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
-
+work_dir()
 from fileaccess.GateGenerator import GateGenerator
 from models.Yolo.Yolo import Yolo
 from fileaccess.utils import save
