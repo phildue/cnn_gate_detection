@@ -18,7 +18,7 @@ BATCH_SIZE = 8
 
 name = str(int(np.round(time.time() / 1000)))
 result_path = 'logs/' + name + '/'
-image_source = 'resource/samples/mult_gate_train'
+image_source = 'resource/samples/mult_gate'
 augment_active = False
 train_params = {'optimizer': 'adam',
                 'lr': 0.001,
@@ -35,12 +35,12 @@ if not os.path.exists(result_path):
 
 model.preprocessor.augment_active = augment_active
 
-trainset = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=32)
+trainset = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, valid_frac=0.1)
 
 model.compile(train_params)
 
-training_history = fit_generator(model, trainset, out_file=result_path + 'yolo-gate-adam.h5', batch_size=BATCH_SIZE,
-                                 initial_epoch=0)
+training_history = fit_generator(model, trainset, out_file='yolo-gate-adam.h5', batch_size=BATCH_SIZE,
+                                 initial_epoch=0,log_dir=result_path)
 save(training_history, 'training_history.pkl', result_path)
 
 exp_params = {'model': model.__class__.__name__,
