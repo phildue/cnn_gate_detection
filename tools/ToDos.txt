@@ -1,0 +1,31 @@
+
+#### SSD
+
+SSD Anchor Boxes have always coordinations 1 probably need to calculate with respect to position and aspect ratio
+
+Implement matching between ground truth and responsible predictor
+
+Verify decoding and encoding
+
+Train and check on voc
+
+#### Models
+
+Implement predict_batch to increase evaluation performance
+
+
+#### Dataset
+
+Create dataset where gates are more aligned with background, avoid unrealistic settings
+
+Add the other gates
+
+Try to make gates thicker, extend
+
+#### Evaluation
+
+Write Evaluator that receives file as input instead of model
+
+#### General
+
+Make proper test of yolo and ssd on voc data
