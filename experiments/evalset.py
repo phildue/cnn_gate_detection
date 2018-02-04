@@ -1,5 +1,7 @@
 import os
 
+from models.Yolo.TinyYolo import TinyYolo
+
 from evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from evaluation.MetricDetection import MetricDetection
 from workdir import work_dir
@@ -20,14 +22,14 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = 'logs/yolo-noaug/yolo-gate-adam.h5'
-model = Yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
+weight_file = 'logs/tinyyolo-noaug/yolo-gate-adam.h5'
+model = TinyYolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/yolo-noaug/' + name + '/'
+result_path = 'logs/tinyyolo-noaug/' + name + '/'
 result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.pkl'

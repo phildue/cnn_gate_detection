@@ -9,12 +9,12 @@ from evaluation.EvaluatorPrecisionRecall import EvaluatorPrecisionRecall
 from backend.plots.PlotPrecisionRecall import PlotPrecisionRecall
 from evaluation.ResultsByConfidence import ResultByConfidence
 
-result_path = 'logs/yolo-noaug/set04/'
+result_path = 'logs/tinyyolo-noaug/set04/'
 result_file = 'result_set04.pkl'
 results = load(result_path + result_file)
 
-detection_result = results['MetricDetection']
-detection_result = [ResultByConfidence(d[0]) for d in detection_result]
+detection_result = results['results']['MetricDetection']
+detection_result = [ResultByConfidence(d) for d in detection_result]
 total = detection_result[0]
 for result in detection_result[1:]:
     total = total + result

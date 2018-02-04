@@ -1,5 +1,7 @@
 import os
 
+from models.Yolo.TinyYolo import TinyYolo
+
 from workdir import work_dir
 
 work_dir()
@@ -20,17 +22,17 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0.3
-weight_file = 'logs/yolo-noaug/yolo-gate-adam.h5'
-model = Yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
+weight_file = 'logs/tinyyolo-noaug/yolo-gate-adam.h5'
+model = TinyYolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/yolo-noaug/' + name + '/'
-result_file = 'result_' + name
-result_img_path = result_path + 'images_' + name + '/'
-exp_param_file = 'experiment_parameters_' + name + '.pkl'
+result_path = 'logs/tinyyolo-noaug/' + name + '/'
+result_file = 'result.pkl'
+result_img_path = result_path + 'images/'
+exp_param_file = 'experiment_parameters.pkl'
 
 
 if not os.path.exists(result_path):
@@ -43,8 +45,8 @@ generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_for
                           shuffle=False, color_format=color_format)
 
 evaluator = BasicEvaluator(model,
-                           metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
-                           out_file=result_path + result_file)
+                           metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=False, store_path=result_img_path)],
+                           out_file=result_path+result_file)
 
 evaluator.evaluate_generator(generator, n_batches=n_batches)
 
