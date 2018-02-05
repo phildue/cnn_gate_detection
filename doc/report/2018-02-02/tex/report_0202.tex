@@ -73,22 +73,22 @@ For the new dataset data was gathered from different datasets that contained ima
 	\centering
 	\begin{minipage}{0.24\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{gates}
+		\includegraphics[width=\textwidth]{../fig/gates}
 
 		\label{fig:gates}
 	\end{minipage}
 	%\hspace{3cm}
 	\begin{minipage}{0.24\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{background3}
+		\includegraphics[width=\textwidth]{../fig/background3}
 	\end{minipage}
 	\begin{minipage}{0.24\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{background2}
+		\includegraphics[width=\textwidth]{../fig/background2}
 	\end{minipage}
 		\begin{minipage}{0.24\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{background}
+			\includegraphics[width=\textwidth]{../fig/background}
 		\end{minipage}
 	\caption{New Data}
 			\label{fig:background}
@@ -103,20 +103,20 @@ For comparison the smaller version of Yolo a network with 9 layers was tested. U
 	\centering
 	\begin{minipage}{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{result1}
+		\includegraphics[width=\textwidth]{../fig/result1}
 	\end{minipage}
 	\begin{minipage}{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{result2}
+		\includegraphics[width=\textwidth]{../fig/result2}
 	\end{minipage}
 
 			\begin{minipage}{0.3\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{result3}
+			\includegraphics[width=\textwidth]{../fig/result3}
 		\end{minipage}
 			\begin{minipage}{0.3\textwidth}
 			\centering
-			\includegraphics[width=\textwidth]{result4}
+			\includegraphics[width=\textwidth]{../fig/result4}
 		\end{minipage}
 		\caption{Various outputs of Yolo-Object-Detector. True labels in green, correct (IoU $\geq$ 0.4) detections in white, wrong predictions in red. The thickness of the lines is based on the detectors confidence (4 levels). The highest confidence between 0.75 and 1 corresponds to the thickness of the ground truth boxes (green)}
 		\label{fig:exps}
@@ -130,7 +130,7 @@ $$c_x = 4.56 +/- 4.89 \quad c_y = 6.19 +/- 6.41 \quad w = 10.35 +/- 10.93 \quad 
 $$\epsilon_L = 8.33 +/- 10.78$$
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.5\textwidth]{precision-recall}
+	\includegraphics[width=0.5\textwidth]{../fig/precision-recall}
 	\caption{Precision-Recall over 1000 samples}
 	\label{fig:precision-recall}
 \end{figure}
@@ -146,13 +146,13 @@ In \autoref{fig:locerror} the localization error is displayed to see how wrong t
 	\centering
 	\begin{minipage}{0.25\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{stream1}
+		\includegraphics[width=\textwidth]{../fig/stream1}
 			
 	\end{minipage}
 	%\hspace{3cm}
 	\begin{minipage}{0.25\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{stream2}
+		\includegraphics[width=\textwidth]{../fig/stream2}
 	\end{minipage}
 	\caption{The two backgrounds for the "Single Gate Detection". Boxes with a confidence value of more than 30\% are displayed. The box with the highest confidence is displayed in blue.}
 	\label{fig:stream}
@@ -163,12 +163,12 @@ In \autoref{fig:locerror} the localization error is displayed to see how wrong t
 	\centering
 	\begin{minipage}{0.4\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{loc-error-stream1}
+		\includegraphics[width=\textwidth]{../fig/loc-error-stream1}
 	\end{minipage}
 	%\hspace{3cm}
 	\begin{minipage}{0.4\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{loc-error-stream2}
+		\includegraphics[width=\textwidth]{../fig/loc-error-stream2}
 	\end{minipage}
 	\caption{The mean localization error of the box with the highest confidence for both streams left and right respectively to \autoref{fig:stream}. The localization error is the mean distance between all 4 coordinates (center x, center y, width and height). A correct bounding box usually has a localization error between 0 and 20. Hence, everything above is pretty bad. Note that the localization error is only calculated when a box is actually predicted.}
 	\label{fig:locerror}
@@ -191,9 +191,12 @@ In \autoref{fig:locerror} the localization error is displayed to see how wrong t
 \section{Next Steps}
 \begin{enumerate}
 		\item \textbf{Get Real(er) Data.}
-		\item \textbf{Visualize what model has learned.}
+		\item \textbf{Investigate reason for bias in the upper left corner.}
+		\item \textbf{New data with thicker gates.}
+		\item \textbf{Visualize Confidence for each prediction/distance}
 		\item \textbf{Implement SSD}
 		\item \textbf{Reading.}
+		\item \textbf{Visualize what model has learned.}
 \end{enumerate}
 
 %----------------------------------------------------------------------------------------
