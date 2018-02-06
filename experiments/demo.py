@@ -8,9 +8,9 @@ from fileaccess.GateGenerator import GateGenerator
 from models.Yolo.Yolo import Yolo
 from visualization.utils import demo_generator
 
-generator = GateGenerator(directory='resource/samples/mult_gate_valid', batch_size=8, n_samples=100, color_format='bgr',
-                          shuffle=True, start_idx=0)
+generator = GateGenerator(directory='resource/samples/stream_valid1/', batch_size=8, color_format='bgr',
+                          shuffle=False, start_idx=400)
 
-model = TinyYolo(class_names=['gate'], weight_file='logs/tinyyolo-noaug/yolo-gate-adam.h5', conf_thresh=0.3)
+model = Yolo(class_names=['gate'], weight_file='logs/1517854/yolo.h5', conf_thresh=0.6)
 
 demo_generator(model, generator, t_show=1)
