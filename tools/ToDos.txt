@@ -1,15 +1,13 @@
 
 #### SSD
 
-- coordinates should be relative to anchor coordinates and normalized to image size
-- variances should be incorporated
-
+Implement data augmentation
 Train and check on voc
 
 #### Models
 
 Implement predict_batch to increase evaluation performance
-
+Implement mAP to be printed while training
 
 #### Dataset
 
