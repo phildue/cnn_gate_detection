@@ -4,6 +4,7 @@ import os
 import time
 
 import numpy as np
+from models.SSD.SSD import SSD
 
 from workdir import work_dir
 
@@ -27,9 +28,9 @@ train_params = {'optimizer': 'adam',
                 'epsilon': 1e-08,
                 'decay': 0.0005}
 
-model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
+# model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = Yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-
+model = SSD((416, 416, 3), 1)
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
@@ -40,7 +41,7 @@ trainset = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, valid_fr
 model.compile(train_params)
 
 training_history = fit_generator(model, trainset, out_file='yolo-gate-adam.h5', batch_size=BATCH_SIZE,
-                                 initial_epoch=0,log_dir=result_path)
+                                 initial_epoch=0, log_dir=result_path)
 save(training_history, 'training_history.pkl', result_path)
 
 exp_params = {'model': model.__class__.__name__,
