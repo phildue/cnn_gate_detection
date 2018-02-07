@@ -7,6 +7,7 @@ import numpy as np
 from models.SSD.SSD import SSD
 
 from workdir import work_dir
+import pprint as pp
 
 work_dir()
 from fileaccess.GateGenerator import GateGenerator
@@ -17,7 +18,7 @@ from models.Yolo.TinyYolo import TinyYolo
 
 BATCH_SIZE = 8
 
-name = str(int(np.round(time.time() / 1000)))
+name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 image_source = 'resource/samples/mult_gate'
 augmenter = None
@@ -37,10 +38,6 @@ data_generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, va
 
 predictor.compile(None)
 
-training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
-                                 initial_epoch=0, log_dir=result_path)
-save(training_history, 'training_history.pkl', result_path)
-
 exp_params = {'model': model_name,
               'train_params': predictor.model.train_params,
               'image_source': image_source,
@@ -48,6 +45,13 @@ exp_params = {'model': model_name,
               'n_samples': data_generator.n_samples,
               'augmentation': predictor.preprocessor.augmenter.__class__.__name__}
 
-save(exp_params, 'training_params.txt', result_path)
+pp.pprint(exp_params)
+
+save(exp_params, 'training_params.txt', result_path,verbose=False)
+
+training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
+                                 initial_epoch=0, log_dir=result_path)
+
+save(training_history, 'training_history.pkl', result_path)
 
 os.system('tar -cvf logs/' + name + '.tar.gz ' + result_path)
