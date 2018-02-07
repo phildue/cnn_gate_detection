@@ -9,13 +9,13 @@ work_dir()
 from models.yolo.Yolo import Yolo
 from fileaccess.GateGenerator import GateGenerator
 from evaluation.MetricOneGate import MetricOneGate
-from evaluation.BasicEvaluator import BasicEvaluator
+from evaluation.BasicDetectionEvaluator import BasicDetectionEvaluator
 from fileaccess.utils import save
 
 name = 'stream2'
 
 # Image Source
-BATCH_SIZE = 100
+BATCH_SIZE = 8
 n_batches = 6
 image_source = 'resource/samples/stream_valid2/'
 color_format = 'bgr'
@@ -44,9 +44,9 @@ if not os.path.exists(result_img_path):
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
 
-evaluator = BasicEvaluator(model,
-                           metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=False, store_path=result_img_path)],
-                           out_file=result_path+result_file)
+evaluator = BasicDetectionEvaluator(model,
+                                    metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
+                                    out_file=result_path+result_file)
 
 evaluator.evaluate_generator(generator, n_batches=n_batches)
 
