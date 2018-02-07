@@ -32,7 +32,7 @@ iou_thresh = 0.4
 result_path = 'logs/tinyyolo-noaug/' + name + '/'
 result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
-exp_param_file = 'experiment_parameters_' + name + '.pkl'
+exp_param_file = 'experiment_parameters_' + name + '.txt'
 
 
 if not os.path.exists(result_path):
@@ -50,7 +50,8 @@ evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_t
 evaluator.evaluate_generator(generator, n_batches=n_batches)
 
 exp_params = {'name': name,
-              'model': model.__class__.__name__,
+              'model': model.model.__class__.__name__,
+              'evaluator': evaluator.__class__.__name__,
               'conf_thresh': conf_thresh,
               'iou_thresh': iou_thresh,
               'weight_file': weight_file,
