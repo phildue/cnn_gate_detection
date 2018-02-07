@@ -1,6 +1,6 @@
 import os
 
-from models.Yolo.TinyYolo import TinyYolo
+from models.yolo.TinyYolo import TinyYolo
 
 from evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from evaluation.MetricDetection import MetricDetection
@@ -8,7 +8,7 @@ from workdir import work_dir
 
 work_dir()
 
-from models.Yolo.Yolo import Yolo
+from models.yolo.Yolo import Yolo
 from fileaccess.GateGenerator import GateGenerator
 from fileaccess.utils import save
 

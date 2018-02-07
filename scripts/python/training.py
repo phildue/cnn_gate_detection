@@ -4,17 +4,17 @@ import os
 import time
 
 import numpy as np
-from models.SSD.SSD import SSD
+from models.ssd.SSD import SSD
 
 from workdir import work_dir
 import pprint as pp
 
 work_dir()
 from fileaccess.GateGenerator import GateGenerator
-from models.Yolo.Yolo import Yolo
+from models.yolo.Yolo import Yolo
 from fileaccess.utils import save
 from backend.training import fit_generator
-from models.Yolo.TinyYolo import TinyYolo
+from models.yolo.TinyYolo import TinyYolo
 
 BATCH_SIZE = 8
 
@@ -23,9 +23,8 @@ result_path = 'logs/' + name + '/'
 image_source = 'resource/samples/mult_gate'
 augmenter = None
 
-
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
-# model = Yolo(batch_size=BATCH_SIZE, class_names=['gate'])
+# model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
 predictor = SSD((416, 416, 3), 1)
 if not os.path.exists(result_path):
     os.makedirs(result_path)
@@ -47,7 +46,7 @@ exp_params = {'model': model_name,
 
 pp.pprint(exp_params)
 
-save(exp_params, 'training_params.txt', result_path,verbose=False)
+save(exp_params, 'training_params.txt', result_path, verbose=False)
 
 training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
                                  initial_epoch=0, log_dir=result_path)
