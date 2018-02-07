@@ -23,8 +23,8 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0.3
-weight_file = 'logs/yolo-noaug/yolo-gate-adam.h5'
-model = Yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
+weight_file = 'logs/tinyyolo-noaug/yolo-gate-adam.h5'
+model = TinyYolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
 
 # Evaluator
 iou_thresh = 0.4
