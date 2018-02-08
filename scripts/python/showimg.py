@@ -13,7 +13,7 @@ for work_dir in WORK_DIRS:
     sys.path.insert(0, work_dir)
 os.chdir(PROJECT_ROOT)
 
-from fileaccess.VocGenerator import VocSetParser
+from fileaccess.VocGenerator import VocGenerator
 
 from imageprocessing.Backend import \
     annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
@@ -21,7 +21,7 @@ from shotgen.ShotLoad import ShotLoad
 
 
 def show_voc():
-    dataset = VocSetParser("resource/samples/VOCdevkit/VOC2012/Annotations/",
+    dataset = VocGenerator("resource/samples/VOCdevkit/VOC2012/Annotations/",
                            "resource/samples/VOCdevkit/VOC2012/JPEGImages/", batch_size=2).generate()
     for batch in dataset:
         for sample in batch:
