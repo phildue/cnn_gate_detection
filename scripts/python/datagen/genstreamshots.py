@@ -19,7 +19,7 @@ for work_dir in WORK_DIRS:
 os.chdir(PROJECT_ROOT)
 
 from fileaccess.SetFileParser import write_set
-from scene.Gate250 import Gate250
+from scene.GateThin250 import Gate250
 from scene.Scene import Scene
 from shotgen.ShotCreate import ShotCreate
 from shotgen.engine3d.SceneEngine import SceneEngine
