@@ -2,6 +2,10 @@ import os
 import sys
 
 import numpy as np
+from shotgen.engine3d.opengl.GateGL2016Tall import GateGL2016Tall
+
+from shotgen.engine3d.opengl.GateGL250 import GateGL250
+
 from workdir import work_dir
 
 from shotgen.engine3d.opengl.GateGL2016Large import GateGL2016Large
@@ -23,19 +27,19 @@ from shotgen.engine3d.SceneEngine import SceneEngine
 from fileaccess.utils import save
 from shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
-cam = Camera(1000, init_pose=Pose(dist_forward=15))
+cam = Camera(1000, init_pose=Pose(dist_forward=5))
 
 gate_path = "resource/gates/"
 gate_file = "gate250.obj"
 
-gate_1 = (GateGLOpen(), Pose(yaw=np.pi/4))
+gate_1 = (GateGL2016Tall(), Pose())
 gate_2 = (
     GateGL2016Large(), Pose(dist_side=-2.0, dist_forward=2.0, yaw=np.pi / 4))
 
 
 gate_generator = GateGen(gate_path=gate_path, gate_file=gate_file, n_gate_range=(3, 4))
 
-gates = [gate_1, gate_2]
+gates = [gate_1]
 # gates = gate_generator.generate()
 scene_engine = SceneEngine(Scene(cam, objects=gates,lights=[Light((-2, 2, 3)), Light((0, 2, 4)), Light((-2, 0, 3))]))
 
