@@ -6,7 +6,6 @@ Train and check on voc
 
 #### Models
 
-Implement predict_batch to increase evaluation performance
 Implement mAP to be printed while training
 
 #### Dataset
