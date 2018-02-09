@@ -1,20 +1,19 @@
 import os
-import sys
 
 import numpy as np
 
+from workdir import work_dir
+
+work_dir()
+from shotgen.engine3d.opengl.GateGLThin250 import GateGLThin250
+
+from shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
+
+from shotgen.engine3d.opengl.GateGLTall import GateGLTall
+
 from SetAnalyzer import SetAnalyzer
 from shotgen.GateGen import GateGen
-from timing import tic, tuc, toc
-
-PROJECT_ROOT = '/home/phil/Desktop/thesis/code/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
+from timing import tic, toc
 
 from fileaccess.SetFileParser import SetFileParser
 from scene.Scene import Scene
@@ -29,7 +28,7 @@ shot_path = "samplegen/resource/shots/" + name + "/"
 
 n_positions = 1000
 n_batches = 10
-cam_range_side = (-0.5, 0.5)
+cam_range_side = (-1, 1)
 cam_range_forward = (0, 20)
 cam_range_lift = (-0.5, 1.0)
 cam_range_pitch = (-0.1, 0.1)
@@ -42,13 +41,11 @@ n_light_range = (6, 6)
 n_gate_range = (2, 4)
 
 gate_pos_range_z = (1, 15)
-gate_pos_range_x = (-2, 2)
+gate_pos_range_x = (-3, 3)
 
-gate_path = "samplegen/resource/gates/"
-gate_file = "gate250.obj"
 width, height = (640, 640)
 
-gate_gen = GateGen(gate_path=gate_path, gate_file=gate_file, n_gate_range=n_gate_range, forw_gate_range=gate_pos_range_z
+gate_gen = GateGen(gates=[GateGLThickLarge(), GateGLTall()], n_gate_range=n_gate_range, forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=2)
 
 position_gen = RandomPositionGen(range_dist_side=cam_range_side,

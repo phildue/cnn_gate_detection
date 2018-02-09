@@ -1,17 +1,11 @@
 import os
 import sys
 
+from workdir import work_dir
+
+work_dir()
 from fileaccess.GateGenerator import GateGenerator
 from imageprocessing.Imageprocessing import show
-
-PROJECT_ROOT = '/home/phil/Desktop/thesis/code/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
 
 from fileaccess.VocGenerator import VocGenerator
 
@@ -54,5 +48,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
         show(ann_img, 'labeled', labels=label)
 
 
-#show_shot(path="samplegen/resource/shots/mult_gate_valid/")
-show_img(path="resource/samples/mult_gate_valid/")
+show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
+#show_img(path="resource/samples/mult_gate_valid/")
