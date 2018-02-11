@@ -4,10 +4,10 @@ import pprint as pp
 import time
 
 import numpy as np
-from augmentation.SSDAugmenter import SSDAugmenter
 
+from augmentation.SSDAugmenter import SSDAugmenter
 from fileaccess.VocGenerator import VocGenerator
-from prediction.SSD import SSD
+from models.ssd.SSD import SSD
 from workdir import work_dir
 
 work_dir()

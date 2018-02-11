@@ -2,7 +2,7 @@ import os
 
 from evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from evaluation.MetricDetection import MetricDetection
-from prediction.TinyYolo import TinyYolo
+from models.yolo.TinyYolo import TinyYolo
 from workdir import work_dir
 
 work_dir()

@@ -1,7 +1,7 @@
 import os
 
 from evaluation.SpeedEvaluator import SpeedEvaluator
-from prediction.TinyYolo import TinyYolo
+from models.yolo.TinyYolo import TinyYolo
 from workdir import work_dir
 
 work_dir()

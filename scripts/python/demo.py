@@ -1,6 +1,6 @@
 from fileaccess.VocGenerator import VocGenerator
 
-from prediction.SSD import SSD
+from models.ssd.SSD import SSD
 
 from workdir import work_dir
 
