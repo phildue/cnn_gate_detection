@@ -1,31 +1,26 @@
 # os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 import os
-
+import pprint as pp
 import time
 
 import numpy as np
+
 from fileaccess.VocGenerator import VocGenerator
-
-from models.ssd.SSD import SSD
-
+from prediction.SSD import SSD
 from workdir import work_dir
-import pprint as pp
 
 work_dir()
-from fileaccess.GateGenerator import GateGenerator
-from models.yolo.Yolo import Yolo
 from fileaccess.utils import save
 from backend.training import fit_generator
-from models.yolo.TinyYolo import TinyYolo
 
 BATCH_SIZE = 8
 
-image_source = "resource/backgrounds/VOCdevkit/VOC2012/JPEGImages/"
+image_source = "resource/voc_train_val/VOC2012/JPEGImages/"
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-predictor = SSD.ssd300(n_classes=20,weight_file='tools/lab/resource/models/vgg16_imagenet.h5')
-data_generator = VocGenerator("resource/backgrounds/VOCdevkit/VOC2012/Annotations/",
+predictor = SSD.ssd300(n_classes=20,weight_file='tools/lab/resource/prediction/vgg16_imagenet.h5')
+data_generator = VocGenerator("resource/voc_train_val/VOC2012/Annotations/",
                               image_source, batch_size=8,
                               valid_frac=0.1)
 augmenter = None

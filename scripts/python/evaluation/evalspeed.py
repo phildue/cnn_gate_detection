@@ -1,16 +1,12 @@
 import os
 
 from evaluation.SpeedEvaluator import SpeedEvaluator
-from models.yolo.TinyYolo import TinyYolo
-
+from prediction.TinyYolo import TinyYolo
 from workdir import work_dir
 
 work_dir()
 
-from models.yolo.Yolo import Yolo
 from fileaccess.GateGenerator import GateGenerator
-from evaluation.MetricOneGate import MetricOneGate
-from evaluation.BasicDetectionEvaluator import BasicDetectionEvaluator
 from fileaccess.utils import save
 
 name = 'speed'
