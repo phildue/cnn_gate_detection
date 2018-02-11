@@ -78,7 +78,7 @@ For Yolo the amount of anchors boxes doesn't depend on the architecture and is c
 %----------------------------------------------------------------------------------------
 \section{Architecture}
 
-Usually a classification network like VGG-16 is used as \textit{base network}. On the final feature map additional convolutional layers are set, that predict class confidences and box coordinates. As for each anchor box a separate output is predicted, each predictor can "specialize" on objects that mostly fall in its aspect ratio/scale/ location (?). The networks implement the final predictions as 1x1 convolutions, thus realizing a fully connected layer more efficiently(?) and allowing various image sizes.
+Usually a classification network like VGG-16 is used as \textit{base network}. On the feature maps of the base network additional convolutional layers are set, that predict class confidences and box coordinates. As for each anchor box a separate output is predicted, each predictor can "specialize" on objects that mostly fall in its aspect ratio/scale/ location (?). The networks implement the final predictions as 1x1 convolutions, thus realizing a fully connected layer more efficiently(?) and allowing various image sizes.
 
 SSD adds several convolutional predictor layers that predict bounding boxes for various scales. They also use one lower layer of the base network for prediction as they assume it preserves more fine grained features.
 
@@ -122,11 +122,32 @@ $$L_{conf}(x,c) = - \sum_{i \in Pos}^{N} x_{ij}^p log(\hat{c}_i^p) - \sum_{i \in
 \begin{enumerate}
 	\item Only one convolutional layer for prediction
 	\item Anchor boxes determined in pre-clustering step
+	\item At most one GT object per grid cell
+	\item Assigns GT based on grid cell, at most one GT box per grid cell
 \end{enumerate}
 \subsection{SSD}
 \begin{enumerate}
 	\item 6 Convolutional layers
+	\item Assigns anchor based on iou, several anchors can be responsible for one GT, each GT has at least one anchor
 \end{enumerate}
+
+\section{Additional Work on One-Shot-Detectors}
+
+\subsection{LCDNet\cite{TripathiSanDiego}}
+
+Aims to bring one shot detection to be runnable on embedded devices.
+
+\begin{itemize}
+	\item Quantizies model for inference with 8bit. Records min and max value for each layer and quantizes everything between 0,255
+	\item Replaces fully connected layers with convolutional layers
+	\item Replaces LeakyRelu with Relu in all but the last (faster?)
+	\item Softmax on classification, Sigmoid on confidence
+	\item Sigmoid if only one class
+	\item quantization mainly effects localization
+\end{itemize}
+
+\subsection{Squeeze Det \cite{Wu}}
+
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
