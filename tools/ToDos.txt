@@ -1,20 +1,16 @@
 
 #### SSD
 
-Implement data augmentation
 Train and check on voc
 
 #### Models
 
-Implement mAP to be printed while training
+Implement mAP in tensorflow
+Implement nms in tensorflow (?)
 
 #### Dataset
 
 Create dataset where gates are more aligned with background, avoid unrealistic settings
-
-Add the other gates
-
-Try to make gates thicker, extend
 
 #### Evaluation
 
