@@ -15,6 +15,6 @@ from visualization.utils import demo_generator
 generator = VocGenerator("resource/backgrounds/VOCdevkit/VOC2012/Annotations/",
                          "resource/backgrounds/VOCdevkit/VOC2012/JPEGImages/", batch_size=8)
 
-model = SSD.ssd7(n_classes=20, weight_file='logs/ssd7/SSD7.h5', conf_thresh=0.1)
+model = SSD.ssd7(n_classes=20, weight_file='logs/ssd7/SSD7.h5', conf_thresh=0.6)
 
 demo_generator(model, generator, t_show=0)
