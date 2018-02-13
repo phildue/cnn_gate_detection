@@ -20,7 +20,7 @@ image_source = "resource/voc_train_val/VOC2012/JPEGImages/"
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-predictor = SSD.ssd7(n_classes=20)
+predictor = SSD.ssd7(n_classes=20, weight_file='tools/lab/resource/models/vgg16_imagenet.h5', batch_size=BATCH_SIZE)
 data_generator = VocGenerator("resource/voc_train_val/VOC2012/Annotations/",
                               image_source, batch_size=8,
                               valid_frac=0.1)
