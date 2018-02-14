@@ -4,6 +4,7 @@ import pprint as pp
 import time
 
 import numpy as np
+from backend.models.ssd.MultiboxLoss import MultiboxLoss
 
 from augmentation.SSDAugmenter import SSDAugmenter
 from fileaccess.VocGenerator import VocGenerator
@@ -49,6 +50,8 @@ exp_params = {'model': model_name,
 pp.pprint(exp_params)
 
 save(exp_params, 'training_params.txt', result_path, verbose=False)
+
+loss = MultiboxLoss(BATCH_SIZE, 1, 3, 1.0)
 
 training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
                                  initial_epoch=0, log_dir=result_path, epochs=20)
