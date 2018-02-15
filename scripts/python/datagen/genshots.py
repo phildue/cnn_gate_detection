@@ -24,28 +24,28 @@ from shotgen.lightgen.RandomLightGen import RandomLightGen
 from shotgen.positiongen.RandomPositionGen import RandomPositionGen
 
 name = "mult_gate_aligned"
-shot_path = "samplegen/resource/shots/" + name + "/"
+shot_path = "resource/shots/" + name + "/"
 
-n_positions = 10000
-n_batches = 100
+n_positions = 200
+n_batches = 2
 cam_range_side = (-1, 1)
 cam_range_forward = (0, 20)
 cam_range_lift = (-0.5, 1.0)
 cam_range_pitch = (-0.1, 0.1)
 cam_range_roll = (-0.1, 0.1)
-cam_range_yaw = (-np.pi / 2, np.pi / 2)
+cam_range_yaw = (-np.pi / 4, np.pi / 4)
 light_range_x = (-12, 1)
 light_range_y = (-12, 1)
 light_range_z = (4, 5)
 n_light_range = (6, 6)
-n_gate_range = (2, 4)
+n_gate_range = (2, 3)
 
 gate_pos_range_z = (1, 15)
 gate_pos_range_x = (-3, 3)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLThickLarge(), GateGLTall(), GateGLThin250()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLThin250(), GateGLTall()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(1, 2))
 
@@ -69,7 +69,7 @@ shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05
 
 if not os.path.exists(shot_path):
     os.makedirs(shot_path)
-setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=400)
+setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=2000)
 
 for i in range(n_batches):
     tic()

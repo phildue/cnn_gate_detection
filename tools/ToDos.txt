@@ -6,7 +6,6 @@ Train and check on voc
 #### Models
 
 Implement mAP in tensorflow
-Implement nms in tensorflow (?)
 
 #### Dataset
 
