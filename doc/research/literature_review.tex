@@ -100,6 +100,8 @@
 	
 	\subsection{Additional Work on One-Shot-Detectors}
 	
+	Within this framework several approaches exist that either change the base network or modify layers in between: \cite{ChengchengNing2017} propose to include an inception module in the network architecture to reduce computation while keeping/increasing performance. They also propose a more efficient non-max-suppression method. \cite{Wu} uses \textit{SqueezeNet} as base network and a mixture between the ssd and yolo loss function as training goal. \cite{Xiang} investigates the receptive fields of SSD and tries to incorporate more context, especially on lower feature maps, to increase detection rate for small objects.\cite{Linb} applies the framework for vehicle detection. They use \textit{GoogLeNet} as base network (and investigate several others).\cite{TripathiSanDiego} apply a network very similar to YoloV2 and investigate 8bit quantization of the model to make it runnable on embedded devices.
+	
 	\subsubsection{LCDNet\cite{TripathiSanDiego}}
 	
 	Aims to bring one shot detection to be runnable on embedded devices.
@@ -114,6 +116,22 @@
 	\end{itemize}
 	
 	\subsection{Squeeze Det \cite{Wu}}
+	
+	\subsection{I-SSD \cite{ChengchengNing2017}}
+
+	\begin{itemize}
+		\item Proposes SSD-architecture with inception module
+		\item Proposes new NMS algorithm
+		\item Achieves 1 \% more mAP on VOC than original SSD while having the same speed.
+	\end{itemize}
+	
+	\subsection{\cite{Linb}}
+	
+	\begin{itemize}
+		\item Uses GoogLeNet as base network
+		\item investigates image augmentation and hard negative mining
+		\item Uses confidence score plus class probability although only one object shall be detected
+	\end{itemize}
 		
 	\subsection{Summaries}
 	\subsubsection{Object Detection}
