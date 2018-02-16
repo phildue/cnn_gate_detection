@@ -5,7 +5,7 @@ from workdir import work_dir
 
 work_dir()
 from fileaccess.GateGenerator import GateGenerator
-from imageprocessing.Imageprocessing import show
+from imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX
 
 from fileaccess.VocGenerator import VocGenerator
 
@@ -37,7 +37,7 @@ def show_img(path="resource/samples/stream_valid/"):
         for img, label in batch:
             if img.format == 'yuv':
                 img = convert_color(img, COLOR_YUV2BGR)
-            show(img, 'labeled', labels=label)
+            show(img, 'labeled', labels=label, colors=[COLOR_GREEN], legend=LEGEND_BOX)
 
 
 def show_shot(path="samplegen/resource/shots/stream/"):
@@ -48,5 +48,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
         show(ann_img, 'labeled', labels=label)
 
 
-show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-#show_img(path="resource/samples/mult_gate_valid/")
+# show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
+show_img(path="resource/samples/mult_gate_aligned_test/")

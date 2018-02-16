@@ -1,6 +1,6 @@
 import os
 
-from models.yolo.TinyYolo import TinyYolo
+from models.yolo.Yolo import Yolo
 from workdir import work_dir
 
 work_dir()
@@ -20,14 +20,14 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0.3
-weight_file = 'logs/tinyyolo-noaug/yolo-gate-adam.h5'
-model = TinyYolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
+weight_file = 'logs/yolov2_10k/YoloV2.h5'
+model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/tinyyolo-noaug/' + name + '/'
+result_path = 'logs/yolov2_10k/' + name + '/'
 result_file = 'result.pkl'
 result_img_path = result_path + 'images/'
 exp_param_file = 'experiment_parameters.txt'

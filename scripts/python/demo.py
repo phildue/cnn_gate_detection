@@ -11,7 +11,7 @@ work_dir()
 
 from visualization.utils import demo_generator
 
-generator = GateGenerator(directory='resource/samples/stream_valid1/', batch_size=8, color_format='bgr',
+generator = GateGenerator(directory='resource/samples/mult_gate_aligned_test/', batch_size=8, color_format='bgr',
                           shuffle=True, start_idx=0)
 
 # generator = VocGenerator("resource/backgrounds/VOCdevkit/VOC2012/Annotations/",
