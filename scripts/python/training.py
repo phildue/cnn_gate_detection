@@ -4,18 +4,16 @@ import pprint as pp
 import time
 
 import numpy as np
+
 from fileaccess.GateGenerator import GateGenerator
-
-from backend.models.ssd.MultiboxLoss import MultiboxLoss
-
-from augmentation.SSDAugmenter import SSDAugmenter
 from fileaccess.VocGenerator import VocGenerator
-from models.ssd.SSD import SSD
+from frontend.augmentation.SSDAugmenter import SSDAugmenter
+from frontend.models import SSD
 from workdir import work_dir
 
 work_dir()
 from fileaccess.utils import save
-from backend.training import fit_generator
+from backend.tensor.training import fit_generator
 
 BATCH_SIZE = 2
 

@@ -49,4 +49,4 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-show_img(path="resource/samples/mult_gate_aligned_test/")
+show_img(path='resource/samples/cyberzoo_conv/')

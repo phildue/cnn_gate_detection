@@ -1,8 +1,8 @@
 import os
 
-from evaluation.ConfidenceEvaluator import ConfidenceEvaluator
-from evaluation.MetricDetection import MetricDetection
-from models.yolo.Yolo import Yolo
+from frontend.evaluation import ConfidenceEvaluator
+from frontend.evaluation import MetricDetection
+from frontend.models import Yolo
 from workdir import work_dir
 
 work_dir()

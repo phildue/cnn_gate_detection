@@ -3,7 +3,7 @@ from workdir import work_dir
 work_dir()
 
 from fileaccess.utils import load
-from evaluation.StreamAnalyzer import StreamAnalyzer
+from frontend.evaluation import StreamAnalyzer
 
 result_path = 'logs/yolov2_10k/stream2/'
 result_file = 'result.pkl'

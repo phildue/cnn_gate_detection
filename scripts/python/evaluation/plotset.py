@@ -1,13 +1,11 @@
-import numpy as np
-
 from workdir import work_dir
 
 work_dir()
 
 from fileaccess.utils import load
-from evaluation.EvaluatorPrecisionRecall import EvaluatorPrecisionRecall
-from backend.plots.PlotPrecisionRecall import PlotPrecisionRecall
-from evaluation.ResultsByConfidence import ResultByConfidence
+from frontend.evaluation import EvaluatorPrecisionRecall
+from backend.visuals.plots.PlotPrecisionRecall import PlotPrecisionRecall
+from frontend.evaluation import ResultByConfidence
 
 result_path = 'logs/yolov2_50k/set_aligned/'
 result_file = 'result_set_aligned.pkl'

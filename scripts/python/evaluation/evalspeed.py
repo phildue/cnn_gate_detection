@@ -1,7 +1,7 @@
 import os
 
-from evaluation.SpeedEvaluator import SpeedEvaluator
-from models.yolo.TinyYolo import TinyYolo
+from frontend.evaluation import SpeedEvaluator
+from frontend.models import TinyYolo
 from workdir import work_dir
 
 work_dir()

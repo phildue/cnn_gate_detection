@@ -4,29 +4,24 @@ import pprint as pp
 import time
 
 import numpy as np
+
 from fileaccess.GateGenerator import GateGenerator
-
-from backend.models.ssd.MultiboxLoss import MultiboxLoss
-
-from augmentation.SSDAugmenter import SSDAugmenter
-from fileaccess.VocGenerator import VocGenerator
-from models.ssd.SSD import SSD
-from models.yolo.Yolo import Yolo
+from frontend.models import Yolo
 from workdir import work_dir
 
 work_dir()
 from fileaccess.utils import save
-from backend.training import fit_generator
+from backend.tensor.training import fit_generator
 
 BATCH_SIZE = 8
 
 image_source = "resource/samples/mult_gate_aligned/"
 max_epochs = 30
-n_samples = 10000
+n_samples = 50000
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # predictor = SSD.ssd7(n_classes=20, batch_size=BATCH_SIZE)
-predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv')
+predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv')
 
