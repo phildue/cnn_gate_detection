@@ -14,16 +14,18 @@ from fileaccess.SetFileParser import SetFileParser
 from timing import tic, toc, tuc
 from shotgen.ShotLoad import ShotLoad
 
-background_path = ["resource/backgrounds/lmsun/",
-                   "resource/backgrounds/google-fence-gate-industry/"]
+# background_path = ["resource/backgrounds/lmsun/",
+#                    "resource/backgrounds/google-fence-gate-industry/"]
+background_path = ["resource/backgrounds/google-fence-gate-industry/"]
+
 #background_path = "samplegen/resource/backgrounds/single"
 #background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/mult_gate_aligned/"
+sample_path = "resource/samples/mult_gate_aligned_test/"
 shot_path = "resource/shots/mult_gate_aligned/"
 
-n_backgrounds = 50000
-batch_size = 1000
+n_backgrounds = 2000
+batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 
 if not os.path.exists(sample_path):
@@ -35,7 +37,7 @@ setwriter = SetFileParser(sample_path, img_format='jpg', label_format='pkl')
 for i in range(n_batches):
     tic()
     shots, shot_labels = ShotLoad(shot_path, img_format='bmp').get_shots(n_shots=250)
-    samples, labels = RandomImgGen(background_path, out_format='yuv').generate(
+    samples, labels = RandomImgGen(background_path, out_format='bgr').generate(
         shots, shot_labels,
         n_backgrounds=batch_size)
 
