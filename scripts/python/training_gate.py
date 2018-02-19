@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from fileaccess.GateGenerator import GateGenerator
-from frontend.models import Yolo
+from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
 
 work_dir()
@@ -21,7 +21,7 @@ n_samples = 50000
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # predictor = SSD.ssd7(n_classes=20, batch_size=BATCH_SIZE)
-predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv')
+predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv')
 
