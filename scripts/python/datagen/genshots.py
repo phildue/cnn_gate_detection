@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+from SetAnalyzer import SetAnalyzer
 
 from workdir import work_dir
 
@@ -11,7 +12,6 @@ from shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
 
 from shotgen.engine3d.opengl.GateGLTall import GateGLTall
 
-from SetAnalyzer import SetAnalyzer
 from shotgen.GateGen import GateGen
 from timing import tic, toc
 
@@ -23,31 +23,31 @@ from shotgen.engine3d.SceneEngine import SceneEngine
 from shotgen.lightgen.RandomLightGen import RandomLightGen
 from shotgen.positiongen.RandomPositionGen import RandomPositionGen
 
-name = "mult_gate_aligned"
+name = "mult_gate_aligned_test"
 shot_path = "resource/shots/" + name + "/"
 
-n_positions = 200
-n_batches = 2
+n_positions = 1000
+n_batches = 5
 cam_range_side = (-1, 1)
-cam_range_forward = (0, 20)
+cam_range_forward = (-5, 5)
 cam_range_lift = (-0.5, 1.0)
 cam_range_pitch = (-0.1, 0.1)
 cam_range_roll = (-0.1, 0.1)
-cam_range_yaw = (-np.pi / 4, np.pi / 4)
-light_range_x = (-12, 1)
-light_range_y = (-12, 1)
+cam_range_yaw = (-np.pi, np.pi)
+light_range_x = (-4, 4)
+light_range_y = (-6, 6)
 light_range_z = (4, 5)
-n_light_range = (6, 6)
+n_light_range = (4, 6)
 n_gate_range = (2, 3)
 
-gate_pos_range_z = (1, 15)
+gate_pos_range_z = (-8, 8)
 gate_pos_range_x = (-3, 3)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLThin250(), GateGLTall()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLTall()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
-                   , side_gate_range=gate_pos_range_x, min_gate_dist=(1, 2))
+                   , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 
 position_gen = RandomPositionGen(range_dist_side=cam_range_side,
                                  range_dist_forward=cam_range_forward,

@@ -1,8 +1,8 @@
 import os
 
-from frontend.evaluation import ConfidenceEvaluator
-from frontend.evaluation import MetricDetection
-from frontend.models import Yolo
+from frontend.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
+from frontend.evaluation.MetricDetection import MetricDetection
+from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
 
 work_dir()
@@ -20,14 +20,14 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = 'logs/yolov2_10k/YoloV2.h5'
-model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
+weight_file = 'logs/tinyyolo_10k/TinyYolo.h5'
+model = Yolo.tiny_yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/yolov2_10k/' + name + '/'
+result_path = 'logs/tinyyolo_10k/' + name + '/'
 result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.txt'
@@ -39,7 +39,7 @@ if not os.path.exists(result_img_path):
     os.makedirs(result_img_path)
 
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
-                          shuffle=True, color_format=color_format, start_idx=1000)
+                          shuffle=True, color_format=color_format)
 
 evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_thresh)],
                                 out_file=result_path + result_file)

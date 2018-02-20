@@ -22,9 +22,9 @@ background_path = ["resource/backgrounds/google-fence-gate-industry/"]
 #background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
 sample_path = "resource/samples/mult_gate_aligned_test/"
-shot_path = "resource/shots/mult_gate_aligned/"
+shot_path = "resource/shots/mult_gate_aligned_test/"
 
-n_backgrounds = 2000
+n_backgrounds = 1000
 batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 
