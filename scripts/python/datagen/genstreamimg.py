@@ -3,18 +3,12 @@ import sys
 import timeit
 
 import numpy as np
+from workdir import work_dir
 
 from imggen.DetermImgGen import DetermImgGen
 from imggen.RandomImgGen import RandomImgGen
 
-PROJECT_ROOT = '/home/phil/Desktop/thesis/code/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
+work_dir()
 
 from fileaccess.SetFileParser import SetFileParser
 from timing import tic, toc, tuc
@@ -23,10 +17,10 @@ from shotgen.ShotLoad import ShotLoad
 # background_path = ["samplegen/resource/backgrounds/lmsun/",
 #                    "samplegen/resource/backgrounds/google-fence-gate-industry/"]
 #background_path = "samplegen/resource/backgrounds/single"
-background_path = "samplegen/resource/backgrounds/single/"
+background_path = "resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/stream_valid1/"
-shot_path = "samplegen/resource/shots/stream/"
+sample_path = "samples/stream_valid3/"
+shot_path = "resource/shots/stream/"
 
 n_backgrounds = 1
 batch_size = 1

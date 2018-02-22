@@ -2,6 +2,9 @@ import os
 import sys
 
 import numpy as np
+from workdir import work_dir
+
+from shotgen.engine3d.opengl.GateGLTall import GateGLTall
 
 from labels.Pose import Pose
 from scene.Light import Light
@@ -9,14 +12,7 @@ from shotgen.lightgen.ConstantLightGen import ConstantLightGen
 from shotgen.positiongen.TrajectoryGen import TrajectoryGen
 from timing import tic, toc
 
-PROJECT_ROOT = '/home/phil/Desktop/thesis/code/dronevision'
-
-WORK_DIRS = [PROJECT_ROOT + '/samplegen/src/python',
-             PROJECT_ROOT + '/droneutils/src/python',
-             PROJECT_ROOT + '/dvlab/src/python']
-for work_dir in WORK_DIRS:
-    sys.path.insert(0, work_dir)
-os.chdir(PROJECT_ROOT)
+work_dir()
 
 from fileaccess.SetFileParser import write_set
 from scene.GateThin250 import Gate250
@@ -25,7 +21,7 @@ from shotgen.ShotCreate import ShotCreate
 from shotgen.engine3d.SceneEngine import SceneEngine
 from shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
-name = "stream_1"
+name = "stream_3"
 shot_path = "resource/shots/" + name + "/"
 
 
@@ -98,7 +94,7 @@ def genshots(n_positions=500,
 
     tic()
 
-    scene_engine = SceneEngine(Scene(objects=[(OpenGlView(Gate250(), gate_path, gate_file), Pose())]), width=640,
+    scene_engine = SceneEngine(Scene(objects=[(GateGLTall(), Pose())]), width=640,
                                height=640)
     shots, shot_labels = ShotCreate(position_gen, light_gen, scene_engine).get_shots(n_positions)
     if not os.path.exists(output_path):

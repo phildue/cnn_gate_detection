@@ -1,13 +1,13 @@
 import os
 
-from frontend.models import Yolo
+from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
 
 work_dir()
 
 from fileaccess.GateGenerator import GateGenerator
-from frontend.evaluation import MetricOneGate
-from frontend.evaluation import BasicDetectionEvaluator
+from frontend.evaluation.MetricOneGate import MetricOneGate
+from frontend.evaluation.BasicDetectionEvaluator import BasicDetectionEvaluator
 from fileaccess.utils import save
 
 name = 'stream1'
@@ -20,14 +20,14 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0.3
-weight_file = 'logs/tinyyolo_10k/TinyYolo.h5'
-model = Yolo.tiny_yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
+weight_file = 'logs/yolov2_10k/YoloV2.h5'
+model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh)
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/tinyyolo_10k/' + name + '/'
+result_path = 'logs/yolov2_10k/' + name + '/'
 result_file = 'result.pkl'
 result_img_path = result_path + 'images/'
 exp_param_file = 'experiment_parameters.txt'

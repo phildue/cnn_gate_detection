@@ -23,11 +23,11 @@ from shotgen.engine3d.SceneEngine import SceneEngine
 from shotgen.lightgen.RandomLightGen import RandomLightGen
 from shotgen.positiongen.RandomPositionGen import RandomPositionGen
 
-name = "mult_gate_aligned_test"
+name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
 
-n_positions = 1000
-n_batches = 5
+n_positions = 100
+n_batches = 1
 cam_range_side = (-1, 1)
 cam_range_forward = (-5, 5)
 cam_range_lift = (-0.5, 1.0)
@@ -45,7 +45,7 @@ gate_pos_range_x = (-3, 3)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLTall()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLTall(), GateGLThin250(), GateGLThickLarge()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 
@@ -69,7 +69,7 @@ shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05
 
 if not os.path.exists(shot_path):
     os.makedirs(shot_path)
-setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=2000)
+setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=6900)
 
 for i in range(n_batches):
     tic()

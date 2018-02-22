@@ -3,9 +3,9 @@ from workdir import work_dir
 work_dir()
 
 from fileaccess.utils import load
-from frontend.evaluation import StreamAnalyzer
+from frontend.evaluation.StreamAnalyzer import StreamAnalyzer
 
-result_path = 'logs/yolov2_10k/stream2/'
+result_path = 'logs/yolov2_25k/stream1/'
 result_file = 'result.pkl'
 results = load(result_path + result_file)
 

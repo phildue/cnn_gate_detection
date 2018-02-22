@@ -13,21 +13,21 @@ from fileaccess.utils import save
 name = 'set_aligned'
 
 # Image Source
-BATCH_SIZE = 50
+BATCH_SIZE = 4
 n_batches = 20
 image_source = 'resource/samples/mult_gate_aligned_test/'
 color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = 'logs/tinyyolo_10k/TinyYolo.h5'
-model = Yolo.tiny_yolo(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
+weight_file = 'logs/yolov2_25k/YoloV2.h5'
+model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/tinyyolo_10k/' + name + '/'
+result_path = 'logs/yolov2_25k/' + name + '/'
 result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.txt'
@@ -41,7 +41,7 @@ if not os.path.exists(result_img_path):
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=True, color_format=color_format)
 
-evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_thresh)],
+evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_thresh, show_=True)],
                                 out_file=result_path + result_file)
 
 evaluator.evaluate_generator(generator, n_batches=n_batches)
