@@ -5,11 +5,10 @@ work_dir()
 from fileaccess.utils import load
 from frontend.evaluation.StreamAnalyzer import StreamAnalyzer
 
-result_path = 'logs/yolov2_25k/stream1/'
+result_path = 'logs/tinyyolo_10k/stream3/'
 result_file = 'result.pkl'
 results = load(result_path + result_file)
 
 analyzer = StreamAnalyzer(result_path+result_file)
 analyzer.loc_error_plot().show()
-analyzer.detection_eval()
 
