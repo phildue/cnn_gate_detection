@@ -123,5 +123,5 @@ trajectory.extend(yaw_circle(5, steps_per_move))
 # trajectory.extend(roll_half_circle(5, steps_per_move))
 
 genshots(waypoints=trajectory,
-         output_path='samplegen/resource/shots/stream/',
+         output_path=shot_path,
          n_positions=len(trajectory))

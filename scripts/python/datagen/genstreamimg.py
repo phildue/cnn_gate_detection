@@ -19,8 +19,8 @@ from shotgen.ShotLoad import ShotLoad
 #background_path = "samplegen/resource/backgrounds/single"
 background_path = "resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "samples/stream_valid3/"
-shot_path = "resource/shots/stream/"
+sample_path = "resource/samples/stream_valid3/"
+shot_path = "resource/shots/stream3/"
 
 n_backgrounds = 1
 batch_size = 1

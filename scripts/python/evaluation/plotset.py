@@ -9,7 +9,7 @@ from fileaccess.utils import load
 from frontend.evaluation.EvaluatorPrecisionRecall import EvaluatorPrecisionRecall
 from backend.visuals.plots.PlotPrecisionRecall import PlotPrecisionRecall
 
-result_path = 'logs/yolov2_10k/set_aligned/'
+result_path = 'logs/yolov2_25k/set_aligned/'
 result_file = 'result_set_aligned.pkl'
 results = load(result_path + result_file)
 
@@ -20,20 +20,7 @@ total = detection_result[0]
 for result in detection_result[1:]:
     total += result
 
-tpr, fpr, fnr = [], [], []
-for c in sorted(total.results.keys()):
-    tpr.append(total.results[c].true_positives / 1000)
-    fpr.append(total.results[c].false_positives / 1000)
-    fnr.append(total.results[c].false_negatives / 1000)
-
-tpv = np.array(tpr)
-fpv = np.array(fpr)
-fnv = np.array(fnr)
-
-precision = tpv / (tpv + fpv)
-recall = tpv / (tpv + fnv)
-
-
+precision, recall = EvaluatorPrecisionRecall.interp(total)
 PlotPrecisionRecall(precision, recall).show(block=True)
 
 
