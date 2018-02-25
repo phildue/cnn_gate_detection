@@ -8,7 +8,7 @@ import numpy as np
 from fileaccess.GateGenerator import GateGenerator
 from fileaccess.VocGenerator import VocGenerator
 from frontend.augmentation.SSDAugmenter import SSDAugmenter
-from frontend.models import SSD
+from frontend.models.ssd.SSD import SSD
 from workdir import work_dir
 
 work_dir()
@@ -26,7 +26,6 @@ data_generator = VocGenerator("resource/voc_train_val/VOC2012/Annotations/",
                               image_source, batch_size=BATCH_SIZE,
                               valid_frac=0.1)
 
-data_generator = GateGenerator("resource/samples/mult_gate_aligned/", batch_size=BATCH_SIZE)
 
 augmenter = SSDAugmenter()
 
