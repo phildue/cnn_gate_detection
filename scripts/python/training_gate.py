@@ -6,6 +6,7 @@ import time
 import numpy as np
 
 from fileaccess.GateGenerator import GateGenerator
+from frontend.models.ssd.SSD import SSD
 from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
 
@@ -17,12 +18,12 @@ BATCH_SIZE = 8
 
 image_source = "resource/samples/mult_gate_aligned/"
 max_epochs = 30
-n_samples = 50000
+n_samples = 10000
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-# predictor = SSD.ssd7(n_classes=20, batch_size=BATCH_SIZE)
-predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv',
-                           weight_file='logs/tinyyolo_25k/TinyYolo.h5')
+predictor = SSD.ssd300(n_classes=1, batch_size=BATCH_SIZE)
+# predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv',
+#                           weight_file='logs/tinyyolo_25k/TinyYolo.h5')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv')
 
