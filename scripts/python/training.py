@@ -15,9 +15,9 @@ work_dir()
 from fileaccess.utils import save
 from backend.tensor.training import fit_generator
 
-BATCH_SIZE = 2
+BATCH_SIZE = 32
 
-image_source = "resource/voc/train_val/VOC2012/JPEGImages/"
+image_source = 'voc'
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
