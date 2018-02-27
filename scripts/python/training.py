@@ -21,7 +21,7 @@ image_source = "resource/voc/train_val/VOC2012/JPEGImages/"
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE)
+predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE, alpha=0.1)
 data_generator = VocGenerator(batch_size=BATCH_SIZE,
                               valid_frac=0.1)
 
