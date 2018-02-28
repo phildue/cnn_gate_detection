@@ -28,7 +28,7 @@ data_generator = VocGenerator(batch_size=BATCH_SIZE,
 
 augmenter = SSDAugmenter()
 
-model_name = predictor.model.__class__.__name__
+model_name = predictor.net.__class__.__name__
 
 name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
@@ -42,7 +42,7 @@ predictor.compile(None)
 
 exp_params = {'model': model_name,
               'resolution': predictor.img_shape,
-              'train_params': predictor.model.train_params,
+              'train_params': predictor.net.train_params,
               'image_source': image_source,
               'batch_size': BATCH_SIZE,
               'n_samples': data_generator.n_samples,

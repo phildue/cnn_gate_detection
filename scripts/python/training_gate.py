@@ -29,7 +29,7 @@ data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0
 
 augmenter = None
 
-model_name = predictor.model.__class__.__name__
+model_name = predictor.net.__class__.__name__
 
 name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
@@ -43,7 +43,7 @@ predictor.compile(None)
 
 exp_params = {'model': model_name,
               'resolution': predictor.input_shape,
-              'train_params': predictor.model.train_params,
+              'train_params': predictor.net.train_params,
               'image_source': image_source,
               'batch_size': BATCH_SIZE,
               'max_epochs': max_epochs,

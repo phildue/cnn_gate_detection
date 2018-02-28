@@ -37,8 +37,8 @@ gate_2 = (GateGLThickLarge(), Pose(dist_side=-2.0, dist_forward=2.0, yaw=np.pi /
 
 gate_generator = GateGen(gates=[GateGLThickLarge(), GateGLTall()], n_gate_range=(3, 8))
 
-# gates = [gate_1]
-gates = gate_generator.generate()
+gates = [gate_1]
+#gates = gate_generator.generate()
 scene_engine = SceneEngine(Scene(cam, objects=gates, lights=[Light((-2, 2, 3)), Light((0, 2, 4)), Light((-2, 0, 3))]))
 
 cam_range_side = (-1, 1)

@@ -13,7 +13,7 @@ Create dataset where gates are more aligned with background, avoid unrealistic s
 
 #### Evaluation
 
-Write Evaluator that receives file as input instead of model
+Write Evaluator that receives file as input instead of net
 
 #### General
 

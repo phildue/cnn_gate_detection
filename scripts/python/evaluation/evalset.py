@@ -47,7 +47,7 @@ evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_t
 evaluator.evaluate_generator(generator, n_batches=n_batches)
 
 exp_params = {'name': name,
-              'model': model.model.__class__.__name__,
+              'model': model.net.__class__.__name__,
               'evaluator': evaluator.__class__.__name__,
               'train_samples': '10k',
               'conf_thresh': conf_thresh,
