@@ -15,8 +15,7 @@ from shotgen.ShotLoad import ShotLoad
 
 
 def show_voc():
-    dataset = VocGenerator("resource/samples/VOCdevkit/VOC2012/Annotations/",
-                           "resource/samples/VOCdevkit/VOC2012/JPEGImages/", batch_size=2).generate()
+    dataset = VocGenerator(batch_size=2).generate()
     for batch in dataset:
         for sample in batch:
             ann_img = annotate_bounding_box(sample[0], sample[1])
@@ -49,4 +48,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-show_img(path='resource/samples/mult_gate_aligned_test/')
+# show_img(path='resource/samples/mult_gate_aligned_test/')
+show_voc()
