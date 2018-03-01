@@ -21,10 +21,8 @@ image_source = 'voc'
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-predictor = SSD.ssd7(n_classes=20, batch_size=BATCH_SIZE)
-data_generator = VocGenerator(batch_size=BATCH_SIZE,
-                              valid_frac=0.1)
-
+predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE, alpha=0.1)
+data_generator = VocGenerator(batch_size=BATCH_SIZE)
 
 augmenter = SSDAugmenter()
 
@@ -38,7 +36,11 @@ if not os.path.exists(result_path):
 
 predictor.preprocessor.augmenter = augmenter
 
-predictor.compile(None)
+loss = predictor.loss
+predictor.compile(params=None, metrics=[loss.conf_loss_positives,
+                                        loss.conf_loss_negatives,
+                                        loss.localization_loss]
+                  )
 
 exp_params = {'model': model_name,
               'resolution': predictor.img_shape,
@@ -56,5 +58,3 @@ training_history = fit_generator(predictor, data_generator, out_file=model_name 
                                  initial_epoch=0, log_dir=result_path, epochs=20)
 
 save(training_history, 'training_history.pkl', result_path)
-
-os.system('tar -cvf logs/' + name + '.tar.gz ' + result_path)
