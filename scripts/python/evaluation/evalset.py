@@ -8,7 +8,7 @@ from workdir import work_dir
 work_dir()
 
 from fileaccess.GateGenerator import GateGenerator
-from fileaccess.utils import save
+from fileaccess.utils import save_file
 
 name = 'set_aligned'
 
@@ -57,4 +57,4 @@ exp_params = {'name': name,
               'color_format': color_format,
               'n_samples': n_batches * BATCH_SIZE}
 
-save(exp_params, exp_param_file, result_path)
+save_file(exp_params, exp_param_file, result_path)

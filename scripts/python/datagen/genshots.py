@@ -26,8 +26,9 @@ from shotgen.positiongen.RandomPositionGen import RandomPositionGen
 name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
 
-n_positions = 100
-n_batches = 1
+N = 99
+n_positions = 10000 - N * 100
+n_batches = 100 - N
 cam_range_side = (-1, 1)
 cam_range_forward = (-5, 5)
 cam_range_lift = (-0.5, 1.0)
@@ -69,7 +70,7 @@ shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05
 
 if not os.path.exists(shot_path):
     os.makedirs(shot_path)
-setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=6900)
+setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=N * 100)
 
 for i in range(n_batches):
     tic()

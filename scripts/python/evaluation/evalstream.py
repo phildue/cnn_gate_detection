@@ -8,7 +8,7 @@ work_dir()
 from fileaccess.GateGenerator import GateGenerator
 from frontend.evaluation.MetricOneGate import MetricOneGate
 from frontend.evaluation.BasicDetectionEvaluator import BasicDetectionEvaluator
-from fileaccess.utils import save
+from fileaccess.utils import save_file
 
 name = 'stream3'
 
@@ -58,4 +58,4 @@ exp_params = {'name': name,
               'color_format': color_format,
               'n_samples': n_batches * BATCH_SIZE}
 
-save(exp_params, exp_param_file, result_path)
+save_file(exp_params, exp_param_file, result_path)

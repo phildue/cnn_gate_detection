@@ -24,7 +24,7 @@ from scene.GateThin250 import Gate250
 from scene.Light import Light
 from scene.Scene import Scene
 from shotgen.engine3d.SceneEngine import SceneEngine
-from fileaccess.utils import save
+from fileaccess.utils import save_file
 from shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
 cam = Camera(1000, init_pose=Pose(dist_forward=5))
@@ -33,13 +33,13 @@ gate_path = "resource/gates/"
 gate_file = "gate250.obj"
 
 gate_1 = (GateGLOpen(), Pose().to_scene_unit)
-gate_2 = (GateGLThickLarge(), Pose(dist_side=-2.0, dist_forward=2.0, yaw=np.pi / 4).to_scene_unit)
+gate_2 = (GateGLThickLarge(), Pose().to_scene_unit)
 
 gate_generator = GateGen(gates=[GateGLThickLarge(), GateGLTall()], n_gate_range=(3, 8))
 
-gates = [gate_1]
+gates = [gate_2]
 #gates = gate_generator.generate()
-scene_engine = SceneEngine(Scene(cam, objects=gates, lights=[Light((-2, 2, 3)), Light((0, 2, 4)), Light((-2, 0, 3))]))
+scene_engine = SceneEngine(Scene(cam, objects=gates))
 
 cam_range_side = (-1, 1)
 cam_range_forward = (0, 10)

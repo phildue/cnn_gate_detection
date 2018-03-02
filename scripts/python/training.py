@@ -12,7 +12,7 @@ from frontend.models.ssd.SSD import SSD
 from workdir import work_dir
 
 work_dir()
-from fileaccess.utils import save
+from fileaccess.utils import save_file
 from backend.tensor.training import fit_generator
 
 BATCH_SIZE = 32
@@ -52,9 +52,9 @@ exp_params = {'model': model_name,
 
 pp.pprint(exp_params)
 
-save(exp_params, 'training_params.txt', result_path, verbose=False)
+save_file(exp_params, 'training_params.txt', result_path, verbose=False)
 
 training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
                                  initial_epoch=0, log_dir=result_path, epochs=20)
 
-save(training_history, 'training_history.pkl', result_path)
+save_file(training_history, 'training_history.pkl', result_path)

@@ -7,7 +7,7 @@ from workdir import work_dir
 
 work_dir()
 
-from fileaccess.utils import load
+from fileaccess.utils import load_file
 from frontend.evaluation.EvaluatorPrecisionRecall import EvaluatorPrecisionRecall
 from backend.visuals.plots.PlotPrecisionRecall import PlotPrecisionRecall
 
@@ -27,19 +27,19 @@ def mean_avg_prec(results):
 
 result_path = 'logs/yolov2_10k/set_aligned/'
 result_file = 'result_set_aligned.pkl'
-results = load(result_path + result_file)
+results = load_file(result_path + result_file)
 
 mean_pr_10k, mean_rec_10k = mean_avg_prec(results)
 
 result_path = 'logs/yolov2_25k/set_aligned/'
 result_file = 'result_set_aligned.pkl'
-results = load(result_path + result_file)
+results = load_file(result_path + result_file)
 
 mean_pr_25k, mean_rec_25k = mean_avg_prec(results)
 
 result_path = 'logs/yolov2_50k/set_aligned/'
 result_file = 'result_set_aligned.pkl'
-results = load(result_path + result_file)
+results = load_file(result_path + result_file)
 
 mean_pr_50k, mean_rec_50k = mean_avg_prec(results)
 

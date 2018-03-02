@@ -2,12 +2,12 @@ import numpy as np
 
 from workdir import work_dir
 
-from fileaccess.utils import load
+from fileaccess.utils import load_file
 
 work_dir()
 result_file = 'logs/yolov2_10k/speed_server/result.pkl'
 
-content = load(result_file)
+content = load_file(result_file)
 
 results = content['results']
 
