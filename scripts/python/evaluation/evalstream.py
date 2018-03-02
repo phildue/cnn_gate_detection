@@ -7,7 +7,7 @@ work_dir()
 
 from fileaccess.GateGenerator import GateGenerator
 from frontend.evaluation.MetricOneGate import MetricOneGate
-from frontend.evaluation.BasicDetectionEvaluator import BasicDetectionEvaluator
+from frontend.evaluation.DetectionEvaluator import DetectionEvaluator
 from fileaccess.utils import save_file
 
 name = 'stream3'
@@ -42,11 +42,11 @@ if not os.path.exists(result_img_path):
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
 
-evaluator = BasicDetectionEvaluator(model,
-                                    metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
-                                    out_file=result_path+result_file)
+evaluator = DetectionEvaluator(model,
+                               metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
+                               out_file=result_path + result_file)
 
-evaluator.evaluate_generator(generator, n_batches=n_batches)
+evaluator.evaluate(generator, n_batches=n_batches)
 
 exp_params = {'name': name,
                'model': model.net.__class__.__name__,

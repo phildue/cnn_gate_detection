@@ -44,7 +44,7 @@ generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_for
 evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(iou_thresh=iou_thresh, show_=True)],
                                 out_file=result_path + result_file)
 
-evaluator.evaluate_generator(generator, n_batches=n_batches)
+evaluator.evaluate(generator, n_batches=n_batches)
 
 exp_params = {'name': name,
               'model': model.net.__class__.__name__,
