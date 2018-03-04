@@ -24,7 +24,12 @@ image_source = 'voc'
 predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE, alpha=0.1)
 data_generator = VocGenerator(batch_size=BATCH_SIZE, shuffle=False)
 
-augmenter = None
+augmenter = SSDAugmenter()
+
+train_params = {'optimizer': 'SGD',
+                'lr': 0.001,
+                'momentum': 0.9,
+                'decay': 0.0005}
 
 model_name = predictor.net.__class__.__name__
 
@@ -37,9 +42,9 @@ if not os.path.exists(result_path):
 predictor.preprocessor.augmenter = augmenter
 
 loss = predictor.loss
-predictor.compile(params=None, metrics=[loss.conf_loss_positives,
-                                        loss.conf_loss_negatives,
-                                        loss.localization_loss]
+predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
+                                                loss.conf_loss_negatives,
+                                                loss.localization_loss]
                   )
 
 exp_params = {'model': model_name,
