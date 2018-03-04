@@ -5,6 +5,7 @@ import time
 
 import numpy as np
 
+from backend.visuals.plots.PlotTrainingHistory import PlotTrainingHistory
 from fileaccess.GateGenerator import GateGenerator
 from frontend.augmentation.AugmenterDistort import AugmenterDistort
 from frontend.augmentation.AugmenterEnsemble import AugmenterEnsemble
@@ -69,4 +70,4 @@ training_history = fit_generator(predictor, data_generator, out_file=model_name 
 
 save_file(training_history, 'training_history.pkl', result_path)
 
-os.system('tar -cvf logs/' + name + '.tar.gz ' + result_path)
+PlotTrainingHistory(training_history).save(result_path + 'training_history.png')

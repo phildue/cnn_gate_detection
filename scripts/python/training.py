@@ -5,6 +5,7 @@ import time
 
 import numpy as np
 
+from backend.visuals.plots.PlotTrainingHistory import PlotTrainingHistory
 from fileaccess.GateGenerator import GateGenerator
 from fileaccess.VocGenerator import VocGenerator
 from frontend.augmentation.SSDAugmenter import SSDAugmenter
@@ -63,3 +64,5 @@ training_history = fit_generator(predictor, data_generator, out_file=model_name 
                                  initial_epoch=0, log_dir=result_path, epochs=20)
 
 save_file(training_history, 'training_history.pkl', result_path)
+
+PlotTrainingHistory(training_history).save(result_path + 'training_history.png')
