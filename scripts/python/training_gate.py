@@ -9,6 +9,7 @@ from backend.visuals.plots.PlotTrainingHistory import PlotTrainingHistory
 from fileaccess.GateGenerator import GateGenerator
 from frontend.augmentation.AugmenterDistort import AugmenterDistort
 from frontend.augmentation.AugmenterEnsemble import AugmenterEnsemble
+from frontend.augmentation.AugmenterPixel import AugmenterPixel
 from frontend.models.ssd.SSD import SSD
 from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
@@ -25,12 +26,12 @@ n_samples = 10000
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # predictor = SSD.ssd300(n_classes=1, batch_size=BATCH_SIZE)
-predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv',
-                           weight_file='logs/tinyyolo_10k_distort/TinyYolo.h5')
+predictor = Yolo.tiny_yolo(norm=(208, 208), grid=(6, 6), class_names=['gate'], batch_size=BATCH_SIZE,
+                           color_format='yuv')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv')
 
-augmenter = None  # AugmenterEnsemble(augmenters=[(0.5, AugmenterDistort())])
+augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterPixel())])
 
 model_name = predictor.net.__class__.__name__
 
@@ -42,7 +43,7 @@ create_dir([result_path])
 predictor.preprocessor.augmenter = augmenter
 
 params = {'optimizer': 'adam',
-          'lr': 0.0001,
+          'lr': 0.001,
           'beta_1': 0.9,
           'beta_2': 0.999,
           'epsilon': 1e-08,

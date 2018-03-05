@@ -22,21 +22,23 @@ def show_voc():
             show(ann_img, 'labeled')
             img, label = sample[0], sample[1]
 
-            # img, label = resize(sample[0], shape=(500, 500), label=sample[1])
-            # img, label = translate(img, shift_x=-10,shift_y= -10,label= label)
-            # img, label = flip(img, label, 1)
-            # ann_img = annotate_bounding_box(img, label)
-            # show(ann_img, 'resized')
+            img, label = resize(img, shape=(150, 150), label=label)
+            img, label = resize(img, shape=(416, 416), label=label)
+            show(img, 'resized', labels=label)
 
 
-def show_img(path="resource/samples/stream_valid/"):
+def show_img(path):
     gate_generator = GateGenerator(path, 8, color_format='bgr',shuffle=False)
 
     for batch in gate_generator.generate():
-        for img, label in batch:
+        for img, label, _ in batch:
             if img.format == 'yuv':
                 img = convert_color(img, COLOR_YUV2BGR)
             show(img, 'labeled', labels=label, colors=[COLOR_GREEN], legend=LEGEND_BOX)
+
+            img, label = resize(img, shape=(150, 150), label=label)
+            img, label = resize(img, shape=(416, 416), label=label)
+            show(img, 'resized', labels=label)
 
 
 def show_shot(path="samplegen/resource/shots/stream/"):
@@ -48,5 +50,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-# show_img(path='resource/samples/mult_gate_aligned_test/')
-show_voc()
+show_img(path=['resource/samples/mult_gate_aligned_test/'])
+# show_voc()

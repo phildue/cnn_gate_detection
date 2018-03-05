@@ -1,13 +1,15 @@
 import os
 
+from fileaccess.utils import create_dir
 from labelmaker.LabelMaker import LabelMaker
 from workdir import work_dir
 
 work_dir()
 
-out_dir = 'resource/samples/video/'
+img_dir = 'resource/samples/video/'
 src_file = 'resource/videos/eth.avi'
-if not os.path.exists(out_dir):
-    os.makedirs(out_dir)
+set_dir = 'resource/samples/video/eth/'
 
-LabelMaker(src_file, out_dir, step_size=10).parse()
+create_dir([img_dir, set_dir])
+
+LabelMaker(None, img_dir, step_size=10, set_dir=set_dir, start_idx=150).parse()

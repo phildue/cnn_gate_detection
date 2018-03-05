@@ -10,7 +10,7 @@ from workdir import work_dir
 
 work_dir()
 
-parser = LabelFileParser('resource/samples/mult_gate_aligned_blur_distort', 'pkl')
+parser = LabelFileParser('resource/samples/cyberzoo_conv/', 'pkl')
 labels = parser.read()
 
 ObjectLabel.classes = 'gate'
