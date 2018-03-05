@@ -14,7 +14,7 @@ from frontend.models.yolo.Yolo import Yolo
 from workdir import work_dir
 
 work_dir()
-from fileaccess.utils import save_file
+from fileaccess.utils import save_file, create_dir
 from backend.tensor.training import fit_generator
 
 BATCH_SIZE = 8
@@ -37,8 +37,7 @@ model_name = predictor.net.__class__.__name__
 name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
+create_dir([result_path])
 
 predictor.preprocessor.augmenter = augmenter
 
