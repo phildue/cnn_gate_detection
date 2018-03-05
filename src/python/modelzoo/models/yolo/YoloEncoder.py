@@ -1,9 +1,9 @@
 import numpy as np
-from frontend.models.Encoder import Encoder
-from imageprocessing.Backend import normalize
-from labels.ImgLabel import ImgLabel
 
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.models.Encoder import Encoder
+from utils.imageprocessing.Backend import normalize
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class YoloEncoder(Encoder):

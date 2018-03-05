@@ -1,15 +1,14 @@
 import os
 
-from workdir import work_dir
-
-from src.python.modelzoo.models.yolo import Yolo
+from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
+from modelzoo.evaluation.MetricOneGate import MetricOneGate
+from modelzoo.models.yolo.Yolo import Yolo
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.fileaccess.utils import create_dir, save_file
+from utils.workdir import work_dir
 
 work_dir()
 
-from src.python.utils.fileaccess import GateGenerator
-from src.python.modelzoo.evaluation.MetricOneGate import MetricOneGate
-from src.python.modelzoo.evaluation import DetectionEvaluator
-from src.python.utils.fileaccess import save_file
 
 name = 'stream3'
 
@@ -33,12 +32,7 @@ result_file = 'result.pkl'
 result_img_path = result_path + 'images/'
 exp_param_file = 'experiment_parameters.txt'
 
-
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
-
-if not os.path.exists(result_img_path):
-    os.makedirs(result_img_path)
+create_dir([result_path, result_img_path])
 
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)

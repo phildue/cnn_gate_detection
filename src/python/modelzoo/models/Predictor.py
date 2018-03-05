@@ -1,12 +1,11 @@
 from abc import abstractmethod
 
-from frontend.models.Encoder import Encoder
-from frontend.models.Net import Net
-from frontend.utils.BoundingBox import BoundingBox
-
-from src.python.modelzoo.backend.tensor import Loss
-from src.python.modelzoo.models.Decoder import Decoder
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.models.Decoder import Decoder
+from modelzoo.models.Encoder import Encoder
+from modelzoo.models.Net import Net
+from utils.BoundingBox import BoundingBox
+from utils.imageprocessing.Image import Image
 
 
 class Predictor:

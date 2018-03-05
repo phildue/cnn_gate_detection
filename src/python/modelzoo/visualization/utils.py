@@ -1,10 +1,10 @@
 import numpy as np
-from frontend.models import Predictor
-from imageprocessing.Imageprocessing import show, LEGEND_TEXT
-from labels.utils import resize_label
 
-from src.python.utils import BoundingBox
-from src.python.utils.fileaccess import DatasetGenerator
+from modelzoo.models.Predictor import Predictor
+from utils.BoundingBox import BoundingBox
+from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT
+from utils.labels.utils import resize_label
 
 
 def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1):

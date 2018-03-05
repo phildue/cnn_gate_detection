@@ -1,9 +1,8 @@
 import glob
 import pickle
 
-from imageprocessing.Imageprocessing import get_bounding_box
-
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.imageprocessing.Imageprocessing import get_bounding_box
+from utils.labels.ImgLabel import ImgLabel
 
 
 def write_label(path, labels: [ImgLabel], file_format='pkl'):

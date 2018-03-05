@@ -1,10 +1,9 @@
-from fileaccess.utils import save_file, load_file
-from frontend.evaluation.Metric import Metric
-from imageprocessing.Backend import imread
-from timing import tic, toc
-
-from src.python.modelzoo.evaluation.FileEvaluator import FileEvaluator
-from src.python.utils.labels.ImgLabel import ImgLabel
+from modelzoo.evaluation.FileEvaluator import FileEvaluator
+from modelzoo.evaluation.Metric import Metric
+from utils.fileaccess.utils import load_file, save_file
+from utils.imageprocessing.Backend import imread
+from utils.labels.ImgLabel import ImgLabel
+from utils.timing import toc
 
 
 class DetectionEvaluator(FileEvaluator):

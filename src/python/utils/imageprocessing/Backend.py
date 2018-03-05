@@ -3,11 +3,10 @@ import copy
 import cv2
 import numpy as np
 from PIL.Image import frombytes, FLIP_TOP_BOTTOM
-from labels.GateLabel import GateLabel
-from labels.ImgLabel import ImgLabel
-from labels.utils import resize_label
-
-from src.python.utils.imageprocessing.Image import Image
+from utils.imageprocessing.Image import Image
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.utils import resize_label
 
 
 def imread(path, color_format) -> Image:

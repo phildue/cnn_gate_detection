@@ -1,7 +1,6 @@
-from frontend.utils.BoundingBox import BoundingBox
-
-from src.python.modelzoo.backend.tensor import non_max_suppression
-from src.python.modelzoo.models.Decoder import Decoder
+from modelzoo.backend.tensor.iou import non_max_suppression
+from modelzoo.models.Decoder import Decoder
+from utils.BoundingBox import BoundingBox
 
 
 class Postprocessor:

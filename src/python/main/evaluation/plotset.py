@@ -1,15 +1,11 @@
 import numpy as np
-from workdir import work_dir
 
-from src.python.modelzoo.backend.visuals import BaseMultiPlot
-from src.python.modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+from utils.fileaccess.utils import load_file
+from utils.workdir import work_dir
 
 work_dir()
-
-from src.python.utils.fileaccess import load_file
-from src.python.modelzoo.evaluation import EvaluatorPrecisionRecall
-
-
 def mean_avg_prec(results):
     detection_result = results['results']['MetricDetection']
     detection_result = [ResultByConfidence(d) for d in detection_result]

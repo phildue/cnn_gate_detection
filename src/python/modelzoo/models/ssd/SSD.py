@@ -1,19 +1,20 @@
 import numpy as np
-from backend.tensor.ssd.MultiboxLoss import MultiboxLoss
-from backend.tensor.ssd.SSD300 import SSD300
-from backend.tensor.ssd.SSD7 import SSD7
-from backend.tensor.ssd.SSDNet import SSDNet
-from frontend.augmentation.SSDAugmenter import SSDAugmenter
-from frontend.models.Postprocessor import Postprocessor
-from frontend.models.Predictor import Predictor
-from frontend.models.Preprocessor import Preprocessor
-from frontend.models.ssd.SSDEncoder import SSDEncoder
-
-from src.python.modelzoo.backend.tensor.ssd.SSDTestNet import SSDTestNet
-from src.python.modelzoo.models.ssd.SSDDecoder import SSDDecoder
 
 
 # noinspection PyDefaultArgument
+from modelzoo.augmentation.SSDAugmenter import SSDAugmenter
+from modelzoo.backend.tensor.ssd.MultiboxLoss import MultiboxLoss
+from modelzoo.backend.tensor.ssd.SSD300 import SSD300
+from modelzoo.backend.tensor.ssd.SSD7 import SSD7
+from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
+from modelzoo.backend.tensor.ssd.SSDTestNet import SSDTestNet
+from modelzoo.models.Postprocessor import Postprocessor
+from modelzoo.models.Predictor import Predictor
+from modelzoo.models.Preprocessor import Preprocessor
+from modelzoo.models.ssd.SSDDecoder import SSDDecoder
+from modelzoo.models.ssd.SSDEncoder import SSDEncoder
+
+
 class SSD(Predictor):
     @property
     def input_shape(self):

@@ -1,12 +1,7 @@
 import random
 
 import keras.backend as K
-from imageprocessing.Backend import annotate_text
-from imageprocessing.Imageprocessing import COLOR_RED, COLOR_GREEN, show
-from workdir import work_dir
 
-from src.python.modelzoo.models import Yolo
-from src.python.utils.fileaccess import VocGenerator
 
 work_dir()
 

@@ -1,7 +1,6 @@
-from timing import tic, toc
-
-from src.python.samplegen.SetAnalyzer import SetAnalyzer
-from src.python.utils.workdir import work_dir
+from samplegen.SetAnalyzer import SetAnalyzer
+from utils.timing import tic, toc
+from utils.workdir import work_dir
 
 work_dir()
 tic()

@@ -1,11 +1,11 @@
 import copy
 
 import numpy as np
-from imageprocessing.Backend import color_shift
-from labels.ImgLabel import ImgLabel
 
-from src.python.modelzoo.augmentation.Augmenter import Augmenter
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.Backend import color_shift
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class AugmenterColorShift(Augmenter):

@@ -1,14 +1,11 @@
-from src.python.utils.workdir import work_dir
+from samplegen.shotgen.ShotLoad import ShotLoad
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
+from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX
+from utils.workdir import work_dir
 
 work_dir()
-from src.python.utils.fileaccess import GateGenerator
-from src.python.utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX
-
-from src.python.utils.fileaccess import VocGenerator
-
-from src.python.utils.imageprocessing import \
-    annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
-from src.python.samplegen.shotgen import ShotLoad
 
 
 def show_voc():

@@ -1,11 +1,10 @@
 import copy
 import random
 
-from imageprocessing.fisheye import fisheye
-from labels.ImgLabel import ImgLabel
-
-from src.python.modelzoo.augmentation.Augmenter import Augmenter
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.fisheye import fisheye
+from utils.labels.ImgLabel import ImgLabel
 
 
 class AugmenterDistort(Augmenter):

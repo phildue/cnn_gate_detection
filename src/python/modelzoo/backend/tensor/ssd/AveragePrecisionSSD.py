@@ -1,6 +1,6 @@
 import keras.backend as K
 
-from src.python.modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
+from modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
 
 
 class AveragePrecisionSSD:
@@ -31,7 +31,7 @@ class AveragePrecisionSSD:
         coord_decoded_w = coord_decoded_w * anchor_wh[:, 0] * self.variances[2]
         coord_decoded_h = coord_decoded_h * anchor_wh[:, 1] * self.variances[3]
 
-        coord_dec_t = K.concatenate([coord_decoded_cx, coord_decoded_w, coord_decoded_h], -1)
+        coord_dec_t = K.concatenate([coord_decoded_cxy, coord_decoded_w, coord_decoded_h], -1)
 
         return coord_dec_t
 

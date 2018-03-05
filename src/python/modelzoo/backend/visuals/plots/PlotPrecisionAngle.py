@@ -1,4 +1,4 @@
-from src.python.modelzoo.backend.visuals.plots import BasePlot
+from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 
 class PlotApAngle(BasePlot):

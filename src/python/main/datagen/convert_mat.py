@@ -1,18 +1,18 @@
 import glob
 
 import numpy as np
-from imageprocessing.Backend import imread
-from imageprocessing.Image import Image
-from labels.GateLabel import GateLabel
-from labels.ImgLabel import ImgLabel
-from labels.Pose import Pose
-from workdir import work_dir
+import scipy.io
 
-from src.python.samplegen.scene import GateCorners
-from src.python.utils.fileaccess.SetFileParser import write_set
+from samplegen.scene.GateCorners import GateCorners
+from utils.fileaccess.SetFileParser import write_set
+from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.Image import Image
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.Pose import Pose
+from utils.workdir import work_dir
 
 work_dir()
-import scipy.io
 
 path = 'resource/samples/cyberzoo/'
 mat = scipy.io.loadmat('resource/samples/cyberzoo/2018_2_2_ground_truth_gate_selection.mat')

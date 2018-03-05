@@ -1,21 +1,20 @@
 import os
 
 import numpy as np
-from labels.Pose import Pose
-from scene.Light import Light
-from timing import tic, toc
-from workdir import work_dir
 
-from src.python.samplegen.shotgen import ConstantLightGen
-from src.python.samplegen.shotgen import GateGLTall
-from src.python.samplegen.shotgen import TrajectoryGen
+from samplegen.scene.Light import Light
+from samplegen.scene.Scene import Scene
+from samplegen.shotgen.ShotCreate import ShotCreate
+from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
+from samplegen.shotgen.lightgen.ConstantLightGen import ConstantLightGen
+from samplegen.shotgen.positiongen.TrajectoryGen import TrajectoryGen
+from utils.fileaccess.SetFileParser import write_set
+from utils.labels.Pose import Pose
+from utils.timing import tic, toc
+from utils.workdir import work_dir
 
 work_dir()
-
-from src.python.utils.fileaccess.SetFileParser import write_set
-from src.python.samplegen.scene import Scene
-from src.python.samplegen.shotgen import ShotCreate
-from src.python.samplegen.shotgen import SceneEngine
 
 name = "stream_3"
 shot_path = "resource/shots/" + name + "/"

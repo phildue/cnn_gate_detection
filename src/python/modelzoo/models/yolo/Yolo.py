@@ -1,15 +1,15 @@
 import numpy as np
-from backend.tensor.yolo.TinyYolo import TinyYolo
-from backend.tensor.yolo.YoloLoss import YoloLoss
-from frontend.augmentation.YoloAugmenter import YoloAugmenter
-from frontend.models.Postprocessor import Postprocessor
-from frontend.models.Predictor import Predictor
-from frontend.models.Preprocessor import Preprocessor
-from frontend.models.yolo.YoloDecoder import YoloDecoder
 
-from src.python.modelzoo.backend.tensor.yolo.YoloV2 import YoloV2
-from src.python.modelzoo.models.yolo.YoloEncoder import YoloEncoder
-from src.python.utils.labels import ObjectLabel
+from modelzoo.augmentation.YoloAugmenter import YoloAugmenter
+from modelzoo.backend.tensor.yolo.TinyYolo import TinyYolo
+from modelzoo.backend.tensor.yolo.YoloLoss import YoloLoss
+from modelzoo.backend.tensor.yolo.YoloV2 import YoloV2
+from modelzoo.models.Postprocessor import Postprocessor
+from modelzoo.models.Predictor import Predictor
+from modelzoo.models.Preprocessor import Preprocessor
+from modelzoo.models.yolo.YoloDecoder import YoloDecoder
+from modelzoo.models.yolo.YoloEncoder import YoloEncoder
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 class Yolo(Predictor):

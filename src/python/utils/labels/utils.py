@@ -1,10 +1,10 @@
 import copy
 
 import numpy as np
-from labels.GateLabel import GateLabel
-from labels.ObjectLabel import ObjectLabel
 
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 def resize_label(label: ImgLabel, img_shape=None, shape: tuple = None, scale_x=1.0, scale_y=1.0):

@@ -1,7 +1,7 @@
 import keras.backend as K
 import tensorflow as tf
 
-from src.python.modelzoo.backend.tensor import Loss
+from modelzoo.backend.tensor.metrics.Loss import Loss
 
 
 class MultiboxLoss(Loss):

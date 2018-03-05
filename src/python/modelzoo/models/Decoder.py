@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from src.python.utils import BoundingBox
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.BoundingBox import BoundingBox
+from utils.labels.ImgLabel import ImgLabel
 
 
 class Decoder(ABC):

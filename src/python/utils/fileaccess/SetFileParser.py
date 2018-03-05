@@ -1,8 +1,7 @@
-from fileaccess.ImgFileParser import ImgFileParser
-from fileaccess.LabelFileParser import LabelFileParser
-from labels.ImgLabel import ImgLabel
-
-from src.python.utils.imageprocessing.Image import Image
+from utils.fileaccess.ImgFileParser import ImgFileParser
+from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 def write_set(path: str, imgs: [Image], labels: [ImgLabel], img_format='jpg', label_format='pkl'):

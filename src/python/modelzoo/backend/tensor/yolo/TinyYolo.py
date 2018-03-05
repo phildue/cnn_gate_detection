@@ -1,10 +1,10 @@
 import keras.backend as K
-from backend.tensor.metrics.Loss import Loss
 from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Activation, Reshape, Lambda
 from keras.optimizers import Adam
 
-from src.python.modelzoo.models.Net import Net
+from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.models.Net import Net
 
 
 class TinyYolo(Net):

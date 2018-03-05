@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.python.modelzoo.backend.visuals import BasePlot
+from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 
 class PlotPrecisionRecall(BasePlot):

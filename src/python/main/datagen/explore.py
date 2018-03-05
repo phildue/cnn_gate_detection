@@ -1,21 +1,20 @@
-import os
-
 import numpy as np
-from workdir import work_dir
 
-from src.python.samplegen.shotgen import Explorer
-from src.python.samplegen.shotgen import GateGLOpen
-from src.python.samplegen.shotgen import GateGLTall
-from src.python.samplegen.shotgen import GateGLThickLarge
-from src.python.samplegen.shotgen import GateGen
-from src.python.samplegen.shotgen import RandomPositionGen
-from src.python.utils.labels.Pose import Pose
+from samplegen.scene.Camera import Camera
+from samplegen.scene.Scene import Scene
+from samplegen.shotgen.GateGen import GateGen
+from samplegen.shotgen.engine3d.Explorer import Explorer
+from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
+from samplegen.shotgen.engine3d.opengl.GateGLOpen import GateGLOpen
+from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
+from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
+from utils.fileaccess.utils import create_dir
+from utils.labels.Pose import Pose
+from utils.workdir import work_dir
 
 work_dir()
 
-from src.python.samplegen.scene import Camera
-from src.python.samplegen.scene import Scene
-from src.python.samplegen.shotgen import SceneEngine
 
 cam = Camera(1000, init_pose=Pose(dist_forward=5))
 
@@ -48,8 +47,7 @@ position_gen = RandomPositionGen(range_dist_side=cam_range_side,
                                  range_yaw=cam_range_yaw)
 
 shot_path = 'samplegen/resource/shots/stream_recorded/'
-if not os.path.exists(shot_path):
-    os.makedirs(shot_path)
+create_dir([shot_path])
 recorder = None  # SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=0)
 explorer = Explorer(scene_engine, position_gen=position_gen, recorder=recorder)
 explorer.event_loop()

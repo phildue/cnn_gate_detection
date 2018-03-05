@@ -1,6 +1,6 @@
 import keras.backend as K
 
-from src.python.modelzoo.backend.tensor import iou_k
+from modelzoo.backend.tensor.iou import iou_k
 
 
 class AveragePrecision:

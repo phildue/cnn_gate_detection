@@ -1,9 +1,9 @@
 import numpy as np
 # noinspection PyDefaultArgument
-from frontend.utils.BoundingBox import BoundingBox
 from sklearn.neural_network._base import softmax
 
 from src.python.modelzoo.models.Decoder import Decoder
+from utils.BoundingBox import BoundingBox
 
 
 class SSDDecoder(Decoder):

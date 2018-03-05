@@ -1,9 +1,9 @@
 import numpy as np
-from imageprocessing.Imageprocessing import get_bounding_box
-from labels.GateLabel import GateLabel
-from labels.ObjectLabel import ObjectLabel
 
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.imageprocessing.Imageprocessing import get_bounding_box
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 def centroid_to_minmax(coord_t):

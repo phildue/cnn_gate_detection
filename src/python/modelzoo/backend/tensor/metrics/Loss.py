@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.python.modelzoo.backend.tensor import Metric
+from modelzoo.backend.tensor.metrics.Metric import Metric
 
 
 class Loss(Metric):

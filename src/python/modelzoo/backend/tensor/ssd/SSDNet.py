@@ -3,8 +3,8 @@ from abc import abstractmethod
 import keras.backend as K
 from keras.optimizers import Adam, SGD
 
-from src.python.modelzoo.backend.tensor import Loss
-from src.python.modelzoo.models.Net import Net
+from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.models.Net import Net
 
 
 class SSDNet(Net):

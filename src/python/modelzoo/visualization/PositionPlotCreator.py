@@ -1,10 +1,9 @@
 import numpy as np
-from labels.GateLabel import GateLabel
 
-from src.python.modelzoo.backend.visuals import BasePlot
-from src.python.modelzoo.evaluation import EvaluatorPrecisionRecall
-from src.python.modelzoo.evaluation import ResultByConfidence
-from src.python.utils.labels.Pose import Pose
+from modelzoo.backend.visuals.plots.BasePlot import BasePlot
+from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+from utils.labels.GateLabel import GateLabel
+from utils.labels.Pose import Pose
 
 
 class PositionPlotCreator:

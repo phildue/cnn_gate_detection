@@ -1,14 +1,12 @@
 import os
 
-from frontend.evaluation.ModelEvaluator import ModelEvaluator
-from workdir import work_dir
-
-from src.python.modelzoo.models.yolo.Yolo import Yolo
+from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
+from modelzoo.models.yolo.Yolo import Yolo
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.fileaccess.utils import create_dir
+from utils.workdir import work_dir
 
 work_dir()
-
-from src.python.utils.fileaccess import GateGenerator
-from src.python.utils.fileaccess import save_file
 
 name = 'test'
 
@@ -32,11 +30,7 @@ result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.txt'
 
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
-
-if not os.path.exists(result_img_path):
-    os.makedirs(result_img_path)
+create_dir([result_path, result_img_path])
 
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)

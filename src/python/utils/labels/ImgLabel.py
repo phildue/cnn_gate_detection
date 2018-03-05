@@ -1,4 +1,4 @@
-from src.python.utils.labels import ObjectLabel
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 class ImgLabel:

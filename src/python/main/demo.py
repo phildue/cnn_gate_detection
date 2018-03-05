@@ -1,7 +1,6 @@
-from workdir import work_dir
-
-from src.python.modelzoo.models.yolo.Yolo import Yolo
-from src.python.utils.fileaccess import GateGenerator
+from modelzoo.models.yolo.Yolo import Yolo
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.workdir import work_dir
 
 work_dir()
 

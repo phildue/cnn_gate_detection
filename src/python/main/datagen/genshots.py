@@ -1,26 +1,23 @@
 import os
 
 import numpy as np
-from SetAnalyzer import SetAnalyzer
-from workdir import work_dir
+
+from samplegen.SetAnalyzer import SetAnalyzer
+from samplegen.scene.Scene import Scene
+from samplegen.shotgen.GateGen import GateGen
+from samplegen.shotgen.ShotCreate import ShotCreate
+from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
+from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
+from samplegen.shotgen.engine3d.opengl.GateGLThin250 import GateGLThin250
+from samplegen.shotgen.lightgen.RandomLightGen import RandomLightGen
+from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
+from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.utils import create_dir
+from utils.timing import tic, toc
+from utils.workdir import work_dir
 
 work_dir()
-from src.python.samplegen.shotgen import GateGLThin250
-
-from src.python.samplegen.shotgen import GateGLThickLarge
-
-from src.python.samplegen.shotgen import GateGLTall
-
-from src.python.samplegen.shotgen import GateGen
-from src.python.utils.timing import tic, toc
-
-from src.python.utils.fileaccess.SetFileParser import SetFileParser
-from src.python.samplegen.scene import Scene
-from src.python.samplegen.shotgen import ShotCreate
-from src.python.samplegen.shotgen import SceneEngine
-
-from src.python.samplegen.shotgen import RandomLightGen
-from src.python.samplegen.shotgen import RandomPositionGen
 
 name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
@@ -67,8 +64,7 @@ scene = Scene()
 scene_engine = SceneEngine(scene, width=width, height=height)
 shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05)
 
-if not os.path.exists(shot_path):
-    os.makedirs(shot_path)
+create_dir([shot_path])
 setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=N * 100)
 
 for i in range(n_batches):

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.labels.ImgLabel import ImgLabel
 
 
 class FileEvaluator(ABC):

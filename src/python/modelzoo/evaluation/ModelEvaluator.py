@@ -1,8 +1,7 @@
-from frontend.models.Predictor import Predictor
-from timing import tic, toc
-
-from src.python.utils.fileaccess import DatasetGenerator
-from src.python.utils.fileaccess import save_file
+from modelzoo.models.Predictor import Predictor
+from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.fileaccess.utils import save_file
+from utils.timing import toc, tic
 
 
 class ModelEvaluator:

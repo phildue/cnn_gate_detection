@@ -1,9 +1,8 @@
-from fileaccess.LabelFileParser import LabelFileParser
-from labels.GateLabel import GateLabel
-from labels.ObjectLabel import ObjectLabel
-from workdir import work_dir
-
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
+from utils.workdir import work_dir
 
 work_dir()
 

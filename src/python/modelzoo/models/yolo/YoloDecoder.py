@@ -1,7 +1,7 @@
 import numpy as np
-from frontend.utils.BoundingBox import BoundingBox
 
 from src.python.modelzoo.models.Decoder import Decoder
+from utils.BoundingBox import BoundingBox
 
 
 class YoloDecoder(Decoder):

@@ -1,7 +1,6 @@
-from workdir import work_dir
-
-from src.python.modelzoo.backend.visuals import PlotTrainingHistory
-from src.python.utils.fileaccess import load_file
+from modelzoo.backend.visuals.plots.PlotTrainingHistory import PlotTrainingHistory
+from utils.fileaccess.utils import load_file
+from utils.workdir import work_dir
 
 work_dir()
 

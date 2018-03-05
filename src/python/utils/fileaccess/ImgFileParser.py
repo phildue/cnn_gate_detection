@@ -1,8 +1,7 @@
 import glob
 
-from imageprocessing.Backend import imwrite, imread
-
-from src.python.utils.imageprocessing.Image import Image
+from utils.imageprocessing.Backend import imwrite, imread
+from utils.imageprocessing.Image import Image
 
 
 def write_imgs(path: str, samples: [Image], file_format='jpg'):

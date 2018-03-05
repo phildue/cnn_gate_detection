@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.python.modelzoo.backend.visuals import BaseMultiPlot
-from src.python.modelzoo.evaluation import DetectionResult
-from src.python.utils.fileaccess import load_file
+from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from modelzoo.evaluation.DetectionResult import DetectionResult
+from utils.fileaccess.utils import load_file
 
 
 class StreamAnalyzer:

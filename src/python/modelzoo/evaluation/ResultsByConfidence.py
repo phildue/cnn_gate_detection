@@ -1,4 +1,4 @@
-from src.python.modelzoo.evaluation import DetectionResult
+from modelzoo.evaluation.DetectionResult import DetectionResult
 
 
 class ResultByConfidence:

@@ -1,7 +1,7 @@
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History
 
-from src.python.modelzoo.models import Predictor
-from src.python.utils.fileaccess import DatasetGenerator
+from modelzoo.models.Predictor import Predictor
+from utils.fileaccess.DatasetGenerator import DatasetGenerator
 
 
 def fit_generator(predictor: Predictor, dataset_gen: DatasetGenerator, out_file, batch_size, initial_epoch=0,

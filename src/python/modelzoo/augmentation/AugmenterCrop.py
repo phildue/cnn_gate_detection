@@ -1,14 +1,13 @@
 import copy
 import random
-from abc import ABC
 
-from imageprocessing.Backend import crop
-from labels.ImgLabel import ImgLabel
+from modelzoo.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.Backend import crop
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
-from src.python.utils.imageprocessing.Image import Image
 
-
-class AugmenterCrop(ABC):
+class AugmenterCrop(Augmenter):
     total_fails = 0
 
     def __init__(self, c_min=0.7, c_max=0.9):

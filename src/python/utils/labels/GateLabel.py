@@ -1,7 +1,6 @@
-from labels.ObjectLabel import ObjectLabel
-
-from src.python.samplegen.scene import GateCorners
-from src.python.utils.labels import Pose
+from samplegen.scene.GateCorners import GateCorners
+from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Pose import Pose
 
 
 class GateLabel(ObjectLabel):

@@ -2,9 +2,9 @@ import keras.backend as K
 from keras import Model, Input
 from keras.layers import Conv2D, MaxPooling2D, Concatenate, Reshape, Lambda
 
-from src.python.modelzoo.backend.tensor import L2Normalization
-from src.python.modelzoo.backend.tensor import Loss
-from src.python.modelzoo.backend.tensor import SSDNet
+from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.backend.tensor.ssd.L2Normalization import L2Normalization
+from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
 
 
 class SSD300(SSDNet):

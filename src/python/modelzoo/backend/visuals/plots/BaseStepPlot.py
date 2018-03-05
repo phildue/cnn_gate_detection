@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from src.python.modelzoo.backend.visuals import BasePlot
+from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 
 class BaseStepPlot(BasePlot):

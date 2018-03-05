@@ -1,16 +1,16 @@
 from enum import Enum
 
 import numpy as np
-from frontend.utils.BoundingBox import BoundingBox, centroid_to_minmax
-from labels.ImgLabel import ImgLabel
-
-from src.python.modelzoo.backend.tensor import iou_np
-from src.python.modelzoo.models.Encoder import Encoder
-from src.python.utils.imageprocessing.Image import Image
 
 
 # noinspection PyDefaultArgument
 # noinspection PyDefaultArgument
+from modelzoo.backend.tensor.iou import iou_np
+from modelzoo.models.Encoder import Encoder
+from utils.BoundingBox import centroid_to_minmax, BoundingBox
+from utils.imageprocessing import Image
+from utils.labels.ImgLabel import ImgLabel
+
 
 class Label(Enum):
     BACKGROUND = -2

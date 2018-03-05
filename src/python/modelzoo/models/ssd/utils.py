@@ -1,8 +1,7 @@
-from imageprocessing.Backend import resize
-from imageprocessing.Imageprocessing import show, LEGEND_TEXT, COLOR_GREEN
-
-from src.python.utils import BoundingBox
-from src.python.utils.imageprocessing.Image import Image
+from utils.BoundingBox import BoundingBox
+from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import COLOR_GREEN, show, LEGEND_TEXT
 
 
 def show_encoding(label_t, img: Image, shape=(600, 600)):

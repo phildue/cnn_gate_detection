@@ -1,13 +1,13 @@
 import numpy as np
-from fileaccess.utils import save_file, load_file
-from frontend.evaluation.DetectionEvaluator import DetectionEvaluator
-from frontend.evaluation.Metric import Metric
-from frontend.models.Predictor import Predictor
-from imageprocessing.Backend import imread
-from timing import tic, toc
 
-from src.python.utils import BoundingBox
-from src.python.utils.labels.ImgLabel import ImgLabel
+from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
+from modelzoo.evaluation.Metric import Metric
+from modelzoo.models.Predictor import Predictor
+from utils.BoundingBox import BoundingBox
+from utils.fileaccess.utils import load_file, save_file
+from utils.imageprocessing.Backend import imread
+from utils.labels.ImgLabel import ImgLabel
+from utils.timing import tic, toc
 
 
 class ConfidenceEvaluator(DetectionEvaluator):

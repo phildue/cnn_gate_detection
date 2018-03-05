@@ -1,10 +1,9 @@
 import copy
 
-from imageprocessing.Backend import flip
-from labels.ImgLabel import ImgLabel
-
-from src.python.modelzoo.augmentation.Augmenter import Augmenter
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.Backend import flip
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class AugmenterFlip(Augmenter):

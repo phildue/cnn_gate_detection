@@ -1,8 +1,7 @@
 from abc import ABC
 
-from labels.ImgLabel import ImgLabel
-
-from src.python.utils.imageprocessing import Image
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class Augmenter(ABC):

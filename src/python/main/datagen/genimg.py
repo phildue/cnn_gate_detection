@@ -1,14 +1,15 @@
 import os
 
 import numpy as np
-from imggen.RandomImgGen import RandomImgGen
-from workdir import work_dir
+
+from samplegen.imggen.RandomImgGen import RandomImgGen
+from samplegen.shotgen.ShotLoad import ShotLoad
+from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.utils import create_dir
+from utils.timing import tic, toc, tuc
+from utils.workdir import work_dir
 
 work_dir()
-
-from src.python.utils.fileaccess.SetFileParser import SetFileParser
-from src.python.utils.timing import tic, toc, tuc
-from src.python.samplegen.shotgen import ShotLoad
 
 background_path = ["resource/backgrounds/lmsun/",
                    "resource/backgrounds/google-fence-gate-industry/"]
@@ -23,9 +24,7 @@ shot_path = "resource/shots/mult_gate_aligned/"
 n_backgrounds = 10000
 batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
-
-if not os.path.exists(sample_path):
-    os.makedirs(sample_path)
+create_dir([sample_path])
 tic()
 
 setwriter = SetFileParser(sample_path, img_format='jpg', label_format='pkl')

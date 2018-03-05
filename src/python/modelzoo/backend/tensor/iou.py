@@ -1,7 +1,7 @@
 import keras.backend as K
 import numpy as np
 
-from src.python.utils import BoundingBox
+from utils.BoundingBox import BoundingBox
 
 
 def iou_np(box_a, box_b):

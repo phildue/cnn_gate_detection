@@ -1,7 +1,6 @@
-from workdir import work_dir
-
-from src.python.samplegen.labelmaker import LabelMaker
-from src.python.utils.fileaccess import create_dir
+from samplegen.labelmaker.LabelMaker import LabelMaker
+from utils.fileaccess.utils import create_dir
+from utils.workdir import work_dir
 
 work_dir()
 

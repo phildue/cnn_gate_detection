@@ -1,6 +1,6 @@
 import keras.backend as K
 
-from src.python.modelzoo.backend.tensor import MetricYolo
+from modelzoo.backend.tensor.yolo.MetricYolo import MetricYolo
 
 
 class PrecisionRecallYolo(MetricYolo):

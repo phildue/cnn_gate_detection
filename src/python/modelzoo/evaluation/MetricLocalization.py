@@ -1,9 +1,9 @@
 import numpy as np
-from frontend.evaluation import Metric
-from labels.ImgLabel import ImgLabel
 
-from src.python.utils import BoundingBox
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.backend.tensor.metrics.Metric import Metric
+from utils.BoundingBox import BoundingBox
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class MetricLocalization(Metric):

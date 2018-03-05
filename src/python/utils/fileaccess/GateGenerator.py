@@ -4,10 +4,10 @@ import pickle
 import random
 
 import numpy as np
-from fileaccess.DatasetGenerator import DatasetGenerator
-from imageprocessing.Backend import imread
 
-from src.python.utils.labels.ImgLabel import ImgLabel
+from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.imageprocessing.Backend import imread
+from utils.labels.ImgLabel import ImgLabel
 
 
 class GateGenerator(DatasetGenerator):

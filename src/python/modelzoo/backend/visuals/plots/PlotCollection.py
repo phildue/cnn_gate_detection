@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from src.python.modelzoo.backend.visuals.plots import PyPlot
+from modelzoo.backend.visuals.plots.PyPlot import PyPlot
 
 
 class PlotCollection(PyPlot):

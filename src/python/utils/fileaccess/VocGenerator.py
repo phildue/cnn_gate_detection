@@ -2,13 +2,13 @@ import random
 import xml.etree.ElementTree as ET
 
 import numpy as np
-from fileaccess.DatasetGenerator import DatasetGenerator
-from fileaccess.utils import load_file
-from imageprocessing.Backend import imread
-from labels.ImgLabel import ImgLabel
-from labels.ObjectLabel import ObjectLabel
 
-from src.python.utils.imageprocessing.Image import Image
+from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.fileaccess.utils import load_file
+from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 class VocGenerator(DatasetGenerator):

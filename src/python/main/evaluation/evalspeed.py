@@ -1,14 +1,13 @@
 import os
 
-from frontend.evaluation.SpeedEvaluator import SpeedEvaluator
-from workdir import work_dir
-
-from src.python.modelzoo.models.yolo.Yolo import Yolo
+from modelzoo.evaluation.SpeedEvaluator import SpeedEvaluator
+from modelzoo.models.yolo.Yolo import Yolo
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.fileaccess.utils import create_dir, save_file
+from utils.workdir import work_dir
 
 work_dir()
 
-from src.python.utils.fileaccess import GateGenerator
-from src.python.utils.fileaccess import save_file
 
 name = 'speed'
 
@@ -32,12 +31,7 @@ result_file = 'result.pkl'
 result_img_path = result_path + 'images/'
 exp_param_file = 'experiment_parameters.txt'
 
-
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
-
-if not os.path.exists(result_img_path):
-    os.makedirs(result_img_path)
+create_dir([result_path, result_img_path])
 
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
@@ -45,7 +39,7 @@ generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_for
 evaluator = SpeedEvaluator(model,
                            out_file=result_path+result_file)
 
-evaluator.evaluate(generator, n_batches=n_batches)
+evaluator.evaluate_generator(generator, n_batches=n_batches)
 
 exp_params = {'name': name,
               'model': model.net.__class__.__name__,

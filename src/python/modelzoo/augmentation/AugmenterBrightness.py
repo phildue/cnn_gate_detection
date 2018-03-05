@@ -1,11 +1,10 @@
 import copy
 import random
 
-from imageprocessing.Backend import brightness
-from labels.ImgLabel import ImgLabel
-
-from src.python.modelzoo.augmentation.Augmenter import Augmenter
-from src.python.utils.imageprocessing.Image import Image
+from modelzoo.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.Backend import brightness
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class AugmenterBrightness(Augmenter):

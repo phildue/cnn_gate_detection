@@ -1,8 +1,7 @@
-from frontend.augmentation.AugmenterBrightness import AugmenterBrightness
-from frontend.augmentation.AugmenterEnsemble import AugmenterEnsemble
-from frontend.augmentation.AugmenterFlip import AugmenterFlip
-
-from src.python.modelzoo.augmentation.AugmenterCrop import AugmenterCrop
+from modelzoo.augmentation.AugmenterBrightness import AugmenterBrightness
+from modelzoo.augmentation.AugmenterCrop import AugmenterCrop
+from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
+from modelzoo.augmentation.AugmenterFlip import AugmenterFlip
 
 
 class SSDAugmenter(AugmenterEnsemble):

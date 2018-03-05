@@ -1,11 +1,11 @@
 import numpy as np
-from frontend.evaluation.DetectionResult import DetectionResult
-from frontend.evaluation.Metric import Metric
-from imageprocessing.Image import Image
-from imageprocessing.Imageprocessing import LEGEND_BOX, show, COLOR_GREEN, COLOR_RED, COLOR_BLUE, save_labeled
 
-from src.python.utils import BoundingBox
-from src.python.utils.labels.ImgLabel import ImgLabel
+from modelzoo.backend.tensor.metrics.Metric import Metric
+from modelzoo.evaluation.DetectionResult import DetectionResult
+from utils.BoundingBox import BoundingBox
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, COLOR_BLUE, LEGEND_BOX, save_labeled, show
+from utils.labels.ImgLabel import ImgLabel
 
 
 class MetricOneGate(Metric):

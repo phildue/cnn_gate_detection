@@ -1,12 +1,12 @@
 import numpy as np
-from imageprocessing.Backend import draw_bounding_box, draw_gate_corners, imshow, annotate_text, imwrite
-from labels.GateLabel import GateLabel
-from labels.ImgLabel import ImgLabel
-from labels.ObjectLabel import ObjectLabel
-from labels.Pose import Pose
 
-from src.python.samplegen.scene import GateCorners
-from src.python.utils.imageprocessing.Image import Image
+from samplegen.scene.GateCorners import GateCorners
+from utils.imageprocessing.Backend import draw_gate_corners, draw_bounding_box, annotate_text, imshow, imwrite
+from utils.imageprocessing.Image import Image
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Pose import Pose
 
 LEGEND_BOX = 0
 LEGEND_CORNERS = 1

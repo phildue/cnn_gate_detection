@@ -1,7 +1,7 @@
 import numpy as np
-from imageprocessing.Backend import crop, resize
 
-from src.python.utils.imageprocessing.Image import Image
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Backend import resize, crop
 
 
 def sample_image(arr, idx0, idx1):

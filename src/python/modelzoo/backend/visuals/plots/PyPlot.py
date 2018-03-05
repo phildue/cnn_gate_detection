@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.python.utils.Plot import Plot
+from utils.Plot import Plot
 
 
 class PyPlot(Plot):

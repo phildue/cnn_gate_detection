@@ -5,8 +5,8 @@ from keras.layers import concatenate
 from keras.optimizers import Adam
 from tensorflow import space_to_depth
 
-from src.python.modelzoo.backend.tensor import Loss
-from src.python.modelzoo.models.Net import Net
+from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.models.Net import Net
 
 
 class YoloV2(Net):

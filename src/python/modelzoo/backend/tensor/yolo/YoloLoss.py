@@ -1,6 +1,6 @@
 import keras.backend as K
 
-from src.python.modelzoo.backend.tensor import Loss
+from modelzoo.backend.tensor.metrics.Loss import Loss
 
 
 class YoloLoss(Loss):
