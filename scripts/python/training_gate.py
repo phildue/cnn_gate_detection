@@ -19,18 +19,18 @@ from backend.tensor.training import fit_generator
 
 BATCH_SIZE = 8
 
-image_source = "resource/samples/mult_gate_aligned_blur/"
+image_source = ["resource/samples/mult_gate_aligned_blur_distort/", "resource/samples/mult_gate_aligned/"]
 max_epochs = 60
 n_samples = 10000
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # predictor = SSD.ssd300(n_classes=1, batch_size=BATCH_SIZE)
 predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=BATCH_SIZE, color_format='yuv',
-                           weight_file='logs/tinyyolo_10k/TinyYolo.h5')
+                           weight_file='logs/tinyyolo_10k_distort/TinyYolo.h5')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv')
 
-augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterDistort())])
+augmenter = None  # AugmenterEnsemble(augmenters=[(0.5, AugmenterDistort())])
 
 model_name = predictor.net.__class__.__name__
 
