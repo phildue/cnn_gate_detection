@@ -20,15 +20,10 @@ image_source = 'voc'
 
 # model = TinyYolo(batch_size=BATCH_SIZE, class_names=['gate'])
 # model = yolo(batch_size=BATCH_SIZE, class_names=['gate'])
-predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE, alpha=0.1)
+predictor = SSD.ssd300(n_classes=20, batch_size=BATCH_SIZE, alpha=1.0)
 data_generator = VocGenerator(batch_size=BATCH_SIZE, shuffle=False)
 
 augmenter = SSDAugmenter()
-
-train_params = {'optimizer': 'SGD',
-                'lr': 0.001,
-                'momentum': 0.9,
-                'decay': 0.0005}
 
 model_name = predictor.net.__class__.__name__
 
@@ -40,7 +35,7 @@ create_dirs([result_path])
 predictor.preprocessor.augmenter = augmenter
 
 loss = predictor.loss
-predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
+predictor.compile(params=None, metrics=[loss.conf_loss_positives,
                                                 loss.conf_loss_negatives,
                                                 loss.localization_loss]
                   )
