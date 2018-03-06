@@ -25,7 +25,7 @@ class RandomImgGen(ImgGen):
         labels_created = []
         samples = []
         for j in range(n_backgrounds):
-            background = imread(random.choice(self.files))
+            background = imread(random.choice(self.files), 'bgr')
             i = random.randint(0, len(shots) - 1)
             shot = shots[i]
 

@@ -16,11 +16,11 @@ background_path = ["resource/backgrounds/lmsun/",
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/mult_gate_aligned/"
+sample_path = "resource/samples/mult_gate_aligned_show/"
 shot_path = "resource/shots/mult_gate_aligned/"
 
-n_backgrounds = 20000
-batch_size = 100
+n_backgrounds = 20
+batch_size = 20
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
@@ -30,11 +30,11 @@ set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
 for i in range(n_batches):
     tic()
     shots, shot_labels = ShotLoad(shot_path, img_format='bmp').get_shots(n_shots=250)
-    samples, labels = RandomImgGen(background_path, out_format='yuv',
+    samples, labels = RandomImgGen(background_path, out_format='bgr',
                                    blur_kernel=(5, 5),
-                                   blur_it=20,
-                                   noisy_it=10,
-                                   noisy_var=30.0).generate(
+                                   blur_it=5,
+                                   noisy_it=1,
+                                   noisy_var=40.0).generate(
         shots, shot_labels,
         n_backgrounds=batch_size)
 
