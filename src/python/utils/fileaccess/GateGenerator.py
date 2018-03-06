@@ -75,9 +75,3 @@ class GateGenerator(DatasetGenerator):
                 if self.shuffle: random.shuffle(files)
                 files_it = iter(files)
 
-    def __read_label(self, filename):
-        if self.label_format:
-            with open(filename, 'rb') as f:
-                return pickle.load(f)
-        else:
-            raise ValueError("GateGenerator::Unknown Label Format: ", self.label_format)
