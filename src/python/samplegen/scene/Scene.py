@@ -1,8 +1,7 @@
-from scene import Light
-from scene.Camera import Camera
-
-from src.python.samplegen.shotgen import View
-from src.python.utils.labels.Pose import Pose
+from samplegen.scene.Camera import Camera
+from samplegen.scene.Light import Light
+from samplegen.shotgen.engine3d.View import View
+from utils.labels.Pose import Pose
 
 
 class Scene:

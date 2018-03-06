@@ -1,7 +1,6 @@
-from scene.Gate import Gate
-from scene.GateOpen import GateOpen
-
-from src.python.samplegen.shotgen import OpenGlView
+from samplegen.scene.Gate import Gate
+from samplegen.scene.GateOpen import GateOpen
+from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
 
 class GateGLOpen(OpenGlView):

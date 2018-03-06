@@ -1,11 +1,11 @@
 import numpy as np
 
-from src.python.samplegen.shotgen import LightGen
-from src.python.samplegen.shotgen import PointProjector
-from src.python.samplegen.shotgen import PositionGen
-from src.python.samplegen.shotgen import SceneEngine
-from src.python.samplegen.shotgen import ShotGen
-from src.python.utils.labels.ImgLabel import ImgLabel
+from samplegen.shotgen.ShotGen import ShotGen
+from samplegen.shotgen.engine3d.PointProjector import PointProjector
+from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.lightgen.LightGen import LightGen
+from samplegen.shotgen.positiongen.PositionGen import PositionGen
+from utils.labels.ImgLabel import ImgLabel
 
 
 class ShotCreate(ShotGen):

@@ -1,7 +1,6 @@
-from scene.Gate import Gate
-from scene.GateThin250 import Gate250
-
-from src.python.samplegen.shotgen import OpenGlView
+from samplegen.scene.Gate import Gate
+from samplegen.scene.GateThin250 import Gate250
+from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
 
 class GateGLThin250(OpenGlView):

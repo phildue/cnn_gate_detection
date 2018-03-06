@@ -1,7 +1,6 @@
-from scene.Gate import Gate
-from scene.GateTall import GateTall
-
-from src.python.samplegen.shotgen import OpenGlView
+from samplegen.scene.Gate import Gate
+from samplegen.scene.GateTall import GateTall
+from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
 
 class GateGLTall(OpenGlView):

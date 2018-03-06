@@ -1,11 +1,9 @@
 import glob
 
-from imageprocessing.Backend import COLOR_BGR2YUV
-from imageprocessing.Backend import imread, replace_background, blur, resize, convert_color
-from labels.ImgLabel import ImgLabel
-
-from src.python.samplegen.imggen.ImgGen import ImgGen
-from src.python.utils.imageprocessing.Image import Image
+from samplegen.imggen.ImgGen import ImgGen
+from utils.imageprocessing.Backend import imread, replace_background, blur, convert_color, resize, COLOR_BGR2YUV
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class DetermImgGen(ImgGen):
@@ -24,7 +22,7 @@ class DetermImgGen(ImgGen):
         samples = []
         for j in range(len(shots)):
             for i in range(n_backgrounds):
-                background = imread(self.files[i])
+                background = imread(self.files[i], 'bgr')
                 img = replace_background(shots[j], background)
                 img = blur(img, self.blur_kernel)
 

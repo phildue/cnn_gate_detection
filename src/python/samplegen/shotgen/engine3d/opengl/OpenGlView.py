@@ -4,11 +4,11 @@ from OpenGL.GL import glColor, GL_POLYGON, glBegin, glNormal3fv, glTexCoord2fv, 
 from OpenGL.raw.GL.VERSION.GL_1_0 import glCallList
 from OpenGL.raw.GL.VERSION.GL_1_0 import glGenLists, glNewList, glEnable
 from OpenGL.raw.GL.VERSION.GL_1_1 import GL_COMPILE, glFrontFace, GL_CCW, GL_TEXTURE_2D, glBindTexture
-from scene.Gate import Gate
 
-from src.python.samplegen.shotgen import FileParser
-from src.python.samplegen.shotgen import View
-from src.python.utils.labels.Pose import Pose
+from samplegen.scene.Gate import Gate
+from samplegen.shotgen.engine3d.View import View
+from samplegen.shotgen.engine3d.opengl.FileParser import FileParser
+from utils.labels.Pose import Pose
 
 
 class OpenGlView(View):

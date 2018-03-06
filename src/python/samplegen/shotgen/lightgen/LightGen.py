@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.python.samplegen.scene import Light
+from samplegen.scene.Light import Light
 
 
 class LightGen(ABC):

@@ -1,8 +1,7 @@
 import random
 
-from scene.Light import Light
-
-from src.python.samplegen.shotgen import LightGen
+from samplegen.scene.Light import Light
+from samplegen.shotgen.lightgen.LightGen import LightGen
 
 
 class RandomLightGen(LightGen):

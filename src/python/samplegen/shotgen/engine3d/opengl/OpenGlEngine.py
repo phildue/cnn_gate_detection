@@ -8,9 +8,9 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import glutInit, sys
 
-from src.python.samplegen.scene import Light
-from src.python.samplegen.scene import Scene
-from src.python.utils.imageprocessing import parse_screenshot
+from samplegen.scene.Light import Light
+from samplegen.scene.Scene import Scene
+from utils.imageprocessing.Backend import parse_screenshot
 
 
 class OpenGlEngine:

@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 
-from src.python.samplegen.shotgen import OpenGlView
-from src.python.utils.labels.Pose import Pose
+from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
+from utils.labels.Pose import Pose
 
 
 class GateGen:

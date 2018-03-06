@@ -1,7 +1,5 @@
-from scene.Gate import Gate
-from scene.GateLarge import GateLarge
-
-from src.python.samplegen.shotgen import OpenGlView
+from samplegen.scene.GateLarge import GateLarge
+from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
 
 
 class GateGLThickLarge(OpenGlView):

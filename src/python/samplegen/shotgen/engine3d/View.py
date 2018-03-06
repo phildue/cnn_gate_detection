@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.python.utils.labels.Pose import Pose
+from utils.labels.Pose import Pose
 
 
 class View(ABC):

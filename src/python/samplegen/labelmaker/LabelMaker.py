@@ -1,14 +1,14 @@
 import glob
 
-from imageprocessing.Backend import split_video, imread
-from imageprocessing.GateAnnotater import GateAnnotater
-from imageprocessing.Imageprocessing import show
-from labels.GateLabel import GateLabel
-from labels.ImgLabel import ImgLabel
-from labels.Pose import Pose
+from samplegen.scene.GateCorners import GateCorners
+from utils.imageprocessing.GateAnnotater import GateAnnotater
 
-from src.python.samplegen.scene import GateCorners
-from src.python.utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.SetFileParser import SetFileParser
+from utils.imageprocessing.Backend import split_video, imread
+from utils.imageprocessing.Imageprocessing import show
+from utils.labels.GateLabel import GateLabel
+from utils.labels.ImgLabel import ImgLabel
+from utils.labels.Pose import Pose
 
 
 class LabelMaker:
