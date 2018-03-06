@@ -23,7 +23,7 @@ work_dir()
 name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
 
-N = 20
+N = 58
 n_positions = 10000 - N * 100
 n_batches = 100 - N
 cam_range_side = (-1, 1)

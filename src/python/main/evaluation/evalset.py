@@ -3,22 +3,22 @@ import os
 from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import create_dirs
+from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import work_dir
 
 work_dir()
 
-name = 'test'
+name = '0703'
 
 # Image Source
-BATCH_SIZE = 4
-n_batches = 2
-image_source = 'resource/samples/mult_gate_aligned_test/'
+batch_size = 4
+n_batches = 250
+image_source = ['resource/samples/mult_gate_aligned_test/']
 color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = 'logs/yolov2_25k/YoloV2.h5'
+weight_file = 'logs/yolov2_10k/YoloV2.h5'
 model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
 
 # Evaluator
@@ -32,8 +32,8 @@ exp_param_file = 'experiment_parameters_' + name + '.txt'
 
 create_dirs([result_path, result_img_path])
 
-generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
-                          shuffle=False, color_format=color_format)
+generator = GateGenerator(directory=image_source, batch_size=batch_size, img_format='jpg',
+                          shuffle=True, color_format=color_format, label_format='xml')
 
 evaluator = ModelEvaluator(model, out_file=result_path + result_file)
 
@@ -47,6 +47,6 @@ exp_params = {'name': name,
               'weight_file': weight_file,
               'image_source': image_source,
               'color_format': color_format,
-              'n_samples': n_batches * BATCH_SIZE}
+              'n_samples': n_batches * batch_size}
 
 save_file(exp_params, exp_param_file, result_path)

@@ -159,9 +159,14 @@ def noisy(img: Image, var=0.1, iterations=10):
     sigma = var ** 0.5
     noised = img.array
     for i in range(iterations):
-        gauss = np.random.normal(mean, sigma, (row, col, ch))
-        gauss = gauss.reshape(row, col, ch)
-        noised += gauss.astype(np.uint8)
+        gauss = np.random.normal(mean, sigma, (row, col))
+        gauss = gauss.reshape(row, col)
+        noised[:, :, 0][(noised[:, :, 0] < 255 - sigma * 4) & (noised[:, :, 0] > sigma * 4)] += gauss.astype(np.uint8)[
+            (noised[:, :, 0] < 255 - sigma * 4) & (noised[:, :, 0] > sigma * 4)]
+        noised[:, :, 1][(noised[:, :, 1] < 255 - sigma * 4) & (noised[:, :, 1] > sigma * 4)] += gauss.astype(np.uint8)[
+            (noised[:, :, 1] < 255 - sigma * 4) & (noised[:, :, 1] > sigma * 4)]
+        noised[:, :, 2][(noised[:, :, 2] < 255 - sigma * 4) & (noised[:, :, 2] > sigma * 4)] += gauss.astype(np.uint8)[
+            (noised[:, :, 2] < 255 - sigma * 4) & (noised[:, :, 2] > sigma * 4)]
     return Image(noised, img.format)
 
 
