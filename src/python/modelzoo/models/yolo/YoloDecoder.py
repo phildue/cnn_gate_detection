@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.python.modelzoo.models.Decoder import Decoder
+from modelzoo.models.Decoder import Decoder
 from utils.BoundingBox import BoundingBox
 
 
