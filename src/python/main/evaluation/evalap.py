@@ -3,7 +3,7 @@ import os
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.models.yolo.Yolo import Yolo
-from utils.fileaccess.utils import create_dir, save_file
+from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import work_dir
 
 work_dir()
@@ -28,7 +28,7 @@ result_file = 'metric_result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.txt'
 
-create_dir([result_path, result_img_path])
+create_dirs([result_path, result_img_path])
 
 evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(show_=True)], out_file=result_path + result_file,
                                 color_format=color_format)

@@ -31,7 +31,7 @@ def save_file(file, name: str, path: str = './', verbose=True):
         print("File stored at: " + path + name)
 
 
-def create_dir(dir_names: [str]):
+def create_dirs(dir_names: [str]):
     for dir_name in dir_names:
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)

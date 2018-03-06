@@ -9,7 +9,7 @@ from modelzoo.augmentation.SSDAugmenter import SSDAugmenter
 from modelzoo.backend.tensor.training import fit_generator
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.VocGenerator import VocGenerator
-from utils.fileaccess.utils import save_file
+from utils.fileaccess.utils import save_file, create_dirs
 from utils.workdir import work_dir
 
 work_dir()
@@ -35,8 +35,7 @@ model_name = predictor.net.__class__.__name__
 name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
+create_dirs([result_path])
 
 predictor.preprocessor.augmenter = augmenter
 

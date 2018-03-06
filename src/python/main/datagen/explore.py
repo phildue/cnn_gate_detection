@@ -9,7 +9,7 @@ from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
 from samplegen.shotgen.engine3d.opengl.GateGLOpen import GateGLOpen
 from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
-from utils.fileaccess.utils import create_dir
+from utils.fileaccess.utils import create_dirs
 from utils.labels.Pose import Pose
 from utils.workdir import work_dir
 
@@ -47,7 +47,7 @@ position_gen = RandomPositionGen(range_dist_side=cam_range_side,
                                  range_yaw=cam_range_yaw)
 
 shot_path = 'samplegen/resource/shots/stream_recorded/'
-create_dir([shot_path])
+create_dirs([shot_path])
 recorder = None  # SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=0)
 explorer = Explorer(scene_engine, position_gen=position_gen, recorder=recorder)
 explorer.event_loop()

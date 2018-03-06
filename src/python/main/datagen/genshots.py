@@ -13,7 +13,7 @@ from samplegen.shotgen.engine3d.opengl.GateGLThin250 import GateGLThin250
 from samplegen.shotgen.lightgen.RandomLightGen import RandomLightGen
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.SetFileParser import SetFileParser
-from utils.fileaccess.utils import create_dir
+from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc
 from utils.workdir import work_dir
 
@@ -64,7 +64,7 @@ scene = Scene()
 scene_engine = SceneEngine(scene, width=width, height=height)
 shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05)
 
-create_dir([shot_path])
+create_dirs([shot_path])
 setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=N * 100)
 
 for i in range(n_batches):

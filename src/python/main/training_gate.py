@@ -9,7 +9,7 @@ from modelzoo.augmentation.AugmenterPixel import AugmenterPixel
 from modelzoo.backend.tensor.training import fit_generator
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import create_dir, save_file
+from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import work_dir
 
 work_dir()
@@ -32,7 +32,7 @@ model_name = predictor.net.__class__.__name__
 name = str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 
-create_dir([result_path])
+create_dirs([result_path])
 
 predictor.preprocessor.augmenter = augmenter
 

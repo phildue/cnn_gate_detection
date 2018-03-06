@@ -3,7 +3,7 @@ import numpy as np
 from samplegen.imggen.DetermImgGen import DetermImgGen
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
-from utils.fileaccess.utils import create_dir
+from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc, tuc
 from utils.workdir import work_dir
 
@@ -21,7 +21,7 @@ n_backgrounds = 1
 batch_size = 1
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 
-create_dir([sample_path])
+create_dirs([sample_path])
 tic()
 
 setwriter = SetFileParser(sample_path, img_format='jpg', label_format='pkl')

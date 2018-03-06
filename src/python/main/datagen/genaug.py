@@ -6,7 +6,7 @@ from modelzoo.augmentation.AugmenterDistort import AugmenterDistort
 from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.SetFileParser import SetFileParser
-from utils.fileaccess.utils import create_dir
+from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc
 from utils.workdir import work_dir
 
@@ -15,7 +15,7 @@ image_source = 'resource/samples/mult_gate_aligned_blur'
 batch_size = 20
 n_samples = 10000
 sample_path = 'resource/samples/mult_gate_aligned_blur_distort/'
-create_dir([sample_path])
+create_dirs([sample_path])
 data_generator = GateGenerator(image_source, batch_size=batch_size, n_samples=n_samples,
                                color_format='yuv')
 it = iter(data_generator.generate())

@@ -3,7 +3,7 @@ import os
 from modelzoo.evaluation.SpeedEvaluator import SpeedEvaluator
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import create_dir, save_file
+from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import work_dir
 
 work_dir()
@@ -31,7 +31,7 @@ result_file = 'result.pkl'
 result_img_path = result_path + 'images/'
 exp_param_file = 'experiment_parameters.txt'
 
-create_dir([result_path, result_img_path])
+create_dirs([result_path, result_img_path])
 
 generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
