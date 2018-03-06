@@ -6,6 +6,7 @@ import random
 import numpy as np
 
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.fileaccess.LabelFileParser import LabelFileParser
 from utils.imageprocessing.Backend import imread
 from utils.labels.ImgLabel import ImgLabel
 
@@ -62,7 +63,8 @@ class GateGenerator(DatasetGenerator):
                 file = next(files_it)
                 img = imread(file, self.color_format)
                 if self.label_format is not None:
-                    label = self.__read_label(file.replace(self.img_format, self.label_format))
+                    label = LabelFileParser.read_file(self.label_format,
+                                                      file.replace(self.img_format, self.label_format))
                 else:
                     label = ImgLabel([])
                 current_batch.append((img, label, file))

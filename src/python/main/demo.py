@@ -6,14 +6,15 @@ work_dir()
 
 from src.python.modelzoo.visualization.utils import demo_generator
 
-generator = GateGenerator(directory=['resource/samples/cyberzoo_conv'],
+generator = GateGenerator(directory=['resource/samples/video/eth/'],
                           batch_size=1, color_format='bgr',
-                          shuffle=False, start_idx=0, valid_frac=1.0)
+                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          label_format='xml')
 #
 # generator = VocGenerator(batch_size=8, color_format='bgr')
 
 # model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc/SSD300.h5',iou_thresh_nms=0.3)
-model = Yolo.tiny_yolo(class_names=['gate'], conf_thresh=0.6, color_format='yuv',
-                       weight_file='logs/tinyyolo_aligned_distort_bs8/TinyYolo.h5')
+model = Yolo.tiny_yolo(norm=(208, 208), grid=(6, 6), class_names=['gate'], conf_thresh=0.3, color_format='yuv',
+                       weight_file='logs/tinyyolo_aligned_distort_208/TinyYolo.h5')
 
-demo_generator(model, generator, t_show=1)
+demo_generator(model, generator, t_show=0)
