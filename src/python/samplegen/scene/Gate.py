@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.python.samplegen.scene import GateCorners
+from samplegen.scene.GateCorners import GateCorners
 
 
 class Gate(ABC):

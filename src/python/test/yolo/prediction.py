@@ -1,10 +1,10 @@
 import keras.backend as K
-from imageprocessing.Backend import annotate_text, resize
-from imageprocessing.Imageprocessing import COLOR_RED, COLOR_GREEN, show
-from workdir import work_dir
 
-from src.python.modelzoo.models.yolo.Yolo import Yolo
-from src.python.utils.fileaccess import GateGenerator
+from modelzoo.models.yolo.Yolo import Yolo
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.imageprocessing.Backend import resize, annotate_text
+from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
+from utils.workdir import work_dir
 
 work_dir()
 

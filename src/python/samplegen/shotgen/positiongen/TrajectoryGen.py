@@ -1,5 +1,5 @@
-from src.python.samplegen.shotgen import PositionGen
-from src.python.utils.labels.Pose import Pose
+from samplegen.shotgen.positiongen.PositionGen import PositionGen
+from utils.labels.Pose import Pose
 
 
 class TrajectoryGen(PositionGen):

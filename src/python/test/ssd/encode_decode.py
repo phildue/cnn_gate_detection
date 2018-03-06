@@ -1,10 +1,9 @@
-from frontend.models.ssd.SSD import SSD
-from imageprocessing.Backend import resize
-from imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
-from workdir import work_dir
-
-from src.python.utils import BoundingBox
-from src.python.utils.fileaccess import VocGenerator
+from modelzoo.models.ssd.SSD import SSD
+from utils.BoundingBox import BoundingBox
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
+from utils.workdir import work_dir
 
 work_dir()
 batch_size = 20

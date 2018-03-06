@@ -1,8 +1,7 @@
 import pygame
-from scene import Scene
-from scene.Light import Light
 
-from src.python.samplegen.shotgen import OpenGlEngine
+from samplegen.scene.Scene import Scene
+from samplegen.shotgen.engine3d.opengl.OpenGlEngine import OpenGlEngine
 
 
 class SceneEngine:

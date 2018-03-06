@@ -1,13 +1,12 @@
 import random
 
-from frontend.models.ssd.SSD import SSD
-from imageprocessing.Backend import resize
-from imageprocessing.Imageprocessing import show
-from labels.ObjectLabel import ObjectLabel
-from workdir import work_dir
-
-from src.python.modelzoo.models.ssd.utils import show_encoding
-from src.python.utils.fileaccess import VocGenerator
+from modelzoo.models.ssd.SSD import SSD
+from modelzoo.models.ssd.utils import show_encoding
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Imageprocessing import show
+from utils.labels.ObjectLabel import ObjectLabel
+from utils.workdir import work_dir
 
 work_dir()
 

@@ -1,19 +1,20 @@
 import random
 
-from frontend.augmentation.AugmenterBrightness import AugmenterBrightness
-from frontend.augmentation.AugmenterColorShift import AugmenterColorShift
-from frontend.augmentation.AugmenterFlip import AugmenterFlip
-from frontend.augmentation.AugmenterGray import AugmenterGray
-from frontend.augmentation.AugmenterHistEq import AugmenterHistEq
-from frontend.augmentation.AugmenterPixel import AugmenterPixel
-from frontend.augmentation.AugmenterScale import AugmenterScale
-from frontend.augmentation.AugmenterTranslate import AugmenterTranslate
-from frontend.augmentation.SSDAugmenter import SSDAugmenter
-from imageprocessing.Imageprocessing import show
-from workdir import work_dir
+from modelzoo.augmentation.AugmenterBrightness import AugmenterBrightness
+from modelzoo.augmentation.AugmenterColorShift import AugmenterColorShift
+from modelzoo.augmentation.AugmenterFlip import AugmenterFlip
+from modelzoo.augmentation.AugmenterGray import AugmenterGray
+from modelzoo.augmentation.AugmenterPixel import AugmenterPixel
 
-from src.python.modelzoo.augmentation.AugmenterCrop import AugmenterCrop
-from src.python.utils.fileaccess import VocGenerator
+from modelzoo.augmentation.AugmenterCrop import AugmenterCrop
+from modelzoo.augmentation.AugmenterHistEq import AugmenterHistEq
+from modelzoo.augmentation.AugmenterScale import AugmenterScale
+from modelzoo.augmentation.AugmenterTranslate import AugmenterTranslate
+from modelzoo.augmentation.SSDAugmenter import SSDAugmenter
+
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Imageprocessing import show
+from utils.workdir import work_dir
 
 work_dir()
 

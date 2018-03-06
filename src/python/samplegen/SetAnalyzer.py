@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.python.modelzoo.backend.visuals.plots.Heatmap import Heatmap
-from src.python.utils.fileaccess import LabelFileParser
+from modelzoo.backend.visuals.plots.Heatmap import Heatmap
+from utils.fileaccess.LabelFileParser import LabelFileParser
 
 
 class SetAnalyzer:

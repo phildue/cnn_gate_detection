@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 
 from samplegen.imggen.RandomImgGen import RandomImgGen
@@ -18,16 +16,16 @@ background_path = ["resource/backgrounds/lmsun/",
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/mult_gate_aligned_blur/"
+sample_path = "resource/samples/mult_gate_aligned/"
 shot_path = "resource/shots/mult_gate_aligned/"
 
-n_backgrounds = 10000
+n_backgrounds = 20000
 batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
 
-setwriter = SetFileParser(sample_path, img_format='jpg', label_format='pkl')
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
 
 for i in range(n_batches):
     tic()
@@ -40,7 +38,7 @@ for i in range(n_batches):
         shots, shot_labels,
         n_backgrounds=batch_size)
 
-    setwriter.write(samples, labels)
+    set_writer.write(samples, labels)
     toc("Batch: {1:d}/{2:d} - {0:d}/{3:d} samples generated ".format(
         int(len(samples) * (i + 1)), i, n_batches, int(n_batches * batch_size)))
     tuc("Total time: ")

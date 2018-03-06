@@ -1,10 +1,9 @@
 import glob
 import random
 
-from imageprocessing.Backend import imread
-
-from src.python.samplegen.shotgen import ShotGen
-from src.python.utils.fileaccess import LabelFileParser
+from samplegen.shotgen.ShotGen import ShotGen
+from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.imageprocessing.Backend import imread
 
 
 class ShotLoad(ShotGen):
@@ -25,6 +24,6 @@ class ShotLoad(ShotGen):
             if self.random:
                 f = random.choice(files)
 
-            shots.append(imread(f))
+            shots.append(imread(f, 'bgr'))
             labels.append(LabelFileParser.read_label_file_pkl(f.replace(self.format, "pkl")))
         return shots, labels

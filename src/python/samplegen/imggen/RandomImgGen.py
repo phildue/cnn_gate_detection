@@ -1,12 +1,10 @@
 import glob
 import random
 
-from imageprocessing.Backend import COLOR_BGR2YUV
-from imageprocessing.Backend import imread, replace_background, blur, resize, convert_color, noisy
-from labels.ImgLabel import ImgLabel
-
-from src.python.samplegen.imggen.ImgGen import ImgGen
-from src.python.utils.imageprocessing.Image import Image
+from samplegen.imggen.ImgGen import ImgGen
+from utils.imageprocessing.Backend import imread, replace_background, blur, noisy, convert_color, COLOR_BGR2YUV, resize
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class RandomImgGen(ImgGen):
@@ -48,7 +46,7 @@ class RandomImgGen(ImgGen):
         labels_created = []
         samples = []
         for j in range(n_samples):
-            background = imread(random.choice(self.files))
+            background = imread(random.choice(self.files), 'bgr')
 
             samples.append(background)
             labels_created.append(ImgLabel([]))

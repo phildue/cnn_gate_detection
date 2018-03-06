@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
-from labels.ImgLabel import ImgLabel
-
-from src.python.utils.imageprocessing.Image import Image
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class ImgGen(ABC):

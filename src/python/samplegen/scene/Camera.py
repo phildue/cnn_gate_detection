@@ -3,7 +3,7 @@ Chapter 4.1, Programming Computer Vision with Python, Jan Erik Solem
 """
 import numpy as np
 
-from src.python.utils.labels.Pose import Pose
+from utils.labels.Pose import Pose
 
 
 class Camera:

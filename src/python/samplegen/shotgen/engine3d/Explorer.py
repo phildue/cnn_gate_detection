@@ -1,11 +1,10 @@
 import pygame
-from imageprocessing.Imageprocessing import show
-from labels.ImgLabel import ImgLabel
 
-from src.python.samplegen.shotgen import PointProjector
-from src.python.samplegen.shotgen import PositionGen
-from src.python.samplegen.shotgen import SceneEngine
-from src.python.utils.fileaccess.SetFileParser import SetFileParser
+from samplegen.shotgen.engine3d.PointProjector import PointProjector
+from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.positiongen.PositionGen import PositionGen
+from utils.fileaccess.SetFileParser import SetFileParser
+from utils.labels.ImgLabel import ImgLabel
 
 
 class Explorer:

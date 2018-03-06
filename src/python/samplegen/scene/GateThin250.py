@@ -1,5 +1,5 @@
-from src.python.samplegen.scene import Gate
-from src.python.samplegen.scene import GateCorners
+from samplegen.scene.Gate import Gate
+from samplegen.scene.GateCorners import GateCorners
 
 
 class Gate250(Gate):

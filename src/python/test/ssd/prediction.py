@@ -1,11 +1,11 @@
 import keras.backend as K
-from imageprocessing.Backend import annotate_text, resize
-from imageprocessing.Imageprocessing import COLOR_RED, COLOR_GREEN, show
-from labels.ObjectLabel import ObjectLabel
-from workdir import work_dir
 
-from src.python.modelzoo.models.ssd import SSD
-from src.python.utils.fileaccess import VocGenerator
+from modelzoo.models.ssd.SSD import SSD
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import resize, annotate_text
+from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
+from utils.labels.ObjectLabel import ObjectLabel
+from utils.workdir import work_dir
 
 work_dir()
 

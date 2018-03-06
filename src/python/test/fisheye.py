@@ -1,11 +1,10 @@
 import random
 
-from imageprocessing.Backend import resize
-from imageprocessing.Imageprocessing import show
-from imageprocessing.fisheye import fisheye
-from workdir import work_dir
-
-from src.python.utils.fileaccess import VocGenerator
+from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Imageprocessing import show
+from utils.imageprocessing.fisheye import fisheye
+from utils.workdir import work_dir
 
 work_dir()
 
@@ -19,6 +18,6 @@ label = batch[idx][1]
 img, label = resize(img, (300, 300), label=label)
 show(img, labels=label)
 
-img_fisheye, label_eye = fisheye(img, k=0.000001 * 30, label_eye=label)
+img_fisheye, label_eye = fisheye(img, k=0.000001 * 30, label=label)
 
 show(img_fisheye, labels=label_eye)

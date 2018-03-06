@@ -1,10 +1,10 @@
 import numpy as np
-from labels.GateLabel import GateLabel
 from numpy import matlib
 
-from src.python.samplegen.scene import Camera
-from src.python.samplegen.scene import GateCorners
-from src.python.utils.labels.Pose import Pose
+from samplegen.scene.Camera import Camera
+from samplegen.scene.GateCorners import GateCorners
+from utils.labels.GateLabel import GateLabel
+from utils.labels.Pose import Pose
 
 
 class PointProjector:
