@@ -1,3 +1,4 @@
+from samplegen.scene.Gate import Gate
 from samplegen.scene.GateLarge import GateLarge
 from samplegen.shotgen.engine3d.opengl.OpenGlView import OpenGlView
 

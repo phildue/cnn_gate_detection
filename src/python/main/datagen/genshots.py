@@ -8,6 +8,7 @@ from samplegen.shotgen.GateGen import GateGen
 from samplegen.shotgen.ShotCreate import ShotCreate
 from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
 from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
+from samplegen.shotgen.engine3d.opengl.GateGLOpen import GateGLOpen
 from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
 from samplegen.shotgen.engine3d.opengl.GateGLThin250 import GateGLThin250
 from samplegen.shotgen.lightgen.RandomLightGen import RandomLightGen
@@ -22,7 +23,7 @@ work_dir()
 name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
 
-N = 99
+N = 20
 n_positions = 10000 - N * 100
 n_batches = 100 - N
 cam_range_side = (-1, 1)
@@ -42,7 +43,7 @@ gate_pos_range_x = (-3, 3)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLTall(), GateGLThin250(), GateGLThickLarge()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLTall(), GateGLThin250(), GateGLThickLarge(), GateGLOpen()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 
@@ -65,7 +66,7 @@ scene_engine = SceneEngine(scene, width=width, height=height)
 shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05)
 
 create_dirs([shot_path])
-setwriter = SetFileParser(shot_path, img_format='bmp', label_format='pkl', start_idx=N * 100)
+setwriter = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=N * 100)
 
 for i in range(n_batches):
     tic()
