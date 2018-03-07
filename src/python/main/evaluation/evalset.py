@@ -18,14 +18,14 @@ color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = 'logs/yolov2_10k/YoloV2.h5'
+weight_file = 'logs/yolov2_aligned_distort/YoloV2.h5'
 model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
 
 # Evaluator
 iou_thresh = 0.4
 
 # Result Paths
-result_path = 'logs/yolov2_10k/' + name + '/'
+result_path = 'logs/yolov2_aligned_distort/' + name + '/'
 result_file = 'result_' + name
 result_img_path = result_path + 'images_' + name + '/'
 exp_param_file = 'experiment_parameters_' + name + '.txt'
