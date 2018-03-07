@@ -7,7 +7,7 @@ from utils.fileaccess.LabelFileParser import LabelFileParser
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        self.label_reader = LabelFileParser(path, 'pkl')
+        self.label_reader = LabelFileParser(path, 'xml')
 
     def get_heat_map(self):
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from modelzoo.backend.tensor.metrics.Metric import Metric
 from modelzoo.evaluation.DetectionResult import DetectionResult
+from modelzoo.evaluation.Metric import Metric
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, LEGEND_BOX, show
