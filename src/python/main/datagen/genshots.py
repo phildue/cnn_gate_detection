@@ -23,12 +23,12 @@ work_dir()
 name = "mult_gate_aligned"
 shot_path = "resource/shots/" + name + "/"
 
-N = 58
-n_positions = 10000 - N * 100
+N = 0
+n_positions = 8000 - N * 100
 n_batches = 100 - N
 cam_range_side = (-1, 1)
-cam_range_forward = (-5, 5)
-cam_range_lift = (-0.5, 1.0)
+cam_range_forward = (-5, 15)
+cam_range_lift = (-0.5, 1.5)
 cam_range_pitch = (-0.1, 0.1)
 cam_range_roll = (-0.1, 0.1)
 cam_range_yaw = (-np.pi, np.pi)
@@ -38,12 +38,12 @@ light_range_z = (4, 5)
 n_light_range = (4, 6)
 n_gate_range = (2, 3)
 
-gate_pos_range_z = (-8, 8)
-gate_pos_range_x = (-3, 3)
+gate_pos_range_z = (-5, 5)
+gate_pos_range_x = (-4, 4)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLTall(), GateGLThin250(), GateGLThickLarge(), GateGLOpen()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLTall(), GateGLThickLarge()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 
@@ -63,7 +63,7 @@ light_gen = RandomLightGen(
 
 scene = Scene()
 scene_engine = SceneEngine(scene, width=width, height=height)
-shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.05)
+shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0)
 
 create_dirs([shot_path])
 setwriter = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=N * 100)

@@ -9,16 +9,17 @@ from utils.workdir import work_dir
 
 work_dir()
 
-background_path = ["resource/backgrounds/google-fence-gate-industry/"]
+background_path = ["resource/backgrounds/google-fence-gate-industry/",
+                   'resource/backgrounds/lmsun/']
 # background_path = ["resource/backgrounds/google-fence-gate-industry/"]
 
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/mult_gate_aligned_test/"
+sample_path = "resource/samples/mult_gate_aligned/"
 shot_path = "resource/shots/mult_gate_aligned/"
 
-n_backgrounds = 1000
+n_backgrounds = 20000
 batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
@@ -29,7 +30,7 @@ set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
 for i in range(n_batches):
     tic()
     shots, shot_labels = ShotLoad(shot_path, img_format='bmp').get_shots(n_shots=250)
-    samples, labels = RandomImgGen(background_path, out_format='bgr',
+    samples, labels = RandomImgGen(background_path, out_format='yuv',
                                    blur_kernel=(5, 5),
                                    blur_it=2,
                                    noisy_it=1,
