@@ -26,22 +26,19 @@ model_name = predictor.net.__class__.__name__
 name = model_name + str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 
-create_dirs([result_path])
-
-predictor.preprocessor.augmenter = augmenter
-
-loss = predictor.loss
-
+epochs = 81  # ~40 000 iterations
 train_params = {'optimizer': 'SGD',
                 'lr': 0.001,
                 'momentum': 0.9,
                 'epsilon': 1e-08,
                 'decay': 0.0005}
 
+loss = predictor.loss
 predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
                                                 loss.conf_loss_negatives,
                                                 loss.localization_loss]
                   )
+predictor.preprocessor.augmenter = augmenter
 
 exp_params = {'model': model_name,
               'resolution': predictor.img_shape,
@@ -51,11 +48,14 @@ exp_params = {'model': model_name,
               'n_samples': data_generator.n_samples,
               'augmentation': predictor.preprocessor.augmenter.__class__.__name__}
 
+create_dirs([result_path])
+
+
 pp.pprint(exp_params)
 
 save_file(exp_params, 'training_params.txt', result_path, verbose=False)
 
 training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=batch_size,
-                                 initial_epoch=0, log_dir=result_path, epochs=int(40000 / batch_size), patience=-1)
+                                 initial_epoch=0, log_dir=result_path, epochs=epochs, patience=-1)
 
 save_file(training_history, 'training_history.pkl', result_path)
