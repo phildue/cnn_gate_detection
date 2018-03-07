@@ -12,4 +12,4 @@ class AugmenterBlur(Augmenter):
     def augment(self, img: Image, label: ImgLabel):
         img_aug = img.copy()
         img_aug = blur(img_aug, self.kernel, self.iterations)
-        return img_aug
+        return img_aug, label
