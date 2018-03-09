@@ -55,6 +55,4 @@ pp.pprint(training.summary)
 
 save_file(training.summary, 'training_params.txt', result_path, verbose=False)
 
-training_history = training.fit_generator()
-
-save_file(training_history, 'training_history.pkl', result_path)
+training.fit_generator()

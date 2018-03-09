@@ -69,7 +69,7 @@ class Training:
                    'resolution': self.predictor.input_shape,
                    'train_params': self.predictor.net.train_params,
                    'image_source': self.dataset_gen.source_dir,
-                   'color_format': self.dataset_gen.source_dir,
+                   'color_format': self.dataset_gen.color_format,
                    'batch_size': self.dataset_gen.batch_size,
                    'n_samples': self.dataset_gen.n_samples,
                    'augmentation': self.predictor.preprocessor.augmenter.__class__.__name__,
