@@ -4,28 +4,23 @@ import keras.backend as K
 
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.VocGenerator import VocGenerator
+from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
 from utils.workdir import work_dir
 
 work_dir()
-batch_size = 1000
-dataset = VocGenerator("resource/backgrounds/VOCdevkit/VOC2012/Annotations/",
-                       "resource/backgrounds/VOCdevkit/VOC2012/JPEGImages/", batch_size=batch_size).generate()
+batch_size = 20
+dataset = VocGenerator(batch_size=batch_size, shuffle=True).generate()
 batch = next(dataset)
-N = 10
-idx = random.sample(range(0, batch_size), N)
 
-yolo = Yolo.tiny_yolo()
-labels1_enc = []
-for j in idx:
-    label1_t = yolo.preprocessor.encoder.encode_label(batch[j][1])
-    label1_t = K.np.expand_dims(label1_t, 0)
-    labels1_enc.append(label1_t)
-labels1_t = K.np.concatenate(labels1_enc)
+yolo = Yolo.tiny_yolo(norm=(208, 416), grid=(6, 13))
+batch = [resize(b[0], (208, 416), label=b[1]) for b in batch]
+labels1_enc = yolo.encoder.encode_label_batch([b[1] for b in batch])
 
-for i, j in enumerate(idx):
-    img = batch[j][0]
-    label_true = batch[j][1]
-    label_dec = yolo.postprocessor.decoder.decode_netout_to_label(labels1_t[i])
+for i in range(batch_size):
+    img = batch[i][0]
+    label_true = batch[i][1]
+    img, label_true = resize(img, (208, 416), label=label_true)
+    label_dec = yolo.postprocessor.decoder.decode_netout_to_label(labels1_enc[i])
     show(img, labels=[label_true], colors=[COLOR_GREEN], name='True')
     show(img, labels=[label_dec], colors=[COLOR_RED], name='Decoded')

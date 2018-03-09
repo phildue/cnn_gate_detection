@@ -54,7 +54,7 @@ class TinyYolo(Net):
                         'epsilon': 1e-08,
                         'decay': 0.0005}
 
-        input = Input(shape=(norm[1], norm[0], 3))
+        input = Input(shape=(norm[0], norm[1], 3))
 
         with K.name_scope('layer_1'):
             conv1 = Conv2D(16, (3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
@@ -93,10 +93,10 @@ class TinyYolo(Net):
             conv9 = Conv2D(n_boxes * (4 + 1 + n_classes), (1, 1), strides=(1, 1), kernel_initializer='he_normal')(
                 net)
             act9 = Activation('linear')(conv9)
-            reshape9 = Reshape((grid[1], grid[0], n_boxes, 4 + 1 + n_classes))(act9)
+            reshape9 = Reshape((grid[0], grid[1], n_boxes, 4 + 1 + n_classes))(act9)
 
-        lambda_reshape = Lambda(self.net2y, (grid[1], grid[0], n_boxes, 5 + n_classes))(reshape9)
-        net = Reshape((grid[1] * grid[0] * n_boxes, 5 + n_classes))(lambda_reshape)
+        lambda_reshape = Lambda(self.net2y, (grid[0], grid[1], n_boxes, 5 + n_classes))(reshape9)
+        net = Reshape((grid[0] * grid[1] * n_boxes, 5 + n_classes))(lambda_reshape)
 
         model = Model(input, net)
 
@@ -114,7 +114,7 @@ class TinyYolo(Net):
         pred_xy = K.sigmoid(netout[:, :, :, :, :2])
         pred_wh = K.exp(netout[:, :, :, :, 2:4]) * K.reshape(K.constant(self.anchors), [1, 1, 1, self.n_boxes, 2])
         pred_c = K.sigmoid(netout[:, :, :, :, 4])
-        pred_c = K.reshape(pred_c, [-1, self.grid[1], self.grid[0], self.n_boxes, 1])
+        pred_c = K.reshape(pred_c, [-1, self.grid[0], self.grid[1], self.n_boxes, 1])
         pred_class_likelihoods = K.softmax(netout[:, :, :, :, 5:]) * pred_c
 
         return K.concatenate([pred_xy, pred_wh, pred_c, pred_class_likelihoods], 4)

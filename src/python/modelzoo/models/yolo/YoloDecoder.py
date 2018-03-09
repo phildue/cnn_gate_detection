@@ -33,13 +33,11 @@ class YoloDecoder(Decoder):
 
     def decode_coord(self, coord_t):
         coord_t_dec = coord_t.copy()
-        offset_y, offset_x = np.mgrid[:self.grid[1], :self.grid[0]]
+        offset_y, offset_x = np.mgrid[:self.grid[0], :self.grid[1]]
 
         offset_x = np.expand_dims(offset_x, -1)
-        offset_x = np.tile(offset_x, (1, 1, 5))
 
         offset_y = np.expand_dims(offset_y, -1)
-        offset_y = np.tile(offset_y, (1, 1, 5))
 
         coord_t_dec[:, :, :, 0] += offset_x
         coord_t_dec[:, :, :, 1] += offset_y
@@ -48,8 +46,7 @@ class YoloDecoder(Decoder):
         coord_t_dec[:, :, :, 1] *= (self.norm[0] / self.grid[0])
         coord_t_dec[:, :, :, 3] *= (self.norm[0] / self.grid[0])
 
-        # TODO get rid of this
-        coord_t_dec[:, :, :, 1] = self.norm[1] - coord_t_dec[:, :, :, 1]
+        coord_t_dec[:, :, :, 1] = self.norm[0] - coord_t_dec[:, :, :, 1]
 
         return coord_t_dec
 

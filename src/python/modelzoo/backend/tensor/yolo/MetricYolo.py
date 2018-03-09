@@ -23,7 +23,7 @@ class MetricYolo(Metric):
         self.map_adapter = AveragePrecision(iou_thresh, grid[1] * grid[0] * n_boxes, batch_size=batch_size)
 
     def _decode_coord(self, coord_t):
-        offset_y, offset_x = K.np.mgrid[:self.grid[1], :self.grid[0]]
+        offset_y, offset_x = K.np.mgrid[:self.grid[0], :self.grid[1]]
         offset_y = K.constant(offset_y)
         offset_x = K.constant(offset_x)
 
@@ -42,8 +42,7 @@ class MetricYolo(Metric):
         coord_t_cy = coord_t_cy * (self.norm[0] / self.grid[0])
         coord_t_h = coord_t[:, :, :, :, 3] * (self.norm[0] / self.grid[0])
 
-        # TODO get rid of this
-        coord_t_cy = self.norm[1] - coord_t_cy
+        coord_t_cy = self.norm[0] - coord_t_cy
 
         coord_t_xmin = coord_t_cx - coord_t_w / 2
         coord_t_ymin = coord_t_cy - coord_t_h / 2
@@ -59,7 +58,7 @@ class MetricYolo(Metric):
         return coord_dec_t
 
     def _reformat_truth(self, y_true):
-        w_zero_anchors = K.np.zeros((self.batch_size, self.grid[1], self.grid[0], self.n_boxes, self.n_classes))
+        w_zero_anchors = K.np.zeros((self.batch_size, self.grid[0], self.grid[1], self.n_boxes, self.n_classes))
         w_zero_anchors[:, :, :, 0, :] = 1
         w_zero_anchors = K.constant(w_zero_anchors)
 

@@ -11,18 +11,14 @@ work_dir()
 def show_voc():
     dataset = VocGenerator(batch_size=2).generate()
     for batch in dataset:
-        for sample in batch:
-            ann_img = annotate_bounding_box(sample[0], sample[1])
-            show(ann_img, 'labeled')
-            img, label = sample[0], sample[1]
-
-            img, label = resize(img, shape=(150, 150), label=label)
-            img, label = resize(img, shape=(416, 416), label=label)
+        for img, label, _ in batch:
+            img, label = resize(img, shape=(150, 315), label=label)
+            # img, label = resize(img, shape=(416, 416), label=label)
             show(img, 'resized', labels=label)
 
 
 def show_img(path):
-    gate_generator = GateGenerator(path, 8, color_format='bgr',shuffle=False)
+    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -44,5 +40,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-show_img(path=['resource/samples/mult_gate_aligned_test/'])
-# show_voc()
+# show_img(path=['resource/samples/mult_gate_aligned_test/'])
+show_voc()
