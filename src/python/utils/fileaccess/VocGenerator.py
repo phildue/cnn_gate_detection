@@ -13,6 +13,14 @@ from utils.labels.ObjectLabel import ObjectLabel
 
 class VocGenerator(DatasetGenerator):
     @property
+    def color_format(self):
+        return self._color_format
+
+    @property
+    def source_dir(self):
+        return self.directory
+
+    @property
     def batch_size(self):
         return self.__batch_size
 
@@ -23,11 +31,11 @@ class VocGenerator(DatasetGenerator):
     def __init__(self, dir_voc2012: str = "resource/backgrounds/VOCdevkit/VOC2012/",
                  dir_voc2007='resource/backgrounds/VOCdevkit/VOC2007/',
                  dir_voc2007_test='resource/backgrounds/VOCdevkit/VOC2007_Test/',
-                 batch_size: int = 10, shuffle: bool = True, n_samples=None, color_format='bgr', start_idx=0):
+                 batch_size: int = 10, shuffle: bool = True, n_samples=None, start_idx=0):
 
-        self.color_format = color_format
+        self._color_format = 'bgr'
         self.shuffle = shuffle
-        self.directory = dir_voc2012
+        self.directory = [dir_voc2012, dir_voc2007]
         self.__batch_size = batch_size
         imgs_2007 = dir_voc2007 + "JPEGImages/"
         imgs_2007_test = dir_voc2007_test + "JPEGImages/"

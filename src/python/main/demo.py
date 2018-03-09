@@ -6,7 +6,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-generator = GateGenerator(directory=['resource/samples/video/eth/'],
+generator = GateGenerator(directories=['resource/samples/video/eth/'],
                           batch_size=10, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml')

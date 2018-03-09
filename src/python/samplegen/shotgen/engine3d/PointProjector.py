@@ -2,7 +2,7 @@ import numpy as np
 from numpy import matlib
 
 from samplegen.scene.Camera import Camera
-from samplegen.scene.GateCorners import GateCorners
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.Pose import Pose
 

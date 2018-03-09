@@ -3,10 +3,10 @@ import glob
 import numpy as np
 import scipy.io
 
-from samplegen.scene.GateCorners import GateCorners
 from utils.fileaccess.SetFileParser import write_set
 from utils.imageprocessing.Backend import imread
 from utils.imageprocessing.Image import Image
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.Pose import Pose

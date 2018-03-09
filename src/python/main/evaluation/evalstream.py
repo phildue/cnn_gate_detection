@@ -34,7 +34,7 @@ exp_param_file = 'experiment_parameters.txt'
 
 create_dirs([result_path, result_img_path])
 
-generator = GateGenerator(directory=image_source, batch_size=BATCH_SIZE, img_format='jpg',
+generator = GateGenerator(directories=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
 
 evaluator = DetectionEvaluator(model,

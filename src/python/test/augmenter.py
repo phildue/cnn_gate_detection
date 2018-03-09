@@ -24,7 +24,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-generator = GateGenerator(directory=['resource/samples/mult_gate_aligned_test/'],
+generator = GateGenerator(directories=['resource/samples/mult_gate_aligned_test/'],
                           batch_size=100, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=0,
                           label_format='xml')

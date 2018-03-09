@@ -1,5 +1,5 @@
 from samplegen.scene.Gate import Gate
-from samplegen.scene.GateCorners import GateCorners
+from utils.labels.GateCorners import GateCorners
 
 
 class Gate250(Gate):

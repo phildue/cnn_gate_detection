@@ -32,7 +32,7 @@ exp_param_file = 'experiment_parameters_' + name + '.txt'
 
 create_dirs([result_path, result_img_path])
 
-generator = GateGenerator(directory=image_source, batch_size=batch_size, img_format='jpg',
+generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format='jpg',
                           shuffle=True, color_format=color_format, label_format='xml')
 
 evaluator = ModelEvaluator(model, out_file=result_path + result_file)

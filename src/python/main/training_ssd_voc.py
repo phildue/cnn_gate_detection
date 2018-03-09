@@ -2,9 +2,9 @@ import pprint as pp
 import time
 
 import numpy as np
+from modelzoo.backend.tensor.Training import Training
 
 from modelzoo.augmentation.YoloAugmenter import YoloAugmenter
-from modelzoo.backend.tensor.training import fit_generator
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.fileaccess.utils import save_file, create_dirs
@@ -40,22 +40,21 @@ predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
                   )
 predictor.preprocessor.augmenter = augmenter
 
-exp_params = {'model': model_name,
-              'resolution': predictor.img_shape,
-              'train_params': predictor.net.train_params,
-              'image_source': image_source,
-              'batch_size': batch_size,
-              'n_samples': data_generator.n_samples,
-              'augmentation': predictor.preprocessor.augmenter.__class__.__name__}
+training = Training(predictor, data_generator,
+                    out_file=model_name + '.h5',
+                    patience=-1,
+                    log_dir=result_path,
+                    stop_on_nan=True,
+                    initial_epoch=0,
+                    epochs=epochs,
+                    log_csv=True)
 
 create_dirs([result_path])
 
+pp.pprint(training.summary)
 
-pp.pprint(exp_params)
+save_file(training.summary, 'training_params.txt', result_path, verbose=False)
 
-save_file(exp_params, 'training_params.txt', result_path, verbose=False)
-
-training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=batch_size,
-                                 initial_epoch=0, log_dir=result_path, epochs=epochs, patience=-1)
+training_history = training.fit_generator()
 
 save_file(training_history, 'training_history.pkl', result_path)

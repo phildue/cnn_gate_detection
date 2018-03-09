@@ -6,7 +6,7 @@ import numpy as np
 
 from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from modelzoo.augmentation.AugmenterPixel import AugmenterPixel
-from modelzoo.backend.tensor.training import fit_generator
+from modelzoo.backend.tensor.Training import fit_generator, Training
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -46,21 +46,22 @@ params = {'optimizer': 'adam',
 loss = predictor.loss
 predictor.compile(params, metrics=[loss.localization_loss, loss.conf_loss_positives, loss.conf_loss_negatives])
 
-exp_params = {'model': model_name,
-              'resolution': predictor.input_shape,
-              'train_params': predictor.net.train_params,
-              'image_source': image_source,
-              'batch_size': BATCH_SIZE,
-              'max_epochs': max_epochs,
-              'n_samples': data_generator.n_samples,
-              'augmentation': predictor.preprocessor.augmenter.__class__.__name__}
+training = Training(predictor, data_generator,
+                    out_file=model_name + '.h5',
+                    patience=-1,
+                    log_dir=result_path,
+                    stop_on_nan=True,
+                    initial_epoch=0,
+                    epochs=100,
+                    log_csv=True)
 
-pp.pprint(exp_params)
+create_dirs([result_path])
 
-save_file(exp_params, 'training_params.txt', result_path, verbose=False)
+pp.pprint(training.summary)
 
-training_history = fit_generator(predictor, data_generator, out_file=model_name + '.h5', batch_size=BATCH_SIZE,
-                                 initial_epoch=0, log_dir=result_path, epochs=max_epochs)
+save_file(training.summary, 'training_params.txt', result_path, verbose=False)
+
+training_history = training.fit_generator()
 
 save_file(training_history, 'training_history.pkl', result_path)
 

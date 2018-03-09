@@ -11,7 +11,7 @@ work_dir()
 batch_size = 4
 yolo = Yolo.yolo_v2(class_names=['gate'], conf_thresh=0, batch_size=batch_size,
                     weight_file='logs/yolov2_25k/YoloV2.h5')
-dataset = GateGenerator(directory='resource/samples/mult_gate_aligned/', batch_size=batch_size, color_format='yuv',
+dataset = GateGenerator(directories='resource/samples/mult_gate_aligned/', batch_size=batch_size, color_format='yuv',
                         shuffle=True, n_samples=1000).generate()
 
 while True:

@@ -13,20 +13,28 @@ from utils.labels.ImgLabel import ImgLabel
 
 class GateGenerator(DatasetGenerator):
     @property
+    def color_format(self):
+        return self._color_format
+
+    @property
+    def source_dir(self):
+        return self.directories
+
+    @property
     def batch_size(self):
         return self.__batch_size
 
-    def __init__(self, directory: [str], batch_size: int, shuffle: bool = True, img_format: str = 'jpg',
+    def __init__(self, directories: [str], batch_size: int, shuffle: bool = True, img_format: str = 'jpg',
                  color_format='yuv',
                  label_format: str = 'pkl', n_samples=None, valid_frac=0.0, start_idx=0):
-        self.color_format = color_format
+        self._color_format = color_format
         self.label_format = label_format
         self.__batch_size = batch_size
         self.shuffle = shuffle
         self.img_format = img_format
-
+        self.directories = directories
         files_all = []
-        for d in directory:
+        for d in directories:
             files_dir = sorted(glob.glob(d + "/*." + img_format))
             files_dir = [os.path.abspath(f) for f in files_dir]
             files_all.extend(files_dir)

@@ -1,11 +1,10 @@
 import glob
 
-from samplegen.scene.GateCorners import GateCorners
-from utils.imageprocessing.GateAnnotater import GateAnnotater
-
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.imageprocessing.Backend import split_video, imread
+from utils.imageprocessing.GateAnnotater import GateAnnotater
 from utils.imageprocessing.Imageprocessing import show
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.Pose import Pose
