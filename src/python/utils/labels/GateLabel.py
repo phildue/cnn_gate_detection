@@ -1,4 +1,4 @@
-from samplegen.scene.GateCorners import GateCorners
+from utils.labels.GateCorners import GateCorners
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Pose import Pose
 

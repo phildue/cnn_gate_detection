@@ -23,3 +23,11 @@ class GateCorners:
             self.bottom_left,
 
         ])
+
+    @staticmethod
+    def from_mat(mat: np.array):
+        return GateCorners(center=mat[0],
+                           top_left=mat[1],
+                           top_right=mat[2],
+                           bottom_right=mat[3],
+                           bottom_left=mat[4])

@@ -1,8 +1,8 @@
 import numpy as np
 
-from samplegen.scene.GateCorners import GateCorners
 from utils.imageprocessing.Backend import draw_gate_corners, draw_bounding_box, annotate_text, imshow, imwrite
 from utils.imageprocessing.Image import Image
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
