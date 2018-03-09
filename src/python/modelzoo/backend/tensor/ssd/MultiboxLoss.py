@@ -82,12 +82,11 @@ class MultiboxLoss(Loss):
                                                   tf.to_int32(tf.reshape(n_negatives, [-1]))))
 
             # We get the boxes with the highest confidence loss for each batch
+            # top k fails if n negative is zero so we always get one more and sum only the first
+            top_losses, _ = tf.nn.top_k(neg_class_loss, K.max(n_negative_keep) + 1, True)
             top_neg_class_loss = []
             for i in range(self.batch_size):
-                # top k fails if n negative is zero so we always get one more and sum only the first
-                top_losses, _ = tf.nn.top_k(neg_class_loss[i], n_negative_keep[i] + 1, True)
-                top_losses_sum = K.sum(top_losses[:n_negative_keep[i]])
-
+                top_losses_sum = K.sum(top_losses[i, :n_negative_keep[i]])
                 top_neg_class_loss_i = K.expand_dims(top_losses_sum, 0)
                 top_neg_class_loss.append(top_neg_class_loss_i)
 
