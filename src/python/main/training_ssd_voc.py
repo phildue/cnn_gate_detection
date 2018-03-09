@@ -26,7 +26,7 @@ model_name = predictor.net.__class__.__name__
 name = model_name + str(int(np.round(time.time() / 10)))
 result_path = 'logs/' + name + '/'
 
-epochs = 81  # ~40 000 iterations
+epochs = 120  # ~40 000 iterations
 train_params = {'optimizer': 'SGD',
                 'lr': 0.001,
                 'momentum': 0.9,
@@ -40,14 +40,16 @@ predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
                   )
 predictor.preprocessor.augmenter = augmenter
 
+
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
                     patience=-1,
                     log_dir=result_path,
                     stop_on_nan=True,
-                    initial_epoch=0,
+                    initial_epoch=38,
                     epochs=epochs,
-                    log_csv=True)
+                    log_csv=True,
+                    lr_reduce=0.1)
 
 create_dirs([result_path])
 

@@ -11,7 +11,7 @@ generator = GateGenerator(directories=['resource/samples/video/eth/'],
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml')
 #
-generator = VocGenerator(batch_size=8, color_format='bgr')
+generator = VocGenerator(batch_size=8)
 
 model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc3/SSD300.h5',
                    iou_thresh_nms=0.3)

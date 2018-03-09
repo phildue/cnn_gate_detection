@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 import keras.backend as K
+from keras.models import load_model
 from keras.optimizers import Adam, SGD
 
 from modelzoo.backend.tensor.metrics.Loss import Loss
