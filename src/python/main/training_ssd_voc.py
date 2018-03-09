@@ -15,16 +15,14 @@ work_dir()
 batch_size = 32
 
 image_source = 'voc'
+work_path = 'logs/ssd300_voc/'
 
-predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=1.0)
-data_generator = VocGenerator(batch_size=batch_size, shuffle=False)
+predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=1.0, weight_file=work_path + '/SSD300.h5')
+data_generator = VocGenerator(batch_size=batch_size, shuffle=True)
 
 augmenter = YoloAugmenter()
 
 model_name = predictor.net.__class__.__name__
-
-name = model_name + str(int(np.round(time.time() / 10)))
-result_path = 'logs/' + name + '/'
 
 epochs = 120  # ~40 000 iterations
 train_params = {'optimizer': 'SGD',
@@ -40,21 +38,20 @@ predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
                   )
 predictor.preprocessor.augmenter = augmenter
 
-
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
                     patience=-1,
-                    log_dir=result_path,
+                    log_dir=work_path,
                     stop_on_nan=True,
                     initial_epoch=38,
                     epochs=epochs,
                     log_csv=True,
                     lr_reduce=0.1)
 
-create_dirs([result_path])
+create_dirs([work_path])
 
 pp.pprint(training.summary)
 
-save_file(training.summary, 'training_params.txt', result_path, verbose=False)
+save_file(training.summary, 'summary.txt', work_path, verbose=False)
 
 training.fit_generator()

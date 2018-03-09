@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History, TerminateOnNaN, LearningRateScheduler, \
     ReduceLROnPlateau, CSVLogger
 
@@ -41,7 +44,9 @@ class Training:
             callbacks.append(reducer)
 
         if log_csv:
-            csv_logger = CSVLogger(log_dir + '/log.csv')
+            log_file_name = log_dir + '/log.csv'
+            append = Path(log_file_name).is_file()
+            csv_logger = CSVLogger(log_file_name, append=append)
             callbacks.append(csv_logger)
 
         history = History()
