@@ -10,7 +10,7 @@ from utils.timing import tic, toc
 
 class BarrelDistortion:
     def __init__(self, img_shape, rad_dist_params, squeeze=1.0, non_rad_dist_params=(0, 0),
-                 max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.1):
+                 max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.01):
         self.img_shape = img_shape
         self.epsilon = conv_thresh
         self.center = center
@@ -32,7 +32,7 @@ class BarrelDistortion:
         # mapping_dist = self._inverse_model(coords_norm,mapping_dist)
         mapping_undist = self._denormalize(mapping_undist)
         mapping_dist = self._denormalize(mapping_dist)
-        return mapping_undist.astype(np.int), mapping_dist.astype(np.int)
+        return mapping_undist.astype(np.uint), mapping_dist.astype(np.uint)
 
     def _distortion_model(self, mat: np.array):
         k_1, k_2 = self.rad_dist_params
@@ -78,14 +78,28 @@ class BarrelDistortion:
     def undistort(self, img: Image, label: ImgLabel = None):
         mat = img.array
         mat_undistorted = self._undistort_mat(mat)
+        # mat_undistorted = self._fill_holes(mat_undistorted)
         # label_distorted = self._distort_label(label, center)
 
         return Image(mat_undistorted, img.format), label
 
+    def _fill_holes(self, mat):
+        h, w = self.img_shape
+        mat_filled = mat.copy()
+        iterations = 8
+        for i in range(1, h - 1):
+            for j in range(1, w - 1):
+                for _ in range(iterations):
+                    if np.all(mat_filled[i, j] == 0):
+                        mat_filled[i, j, 0] = np.mean(mat_filled[i - 1:i + 1, j - 1:j + 1, 0])
+                        mat_filled[i, j, 1] = np.mean(mat_filled[i - 1:i + 1, j - 1:j + 1, 1])
+                        mat_filled[i, j, 2] = np.mean(mat_filled[i - 1:i + 1, j - 1:j + 1, 2])
+        return mat_filled
+
     def distort(self, img: Image, label: ImgLabel = None):
         mat = img.array
         mat_undistorted = self._distort_mat(mat)
-        mat_undistorted = morphologyEx(mat_undistorted, MORPH_CLOSE, (3, 3), iterations=2)
+        # mat_undistorted = morphologyEx(mat_undistorted, MORPH_CLOSE, (3, 3), iterations=2)
 
         return Image(mat_undistorted, img.format), label
 
@@ -139,7 +153,7 @@ class BarrelDistortion:
             for i in range(h):
                 for j in range(w):
                     grad = gradient[i, j]
-                    np.fill_diagonal(grad, np.diag(grad) + 0.0001)
+                    np.fill_diagonal(grad, np.diag(grad) + 0.000001)
                     prev = np.reshape(mat_prev[i, j], (2, 1))
                     diff = np.reshape((dist_model[i, j] - mat[i, j]), (2, 1))
                     update = prev - 0.1 * np.dot(np.linalg.inv(grad), diff)
@@ -160,12 +174,12 @@ class BarrelDistortion:
         h, w = mat.shape[:2]
 
         dx_x = k_1 * x ** 2 + k_1 * y ** 2 * (l_x + 1) + k_2 * (x ** 2 + y ** 2) ** 2 + x * (
-        2 * k_1 * x + 4 * k_2 * x * (x ** 2 + y ** 2)) + 1
+            2 * k_1 * x + 4 * k_2 * x * (x ** 2 + y ** 2)) + 1
         dx_y = x * (2 * k_1 * y * (l_x + 1) + 4 * k_2 * y * (x ** 2 + y ** 2))
 
         dy_x = y * (2 * k_1 * x / s + 4 * k_2 * x * (x ** 2 + y ** 2) / s)
         dy_y = k_1 * x ** 2 / s + k_1 * y ** 2 * (l_y + 1) / s + k_2 * (x ** 2 + y ** 2) ** 2 / s + y * (
-        2 * k_1 * y * (l_y + 1) / s + 4 * k_2 * y * (x ** 2 + y ** 2) / s) + 1
+            2 * k_1 * y * (l_y + 1) / s + 4 * k_2 * y * (x ** 2 + y ** 2) / s) + 1
 
         gradient = np.zeros((h, w, 2, 2))
         gradient[:, :, 0, 0] = dx_x

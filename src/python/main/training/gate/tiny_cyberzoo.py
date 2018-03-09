@@ -24,6 +24,7 @@ predictor = Yolo.tiny_yolo(norm=(160, 315), grid=(5, 9), class_names=['gate'], b
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv', label_format='xml')
 
+# TODO put in Brightness/Contrast augmentation etc
 augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterPixel())])
 
 model_name = predictor.net.__class__.__name__
@@ -47,7 +48,7 @@ predictor.compile(params, metrics=[loss.localization_loss, loss.confidence_loss]
 
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
-                    patience=3,
+                    patience=5,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,

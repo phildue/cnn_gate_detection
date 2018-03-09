@@ -1,7 +1,3 @@
-import random
-
-import keras.backend as K
-
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize

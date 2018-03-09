@@ -30,7 +30,7 @@ class MultiboxLoss(Loss):
 
             loc_loss_avg = loc_loss_sum / K.maximum(1.0, n_positive)
 
-            return loc_loss_avg
+            return self.alpha * loc_loss_avg
 
     # noinspection PyMethodMayBeStatic
     def conf_loss_positives(self, y_true, y_pred):
@@ -108,7 +108,7 @@ class MultiboxLoss(Loss):
 
         class_loss = pos_class_loss + neg_class_loss
 
-        total_loss = class_loss + self.alpha * loc_loss
+        total_loss = class_loss + loc_loss
 
         return total_loss
 

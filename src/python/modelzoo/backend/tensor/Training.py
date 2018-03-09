@@ -4,6 +4,7 @@ from pathlib import Path
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History, TerminateOnNaN, LearningRateScheduler, \
     ReduceLROnPlateau, CSVLogger
 
+from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 
@@ -40,7 +41,7 @@ class Training:
             callbacks.append(schedule)
 
         if lr_reduce > -1:
-            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=5, min_lr=0.00001)
+            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience - 1, min_lr=0.00001)
             callbacks.append(reducer)
 
         if log_csv:
@@ -70,6 +71,13 @@ class Training:
 
     @property
     def summary(self):
+
+        if isinstance(self.predictor.preprocessor.augmenter, AugmenterEnsemble):
+            augmentation = [augmenter.__class__.__name__ for augmenter in
+                            self.predictor.preprocessor.augmenter.augmenters]
+        else:
+            augmentation = self.predictor.preprocessor.augmenter.__class__.__name__
+
         summary = {'model': self.predictor.net.__class__.__name__,
                    'resolution': self.predictor.input_shape,
                    'train_params': self.predictor.net.train_params,
@@ -77,7 +85,7 @@ class Training:
                    'color_format': self.dataset_gen.color_format,
                    'batch_size': self.dataset_gen.batch_size,
                    'n_samples': self.dataset_gen.n_samples,
-                   'augmentation': self.predictor.preprocessor.augmenter.__class__.__name__,
+                   'augmentation': augmentation,
                    'initial_epoch': self.initial_epoch,
                    'epochs': self.epochs}
         return summary
