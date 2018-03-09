@@ -14,9 +14,12 @@ class AveragePrecisionYolo(MetricYolo):
 
         :return: average precision
         """
-        coord_true_t, class_true_t = self._reformat_truth(y_true)
+        y_true = K.reshape(y_true, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_classes + 5])
+        y_pred = K.reshape(y_pred, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_classes + 5])
 
-        coord_pred_t, class_pred_t = self._reformat_predictions(y_pred)
+        coord_true_t, class_true_t = self._recode_truth(y_true)
+
+        coord_pred_t, class_pred_t = self._recode_predictions(y_pred)
 
         average_precision = self.map_adapter.average_precision(coord_true_t, coord_pred_t, class_true_t, class_pred_t)
 

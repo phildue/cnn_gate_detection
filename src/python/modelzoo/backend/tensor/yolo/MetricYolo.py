@@ -57,7 +57,7 @@ class MetricYolo(Metric):
 
         return coord_dec_t
 
-    def _reformat_truth(self, y_true):
+    def _recode_truth(self, y_true):
         w_zero_anchors = K.np.zeros((self.batch_size, self.grid[0], self.grid[1], self.n_boxes, self.n_classes))
         w_zero_anchors[:, :, :, 0, :] = 1
         w_zero_anchors = K.constant(w_zero_anchors)
@@ -73,7 +73,7 @@ class MetricYolo(Metric):
 
         return coord_true_reshape_t, class_true_reshape_t
 
-    def _reformat_predictions(self, y_pred):
+    def _recode_predictions(self, y_pred):
         coord_pred_t = y_pred[:, :, :, :, :4]
         class_pred_t = y_pred[:, :, :, :, 5:]
         conf_pred_t = y_pred[:, :, :, :, 4]
