@@ -88,7 +88,7 @@ def annotate_text(text: str, img: Image, xy: tuple = (10, 10), color=(0, 255, 0)
 
 
 def resize(img: Image, shape: tuple = None, scale_x=1.0, scale_y=1.0, label: ImgLabel = None) -> (Image, ImgLabel):
-    shape_cv = shape if shape is not None else (0, 0)
+    shape_cv = shape[1], shape[0] if shape is not None else (0, 0)
     img_resized = cv2.resize(img.array.copy(), shape_cv, fx=scale_x, fy=scale_y)
     if label is not None:
         label_resized = resize_label(label, img.array.shape, shape, scale_x, scale_y)
