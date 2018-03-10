@@ -1,5 +1,6 @@
 import numpy as np
 
+from utils.fileaccess.utils import load_file, save_file
 from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
@@ -8,6 +9,13 @@ from utils.timing import tic, toc
 
 
 class BarrelDistortion:
+    @staticmethod
+    def from_file(mapping_file: str):
+        return load_file(mapping_file)
+
+    def save(self, filename='barrel_dist.pkl'):
+        save_file(self, filename, './')
+
     def __init__(self, img_shape, rad_dist_params, squeeze=1.0, non_rad_dist_params=(0, 0),
                  max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.01, scale=1.0):
         """
@@ -107,8 +115,7 @@ class BarrelDistortion:
         coords = np.concatenate((np.expand_dims(x, -1), np.expand_dims(y, -1)), -1)
         coords_norm = self._normalize(coords.astype(np.float))
         mapping_undist = self.scale * self._distortion_model(coords_norm)
-        mapping_dist = 2 * coords_norm - mapping_undist
-        mapping_dist = self.scale * self._inverse_model_approx(coords_norm, mapping_dist)
+        mapping_dist = self.scale * self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
         mapping_undist = self._denormalize(mapping_undist)
         mapping_dist = self._denormalize(mapping_dist)
         return mapping_undist, mapping_dist

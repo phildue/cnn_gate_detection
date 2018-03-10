@@ -1,5 +1,3 @@
-import random
-
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
@@ -14,10 +12,11 @@ work_dir()
 dataset = VocGenerator(batch_size=100).generate()
 batch = next(dataset)
 
-distortion_model = BarrelDistortion((600, 600), [.7, 0], use_newton_approx=True)
+distortion_model = BarrelDistortion((150, 150), [.7, 0])
+distortion_model.save('resource/barrel_dist_model.pkl')
 
 for img, label, _ in batch:
-    img, label = resize(img, (600, 600), label=label)
+    img, label = resize(img, (150, 150), label=label)
 
     show(img, labels=label, t=1)
     img_d, label_d = distortion_model.distort(img, label)
