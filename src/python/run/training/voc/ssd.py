@@ -38,15 +38,26 @@ predictor.compile(params=train_params, metrics=[loss.conf_loss_positives,
                   )
 predictor.preprocessor.augmenter = augmenter
 
+
+def lr_schedule(epoch):
+    if 0 <= epoch < 50:
+        return 0.001
+    elif 50 <= epoch <= 60:
+        return 0.0001
+    else:
+        return 0.000001
+
+
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
                     patience=-1,
                     log_dir=work_path,
                     stop_on_nan=True,
-                    initial_epoch=38,
+                    initial_epoch=49,
                     epochs=epochs,
                     log_csv=True,
-                    lr_reduce=0.1)
+                    lr_reduce=0.1,
+                    lr_schedule=lr_schedule)
 
 create_dirs([work_path])
 
