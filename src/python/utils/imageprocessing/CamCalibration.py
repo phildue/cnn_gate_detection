@@ -5,11 +5,11 @@ import numpy as np
 
 
 class CamCalibration:
-    def __init__(self, img_shape, img_type='chess'):
+    def __init__(self, img_shape, img_type='chess', grid=(4,6)):
 
         self.img_type = img_type
         self.img_shape = img_shape
-
+        self.grid = grid
         self.ret, self.mtx, self.dist, self.rvecs, self.tvecs = None, None, None, None, None
 
     def calibrate(self, images):
@@ -54,8 +54,8 @@ class CamCalibration:
         criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
         # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-        objp = np.zeros((6 * 7, 3), np.float32)
-        objp[:, :2] = np.mgrid[0:7, 0:6].T.reshape(-1, 2)
+        objp = np.zeros((self.grid[0] * self.grid[1], 3), np.float32)
+        objp[:, :2] = np.mgrid[0:self.grid[1], 0:self.grid[0 ]].T.reshape(-1, 2)
 
         # Arrays to store object points and image points from all the images.
         obj_points = []  # 3d point in real world space
@@ -66,9 +66,9 @@ class CamCalibration:
             cv2.imshow('gray', gray)
             cv2.waitKey(0)
             if self.img_type is 'chess':
-                ret, corners = cv2.findChessboardCorners(gray, (7, 6), None)
+                ret, corners = cv2.findChessboardCorners(gray, self.grid, None)
             else:
-                ret, corners = cv2.findCirclesGrid(gray, (7, 6), None)
+                ret, corners = cv2.findCirclesGrid(gray, self.grid, None)
 
             # If found, add object points, image points (after refining them)
             if ret:
@@ -78,8 +78,8 @@ class CamCalibration:
                 img_points.append(corners2)
 
                 # Draw and display the corners
-                img = cv2.drawChessboardCorners(img, (7, 6), corners2, ret)
-                cv2.imshow('img', img)
+                img = cv2.drawChessboardCorners(img.array, self.grid, corners2, ret)
+                cv2.imshow('img', img )
                 cv2.waitKey(500)
 
         cv2.destroyAllWindows()

@@ -1,6 +1,6 @@
 import glob
 
-from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.Backend import imread, resize
 from utils.imageprocessing.CamCalibration import CamCalibration
 from utils.workdir import work_dir
 
@@ -10,8 +10,8 @@ out_file = 'resource/cam_params.csv'
 
 files = glob.glob(src_images + '*.jpg')
 images = [imread(f, 'bgr') for f in files]
-
-cam_calib = CamCalibration(images[0].shape[:2], 'chess')
+images = [resize(img, (1024, 1024)) for img in images]
+cam_calib = CamCalibration(images[0].shape[:2], 'circles', (12, 8))
 error = cam_calib.calibrate(images)
 
 print("Estimation error:", error)
