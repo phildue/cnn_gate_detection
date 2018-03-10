@@ -40,9 +40,9 @@ predictor.preprocessor.augmenter = augmenter
 
 
 def lr_schedule(epoch):
-    if 0 <= epoch < 50:
+    if 0 <= epoch < 80:
         return 0.001
-    elif 50 <= epoch <= 60:
+    elif 80 <= epoch <= 100:
         return 0.0001
     else:
         return 0.000001
