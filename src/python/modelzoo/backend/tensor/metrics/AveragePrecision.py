@@ -205,22 +205,22 @@ class AveragePrecision:
 
         w_class_match = self.class_match(class_true_sorted, class_pred_sorted)
 
+        n_tp, n_fp, n_fn = [], [], []
         for i, c in enumerate(conf_thresh):
             n_tp_c, n_fp_c, n_fn_c = self._count_detections(class_pred_sorted, c,
                                                             iou,
                                                             w_class_match,
                                                             w_true)
-            n_tp_c = K.expand_dims(n_tp_c, 1)
-            n_fp_c = K.expand_dims(n_fp_c, 1)
-            n_fn_c = K.expand_dims(n_fn_c, 1)
-            if i == 0:
-                n_tp = n_tp_c
-                n_fp = n_fp_c
-                n_fn = n_fn_c
-            else:
-                n_tp = K.concatenate([n_tp, n_tp_c], 1)
-                n_fp = K.concatenate([n_fp, n_fp_c], 1)
-                n_fn = K.concatenate([n_fn, n_fn_c], 1)
+            n_tp_c = K.expand_dims(n_tp_c, -1)
+            n_fp_c = K.expand_dims(n_fp_c, -1)
+            n_fn_c = K.expand_dims(n_fn_c, -1)
+            n_tp.append(n_tp_c)
+            n_fp.append(n_fp_c)
+            n_fn.append(n_fn_c)
+
+        n_tp = K.concatenate(n_tp, -1)
+        n_fp = K.concatenate(n_fp, -1)
+        n_fn = K.concatenate(n_fn, -1)
 
         return n_tp, n_fp, n_fn
 

@@ -58,12 +58,11 @@ class SSDDecoder(Decoder):
         return coord_decoded_t
 
     def decode_netout_to_boxes(self, netout_t):
-        # 0.01 from the paper
         class_t = netout_t[:, :-4]
         class_t = softmax(class_t)
         class_t = class_t[:, 1:]
         confidence = np.max(class_t, axis=1)
-        mask = (confidence > 0.01)
+        mask = (confidence > 0.01)  # 0.01 from the paper
 
         coord_t = netout_t[:, -4:]
         coord_decoded_t = self.decode_coord(coord_t)
