@@ -175,11 +175,13 @@ class SSDEncoder(Encoder):
     def _generate_meta_t(self, matches_idx):
         """
         Generate tensor with meta information for bounding box. That way
-        the label can be decoded without external information.
+        the label can be decoded without external information. Also we
+        add an indicator to determine when true boxes are assigned to multiple
+        anchors
         - var_t: variance for decode/encode
         - anchor_cxy: anchor center
         - anchor_wh: anchor width/height
-        - true box assignment: idx of true box it has been assigned to < -1 if no object
+        - multiple: 1 for boxes that contain doubles
         :param matches_idx: tensor(#boxes,#true_boxes) The idx which anchor box is assigned to which true box
         :return: tensor(#boxes,4+2+2+1): [var_t, anchor_cxy anchor_wh, assignment]
         """
@@ -189,6 +191,10 @@ class SSDEncoder(Encoder):
         anchor_wh = self.anchors_t[:, 2:] / np.array([self.img_width, self.img_height])
         anchor_cxy = self.anchors_t[:, :2] / np.array([self.img_width, self.img_height])
 
-        meta_t = np.concatenate([var_t, anchor_cxy, anchor_wh, np.expand_dims(matches_idx, -1)], -1)
+        multiples = np.ones_like((matches_idx.shape[0], 1))
+        multiples[matches_idx == Label.BACKGROUND] = 0
+        for u in np.unique(matches_idx):
+            multiples[np.where(matches_idx == u)[0][0]] = 0
+        meta_t = np.concatenate([var_t, anchor_cxy, anchor_wh, multiples], -1)
 
         return meta_t

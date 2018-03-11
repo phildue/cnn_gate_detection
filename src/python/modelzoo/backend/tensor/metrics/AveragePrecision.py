@@ -90,22 +90,20 @@ class AveragePrecision:
         """
         confidence = K.max(class_t, -1)
 
-        vals, indices = K.tf.nn.top_k(confidence[0], self.n_boxes, True)
-        indices = K.expand_dims(indices, 1)
-        class_sorted = K.tf.gather_nd(class_t[0], indices)
-        class_sorted = K.expand_dims(class_sorted, 0)
-        coord_sorted = K.tf.gather_nd(coord_t[0], indices)
-        coord_sorted = K.expand_dims(coord_sorted, 0)
-        for i in range(1, self.batch_size):
-            vals, indices = K.tf.nn.top_k(confidence[i], self.n_boxes, True)
-            indices = K.expand_dims(indices, 1)
-            class_sorted_i = K.tf.gather_nd(class_t[i], indices)
-            class_sorted_i = K.expand_dims(class_sorted_i, 0)
-            coord_sorted_i = K.tf.gather_nd(coord_t[i], indices)
-            coord_sorted_i = K.expand_dims(coord_sorted_i, 0)
+        vals, indices = K.tf.nn.top_k(confidence, self.n_boxes, True)
 
-            coord_sorted = K.concatenate([coord_sorted, coord_sorted_i], 0)
-            class_sorted = K.concatenate([class_sorted, class_sorted_i], 0)
+        # TODO this should be possible without batch size by creating and index tensor with arange
+        coord_sorted, class_sorted = [], []
+        for i in range(0, self.batch_size):
+            indices = K.expand_dims(indices[i], 1)
+            class_sorted_i = K.tf.gather_nd(class_t[i], indices[i])
+            class_sorted_i = K.expand_dims(class_sorted_i, 0)
+            coord_sorted_i = K.tf.gather_nd(coord_t[i], indices[i])
+            coord_sorted_i = K.expand_dims(coord_sorted_i, 0)
+            coord_sorted.append(coord_sorted_i)
+            class_sorted.append(class_sorted_i)
+        coord_sorted = K.concatenate(coord_sorted, 0)
+        class_sorted = K.concatenate(class_sorted, 0)
 
         return coord_sorted, class_sorted
 
@@ -139,7 +137,7 @@ class AveragePrecision:
 
         return n_true_positives, n_false_positives, n_false_negatives
 
-    def _prune_empty_boxes(self, coord_true, coord_pred, class_true, class_pred):
+    def prune_empty_boxes(self, coord_t, class_t):
         """
         Removes boxes that don't contain any predictions/true boxes.
         (1) Boxes are sorted by confidence
@@ -147,33 +145,21 @@ class AveragePrecision:
         (3) Boxes that are higher than the overall highest index are pruned. That way
             the dimension for each batch is the same and some of the boxes are still
             empty but the overall size of the tensor is drastically reduced.
-        :param coord_true: tensor(#boxes,4) true bounding box coordinates in minmax-format
-        :param coord_pred: tensor(#boxes,4) predicted bounding box coordinates in minmax-format
-        :param class_true: tensor(#boxes,#classes) true class confidences one-hot encoded
-        :param class_pred: tensor(#boxes,#classes) predicted class confidences one-hot encoded
+        :param coord_t: tensor(#boxes,4) true bounding box coordinates in minmax-format
+        :param class_t: tensor(#boxes,#classes) true class confidences one-hot encoded
         :return: same as input but with reduced size
         """
-        coord_true_sorted, class_true_sorted = self._sort_by_conf(coord_true, class_true)
+        coord_sorted, class_sorted = self._sort_by_conf(coord_t, class_t)
 
-        conf_true = K.max(class_true_sorted, -1)
+        conf_true = K.max(class_sorted, -1)
 
         min_idx = K.argmin(conf_true, axis=-1)
         max_min_idx = K.cast(K.max(min_idx), K.tf.int32)
 
-        coord_true_sorted = coord_true_sorted[:, :max_min_idx + 1]
-        class_true_sorted = class_true_sorted[:, :max_min_idx + 1]
+        coord_sorted = coord_sorted[:, :max_min_idx + 1]
+        class_sorted = class_sorted[:, :max_min_idx + 1]
 
-        coord_pred_sorted, class_pred_sorted = self._sort_by_conf(coord_pred, class_pred)
-
-        conf_pred = K.max(class_pred_sorted, -1)
-
-        min_idx = K.argmin(conf_pred, axis=-1)
-        max_min_idx = K.cast(K.max(min_idx), K.tf.int32)
-
-        coord_pred_sorted = coord_pred_sorted[:, :max_min_idx + 1]
-        class_pred_sorted = class_pred_sorted[:, :max_min_idx + 1]
-
-        return coord_true_sorted, coord_pred_sorted, class_true_sorted, class_pred_sorted
+        return coord_sorted, class_sorted
 
     def detections(self, coord_true, coord_pred, class_true, class_pred, conf_thresh=K.np.linspace(0, 1.0, 11)):
         """
@@ -192,10 +178,8 @@ class AveragePrecision:
         :return: true positives, false positives, false negatives
         """
 
-        coord_true_sorted, coord_pred_sorted, class_true_sorted, class_pred_sorted = self._prune_empty_boxes(coord_true,
-                                                                                                             coord_pred,
-                                                                                                             class_true,
-                                                                                                             class_pred)
+        coord_true_sorted, class_true_sorted = self.prune_empty_boxes(coord_true, class_true)
+        coord_pred_sorted, class_pred_sorted = self.prune_empty_boxes(coord_pred, class_pred)
 
         conf_true = K.max(class_true_sorted, -1)
 

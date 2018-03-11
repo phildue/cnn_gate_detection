@@ -11,11 +11,14 @@ from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
 class SSD300(SSDNet):
     @property
     def anchors(self):
-        return self._predictor_sizes
+        return self._anchors
 
-    def __init__(self, anchors,
-                 variances, img_shape: (int, int, int), loss: Loss, weight_file=None,
-                 n_classes=20, n_boxes=None):
+    def backend(self):
+        return self._model
+
+    def __init__(self, variances, img_shape: (int, int, int), loss: Loss, scales, aspect_ratios,
+                 weight_file=None, n_classes=20, n_boxes=None):
+        super().__init__(img_shape, variances, scales, aspect_ratios, loss)
         self.n_classes = n_classes
         self.n_boxes_conv4 = n_boxes['conv4']
         self.n_boxes_fc7 = n_boxes['fc7']
@@ -23,11 +26,14 @@ class SSD300(SSDNet):
         self.n_boxes_conv9 = n_boxes['conv9']
         self.n_boxes_conv10 = n_boxes['conv10']
         self.n_boxes_conv11 = n_boxes['conv11']
-        super().__init__(anchors, variances, img_shape, loss, weight_file)
+        self._model, self._anchors = self.build_model()
+
+        if weight_file is not None:
+            self._model.load_weights(weight_file, by_name=True)
 
     def build_model(self):
         # Input image format
-        img_height, img_width, img_channels = self.image_size[0], self.image_size[1], self.image_size[2]
+        img_height, img_width, img_channels = self.img_shape[0], self.img_shape[1], self.img_shape[2]
 
         x = Input(shape=(img_height, img_width, img_channels))
         normed = Lambda(lambda z: z / 127.5 - 1.0,  # Convert input feature range to [-1,1]

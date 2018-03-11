@@ -33,11 +33,11 @@ while True:
     img_enc = K.np.concatenate(imgs_enc)
 
     label_pred_t = ssd.net.predict(img_enc)
-    label_pred_t = label_true_t.copy()
-    label_pred_t[:, :, :-17] *= 10
-    label_pred_t[label_pred_t[:, :, 0] == 0, :-13] = K.np.array(
-        [1, 1.5, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    label_pred_t[:, -16] += 3.0
+    # label_pred_t = label_true_t.copy()
+    # label_pred_t[:, :, :-17] *= 10
+    # label_pred_t[label_pred_t[:, :, 0] == 0, :-13] = K.np.array(
+    #     [1, 1.5, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    # label_pred_t[:, -16] += 3.0
     sess = K.tf.InteractiveSession()
     localization_loss_t = ssd.loss.localization_loss(y_pred=K.constant(label_pred_t),
                                                      y_true=K.constant(label_true_t))
