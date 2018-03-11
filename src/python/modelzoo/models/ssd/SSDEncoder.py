@@ -2,7 +2,6 @@ from enum import Enum
 
 import numpy as np
 
-
 # noinspection PyDefaultArgument
 # noinspection PyDefaultArgument
 from modelzoo.backend.tensor.iou import iou_np
@@ -95,7 +94,7 @@ class SSDEncoder(Encoder):
                 matched_box = true_boxes[match_idx]
                 coord_t[i] = matched_box.coords_centroid
 
-                # normalize to image size
+        # normalize to image size
         coord_t[:, 0] /= self.img_width
         coord_t[:, 2] /= self.img_width
         coord_t[:, 1] /= self.img_height
@@ -121,17 +120,9 @@ class SSDEncoder(Encoder):
 
         return coord_t
 
-    def _generate_coord_t_empty(self):
-        """
-        Generates box coordinate tensor when there are no objects in the image
-        :return: tensor(#boxes,4)
-        """
-        return np.zeros((self.anchors_t.shape[0], 4))
-
     def _generate_class_t(self, matches_idx, true_boxes: [BoundingBox]):
         """
         Generates a tensor containing the class labels where idx 0 is the background class
-        :param matches_iou: tensor(#boxes,#true_boxes) The iou overlap of the matches between overlap and true boxes
         :param matches_idx: tensor(#boxes,#true_boxes) The idx which anchor box is assigned to which true box
         :param true_boxes: Bounding boxes with GT data
         :return: tensor(#boxes,#classes)
@@ -146,16 +137,6 @@ class SSDEncoder(Encoder):
             elif match_idx == Label.BACKGROUND.value:
                 classes_t[i] = class_coding[0]
 
-        return classes_t
-
-    def _generate_class_t_empty(self):
-        """
-        Generates a tensor containing the class labels when there is no object in the image
-        :return: tensor(#boxes,#classes)
-        """
-        class_coding = np.eye(self.n_classes)
-        classes_t = np.zeros((self.anchors_t.shape[0], self.n_classes))
-        classes_t += class_coding[0]
         return classes_t
 
     def encode_label(self, label: ImgLabel):
@@ -174,13 +155,14 @@ class SSDEncoder(Encoder):
         if len(true_boxes) > 0:
             true_boxes_t = BoundingBox.to_tensor_minmax(true_boxes)
             matches_idx = self._match_to_anchors(true_boxes_t)
-            classes_t = self._generate_class_t(matches_idx, true_boxes)
-            coord_t = self._generate_coord_t(matches_idx, true_boxes)
         else:
-            classes_t = self._generate_class_t_empty()
-            coord_t = self._generate_coord_t_empty()
+            matches_idx = np.ones((self.anchors_t.shape[0])) * -2
 
-        label_t = np.concatenate((classes_t, coord_t), axis=1)
+        classes_t = self._generate_class_t(matches_idx, true_boxes)
+        coord_t = self._generate_coord_t(matches_idx, true_boxes)
+        meta_t = self._generate_meta_t(matches_idx)
+
+        label_t = np.concatenate((classes_t, coord_t, meta_t), axis=1)
 
         if np.isnan(label_t).any():
             mask = np.any(np.isnan(label_t), axis=1)
@@ -189,3 +171,24 @@ class SSDEncoder(Encoder):
             label_t[mask, -4:] = self.anchors_t[mask]
 
         return label_t
+
+    def _generate_meta_t(self, matches_idx):
+        """
+        Generate tensor with meta information for bounding box. That way
+        the label can be decoded without external information.
+        - var_t: variance for decode/encode
+        - anchor_cxy: anchor center
+        - anchor_wh: anchor width/height
+        - true box assignment: idx of true box it has been assigned to < -1 if no object
+        :param matches_idx: tensor(#boxes,#true_boxes) The idx which anchor box is assigned to which true box
+        :return: tensor(#boxes,4+2+2+1): [var_t, anchor_cxy anchor_wh, assignment]
+        """
+        var_t = np.array([self.variances])
+        var_t = np.tile(var_t, (matches_idx.shape[0], 1))
+
+        anchor_wh = self.anchors_t[:, 2:] / np.array([self.img_width, self.img_height])
+        anchor_cxy = self.anchors_t[:, :2] / np.array([self.img_width, self.img_height])
+
+        meta_t = np.concatenate([var_t, anchor_cxy, anchor_wh, np.expand_dims(matches_idx, -1)], -1)
+
+        return meta_t

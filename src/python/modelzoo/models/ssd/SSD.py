@@ -197,13 +197,7 @@ class SSD(Predictor):
                                     n_classes=self.n_classes,
                                     color_format=color_format)
 
-        decoder = SSDDecoder(anchors_t,
-                             img_shape,
-                             confidence_thresh,
-                             iou_thresh_match,
-                             top_k,
-                             self.n_classes,
-                             variances)
+        decoder = SSDDecoder(img_shape)
         postprocessor = Postprocessor(decoder=decoder,
                                       conf_thresh=confidence_thresh,
                                       iou_thresh=iou_thresh_nms)
