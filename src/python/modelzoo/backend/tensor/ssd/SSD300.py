@@ -3,26 +3,27 @@ from keras import Model, Input
 from keras.layers import Conv2D, MaxPooling2D, Concatenate, Reshape, Lambda
 
 from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.backend.tensor.ssd.ConcatMeta import ConcatMeta
 from modelzoo.backend.tensor.ssd.L2Normalization import L2Normalization
 from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
 
 
 class SSD300(SSDNet):
     @property
-    def predictor_sizes(self):
+    def anchors(self):
         return self._predictor_sizes
 
-    def __init__(self, image_size: (int, int, int), loss: Loss, weight_file=None,
+    def __init__(self, anchors,
+                 variances, img_shape: (int, int, int), loss: Loss, weight_file=None,
                  n_classes=20, n_boxes=None):
         self.n_classes = n_classes
-        self.image_size = image_size
         self.n_boxes_conv4 = n_boxes['conv4']
         self.n_boxes_fc7 = n_boxes['fc7']
         self.n_boxes_conv8 = n_boxes['conv8']
         self.n_boxes_conv9 = n_boxes['conv9']
         self.n_boxes_conv10 = n_boxes['conv10']
         self.n_boxes_conv11 = n_boxes['conv11']
-        super().__init__(loss, weight_file)
+        super().__init__(anchors, variances, img_shape, loss, weight_file)
 
     def build_model(self):
         # Input image format
@@ -44,7 +45,12 @@ class SSD300(SSDNet):
 
         predictions = Concatenate(axis=2, name='predictions')([pred_c, pred_loc])
 
-        return Model(inputs=x, outputs=predictions), predictor_sizes
+        anchors = self.generate_anchors_t(predictor_sizes)
+        meta_t = self._generate_meta_t(anchors)
+
+        netout = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
+
+        return Model(inputs=x, outputs=netout), anchors
 
     def _build_loc_predictors(self, conv4, fc7, conv8, conv9, conv10, conv11):
         pred4_loc = Conv2D(self.n_boxes_conv4 * 4, (3, 3), padding='same', name='pred4_loc')(

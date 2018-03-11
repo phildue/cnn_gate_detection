@@ -3,27 +3,42 @@ from keras import Model, Input
 from keras.layers import BatchNormalization, Conv2D, MaxPooling2D, ELU, Concatenate, Reshape, Lambda
 
 from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.backend.tensor.ssd.ConcatMeta import ConcatMeta
 from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
 
 
 class SSD7(SSDNet):
     @property
-    def predictor_sizes(self):
-        return self._predictor_sizes
+    def anchors(self):
+        return self._anchors
 
-    def __init__(self, image_size: (int, int, int), n_boxes: {str: int}, loss: Loss,
-                 weight_file=None, n_classes=20):
+    @property
+    def backend(self):
+        return self._model
+
+    def __init__(self, img_shape,
+                 variances,
+                 scales,
+                 aspect_ratios,
+                 loss: Loss,
+                 weight_file=None,
+                 n_classes=20,
+                 n_boxes=None):
+        super().__init__(img_shape, variances, scales, aspect_ratios, loss)
         self.n_classes = n_classes
-        self.image_size = image_size
         self.n_boxes_conv4 = n_boxes['conv4']
         self.n_boxes_conv5 = n_boxes['conv5']
         self.n_boxes_conv6 = n_boxes['conv6']
         self.n_boxes_conv7 = n_boxes['conv7']
-        super().__init__(loss, weight_file)
+
+        self._model, self._anchors = self.build_model()
+
+        if weight_file is not None:
+            self._model.load_weights(weight_file, by_name=True)
 
     def build_model(self):
         # Input image format
-        img_height, img_width, img_channels = self.image_size[0], self.image_size[1], self.image_size[2]
+        img_height, img_width, img_channels = self.img_shape[0], self.img_shape[1], self.img_shape[2]
 
         # Design the actual network
         x = Input(shape=(img_height, img_width, img_channels))
@@ -42,7 +57,12 @@ class SSD7(SSDNet):
 
         predictions = Concatenate(axis=2, name='predictions')([pred_c, pred_loc])
 
-        return Model(inputs=x, outputs=predictions), predictor_sizes
+        anchors = self.generate_anchors_t(predictor_sizes)
+        meta_t = self._generate_meta_t(anchors)
+
+        netout = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
+
+        return Model(inputs=x, outputs=netout), anchors
 
     def _build_loc_predictors(self, conv4, conv5, conv6, conv7):
         boxes4 = Conv2D(self.n_boxes_conv4 * 4, (3, 3), strides=(1, 1), padding="valid", name='boxes4')(conv4)
