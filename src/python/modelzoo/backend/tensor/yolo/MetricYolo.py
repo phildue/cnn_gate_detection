@@ -24,8 +24,8 @@ class MetricYolo(Metric):
 
     def _decode_coord(self, coord_t):
         offset_y, offset_x = K.np.mgrid[:self.grid[0], :self.grid[1]]
-        offset_y = K.constant(offset_y)
-        offset_x = K.constant(offset_x)
+        offset_y = K.constant(offset_y, K.tf.float64)
+        offset_x = K.constant(offset_x, K.tf.float64)
 
         offset_x = K.expand_dims(offset_x, -1)
         offset_x = K.expand_dims(offset_x, 0)
@@ -57,10 +57,10 @@ class MetricYolo(Metric):
 
         return coord_dec_t
 
-    def _recode_truth(self, y_true):
+    def _postprocess_truth(self, y_true):
         w_zero_anchors = K.np.zeros((self.batch_size, self.grid[0], self.grid[1], self.n_boxes, self.n_classes))
         w_zero_anchors[:, :, :, 0, :] = 1
-        w_zero_anchors = K.constant(w_zero_anchors)
+        w_zero_anchors = K.constant(w_zero_anchors, dtype=K.tf.float64)
 
         coord_true_t = y_true[:, :, :, :, :4]
         class_true_t = y_true[:, :, :, :, 5:]
@@ -73,7 +73,7 @@ class MetricYolo(Metric):
 
         return coord_true_reshape_t, class_true_reshape_t
 
-    def _recode_predictions(self, y_pred):
+    def _postprocess_pred(self, y_pred):
         coord_pred_t = y_pred[:, :, :, :, :4]
         class_pred_t = y_pred[:, :, :, :, 5:]
         conf_pred_t = y_pred[:, :, :, :, 4]
@@ -87,8 +87,8 @@ class MetricYolo(Metric):
 
         class_pred_nms_batch = []
         for i in range(self.batch_size):
-            idx = K.tf.image.non_max_suppression(coord_pred_reshape_t[i],
-                                                 K.flatten(conf_pred_reshape_t[i]),
+            idx = K.tf.image.non_max_suppression(K.cast(coord_pred_reshape_t[i], K.tf.float32),
+                                                 K.flatten(K.cast(conf_pred_reshape_t[i], K.tf.float32)),
                                                  self.n_boxes * self.grid[0] * self.grid[1], self.iou_thresh,
                                                  'NonMaxSuppression')
             idx = K.expand_dims(idx, 1)

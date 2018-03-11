@@ -91,11 +91,11 @@ class AveragePrecision:
         confidence = K.max(class_t, -1)
 
         vals, indices = K.tf.nn.top_k(confidence, self.n_boxes, True)
+        indices = K.expand_dims(indices, -1)
 
         # TODO this should be possible without batch size by creating and index tensor with arange
         coord_sorted, class_sorted = [], []
         for i in range(0, self.batch_size):
-            indices = K.expand_dims(indices[i], 1)
             class_sorted_i = K.tf.gather_nd(class_t[i], indices[i])
             class_sorted_i = K.expand_dims(class_sorted_i, 0)
             coord_sorted_i = K.tf.gather_nd(coord_t[i], indices[i])
