@@ -43,7 +43,7 @@ class SSDTestNet(SSDNet):
         x = Input(shape=(img_height, img_width, img_channels))
         normed = Lambda(lambda z: z / 127.5 - 1.,  # Convert input feature range to [-1,1]
                         output_shape=(img_height, img_width, img_channels),
-                        name='norm')(x)
+                        name='scale')(x)
 
         with K.name_scope('BaseNetwork'):
             conv7, conv6, conv4 = self._build_base_network(normed)

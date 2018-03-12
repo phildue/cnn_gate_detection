@@ -44,7 +44,7 @@ class SSD7(SSDNet):
         x = Input(shape=(img_height, img_width, img_channels))
         normed = Lambda(lambda z: z / 127.5 - 1.,  # Convert input feature range to [-1,1]
                         output_shape=(img_height, img_width, img_channels),
-                        name='norm')(x)
+                        name='scale')(x)
 
         with K.name_scope('BaseNetwork'):
             conv4, conv5, conv6, conv7 = self._build_base_network(normed)
@@ -114,7 +114,7 @@ class SSD7(SSDNet):
     def _build_base_network(feed_in):
         conv1 = Conv2D(32, (5, 5), name='conv1', strides=(1, 1), padding="same")(feed_in)
         conv1 = BatchNormalization(axis=3, momentum=0.99, name='bn1')(
-            conv1)  # Tensorflow uses filter format [filter_height, filter_width, in_channels, out_channels], hence axis = 3
+            conv1)
         conv1 = ELU(name='elu1')(conv1)
 
         pool1 = MaxPooling2D(pool_size=(2, 2), name='pool1')(conv1)

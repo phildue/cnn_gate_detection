@@ -38,7 +38,7 @@ class SSD300(SSDNet):
         x = Input(shape=(img_height, img_width, img_channels))
         normed = Lambda(lambda z: z / 127.5 - 1.0,  # Convert input feature range to [-1,1]
                         output_shape=(img_height, img_width, img_channels),
-                        name='Normalization')(x)
+                        name='scale')(x)
 
         with K.name_scope('BaseNetwork'):
             conv4, conv8, conv9, conv10, conv11, fc7 = self._build_base_network(normed)
