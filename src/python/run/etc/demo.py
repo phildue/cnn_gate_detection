@@ -1,5 +1,5 @@
 from modelzoo.models.ssd.SSD import SSD
-from modelzoo.visualization.utils import demo_generator
+from modelzoo.visualization.demo import demo_generator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.workdir import work_dir

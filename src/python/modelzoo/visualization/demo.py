@@ -5,7 +5,6 @@ from utils.BoundingBox import BoundingBox
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labeled
 from utils.labels.utils import resize_label
-from utils.imageprocessing.Backend import resize
 
 
 def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None):
