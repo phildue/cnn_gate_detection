@@ -16,7 +16,7 @@ class AugmenterEnsemble(Augmenter):
         label_aug = copy.deepcopy(label)
 
         for i, a in enumerate(self.augmenters):
-            if random.uniform(0, 1) > self.probs[i]:
+            if random.uniform(0, 1) <= self.probs[i]:
                 img_aug, label_aug = a.augment(img_aug, label_aug)
 
         return img_aug, label_aug

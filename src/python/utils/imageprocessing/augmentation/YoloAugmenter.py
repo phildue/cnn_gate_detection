@@ -1,13 +1,13 @@
 import copy
 
 import numpy as np
-from modelzoo.augmentation.Augmenter import Augmenter
-from modelzoo.augmentation.AugmenterFlip import AugmenterFlip
 
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Backend import translate
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.augmentation.Augmenter import Augmenter
 from utils.imageprocessing.augmentation.AugmenterColorShift import AugmenterColorShift
+from utils.imageprocessing.augmentation.AugmenterFlip import AugmenterFlip
 from utils.labels.ImgLabel import ImgLabel
 
 

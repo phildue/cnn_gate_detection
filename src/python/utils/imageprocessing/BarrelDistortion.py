@@ -193,10 +193,10 @@ class BarrelDistortion(DistortionModel):
         f = np.array([[f00, f01],
                       [f10, f11]])
 
-        y -= float(y0)
-        x -= float(x0)
-        y_vec = np.array([[1 - y], [y]])
-        x_vec = np.array([[1 - x, x]])
+        y_ = y - float(y0)
+        x_ = x - float(x0)
+        y_vec = np.array([[1 - y_], [y_]])
+        x_vec = np.array([[1 - x_, x_]])
         out = np.zeros((channels,), dtype=np.int8)
         for i in range(channels):
             out[i] = (x_vec.dot(f[:, :, i].dot(y_vec))).astype(np.int8)
@@ -215,7 +215,7 @@ class BarrelDistortion(DistortionModel):
         for i in range(h):
             for j in range(w):
                 x, y = mapping[i, j]
-                if 1 < x < float(w) - 1 and 1 < y < float(h) - 1:
+                if 1.0 < x < float(w) - 1.0 and 1.0 < y < float(h) - 1.0:
                     mat_distorted[i, j] = self._bilinear_interp(mat, x, y)
 
         return mat_distorted

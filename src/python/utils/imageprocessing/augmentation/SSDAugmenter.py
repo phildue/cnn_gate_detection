@@ -1,7 +1,6 @@
-from modelzoo.augmentation.AugmenterBrightness import AugmenterBrightness
-from modelzoo.augmentation.AugmenterCrop import AugmenterCrop
-from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
-
+from utils.imageprocessing.augmentation.AugmenterBrightness import AugmenterBrightness
+from utils.imageprocessing.augmentation.AugmenterCrop import AugmenterCrop
+from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from utils.imageprocessing.augmentation.AugmenterFlip import AugmenterFlip
 
 
