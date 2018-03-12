@@ -9,7 +9,7 @@ from modelzoo.backend.tensor.Training import Training
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.augmentation.AugmenterPixel import AugmenterPixel
+from utils.imageprocessing.transform.TransformSubsample import TransformSubsample
 from utils.workdir import work_dir
 
 work_dir()
@@ -25,7 +25,7 @@ predictor = SSD.ssd7(n_classes=1, batch_size=BATCH_SIZE, color_format='yuv')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='yuv', label_format='xml')
 
-augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterPixel())])
+augmenter = AugmenterEnsemble(augmenters=[(0.5, TransformSubsample())])
 
 model_name = predictor.net.__class__.__name__
 

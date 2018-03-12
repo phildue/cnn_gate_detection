@@ -5,7 +5,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History
 
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
-from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 
 
 class Training:
@@ -71,7 +71,7 @@ class Training:
     @property
     def summary(self):
 
-        if isinstance(self.predictor.preprocessor.augmenter, AugmenterEnsemble):
+        if isinstance(self.predictor.preprocessor.augmenter, RandomEnsemble):
             augmentation = [augmenter.__class__.__name__ for augmenter in
                             self.predictor.preprocessor.augmenter.augmenters]
         else:
@@ -84,7 +84,7 @@ class Training:
                    'color_format': self.dataset_gen.color_format,
                    'batch_size': self.dataset_gen.batch_size,
                    'n_samples': self.dataset_gen.n_samples,
-                   'augmentation': augmentation,
+                   'transform': augmentation,
                    'initial_epoch': self.initial_epoch,
                    'epochs': self.epochs}
         return summary

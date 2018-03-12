@@ -3,12 +3,12 @@ import numpy as np
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
 
 class Preprocessor:
-    def __init__(self, augmenter: Augmenter, encoder: Encoder, n_classes, img_shape, color_format):
+    def __init__(self, augmenter: ImgTransform, encoder: Encoder, n_classes, img_shape, color_format):
         self.color_format = color_format
         self.img_height, self.img_width = img_shape[:2]
         self.n_classes = n_classes
@@ -30,7 +30,7 @@ class Preprocessor:
                 img = img.bgr
 
             if self.augmenter is not None:
-                img, label = self.augmenter.augment(img, label)
+                img, label = self.augmenter.transform(img, label)
 
             img, label = resize(img, (self.img_height, self.img_width), label=label)
 

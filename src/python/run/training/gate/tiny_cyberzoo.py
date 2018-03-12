@@ -8,8 +8,8 @@ from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
-from utils.imageprocessing.augmentation.AugmenterDistort import AugmenterDistort
-from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.workdir import work_dir
 
 work_dir()
@@ -26,8 +26,8 @@ predictor = Yolo.tiny_yolo(norm=(80, 166), grid=(2, 5), class_names=['gate'], ba
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='bgr', label_format='xml')
 
-augmenter = AugmenterEnsemble(augmenters=[(1.0, AugmenterDistort(BarrelDistortion.from_file(dist_model_file)))])
-# TODO put in Brightness/Contrast augmentation etc
+augmenter = RandomEnsemble(augmenters=[(1.0, TransformDistort(BarrelDistortion.from_file(dist_model_file)))])
+# TODO put in Brightness/Contrast transform etc
 # TODO check how yolo does normalization
 model_name = predictor.net.__class__.__name__
 

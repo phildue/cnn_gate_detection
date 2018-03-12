@@ -4,7 +4,7 @@ from modelzoo.backend.tensor.Training import Training
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.fileaccess.utils import save_file, create_dirs
-from utils.imageprocessing.augmentation.YoloAugmenter import YoloAugmenter
+from utils.imageprocessing.transform.YoloAugmenter import YoloImgTransform
 from utils.workdir import work_dir
 
 work_dir()
@@ -17,7 +17,7 @@ work_path = 'logs/ssd300_voc/'
 predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=1.0, weight_file=work_path + '/SSD300.h5')
 data_generator = VocGenerator(batch_size=batch_size, shuffle=True)
 
-augmenter = YoloAugmenter()
+augmenter = YoloImgTransform()
 
 model_name = predictor.net.__class__.__name__
 

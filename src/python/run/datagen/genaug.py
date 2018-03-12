@@ -4,7 +4,7 @@ from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.augmentation.AugmenterDistort import AugmenterDistort
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.timing import tic, toc
 from utils.workdir import work_dir
 
@@ -18,7 +18,7 @@ data_generator = GateGenerator(image_source, batch_size=batch_size, n_samples=n_
                                color_format='yuv')
 it = iter(data_generator.generate())
 
-augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterDistort())])
+augmenter = AugmenterEnsemble(augmenters=[(0.5, TransformDistort())])
 
 set_writer = SetFileParser(sample_path, img_format='jpg', label_format='pkl')
 
@@ -29,7 +29,7 @@ for i in range(n_batches):
     imgs_aug = []
     labels_aug = []
     for img, label, img_path in batch:
-        img_aug, label_aug = augmenter.augment(img, label)
+        img_aug, label_aug = augmenter.transform(img, label)
         # show(img_aug.bgr,labels=label_aug)
         imgs_aug.append(img_aug)
         labels_aug.append(label_aug)

@@ -11,7 +11,7 @@ from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.ssd.SSDDecoder import SSDDecoder
 from modelzoo.models.ssd.SSDEncoder import SSDEncoder
 # noinspection PyDefaultArgument
-from utils.imageprocessing.augmentation.SSDAugmenter import SSDAugmenter
+from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
 
 
 class SSD(Predictor):

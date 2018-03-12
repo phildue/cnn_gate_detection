@@ -4,9 +4,9 @@ from samplegen.imggen.RandomImgGen import RandomImgGen
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
-from utils.imageprocessing.augmentation.AugmenterPixel import AugmenterPixel
-from utils.imageprocessing.augmentation.AugmenterResize import AugmenterResize
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.TransformSubsample import TransformSubsample
+from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.timing import tic, toc, tuc
 from utils.workdir import work_dir
 

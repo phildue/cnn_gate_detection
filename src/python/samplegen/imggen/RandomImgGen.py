@@ -4,14 +4,14 @@ import random
 from samplegen.imggen.ImgGen import ImgGen
 from utils.imageprocessing.Backend import imread, replace_background, blur, noisy, convert_color, COLOR_BGR2YUV, resize
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.augmentation.Augmenter import Augmenter
+from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
 
 class RandomImgGen(ImgGen):
     def __init__(self, background_path="../resource/backgrounds",
                  output_shape=(416, 416),
-                 image_transformer: Augmenter = None):
+                 image_transformer: ImgTransform = None):
         self.output_shape = output_shape
         paths = background_path if isinstance(background_path, list) else [background_path]
         self.files = [f for folder in [glob.glob(p + "/*.jpg") for p in paths] for f in folder]
@@ -30,7 +30,7 @@ class RandomImgGen(ImgGen):
             label = labels[i]
 
             if self.image_transformer:
-                img, label = self.image_transformer.augment(img, label)
+                img, label = self.image_transformer.transform(img, label)
 
             img, label = resize(img, shape=self.output_shape, label=label)
             samples.append(img)
