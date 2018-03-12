@@ -2,30 +2,33 @@ import pprint as pp
 import time
 
 import numpy as np
-from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.augmentation.AugmenterPixel import AugmenterPixel
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.augmentation.AugmenterDistort import AugmenterDistort
+from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from utils.workdir import work_dir
 
 work_dir()
 
 BATCH_SIZE = 2
 
-image_source = ["resource/samples/mult_gate_aligned/"]
+image_source = ["resource/samples/bebop/"]
 max_epochs = 4
 n_samples = 20
-predictor = Yolo.tiny_yolo(norm=(160, 315), grid=(5, 9), class_names=['gate'], batch_size=BATCH_SIZE,
-                           color_format='yuv')
+dist_model_file = 'resource/barrel_dist_model.pkl'
+
+predictor = Yolo.tiny_yolo(norm=(80, 166), grid=(2, 5), class_names=['gate'], batch_size=BATCH_SIZE,
+                           color_format='bgr')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
-                               color_format='yuv', label_format='xml')
+                               color_format='bgr', label_format='xml')
 
+augmenter = AugmenterEnsemble(augmenters=[(1.0, AugmenterDistort(BarrelDistortion.from_file(dist_model_file)))])
 # TODO put in Brightness/Contrast augmentation etc
-augmenter = AugmenterEnsemble(augmenters=[(0.5, AugmenterPixel())])
-
+# TODO check how yolo does normalization
 model_name = predictor.net.__class__.__name__
 
 name = str(int(np.round(time.time() / 10)))

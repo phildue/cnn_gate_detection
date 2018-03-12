@@ -4,6 +4,9 @@ from samplegen.imggen.RandomImgGen import RandomImgGen
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
+from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
+from utils.imageprocessing.augmentation.AugmenterPixel import AugmenterPixel
+from utils.imageprocessing.augmentation.AugmenterResize import AugmenterResize
 from utils.timing import tic, toc, tuc
 from utils.workdir import work_dir
 
@@ -16,7 +19,7 @@ background_path = ["resource/backgrounds/google-fence-gate-industry/",
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/mult_gate_aligned/"
+sample_path = "resource/samples/bebop20k/"
 shot_path = "resource/shots/mult_gate_aligned/"
 
 n_backgrounds = 20000
@@ -25,10 +28,13 @@ n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
 
-set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
-generator = RandomImgGen(background_path,
-                         output_shape=(160, 315))
 shot_loader = ShotLoad(shot_path, img_format='bmp')
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
+
+augmenter = None  # AugmenterEnsemble(augmenters=[(1.0, AugmenterResize((80, 166)))])
+generator = RandomImgGen(background_path,
+                         output_shape=(80, 166),
+                         image_transformer=augmenter)
 for i in range(n_batches):
     tic()
     shots, shot_labels = shot_loader.get_shots(n_shots=250)

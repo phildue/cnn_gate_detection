@@ -5,7 +5,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History
 
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
-from utils.imageprocessing.augmentation import AugmenterEnsemble
+from utils.imageprocessing.augmentation.AugmenterEnsemble import AugmenterEnsemble
 
 
 class Training:

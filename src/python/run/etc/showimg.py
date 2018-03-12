@@ -18,16 +18,16 @@ def show_voc():
 
 
 def show_img(path):
-    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False)
+    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False,label_format=None)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
             if img.format == 'yuv':
                 img = convert_color(img, COLOR_YUV2BGR)
-            show(img, 'labeled', labels=label, colors=[COLOR_GREEN], legend=LEGEND_BOX)
-
-            img, label = resize(img, shape=(150, 150), label=label)
-            img, label = resize(img, shape=(416, 416), label=label)
+            # show(img, 'labeled', labels=label, colors=[COLOR_GREEN], legend=LEGEND_BOX)
+            #
+            # img, label = resize(img, shape=(150, 150), label=label)
+            img, label = resize(img, shape=(80, 166), label=label)
             show(img, 'resized', labels=label)
 
 
@@ -40,5 +40,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-# show_img(path=['resource/samples/mult_gate_aligned_test/'])
-show_voc()
+show_img(path=['resource/samples/cyberzoo/'])
+# show_voc()
