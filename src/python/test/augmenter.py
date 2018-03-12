@@ -1,7 +1,5 @@
 import random
 
-
-
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.TransformerBlur import TransformerBlur
@@ -31,9 +29,9 @@ img = batch[idx][0]
 label = batch[idx][1]
 
 ssd_augmenter = SSDAugmenter()
-augmenters = [RandomCrop(), RandomBrightness(), RandomColorShift(), TransformFlip(), TransformGray(),
-              TransformHistEq(), TransformSubsample(), RandomNoise(iterations=10), TransformerBlur(iterations=10),
-              RandomScale(), RandomShift(), TransformNormalize()]
+augmenters = [RandomBrightness(b_max=0.9), RandomColorShift(), TransformFlip(), TransformGray(),
+              TransformHistEq(), TransformSubsample(), RandomNoise(), TransformerBlur(iterations=10),
+              RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
 
 for img, label, _ in batch:
     show(img, labels=label, name='Org')

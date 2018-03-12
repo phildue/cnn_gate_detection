@@ -8,7 +8,6 @@ from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
-from utils.imageprocessing.transform.MavvAugmenter import MavvAugmenter
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.workdir import work_dir
@@ -22,13 +21,14 @@ max_epochs = 4
 n_samples = 20
 dist_model_file = 'resource/barrel_dist_model.pkl'
 
-predictor = Yolo.tiny_yolo(norm=(80, 166), grid=(2, 5), class_names=['gate'], batch_size=BATCH_SIZE,
-                           color_format='bgr')
+predictor = Yolo.yolo_v2(norm=(80, 166), grid=(2, 5), class_names=['gate'], batch_size=BATCH_SIZE,
+                         color_format='bgr')
 data_generator = GateGenerator(image_source, batch_size=BATCH_SIZE, valid_frac=0.1, n_samples=n_samples,
                                color_format='bgr', label_format='xml')
 
-augmenter = MavvAugmenter(dist_model_file)
-
+augmenter = RandomEnsemble(augmenters=[(1.0, TransformDistort(BarrelDistortion.from_file(dist_model_file)))])
+# TODO put in Brightness/Contrast transform etc
+# TODO check how yolo does normalization
 model_name = predictor.net.__class__.__name__
 
 name = str(int(np.round(time.time() / 10)))

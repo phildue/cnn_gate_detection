@@ -197,16 +197,18 @@ def histogram_eq(img: Image):
 
     img_eq = np.copy(img.array)
 
-    img_eq = cv2.cvtColor(img_eq, cv2.COLOR_RGB2HSV)
+    # img_eq = cv2.cvtColor(img_eq, cv2.COLOR_RGB2HSV)
 
+    img_eq[:, :, 0] = cv2.equalizeHist(img_eq[:, :, 0])
+    img_eq[:, :, 1] = cv2.equalizeHist(img_eq[:, :, 1])
     img_eq[:, :, 2] = cv2.equalizeHist(img_eq[:, :, 2])
 
-    img_eq = cv2.cvtColor(img_eq, cv2.COLOR_HSV2RGB)
+    # img_eq = cv2.cvtColor(img_eq, cv2.COLOR_HSV2RGB)
 
     return Image(img_eq, img.format)
 
 
-def brightness(img: Image, min=0.5, max=2.0):
+def brightness(img: Image, scale):
     """
     Randomly change the brightness of the input image.
 
@@ -214,16 +216,13 @@ def brightness(img: Image, min=0.5, max=2.0):
     """
     hsv = cv2.cvtColor(img.array, cv2.COLOR_RGB2HSV)
 
-    random_br = np.random.uniform(min, max)
-
-    # To protect against overflow: Calculate a mask for all pixels
-    # where adjustment of the brightness would exceed the maximum
-    # brightness value and set the value to the maximum at those pixels.
-    mask = hsv[:, :, 2] * random_br > 255
-    v_channel = np.where(mask, 255, hsv[:, :, 2] * random_br)
+    img_transf = hsv[:, :, 2] * scale
+    mask = img_transf > 255
+    v_channel = np.where(mask, 255, img_transf)
     hsv[:, :, 2] = v_channel
+    org = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
-    return Image(cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB), img.format)
+    return Image(org, img.format)
 
 
 def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):

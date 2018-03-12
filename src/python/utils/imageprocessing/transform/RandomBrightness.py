@@ -8,7 +8,7 @@ from utils.labels.ImgLabel import ImgLabel
 
 
 class RandomBrightness(ImgTransform):
-    def __init__(self, b_min=0.0, b_max=1.0):
+    def __init__(self, b_min=0.1, b_max=2.0):
         self.b_max = b_max
         self.b_min = b_min
 
@@ -16,9 +16,8 @@ class RandomBrightness(ImgTransform):
         img_aug = img.copy()
         label_aug = copy.deepcopy(label)
 
-        b_min = random.uniform(self.b_min, self.b_max)
-        b_max = random.uniform(b_min, self.b_max)
+        scale = random.uniform(self.b_min, self.b_max)
 
-        img_aug = brightness(img_aug, min=b_min, max=b_max)
+        img_aug = brightness(img_aug, scale)
 
         return img_aug, label_aug
