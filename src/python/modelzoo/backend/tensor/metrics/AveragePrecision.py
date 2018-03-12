@@ -84,27 +84,22 @@ class AveragePrecision:
     def _sort_by_conf(self, coord_t, class_t):
         """
         Sorts tensors by confidence level, starting with the highest confidence.
-        :param coord_t: tensor(#boxes,4) bounding box coordinates in minmax-format
+        :param coord_t: tensor(#boxes,4) bounding box coordinates
         :param class_t: tensor(#boxes,#classes) class confidences one-hot encoded
         :return:
         """
         confidence = K.max(class_t, -1)
 
-        vals, indices = K.tf.nn.top_k(confidence, self.n_boxes, True)
-        indices = K.expand_dims(indices, -1)
+        vals, idx_x = K.tf.nn.top_k(confidence, self.n_boxes, True)
+        idx_x = K.expand_dims(idx_x, -1)
 
-        # TODO this should be possible without batch size by creating and index tensor with arange
-        coord_sorted, class_sorted = [], []
-        for i in range(0, self.batch_size):
-            class_sorted_i = K.tf.gather_nd(class_t[i], indices[i])
-            class_sorted_i = K.expand_dims(class_sorted_i, 0)
-            coord_sorted_i = K.tf.gather_nd(coord_t[i], indices[i])
-            coord_sorted_i = K.expand_dims(coord_sorted_i, 0)
-            coord_sorted.append(coord_sorted_i)
-            class_sorted.append(class_sorted_i)
-        coord_sorted = K.concatenate(coord_sorted, 0)
-        class_sorted = K.concatenate(class_sorted, 0)
-
+        idx_batch = K.arange(0, self.batch_size)
+        idx_batch = K.expand_dims(idx_batch, -1)
+        idx_batch = K.tile(idx_batch, (1, self.n_boxes))
+        idx_batch = K.expand_dims(idx_batch, -1)
+        idx = K.concatenate([idx_batch, idx_x], -1)
+        class_sorted = K.tf.gather_nd(class_t, idx)
+        coord_sorted = K.tf.gather_nd(coord_t, idx)
         return coord_sorted, class_sorted
 
     def _count_detections(self, class_pred, conf_thresh, iou, w_class_match, w_true):
