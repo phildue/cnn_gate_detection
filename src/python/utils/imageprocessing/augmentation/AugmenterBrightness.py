@@ -1,9 +1,9 @@
 import copy
 import random
 
-from modelzoo.augmentation.Augmenter import Augmenter
 from utils.imageprocessing.Backend import brightness
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.augmentation.Augmenter import Augmenter
 from utils.labels.ImgLabel import ImgLabel
 
 

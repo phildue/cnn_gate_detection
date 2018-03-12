@@ -1,7 +1,5 @@
 import numpy as np
 
-# noinspection PyDefaultArgument
-from modelzoo.augmentation.SSDAugmenter import SSDAugmenter
 from modelzoo.backend.tensor.ssd.MultiboxLoss import MultiboxLoss
 from modelzoo.backend.tensor.ssd.SSD300 import SSD300
 from modelzoo.backend.tensor.ssd.SSD7 import SSD7
@@ -12,6 +10,8 @@ from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.ssd.SSDDecoder import SSDDecoder
 from modelzoo.models.ssd.SSDEncoder import SSDEncoder
+# noinspection PyDefaultArgument
+from utils.imageprocessing.augmentation.SSDAugmenter import SSDAugmenter
 
 
 class SSD(Predictor):

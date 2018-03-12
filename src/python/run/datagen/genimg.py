@@ -26,17 +26,13 @@ create_dirs([sample_path])
 tic()
 
 set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
-
+generator = RandomImgGen(background_path,
+                         output_shape=(160, 315))
+shot_loader = ShotLoad(shot_path, img_format='bmp')
 for i in range(n_batches):
     tic()
-    shots, shot_labels = ShotLoad(shot_path, img_format='bmp').get_shots(n_shots=250)
-    samples, labels = RandomImgGen(background_path, out_format='yuv',
-                                   blur_kernel=(5, 5),
-                                   blur_it=2,
-                                   noisy_it=1,
-                                   noisy_var=2.0).generate(
-        shots, shot_labels,
-        n_backgrounds=batch_size)
+    shots, shot_labels = shot_loader.get_shots(n_shots=250)
+    samples, labels = generator.generate(shots, shot_labels, n_backgrounds=batch_size)
 
     set_writer.write(samples, labels)
     toc("Batch: {1:d}/{2:d} - {0:d}/{3:d} samples generated ".format(

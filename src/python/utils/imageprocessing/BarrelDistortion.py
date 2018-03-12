@@ -6,9 +6,10 @@ from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
+from utils.imageprocessing.DistortionModel import DistortionModel
 
 
-class BarrelDistortion:
+class BarrelDistortion(DistortionModel):
     @staticmethod
     def from_file(mapping_file: str):
         return load_file(mapping_file)

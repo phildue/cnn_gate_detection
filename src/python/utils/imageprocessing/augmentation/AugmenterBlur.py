@@ -1,6 +1,6 @@
-from modelzoo.augmentation.Augmenter import Augmenter
-from utils.imageprocessing.Backend import noisy, blur
+from utils.imageprocessing.Backend import blur
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.augmentation.Augmenter import Augmenter
 from utils.labels.ImgLabel import ImgLabel
 
 

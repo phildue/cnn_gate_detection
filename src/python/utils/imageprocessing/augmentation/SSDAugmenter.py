@@ -1,7 +1,8 @@
 from modelzoo.augmentation.AugmenterBrightness import AugmenterBrightness
 from modelzoo.augmentation.AugmenterCrop import AugmenterCrop
 from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
-from modelzoo.augmentation.AugmenterFlip import AugmenterFlip
+
+from utils.imageprocessing.augmentation.AugmenterFlip import AugmenterFlip
 
 
 class SSDAugmenter(AugmenterEnsemble):

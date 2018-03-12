@@ -2,14 +2,13 @@ import pprint as pp
 import time
 
 import numpy as np
-
 from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
-from modelzoo.augmentation.AugmenterPixel import AugmenterPixel
+
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.models.ssd.SSD import SSD
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
+from utils.imageprocessing.augmentation.AugmenterPixel import AugmenterPixel
 from utils.workdir import work_dir
 
 work_dir()

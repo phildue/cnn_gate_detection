@@ -1,10 +1,10 @@
 import numpy as np
 
-from modelzoo.augmentation.Augmenter import Augmenter
 from modelzoo.models.Encoder import Encoder
-from utils.imageprocessing.Image import Image
-from utils.labels.ImgLabel import ImgLabel
 from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.augmentation.Augmenter import Augmenter
+from utils.labels.ImgLabel import ImgLabel
 
 
 class Preprocessor:

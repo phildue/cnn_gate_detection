@@ -1,12 +1,11 @@
-import os
 from pathlib import Path
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History, TerminateOnNaN, LearningRateScheduler, \
     ReduceLROnPlateau, CSVLogger
 
-from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.imageprocessing.augmentation import AugmenterEnsemble
 
 
 class Training:

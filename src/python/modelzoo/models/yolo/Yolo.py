@@ -1,6 +1,5 @@
 import numpy as np
 
-from modelzoo.augmentation.YoloAugmenter import YoloAugmenter
 from modelzoo.backend.tensor.yolo.TinyYolo import TinyYolo
 from modelzoo.backend.tensor.yolo.YoloLoss import YoloLoss
 from modelzoo.backend.tensor.yolo.YoloV2 import YoloV2
@@ -9,6 +8,7 @@ from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.yolo.YoloDecoder import YoloDecoder
 from modelzoo.models.yolo.YoloEncoder import YoloEncoder
+from utils.imageprocessing.augmentation.YoloAugmenter import YoloAugmenter
 from utils.labels.ObjectLabel import ObjectLabel
 
 

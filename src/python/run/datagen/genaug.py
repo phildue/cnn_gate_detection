@@ -1,12 +1,10 @@
-import os
-
 import numpy as np
-
-from modelzoo.augmentation.AugmenterDistort import AugmenterDistort
 from modelzoo.augmentation.AugmenterEnsemble import AugmenterEnsemble
+
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
+from utils.imageprocessing.augmentation.AugmenterDistort import AugmenterDistort
 from utils.timing import tic, toc
 from utils.workdir import work_dir
 
