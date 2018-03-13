@@ -1,5 +1,8 @@
 import random
 
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
+
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.TransformerBlur import TransformerBlur
@@ -19,7 +22,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-generator = GateGenerator(directories=['resource/samples/cyberzoo/'],
+generator = GateGenerator(directories=['resource/ext/samples/bebop/'],
                           batch_size=100, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=0,
                           label_format='xml')
@@ -29,7 +32,8 @@ img = batch[idx][0]
 label = batch[idx][1]
 
 ssd_augmenter = SSDAugmenter()
-augmenters = [RandomBrightness(b_max=0.9), RandomColorShift(), TransformFlip(), TransformGray(),
+augmenters = [TransformDistort(BarrelDistortion.from_file('resource/some_distortion.pkl')), RandomBrightness(b_max=0.9),
+              RandomColorShift(), TransformFlip(), TransformGray(),
               TransformHistEq(), TransformSubsample(), RandomNoise(), TransformerBlur(iterations=10),
               RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
 
