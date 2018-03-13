@@ -52,7 +52,8 @@ class SSDNet(Net):
                              self._params['epsilon'],
                              self._params['decay'])
 
-        self.backend.compile(optimizer=optimizer, loss=self.loss.compute,
+        self.backend.compile(optimizer=optimizer, loss=[self.loss.conf_loss_positives, self.loss.conf_loss_negatives,
+                                                        self.localization_loss],
                              metrics=metrics)
 
     def predict(self, sample):
