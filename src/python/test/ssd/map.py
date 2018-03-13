@@ -36,11 +36,10 @@ label_pred_t = model.net.predict(img_t)
 toc("Predicted in ")
 
 tic()
-average_precision = AveragePrecisionSSD(iou_thresh=0.4, n_classes=20,
-                                        batch_size=batch_size)
-precision_recall = PrecisionRecallSSD(iou_thresh=0.4, n_classes=20,
+average_precision = AveragePrecisionSSD(iou_thresh_match=0.4, batch_size=batch_size)
+precision_recall = PrecisionRecallSSD(iou_thresh_match=0.4, n_classes=20,
                                       batch_size=batch_size)
-detection_count = DetectionCountSSD(iou_thresh=0.4, n_classes=20,
+detection_count = DetectionCountSSD(iou_thresh_match=0.4, n_classes=20,
                                     batch_size=batch_size)
 
 y_true = K.placeholder(shape=label_true_t.shape, dtype=K.tf.float64)

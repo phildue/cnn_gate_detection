@@ -4,25 +4,22 @@ from samplegen.imggen.RandomImgGen import RandomImgGen
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.TransformSubsample import TransformSubsample
-from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.timing import tic, toc, tuc
 from utils.workdir import work_dir
 
 work_dir()
 
-background_path = ["resource/backgrounds/google-fence-gate-industry/",
-                   'resource/backgrounds/lmsun/']
+background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
+                   'resource/ext/backgrounds/lmsun/']
 # background_path = ["resource/backgrounds/google-fence-gate-industry/"]
 
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/samples/bebop20k/"
-shot_path = "resource/shots/mult_gate_aligned/"
+sample_path = "resource/ext/samples/bebop20k/"
+shot_path = "resource/ext/shots/mult_gate_aligned/"
 
-n_backgrounds = 20000
+n_backgrounds = 200
 batch_size = 100
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
