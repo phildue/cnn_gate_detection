@@ -5,7 +5,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=8192
+#SBATCH --mem=12000
 #SBATCH --mail-type=ALL
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
