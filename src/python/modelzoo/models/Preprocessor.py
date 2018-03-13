@@ -34,13 +34,14 @@ class Preprocessor:
 
             img, label = resize(img, (self.img_height, self.img_width), label=label)
 
-            x_batch.append(self.encoder.encode_img(img))
-            y_batch.append(self.encoder.encode_label(label))
+            img_enc = self.encoder.encode_img(img)
+            label_enc = self.encoder.encode_label(label)
+            label_enc = np.expand_dims(label_enc, 0)
+            x_batch.append(img_enc)
+            y_batch.append(label_enc)
 
         y_batch = np.concatenate(y_batch, 0)
         x_batch = np.concatenate(x_batch, 0)
-        y_batch = np.reshape(y_batch, (len(dataset), -1, self.n_classes + 4))
-        x_batch = np.reshape(x_batch, (len(dataset), self.img_height, self.img_width, 3))
         return x_batch, y_batch
 
     def preprocess(self, img: Image):
