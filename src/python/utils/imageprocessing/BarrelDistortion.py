@@ -17,7 +17,7 @@ class BarrelDistortion(DistortionModel):
     def save(self, filename='barrel_dist.pkl'):
         save_file(self, filename, './')
 
-    def __init__(self, img_shape, rad_dist_params, squeeze=1.0, non_rad_dist_params=(0, 0),
+    def __init__(self, img_shape, rad_dist_params, squeeze=1.0, tangential_dist_params=(0, 0),
                  max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.01, scale=1.0):
         """
         Barrel Distortion model.
@@ -27,7 +27,7 @@ class BarrelDistortion(DistortionModel):
         :param img_shape: original image shape
         :param rad_dist_params: parameters for radial distortion
         :param squeeze: parameter for squeeze effect
-        :param non_rad_dist_params: parameters for non-radial distortion (yshift, xshift)
+        :param tangential_dist_params: parameters for non-radial distortion (yshift, xshift)
         :param distortion_radius: radius on which distortion should be applied
         :param center: center around which distortion is applied
         :param scale: scale distortion
@@ -39,7 +39,7 @@ class BarrelDistortion(DistortionModel):
         self.epsilon = conv_thresh
         self.center = center
         self.distortion_radius = distortion_radius
-        self.non_rad_dist_params = non_rad_dist_params
+        self.non_rad_dist_params = tangential_dist_params
         self.max_iterations = max_iterations
         self.squeeze = squeeze
         self.rad_dist_params = rad_dist_params
@@ -116,7 +116,7 @@ class BarrelDistortion(DistortionModel):
         coords = np.concatenate((np.expand_dims(x, -1), np.expand_dims(y, -1)), -1)
         coords_norm = self._normalize(coords.astype(np.float))
         mapping_undist = self.scale * self._distortion_model(coords_norm)
-        mapping_dist = self.scale * self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
+        mapping_dist = 1 / self.scale * self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
         mapping_undist = self._denormalize(mapping_undist)
         mapping_dist = self._denormalize(mapping_dist)
         return mapping_undist, mapping_dist
@@ -240,7 +240,7 @@ class BarrelDistortion(DistortionModel):
                     np.fill_diagonal(grad, np.diag(grad) + 0.000001)
                     prev = np.reshape(mat_prev[i, j], (2, 1))
                     diff = np.reshape((dist_model[i, j] - coord[i, j]), (2, 1))
-                    update = prev - 0.1 * np.linalg.inv(grad).dot(diff)
+                    update = prev - np.linalg.inv(grad).dot(diff)
                     mat_cur[i, j] = update.flatten()
             delta = np.linalg.norm(mat_cur - mat_prev)
             if delta < self.epsilon:

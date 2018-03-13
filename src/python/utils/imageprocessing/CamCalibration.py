@@ -67,6 +67,8 @@ class CamCalibration:
 
         for img in images:
             gray = cv2.cvtColor(img.array, cv2.COLOR_BGR2GRAY)
+            # cv2.imshow('gray',gray)
+            # cv2.waitKey(0)
             if self.img_type is 'chess':
                 ret, corners = cv2.findChessboardCorners(gray, self.grid, None)
             else:
