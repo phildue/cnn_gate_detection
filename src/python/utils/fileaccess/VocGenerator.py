@@ -28,9 +28,9 @@ class VocGenerator(DatasetGenerator):
     def n_samples(self):
         return self.__n_samples
 
-    def __init__(self, dir_voc2012: str = "resource/backgrounds/VOCdevkit/VOC2012/",
-                 dir_voc2007='resource/backgrounds/VOCdevkit/VOC2007/',
-                 dir_voc2007_test='resource/backgrounds/VOCdevkit/VOC2007_Test/',
+    def __init__(self, dir_voc2012: str = "resource/ext/backgrounds/VOCdevkit/VOC2012/",
+                 dir_voc2007='resource/ext/backgrounds/VOCdevkit/VOC2007/',
+                 dir_voc2007_test='resource/ext/backgrounds/VOCdevkit/VOC2007_Test/',
                  batch_size: int = 10, shuffle: bool = True, n_samples=None, start_idx=0):
 
         self._color_format = 'bgr'

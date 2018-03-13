@@ -162,7 +162,7 @@ class SSDEncoder(Encoder):
         coord_t = self._generate_coord_t(matches_idx, true_boxes)
         meta_t = self._generate_meta_t(matches_idx)
 
-        label_t = np.concatenate((classes_t, coord_t, meta_t), axis=1)
+        label_t = np.concatenate((classes_t, coord_t, meta_t), axis=-1)
 
         if np.isnan(label_t).any():
             mask = np.any(np.isnan(label_t), axis=1)
@@ -191,10 +191,11 @@ class SSDEncoder(Encoder):
         anchor_wh = self.anchors_t[:, 2:] / np.array([self.img_width, self.img_height])
         anchor_cxy = self.anchors_t[:, :2] / np.array([self.img_width, self.img_height])
 
-        multiples = np.ones_like((matches_idx.shape[0], 1))
-        multiples[matches_idx == Label.BACKGROUND] = 0
+        multiples = np.ones((matches_idx.shape[0], 1))
+        # We get the unique assignments and set the first one of each to zero to unmark it as multiple
         for u in np.unique(matches_idx):
             multiples[np.where(matches_idx == u)[0][0]] = 0
+        multiples[matches_idx == Label.BACKGROUND] = 0
         meta_t = np.concatenate([var_t, anchor_cxy, anchor_wh, multiples], -1)
 
         return meta_t

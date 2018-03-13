@@ -21,10 +21,10 @@ class MultiboxLoss(Loss):
         :return: tensor(#batch,) localization loss per batch
         """
         with K.name_scope('LocalizationLoss'):
-            w_positives = K.max(y_true[:, :, 1:-4], -1)
+            w_positives = K.max(y_true[:, :, 1:-13], -1)
             n_positive = K.sum(w_positives)
             loc_loss_total = K.cast(
-                self.smooth_l1_loss(y_true[:, :, -4:], y_pred[:, :, -4:]), K.floatx())
+                self.smooth_l1_loss(y_true[:, :, -13:-9], y_pred[:, :, -13:-9]), K.floatx())
 
             loc_loss_sum = K.sum(loc_loss_total * w_positives, axis=-1)
 
@@ -43,10 +43,10 @@ class MultiboxLoss(Loss):
         :return: tensor(#batch,) positive confidence loss per batch
         """
         with K.name_scope('PositiveClassificationLoss'):
-            w_positives = K.max(y_true[:, :, 1:-4], -1)
+            w_positives = K.max(y_true[:, :, 1:-13], -1)
             n_positive = K.sum(w_positives)
-            class_loss_total = K.categorical_crossentropy(target=y_true[:, :, :-4],
-                                                          output=y_pred[:, :, :-4], from_logits=True)
+            class_loss_total = K.categorical_crossentropy(target=y_true[:, :, :-13],
+                                                          output=y_pred[:, :, :-13], from_logits=True)
 
             pos_class_loss = class_loss_total * w_positives
             pos_class_loss_sum = K.sum(pos_class_loss, axis=-1)
@@ -69,11 +69,11 @@ class MultiboxLoss(Loss):
             w_negatives = y_true[:, :, 0]
             n_negatives = K.sum(w_negatives, axis=-1, keepdims=True)
 
-            w_positives = K.max(y_true[:, :, 1:-4], -1)
+            w_positives = K.max(y_true[:, :, 1:-13], -1)
             n_positive = K.sum(w_positives)
 
-            class_loss_total = K.categorical_crossentropy(target=y_true[:, :, :-4],
-                                                          output=y_pred[:, :, :-4], from_logits=True)
+            class_loss_total = K.categorical_crossentropy(target=y_true[:, :, :-13],
+                                                          output=y_pred[:, :, :-13], from_logits=True)
 
             # We try to take the neg_pos_ration, however at least n_neg_min and at most all boxes
             neg_class_loss = class_loss_total * w_negatives

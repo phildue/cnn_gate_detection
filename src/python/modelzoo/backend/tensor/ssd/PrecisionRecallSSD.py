@@ -4,7 +4,7 @@ from modelzoo.backend.tensor.ssd.MetricSSD import MetricSSD
 
 
 class PrecisionRecallSSD(MetricSSD):
-    def __init__(self, iou_thresh=0.4, n_classes=20, iou_thresh_nms=0.4, batch_size=8,
+    def __init__(self, iou_thresh_match=0.4, n_classes=20, iou_thresh_nms=0.4, batch_size=8,
                  conf_thresh=K.np.linspace(0, 1, 11)):
         super().__init__(iou_thresh, n_classes, iou_thresh_nms, batch_size, conf_thresh)
 

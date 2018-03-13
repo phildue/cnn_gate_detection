@@ -11,23 +11,22 @@ class MetricSSD(Metric):
     def compute(self, y_true, y_pred):
         pass
 
-    def __init__(self, img_shape, iou_thresh=0.4, n_classes=20, iou_thresh_nms=0.4,
-                 batch_size=8, conf_thresh=K.np.linspace(0, 1, 11), n_boxes=9732):
-        self.img_height, self.img_width, _ = img_shape
+    def __init__(self, iou_thresh_match=0.4, iou_thresh_nms=0.4,
+                 batch_size=8, conf_thresh=K.np.linspace(0, 1, 11), n_boxes=-1):
         self.conf_thresh = conf_thresh
         self.batch_size = batch_size
         self.iou_thresh = iou_thresh_nms
-        self.n_classes = n_classes
         self.n_boxes = n_boxes
-        self.map_adapter = AveragePrecision(iou_thresh, self.n_boxes, batch_size=batch_size)
+        self.map_adapter = AveragePrecision(iou_thresh_match, self.n_boxes, batch_size=batch_size)
 
-    def _decode_coord(self, coord_t):
+    @staticmethod
+    def _decode_coord(coord_t):
         coord_decoded_t = coord_t
 
-        anchor_cxy = coord_t[:, -4:-2]
-        anchor_wh = coord_t[:, -2:]
+        anchor_cxy = coord_t[:, :, -4:-2]
+        anchor_wh = coord_t[:, :, -2:]
 
-        variances = coord_t[:, -8:-4]
+        variances = coord_t[:, :, -8:-4]
 
         coord_decoded_cx = coord_decoded_t[:, :, 0] * anchor_wh[:, :, 0] / variances[:, :, 0]
         coord_decoded_cx = K.expand_dims(coord_decoded_cx, -1)
@@ -36,15 +35,14 @@ class MetricSSD(Metric):
         coord_decoded_cxy = K.concatenate([coord_decoded_cx, coord_decoded_cy], -1)
 
         coord_decoded_cxy = coord_decoded_cxy + anchor_cxy
-        coord_decoded_cxy *= K.constant([[[self.img_width, self.img_height]]])
 
         coord_decoded_w = K.exp(coord_t[:, :, -2] * variances[:, :, 2])
         coord_decoded_h = K.exp(coord_t[:, :, -1] * variances[:, :, 3])
 
-        coord_decoded_w = coord_decoded_w * anchor_wh[:, :, 0] * self.img_width
+        coord_decoded_w = coord_decoded_w * anchor_wh[:, :, 0]
         coord_decoded_w = K.expand_dims(coord_decoded_w, -1)
 
-        coord_decoded_h = coord_decoded_h * anchor_wh[:, :, 1] * self.img_height
+        coord_decoded_h = coord_decoded_h * anchor_wh[:, :, 1]
         coord_decoded_h = K.expand_dims(coord_decoded_h, -1)
 
         coord_dec_t = K.concatenate([coord_decoded_cxy, coord_decoded_w, coord_decoded_h], -1)
@@ -64,7 +62,7 @@ class MetricSSD(Metric):
 
     def _postprocess_pred(self, label_t):
         coord_t = label_t[:, :, -13:-1]
-        class_t = K.softmax(label_t[:, :, :-4])[:, :, 1:]
+        class_t = K.softmax(label_t[:, :, :-13])[:, :, 1:]
 
         coord_dec_t = self._decode_coord(coord_t)
 

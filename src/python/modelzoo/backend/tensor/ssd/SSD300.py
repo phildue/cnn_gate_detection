@@ -13,6 +13,7 @@ class SSD300(SSDNet):
     def anchors(self):
         return self._anchors
 
+    @property
     def backend(self):
         return self._model
 

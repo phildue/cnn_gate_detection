@@ -16,7 +16,7 @@ image_source = 'voc'
 work_path = 'logs/ssd300_voc/'
 
 predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=.1, weight_file=work_path + '/SSD300.h5')
-data_generator = VocGenerator(batch_size=batch_size, shuffle=True)
+data_generator = VocGenerator(batch_size=batch_size, shuffle=True, n_samples=64)
 
 augmenter = YoloImgTransform()
 
@@ -24,8 +24,13 @@ model_name = predictor.net.__class__.__name__
 
 epochs = 120
 loss = predictor.loss
-average_precision = AveragePrecisionSSD(n_classes=20, batch_size=batch_size)
-predictor.compile(params=None, metrics=[average_precision.compute]
+
+
+def average_precision(y_true, y_pred):
+    return AveragePrecisionSSD(batch_size=batch_size, n_boxes=8096).compute(y_true, y_pred)
+
+
+predictor.compile(params=None, metrics=[average_precision]
                   )
 predictor.preprocessor.augmenter = augmenter
 
@@ -44,7 +49,7 @@ training = Training(predictor, data_generator,
                     patience=-1,
                     log_dir=work_path,
                     stop_on_nan=True,
-                    initial_epoch=49,
+                    initial_epoch=0,
                     epochs=epochs,
                     log_csv=True,
                     lr_reduce=0.1,
