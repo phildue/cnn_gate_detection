@@ -115,7 +115,12 @@ class LabelFileParser:
                 ymin = int(np.round(float(box.find('ymin').text)))
                 xmax = int(np.round(float(box.find('xmax').text)))
                 ymax = int(np.round(float(box.find('ymax').text)))
-                objects.append(ObjectLabel(name, [(xmin, ymax), (xmax, ymin)]))
+                label = ObjectLabel(name, [(xmin, ymin), (xmax, ymax)])
+                label.y_min = ymin
+                label.y_max = ymax
+                label.x_min = xmin
+                label.x_max = xmax
+                objects.append(label)
             return ImgLabel(objects)
 
     @staticmethod

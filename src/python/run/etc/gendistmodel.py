@@ -16,14 +16,16 @@ batch = next(dataset)
 camera_calibration = load_file('resource/cam_params_bebop.pkl')
 
 distortion = camera_calibration.distortion[0]
+# k1 = distortion[0]
+# k2 = distortion[1]
+# p1 = distortion[2]
+# p2 = distortion[3]
+k1 = 0.1
+k2 = 0
+p1 = 0
+p2 = 0
 print("Distortion", distortion)
-k1 = distortion[0]
-k2 = distortion[1]
-p1 = distortion[2]
-p2 = distortion[3]
-k1 = 0.3
-p1 = 0.3
-p2 = 0.3
+
 distortion_model = BarrelDistortion(img_shape=(160, 315),
                                     rad_dist_params=[k1, k2],
                                     tangential_dist_params=[p1, p2],

@@ -1,4 +1,10 @@
 import numpy as np
+from utils.imageprocessing.transform.TransformResize import TransformResize
+
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 from samplegen.imggen.RandomImgGen import RandomImgGen
 from samplegen.shotgen.ShotLoad import ShotLoad
@@ -19,8 +25,8 @@ background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
 sample_path = "resource/ext/samples/bebop20k/"
 shot_path = "resource/ext/shots/mult_gate_aligned/"
 
-n_backgrounds = 200
-batch_size = 100
+n_backgrounds = 20000
+batch_size = 50
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
@@ -28,9 +34,11 @@ tic()
 shot_loader = ShotLoad(shot_path, img_format='bmp')
 set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
 
-augmenter = None  # AugmenterEnsemble(augmenters=[(1.0, AugmenterResize((80, 166)))])
+augmenter = RandomEnsemble(augmenters=[
+    (1.0, TransformResize((160, 315))),
+    (1.0, TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl'), crop=0.1))])
 generator = RandomImgGen(background_path,
-                         output_shape=(80, 166),
+                         output_shape=(160, 315),
                          image_transformer=augmenter)
 for i in range(n_batches):
     tic()
