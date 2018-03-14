@@ -34,7 +34,7 @@ class YoloEncoder(Encoder):
             (cl)*20 class likelihoods
 
         """
-        y = np.zeros((self.grid[0], self.grid[1], self.n_boxes, 5 + self.n_classes))
+        label_t = np.zeros((self.grid[0], self.grid[1], self.n_boxes, 5 + self.n_classes))
         for obj in label.objects:
             w = obj.x_max - obj.x_min
             h = obj.y_max - obj.y_min
@@ -59,9 +59,11 @@ class YoloEncoder(Encoder):
 
             # TODO previous objects are overwritten instead we should assign the anchor that has the highes iou
             # and thus allow multiple true objects per grid
-            y[grid_y, grid_x, :, 0:4] = self.n_boxes * [box]
-            y[grid_y, grid_x, :, 4] = self.n_boxes * [1.]
-            y[grid_y, grid_x, :, 5:] = self.n_boxes * [[0.] * self.n_classes]
-            y[grid_y, grid_x, :, 5 + obj.class_id] = 1.0
+            label_t[grid_y, grid_x, :, 0:4] = self.n_boxes * [box]
+            label_t[grid_y, grid_x, :, 4] = self.n_boxes * [1.]
+            label_t[grid_y, grid_x, :, 5:] = self.n_boxes * [[0.] * self.n_classes]
+            label_t[grid_y, grid_x, :, 5 + obj.class_id] = 1.0
 
-        return y
+        label_t = np.reshape(label_t, [self.grid[0] * self.grid[1] * self.n_boxes, self.n_classes + 5])
+
+        return label_t

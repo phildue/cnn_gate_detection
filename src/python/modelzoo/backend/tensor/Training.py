@@ -72,8 +72,11 @@ class Training:
     def summary(self):
 
         if isinstance(self.predictor.preprocessor.augmenter, RandomEnsemble):
-            augmentation = [augmenter.__class__.__name__ for augmenter in
-                            self.predictor.preprocessor.augmenter.augmenters]
+            augmentation = ''
+            augmenters = self.predictor.preprocessor.augmenter.augmenters
+            probs = self.predictor.preprocessor.augmenter.probs
+            for i in range(len(augmenters)):
+                augmentation += '\n{0:.2f} -> {1:s}'.format(probs[i], augmenters[i].__class__.__name__)
         else:
             augmentation = self.predictor.preprocessor.augmenter.__class__.__name__
 

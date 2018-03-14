@@ -24,8 +24,8 @@ class MetricYolo(Metric):
 
     def _decode_coord(self, coord_t):
         offset_y, offset_x = K.np.mgrid[:self.grid[0], :self.grid[1]]
-        offset_y = K.constant(offset_y, K.tf.float64)
-        offset_x = K.constant(offset_x, K.tf.float64)
+        offset_y = K.constant(offset_y, K.tf.float32)
+        offset_x = K.constant(offset_x, K.tf.float32)
 
         offset_x = K.expand_dims(offset_x, -1)
         offset_x = K.expand_dims(offset_x, 0)
@@ -60,7 +60,7 @@ class MetricYolo(Metric):
     def _postprocess_truth(self, y_true):
         w_zero_anchors = K.np.zeros((self.batch_size, self.grid[0], self.grid[1], self.n_boxes, self.n_classes))
         w_zero_anchors[:, :, :, 0, :] = 1
-        w_zero_anchors = K.constant(w_zero_anchors, dtype=K.tf.float64)
+        w_zero_anchors = K.constant(w_zero_anchors, dtype=K.tf.float32)
 
         coord_true_t = y_true[:, :, :, :, :4]
         class_true_t = y_true[:, :, :, :, 5:]
