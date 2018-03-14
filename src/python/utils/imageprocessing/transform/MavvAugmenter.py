@@ -10,13 +10,11 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 
 
 class MavvAugmenter(RandomEnsemble):
-    def __init__(self, dist_model_file: str):
-        augmenters = [(1.0, TransformDistort(BarrelDistortion.from_file(dist_model_file))),
-                      (1.0, RandomBrightness(0.5, 2.0)),
+    def __init__(self):
+        augmenters = [(1.0, RandomBrightness(0.5, 2.0)),
                       (1.0, RandomNoise(0, 10)),
-                      (1.0, RandomBlur(0, 10)),
+                      (1.0, RandomBlur((5, 5), 0, 10)),
                       (0.5, TransformFlip()),
-                      (0.2, RandomCrop(c_max=0.9, c_min=0.7)),
                       (0.2, RandomShift(-.3, .3))]
 
         super().__init__(augmenters)
