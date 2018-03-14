@@ -3,7 +3,6 @@ from abc import abstractmethod
 import keras.backend as K
 
 from modelzoo.backend.tensor.metrics.Metric import Metric
-from src.python.modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
 
 
 class MetricYolo(Metric):
