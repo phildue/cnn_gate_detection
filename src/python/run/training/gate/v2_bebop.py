@@ -1,7 +1,4 @@
 import pprint as pp
-import time
-
-import numpy as np
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
@@ -13,7 +10,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-batch_size = 8
+batch_size = 4
 
 image_source = ["resource/ext/samples/bebop20k/"]
 max_epochs = 100
