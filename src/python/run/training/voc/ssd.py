@@ -15,8 +15,8 @@ batch_size = 32
 image_source = 'voc'
 work_path = 'logs/ssd300_voc/'
 
-predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=.1, weight_file=work_path + '/SSD300.h5')
-data_generator = VocGenerator(batch_size=batch_size, shuffle=True, n_samples=64)
+predictor = SSD.ssd300(n_classes=20, batch_size=batch_size, alpha=.1, weight_file='resource/models/vgg16_imagenet.h5')
+data_generator = VocGenerator(batch_size=batch_size, shuffle=True)
 
 augmenter = YoloImgTransform()
 
