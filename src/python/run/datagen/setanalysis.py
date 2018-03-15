@@ -1,11 +1,11 @@
-from samplegen.SetAnalyzer import SetAnalyzer
+from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from utils.timing import tic, toc
 from utils.workdir import work_dir
 
 work_dir()
 tic()
-path = 'resource/samples/mult_gate_aligned/'
-img_shape = (416, 416)
-heat_map = SetAnalyzer(img_shape, path).get_heat_map()
+path = 'resource/ext/samples/bebop20k/'
+img_shape = (180, 315)
+set_analyzer = SetAnalyzer(img_shape, path)
 toc()
-heat_map.show()
+set_analyzer.show_summary()

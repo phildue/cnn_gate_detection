@@ -1,15 +1,14 @@
 import numpy as np
-from utils.imageprocessing.transform.TransformResize import TransformResize
-
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-
-from utils.imageprocessing.BarrelDistortion import BarrelDistortion
-from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 from samplegen.imggen.RandomImgGen import RandomImgGen
+from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
+from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.timing import tic, toc, tuc
 from utils.workdir import work_dir
 
@@ -23,22 +22,23 @@ background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
 sample_path = "resource/ext/samples/bebop20k/"
-shot_path = "resource/ext/shots/mult_gate_aligned/"
+shot_path = "resource/ext/shots/thick_gate/"
 
 n_backgrounds = 20000
 batch_size = 50
+output_shape = (160, 315)
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='bmp')
-set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml')
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=200)
 
 augmenter = RandomEnsemble(augmenters=[
     (1.0, TransformResize((160, 315))),
     (1.0, TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl'), crop=0.1))])
 generator = RandomImgGen(background_path,
-                         output_shape=(160, 315),
+                         output_shape=output_shape,
                          image_transformer=augmenter)
 for i in range(n_batches):
     tic()
@@ -51,3 +51,5 @@ for i in range(n_batches):
     tuc("Total time: ")
 
 toc("Finished. Total run time ")
+
+SetAnalyzer(output_shape, shot_path).show_summary()

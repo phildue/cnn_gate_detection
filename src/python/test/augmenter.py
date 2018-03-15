@@ -19,26 +19,28 @@ from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
 from utils.workdir import work_dir
-
+from utils.imageprocessing.Backend import resize
 work_dir()
 
-generator = GateGenerator(directories=['resource/ext/samples/bebop/'],
+generator = GateGenerator(directories=['resource/ext/shots/mult_gate_aligned/'],
                           batch_size=100, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=0,
-                          label_format='xml')
+                          label_format='xml', img_format='bmp')
 batch = next(generator.generate())
 idx = random.randint(0, 80)
 img = batch[idx][0]
 label = batch[idx][1]
-
 ssd_augmenter = SSDAugmenter()
-augmenters = [TransformDistort(BarrelDistortion.from_file('resource/some_distortion.pkl')), RandomBrightness(b_max=0.9),
+augmenters = [TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
+              RandomBrightness(b_max=0.9),
               RandomColorShift(), TransformFlip(), TransformGray(),
               TransformHistEq(), TransformSubsample(), RandomNoise(), TransformerBlur(iterations=10),
               RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
 
 for img, label, _ in batch:
+    img, label = resize(img, (180, 315), label=label)
     show(img, labels=label, name='Org')
+
     for augmenter in augmenters:
         img_aug, label_aug = augmenter.transform(img, label)
-        show(img_aug, name=augmenter.__class__.__name__)
+        show(img_aug, name=augmenter.__class__.__name__, labels=label_aug)

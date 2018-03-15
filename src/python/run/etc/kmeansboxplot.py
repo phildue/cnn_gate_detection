@@ -1,10 +1,13 @@
+from matplotlib.pyplot import boxplot, show
 from sklearn.cluster import KMeans
 
+from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.backend.visuals.plots.BasePlot import BasePlot
+from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.GateGenerator import GateGenerator
 import numpy as np
-
+from utils.imageprocessing.Backend import resize
 from utils.fileaccess.utils import save_file
 from utils.workdir import work_dir
 
@@ -12,14 +15,14 @@ from utils.workdir import work_dir
 def generate_anchors(boxes_wh, n_anchors):
     kmeans = KMeans(n_clusters=n_anchors).fit(boxes_wh)
     # print("Centers", kmeans.cluster_centers_)
-
+    n_boxes = len(boxes_wh)
     centers = kmeans.cluster_centers_
-    distances = np.zeros((n_samples, 1))
-    for i in range(n_samples):
+    distances = np.zeros((n_boxes, 1))
+    for i in range(n_boxes):
         j = kmeans.predict(boxes_wh[i].reshape(-1, 2))
-        w = np.minimum(centers[j, 0], boxes_wh[i, 0])
-        h = np.minimum(centers[j, 1], boxes_wh[i, 1])
-        intersect = w * h
+        bw = np.minimum(centers[j, 0], boxes_wh[i, 0])
+        bh = np.minimum(centers[j, 1], boxes_wh[i, 1])
+        intersect = bw * bh
         union = centers[j, 0] * centers[j, 1] + boxes_wh[i, 0] * boxes_wh[i, 1] - intersect
 
         distances[i] = 1.0 - intersect / union
@@ -27,44 +30,28 @@ def generate_anchors(boxes_wh, n_anchors):
     return kmeans, distances
 
 
+def plot_iou_vs_center(box_dims, range_anchors):
+    clusters = []
+    mean_dists = np.zeros((range_anchors,))
+    std_dists = np.zeros((range_anchors,))
+    n_anchors = np.linspace(0, range_anchors, range_anchors)
+    for k in range(range_anchors):
+        kmeans, distances = generate_anchors(box_dims, k + 1)
+        clusters.append(kmeans)
+        mean_dists[k] = np.mean(distances)
+        std_dists[k] = np.std(distances)
+
+    iou_c_plot = BasePlot(x_data=n_anchors, y_data=1 - mean_dists,
+                          y_label='Average IOU', x_label='Number of Anchors',
+                          line_style='x--')
+    iou_c_plot.save('kmeans_anchors_bebop.png')
+    save_file(clusters, 'kmeans_clusters_bebop.pkl')
+
+    return iou_c_plot
+
+
 work_dir()
-generator = GateGenerator(directories=['resource/ext/samples/bebop20k/'],
-                          batch_size=10, color_format='bgr',
-                          shuffle=True, start_idx=0, valid_frac=0,
-                          label_format='xml')
-boxes_all = []
-idx = 0
-n_samples = generator.n_samples
-range_anchors = 20
-for batch in generator.generate():
-    for img, label, _ in batch:
-        boxes = BoundingBox.from_label(label)
-        boxes_all.extend(boxes)
-    if idx > n_samples:
-        break
-    idx += 1
+path = 'resource/ext/samples/bebop20k/'
+set_analyzer = SetAnalyzer((180, 315), path)
 
-box_dim = BoundingBox.to_tensor_centroid(boxes_all)[:, 2:]
-n_anchors = np.arange(1, range_anchors + 1)
-
-clusters = []
-mean_dists = np.zeros((range_anchors,))
-std_dists = np.zeros((range_anchors,))
-for i in range(range_anchors):
-    kmeans, distances = generate_anchors(box_dim, i + 1)
-    clusters.append(kmeans)
-    mean_dists[i] = np.mean(distances)
-    std_dists[i] = np.std(distances)
-
-max_iou = np.argmin(mean_dists)
-best_tradeoff = np.argmax((1 - mean_dists) / n_anchors)
-
-print("Highest IoU with {} at dim: {}".format(max_iou + 1, clusters[max_iou].cluster_centers_))
-print("Best Tradeoff with {} at dim: {}".format(best_tradeoff + 1, clusters[best_tradeoff].cluster_centers_))
-
-plot = BasePlot(x_data=n_anchors, y_data=1 - mean_dists,
-                y_label='Average IOU', x_label='Number of Anchors',
-                line_style='x--')
-plot.save('kmeans_anchors_bebop.png')
-save_file(clusters, 'kmeans_clusters_bebop.pkl')
-plot.show(True)
+plot_iou_vs_center(set_analyzer.get_box_dims(), 15).show()

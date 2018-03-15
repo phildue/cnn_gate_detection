@@ -66,10 +66,18 @@ class LabelFileParser:
                 obj_root = ET.SubElement(root, 'object')
                 ET.SubElement(obj_root, 'name').text = '{0:s}'.format(obj.class_name)
                 bnd_box = ET.SubElement(obj_root, 'bndbox')
-                ET.SubElement(bnd_box, 'xmin').text = '{0:d}'.format(int(obj.x_min))
-                ET.SubElement(bnd_box, 'xmax').text = '{0:d}'.format(int(obj.x_max))
-                ET.SubElement(bnd_box, 'ymin').text = '{0:d}'.format(int(obj.y_min))
-                ET.SubElement(bnd_box, 'ymax').text = '{0:d}'.format(int(obj.y_max))
+                x1 = obj.x_min
+                x2 = obj.x_max
+                y1 = obj.y_min
+                y2 = obj.y_max
+                xmin = min((x1, x2))
+                xmax = max((x1, x2))
+                ymin = min((y1, y2))
+                ymax = max((y1, y2))
+                ET.SubElement(bnd_box, 'xmin').text = '{0:d}'.format(int(xmin))
+                ET.SubElement(bnd_box, 'xmax').text = '{0:d}'.format(int(xmax))
+                ET.SubElement(bnd_box, 'ymin').text = '{0:d}'.format(int(ymin))
+                ET.SubElement(bnd_box, 'ymax').text = '{0:d}'.format(int(ymax))
                 if isinstance(obj, GateLabel):
                     pose_root = ET.SubElement(obj_root, 'pose')
                     ET.SubElement(pose_root, 'dist_forward').text = '{0:03f}'.format(obj.position.dist_forward)
@@ -111,10 +119,14 @@ class LabelFileParser:
                 # TODO extend this to parse gate corners/pose
                 name = element.find('name').text
                 box = element.find('bndbox')
-                xmin = int(np.round(float(box.find('xmin').text)))
-                ymin = int(np.round(float(box.find('ymin').text)))
-                xmax = int(np.round(float(box.find('xmax').text)))
-                ymax = int(np.round(float(box.find('ymax').text)))
+                x1 = int(np.round(float(box.find('xmin').text)))
+                y1 = int(np.round(float(box.find('ymin').text)))
+                x2 = int(np.round(float(box.find('xmax').text)))
+                y2 = int(np.round(float(box.find('ymax').text)))
+                xmin = min((x1, x2))
+                xmax = max((x1, x2))
+                ymin = min((y1, y2))
+                ymax = max((y1, y2))
                 label = ObjectLabel(name, [(xmin, ymin), (xmax, ymax)])
                 label.y_min = ymin
                 label.y_max = ymax

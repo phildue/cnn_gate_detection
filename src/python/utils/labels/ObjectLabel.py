@@ -1,5 +1,5 @@
 import copy
-
+import numpy as np
 
 class ObjectLabel:
     classes = []
@@ -37,11 +37,11 @@ class ObjectLabel:
 
     @property
     def width(self):
-        return self.x_max - self.x_min
+        return np.abs(self.x_max - self.x_min)
 
     @property
     def height(self):
-        return self.y_max - self.y_min
+        return np.abs(self.y_max - self.y_min)
 
     @property
     def area(self):

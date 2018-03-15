@@ -5,8 +5,9 @@ from modelzoo.backend.visuals.plots.PyPlot import PyPlot
 
 class Heatmap(PyPlot):
     def show(self, block=True):
+        plt.figure()
         plt.imshow(self.create_fig())
-        plt.show()
+        plt.show(block)
 
     def save(self, file_path):
         plt.imsave(file_path, self.create_fig())
