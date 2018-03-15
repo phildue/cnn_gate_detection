@@ -10,7 +10,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-batch_size = 4
+batch_size = 8
 
 image_source = ["resource/ext/samples/bebop20k/"]
 max_epochs = 100
@@ -53,8 +53,7 @@ def average_precision(y_true, y_pred):
                                 batch_size=batch_size).compute(y_true, y_pred)
 
 
-predictor.compile(params=params, metrics=[average_precision]
-                  )
+predictor.compile(params=params,metrics=None)
 
 
 def lr_schedule(epoch):
