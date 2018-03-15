@@ -41,7 +41,14 @@ class SSDDecoder(Decoder):
 
         return coord_decoded_t
 
-    def decode_netout_to_boxes(self, netout_t):
+    def decode_netout_to_boxes(self, netout_t, min_conf=0.01):
+        """
+        Decodes the raw network output to bounding boxes
+        :param netout_t: tensor(#boxes,#classes+13) raw network output
+        :param min_conf: threshold to accept as valid box this is a prefiltering step
+         the overall output is filtered in a later step, default value is from the paper
+        :return: list of bounding boxes in absolute image coordinates
+        """
         class_t = netout_t[:, :-12 - 1]
 
         if np.any(np.isnan(netout_t[:, -1])):  # if nan we now its network output not truth encoding
@@ -49,7 +56,7 @@ class SSDDecoder(Decoder):
 
         class_t = class_t[:, 1:]
         confidence = np.max(class_t, axis=1)
-        mask = (confidence > 0.01)  # 0.01 from the paper
+        mask = (confidence > min_conf)
 
         coord_t = netout_t[:, -13:-1]
         coord_decoded_t = self.decode_coord(coord_t)
