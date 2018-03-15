@@ -27,10 +27,10 @@ class SSDEncoder(Encoder):
     via an intersection-over-union threshold criterion.
     """
 
-    def __init__(self, img_shape, n_classes, anchors_t, variances=[1.0, 1.0, 1.0, 1.0], iou_thresh=0.5,
-                 neg_iou_thresh=0.2):
+    def __init__(self, img_shape, n_classes, anchors_t, variances=[1.0, 1.0, 1.0, 1.0], iou_thresh_match=0.5,
+                 iou_thresh_background=0.2):
 
-        self.neg_iou_thresh = neg_iou_thresh
+        self.neg_iou_thresh = iou_thresh_background
         self.anchors_t = anchors_t
 
         self.img_height = img_shape[0]
@@ -38,7 +38,7 @@ class SSDEncoder(Encoder):
         self.n_classes = n_classes
 
         self.variances = variances
-        self.iou_thresh = iou_thresh
+        self.iou_thresh = iou_thresh_match
 
     def encode_img(self, image: Image):
         return np.expand_dims(image.array, axis=0)

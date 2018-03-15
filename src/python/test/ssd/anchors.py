@@ -10,7 +10,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-predictor = SSD.ssd300(conf_thresh=0, neg_min=0.1)
+predictor = SSD.ssd300(conf_thresh=0)
 
 dummy = ObjectLabel('object', np.zeros((4, 2)))
 dummy.y_min = 50

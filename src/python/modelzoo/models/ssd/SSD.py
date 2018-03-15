@@ -26,6 +26,7 @@ class SSD(Predictor):
                clip_boxes=False,
                variances=[0.1, 0.1, 0.2, 0.2],
                iou_thresh_match=0.5,
+               iou_thresh_background=0.2,
                conf_thresh=0.7,
                iou_thresh_nms=0.45,
                batch_size=5,
@@ -48,7 +49,7 @@ class SSD(Predictor):
                         'conv10': 4,
                         'conv11': 4}):
         # We add the background class
-        n_classes = n_classes + 1
+        n_classes += 1
 
         loss = MultiboxLoss(batch_size=batch_size,
                             n_negatives_min=neg_min,
@@ -72,15 +73,16 @@ class SSD(Predictor):
                    confidence_thresh=conf_thresh,
                    color_format=color_format,
                    net=net,
-                   neg_min=neg_min)
+                   iou_thresh_background=iou_thresh_background)
 
     @staticmethod
     def ssd7(image_shape=(300, 300, 3), weight_file=None, n_classes=20, clip_boxes=False,
              variances=[1.0, 1.0, 1.0, 1.0],
              iou_thresh_match=0.5,
+             iou_thresh_background=0.2,
              conf_thresh=0.7,
              iou_thresh_nms=0.45,
-             batch_size=5, color_format='bgr', alpha=1.0, neg_pos_ratio=3, neg_min=0.2):
+             batch_size=5, color_format='bgr', alpha=1.0, neg_pos_ratio=3, neg_min=0):
         aspect_ratios = [[1.0, 2.0, 3.0, 0.5, 0.33]] * 4
 
         n_boxes = {'conv4': 6,
@@ -117,12 +119,13 @@ class SSD(Predictor):
                    confidence_thresh=conf_thresh,
                    color_format=color_format,
                    net=net,
-                   neg_min=neg_min)
+                   iou_thresh_background=iou_thresh_background)
 
     @staticmethod
     def ssd_test(image_shape=(300, 300, 3), weight_file=None, n_classes=20, clip_boxes=False,
                  variances=[1.0, 1.0, 1.0, 1.0],
                  iou_thresh_match=0.5,
+                 iou_thresh_background=0.2,
                  conf_thresh=0.7,
                  iou_thresh_nms=0.45,
                  batch_size=5, color_format='bgr', alpha=1.0, neg_pos_ratio=3, neg_min=0):
@@ -158,7 +161,7 @@ class SSD(Predictor):
                    confidence_thresh=conf_thresh,
                    color_format=color_format,
                    net=net,
-                   neg_min=neg_min)
+                   iou_thresh_background=iou_thresh_background)
 
     def __init__(self, img_shape, n_classes,
                  net: SSDNet,
@@ -168,7 +171,7 @@ class SSD(Predictor):
                  confidence_thresh=0.7,
                  iou_thresh_nms=0.45,
                  color_format='bgr',
-                 neg_min=0.2):
+                 iou_thresh_background=0.2):
         self.variances = variances
         self.clip_boxes = clip_boxes
         self.img_shape = img_shape
@@ -180,8 +183,8 @@ class SSD(Predictor):
                              n_classes=self.n_classes,
                              anchors_t=net.anchors,
                              variances=variances,
-                             iou_thresh=iou_thresh_match,
-                             neg_iou_thresh=neg_min)
+                             iou_thresh_match=iou_thresh_match,
+                             iou_thresh_background=iou_thresh_background)
 
         preprocessor = Preprocessor(augmenter=SSDAugmenter(),
                                     encoder=encoder,
