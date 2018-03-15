@@ -29,11 +29,11 @@ class MetricYolo(Metric):
 
         offset_x = K.expand_dims(offset_x, -1)
         offset_x = K.expand_dims(offset_x, 0)
-        offset_x = K.tile(offset_x, (self.batch_size, 1, 1, 5))
+        offset_x = K.tile(offset_x, (self.batch_size, 1, 1, self.n_boxes))
 
         offset_y = K.expand_dims(offset_y, -1)
         offset_y = K.expand_dims(offset_y, 0)
-        offset_y = K.tile(offset_y, (self.batch_size, 1, 1, 5))
+        offset_y = K.tile(offset_y, (self.batch_size, 1, 1, self.n_boxes))
 
         coord_t_cx = coord_t[:, :, :, :, 0] + offset_x
         coord_t_cy = coord_t[:, :, :, :, 1] + offset_y
