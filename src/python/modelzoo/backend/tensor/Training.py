@@ -45,7 +45,7 @@ class Training:
 
         if log_csv:
             log_file_name = log_dir + '/log.csv'
-            append = Path(log_file_name).is_file()
+            append = Path(log_file_name).is_file() and initial_epoch > 0
             csv_logger = CSVLogger(log_file_name, append=append)
             callbacks.append(csv_logger)
 
