@@ -32,7 +32,11 @@ class Yolo(Predictor):
                   color_format='yuv'):
 
         if anchors is None:
-            anchors = [1.08, 1.19, 3.42, 4.41, 6.63, 11.38, 9.42, 5.11, 16.62, 10.52]
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
 
         if class_names is None:
             class_names = [
@@ -41,7 +45,7 @@ class Yolo(Predictor):
                 "pottedplant", "sheep", "sofa", "train", "tvmonitor"
             ]
 
-        n_boxes = int(np.floor(len(anchors) / 2))
+        n_boxes = anchors.shape[0]
         loss = YoloLoss(grid=grid,
                         n_boxes=n_boxes,
                         n_classes=len(class_names),
@@ -56,7 +60,8 @@ class Yolo(Predictor):
                        norm=norm,
                        grid=grid,
                        n_classes=len(class_names),
-                       weight_file=weight_file)
+                       weight_file=weight_file,
+                       n_boxes=n_boxes)
 
         return Yolo(net,
                     class_names=class_names,
@@ -82,7 +87,11 @@ class Yolo(Predictor):
                 color_format='yuv'):
 
         if anchors is None:
-            anchors = [1.3221, 1.73145, 3.19275, 4.00944, 5.05587, 8.09892, 9.47112, 4.84053, 11.2364, 10.0071]
+            anchors = np.array([[1.3221, 1.73145],
+                                [3.19275, 4.00944],
+                                [5.05587, 8.09892],
+                                [9.47112, 4.84053],
+                                [11.2364, 10.0071]])
 
         if class_names is None:
             class_names = [
@@ -93,7 +102,7 @@ class Yolo(Predictor):
 
         ObjectLabel.classes = class_names
 
-        n_boxes = int(np.floor(len(anchors) / 2))
+        n_boxes = anchors.shape[0]
         loss = YoloLoss(grid=grid,
                         n_boxes=n_boxes,
                         n_classes=len(class_names),
@@ -107,7 +116,8 @@ class Yolo(Predictor):
                      grid=grid,
                      n_classes=len(class_names),
                      weight_file=weight_file,
-                     anchors=anchors)
+                     anchors=anchors,
+                     n_boxes=n_boxes)
 
         return Yolo(net,
                     class_names=class_names,
@@ -130,7 +140,12 @@ class Yolo(Predictor):
 
         self.color_format = color_format
         if anchors is None:
-            anchors = [1.3221, 1.73145, 3.19275, 4.00944, 5.05587, 8.09892, 9.47112, 4.84053, 11.2364, 10.0071]
+            anchors = np.array([[1.3221, 1.73145],
+                                [3.19275, 4.00944],
+                                [5.05587, 8.09892],
+                                [9.47112, 4.84053],
+                                [11.2364, 10.0071]])
+
         if class_names is None:
             class_names = [
                 "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
@@ -146,7 +161,7 @@ class Yolo(Predictor):
         self.grid = grid
         self.norm = norm
         self.conf_thresh = conf_thresh
-        self.n_boxes = int(np.floor(len(anchors) / 2))
+        self.n_boxes = anchors.shape[0]
 
         encoder = YoloEncoder(img_norm=norm,
                               grid=grid,

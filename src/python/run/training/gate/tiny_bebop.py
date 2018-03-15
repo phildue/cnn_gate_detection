@@ -16,8 +16,13 @@ image_source = ["resource/ext/samples/bebop20k/"]
 max_epochs = 100
 n_samples = 10000
 
-predictor = Yolo.tiny_yolo(norm=(160, 315), grid=(5, 9), class_names=['gate'], batch_size=batch_size,
-                           color_format='bgr')
+anchors = [[0.13809687, 0.27954467],
+           [0.17897748, 0.56287585],
+           [0.36642611, 0.39084195],
+           [0.60043528, 0.67687858]]
+
+predictor = Yolo.tiny_yolo(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=batch_size,
+                           color_format='bgr', anchors=anchors)
 data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1, n_samples=n_samples,
                                color_format='bgr', label_format='xml')
 
