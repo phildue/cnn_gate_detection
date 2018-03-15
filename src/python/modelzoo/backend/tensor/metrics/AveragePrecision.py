@@ -1,9 +1,16 @@
+from abc import abstractmethod
+
 import keras.backend as K
 
 from modelzoo.backend.tensor.iou import iou_k
+from modelzoo.backend.tensor.metrics.Metric import Metric
 
 
-class AveragePrecision:
+class AveragePrecision(Metric):
+    @abstractmethod
+    def compute(self, y_true, y_pred):
+        pass
+
     def __init__(self, iou_thresh, n_boxes, batch_size):
         self.batch_size = batch_size
         self.n_boxes = n_boxes

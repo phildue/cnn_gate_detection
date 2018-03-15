@@ -10,7 +10,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-batch_size = 4
+batch_size = 32
 
 image_source = 'voc'
 work_path = 'logs/ssd300_voc/'
