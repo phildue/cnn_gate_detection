@@ -71,19 +71,5 @@ class MetricSSD(Metric):
         return coord_dec_t, class_nms_t
 
     def _non_max_suppression(self, coord_pred_t, class_pred_t):
-        conf_pred_t = K.max(class_pred_t, axis=-1)
-
-        class_pred_nms_batch = []
-        for i in range(self.batch_size):
-            idx = K.tf.image.non_max_suppression(K.cast(coord_pred_t[i], K.tf.float32),
-                                                 K.cast(K.flatten(conf_pred_t[i]), K.tf.float32),
-                                                 self.n_boxes, self.iou_thresh,
-                                                 'NonMaxSuppression')
-            idx = K.expand_dims(idx, 1)
-            class_pred_nms = K.tf.gather_nd(class_pred_t[i], idx)
-            class_pred_nms = K.tf.scatter_nd(idx, class_pred_nms, shape=K.shape(class_pred_t[0]))
-            class_pred_nms = K.expand_dims(class_pred_nms, 0)
-            class_pred_nms_batch.append(class_pred_nms)
-
-        class_pred_nms_batch = K.concatenate(class_pred_nms_batch, 0)
-        return class_pred_nms_batch
+        return self.map_adapter.non_max_suppression_batch(coord_pred_t, class_pred_t, self.batch_size, self.n_boxes,
+                                                          self.iou_thresh)
