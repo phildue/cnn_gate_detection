@@ -1,6 +1,8 @@
 import random
 
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.RandomMerge import RandomMerge
+from utils.imageprocessing.transform.RandomRotate import RandomRotate
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 from utils.fileaccess.GateGenerator import GateGenerator
@@ -20,18 +22,20 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
 from utils.workdir import work_dir
 from utils.imageprocessing.Backend import resize
+
 work_dir()
 
-generator = GateGenerator(directories=['resource/ext/shots/mult_gate_aligned/'],
+generator = GateGenerator(directories=['resource/ext/samples/cyberzoo/'],
                           batch_size=100, color_format='bgr',
-                          shuffle=False, start_idx=0, valid_frac=0,
-                          label_format='xml', img_format='bmp')
+                          shuffle=True, start_idx=0, valid_frac=0,
+                          label_format='xml', img_format='jpg')
 batch = next(generator.generate())
 idx = random.randint(0, 80)
 img = batch[idx][0]
 label = batch[idx][1]
 ssd_augmenter = SSDAugmenter()
-augmenters = [TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
+augmenters = [RandomMerge(), RandomRotate(10, 30),
+              TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
               RandomBrightness(b_max=0.9),
               RandomColorShift(), TransformFlip(), TransformGray(),
               TransformHistEq(), TransformSubsample(), RandomNoise(), TransformerBlur(iterations=10),

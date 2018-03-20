@@ -11,7 +11,7 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.labels.ImgLabel import ImgLabel
 
 
-class YoloImgTransform(ImgTransform):
+class YoloAugmenter(ImgTransform):
     def __init__(self):
         self.augmenter_flip = TransformFlip()
         self.augmenter_color_shift = RandomColorShift()

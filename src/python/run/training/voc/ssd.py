@@ -5,12 +5,12 @@ from modelzoo.backend.tensor.ssd.AveragePrecisionSSD import AveragePrecisionSSD
 from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.fileaccess.utils import save_file, create_dirs
-from utils.imageprocessing.transform.YoloAugmenter import YoloImgTransform
+from utils.imageprocessing.transform.YoloAugmenter import YoloAugmenter
 from utils.workdir import work_dir
 
 work_dir()
 
-batch_size = 4
+batch_size = 32
 
 image_source = 'voc'
 work_path = 'logs/ssd300_voc/'
@@ -23,7 +23,7 @@ predictor = SSD.ssd300(n_classes=20,
 
 data_generator = VocGenerator(batch_size=batch_size, shuffle=True)
 
-augmenter = YoloImgTransform()
+augmenter = YoloAugmenter()
 
 model_name = predictor.net.__class__.__name__
 
