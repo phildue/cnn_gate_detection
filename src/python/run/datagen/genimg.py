@@ -24,7 +24,7 @@ background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
 sample_path = "resource/ext/samples/bebop20k/"
 shot_path = "resource/ext/shots/thick_gate/"
 
-n_backgrounds = 20000
+n_backgrounds = 1250
 batch_size = 50
 output_shape = (160, 315)
 n_batches = int(np.ceil(n_backgrounds / batch_size))
@@ -32,7 +32,7 @@ create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='bmp')
-set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=200)
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=18750)
 
 augmenter = RandomEnsemble(augmenters=[
     (1.0, TransformResize((160, 315))),

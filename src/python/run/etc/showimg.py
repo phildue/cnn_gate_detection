@@ -38,5 +38,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-show_img(path=['resource/ext/samples/bebop20k/'])
+show_img(path=['resource/samples/basement/'])
 # show_voc()

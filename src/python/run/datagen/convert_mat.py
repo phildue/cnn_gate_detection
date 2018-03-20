@@ -4,6 +4,7 @@ import numpy as np
 import scipy.io
 
 from utils.fileaccess.SetFileParser import write_set
+from utils.fileaccess.utils import create_dirs
 from utils.imageprocessing.Backend import imread
 from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
@@ -14,13 +15,14 @@ from utils.workdir import work_dir
 
 work_dir()
 
-path = 'resource/samples/cyberzoo/'
-mat = scipy.io.loadmat('resource/samples/cyberzoo/2018_2_2_ground_truth_gate_selection.mat')
+path = '../gate_detection/basement/'
+out_path = 'resource/samples/basement/'
+mat = scipy.io.loadmat('../gate_detection/3_19_GT_gate.mat')
 
 labels = mat['GT_gate']
 images = [imread(img, 'bgr') for img in list(sorted(glob.glob(path + '*.jpg')))]
 
-images = [Image(np.rot90(img.array)) for img in images]
+images = [Image(np.rot90(img.array), 'bgr') for img in images]
 ymax = images[0].shape[0]
 img_labels = []
 for i in range(labels.shape[0]):
@@ -43,4 +45,5 @@ for i in range(labels.shape[0]):
 #     show(images[i], labels=img_labels[i])
 
 # write_label(path, img_labels)
-write_set('resource/samples/cyberzoo_conv/', images, img_labels)
+create_dirs([out_path])
+write_set(out_path, images, img_labels, label_format='xml')

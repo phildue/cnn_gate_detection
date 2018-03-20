@@ -8,7 +8,7 @@ from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.yolo.YoloDecoder import YoloDecoder
 from modelzoo.models.yolo.YoloEncoder import YoloEncoder
-from utils.imageprocessing.transform.YoloAugmenter import YoloImgTransform
+from utils.imageprocessing.transform.YoloAugmenter import YoloAugmenter
 from utils.labels.ObjectLabel import ObjectLabel
 
 
@@ -167,7 +167,7 @@ class Yolo(Predictor):
                               grid=grid,
                               n_boxes=self.n_boxes,
                               n_classes=self.n_classes)
-        preprocessor = Preprocessor(augmenter=YoloImgTransform(),
+        preprocessor = Preprocessor(augmenter=YoloAugmenter(),
                                     encoder=encoder,
                                     img_shape=self.norm,
                                     n_classes=self.n_classes + 1,
