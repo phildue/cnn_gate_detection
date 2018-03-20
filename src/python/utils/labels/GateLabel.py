@@ -1,3 +1,5 @@
+import numpy as np
+
 from utils.labels.GateCorners import GateCorners
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Pose import Pose
@@ -16,8 +18,8 @@ class GateLabel(ObjectLabel):
                      self.gate_corners.bottom_right[0], self.gate_corners.center[0]])
         y_max = max([self.gate_corners.top_left[1], self.gate_corners.top_right[1], self.gate_corners.bottom_left[1],
                      self.gate_corners.bottom_right[1], self.gate_corners.center[1]])
-        p1, p2 = (x_min, y_min), (x_max, y_max)
-        super().__init__(class_name, [p1, p2], confidence)
+        box = np.array([[x_min, y_min], [x_max, y_max]])
+        super().__init__(class_name, box, confidence)
         self.position = position
 
     @property
