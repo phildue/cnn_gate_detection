@@ -1,6 +1,6 @@
 import numpy as np
 
-from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
+from modelzoo.evaluation.DataEvaluator import DataEvaluator
 from modelzoo.evaluation.Metric import Metric
 from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
@@ -10,7 +10,7 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 
 
-class ConfidenceEvaluator(DetectionEvaluator):
+class ConfidenceEvaluator(DataEvaluator):
     def __init__(self, model: Predictor, metrics: [Metric], confidence_levels=11, out_file=None, verbose=True,
                  color_format='bgr'):
         super().__init__(metrics=metrics, out_file=out_file, verbose=verbose, color_format=color_format)
@@ -41,12 +41,8 @@ class ConfidenceEvaluator(DetectionEvaluator):
 
         return results_by_m, labels_pred
 
-    def evaluate(self, result_file: str):
+    def evaluate(self, labels_true: [ImgLabel], labels_raw: [ImgLabel], image_files: [str]):
         results = {m: [] for m in self.metrics.keys()}
-        file_content = load_file(result_file)
-        labels_true = file_content['labels_true']
-        labels_raw = file_content['labels_pred']
-        image_files = file_content['image_files']
         tic()
         labels_pred = []
         for i in range(len(labels_true)):
@@ -63,7 +59,8 @@ class ConfidenceEvaluator(DetectionEvaluator):
         if self.out_file is not None:
             content = {'results': results,
                        'labels_true': labels_true,
-                       'labels_pred': labels_pred}
+                       'labels_pred': labels_pred,
+                       'image_files': image_files}
             save_file(content, self.out_file)
 
         return results

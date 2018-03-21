@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class Net(ABC):
     @abstractmethod
-    def compile(self, params, metrics):
+    def compile(self, params=None, metrics=None):
         pass
 
     @abstractmethod
@@ -13,6 +13,11 @@ class Net(ABC):
     @property
     @abstractmethod
     def backend(self):
+        pass
+
+    @backend.setter
+    @abstractmethod
+    def backend(self, model):
         pass
 
     @property

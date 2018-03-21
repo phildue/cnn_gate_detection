@@ -1,12 +1,11 @@
-from modelzoo.evaluation.FileEvaluator import FileEvaluator
 from modelzoo.evaluation.Metric import Metric
 from utils.fileaccess.utils import load_file, save_file
 from utils.imageprocessing.Backend import imread
 from utils.labels.ImgLabel import ImgLabel
-from utils.timing import toc
+from utils.timing import toc, tic
 
 
-class DetectionEvaluator(FileEvaluator):
+class DataEvaluator:
     def __init__(self, metrics: [Metric], color_format='bgr', out_file=None, verbose=True):
         self.verbose = verbose
         self.out_file = out_file
@@ -26,12 +25,8 @@ class DetectionEvaluator(FileEvaluator):
 
         return results
 
-    def evaluate(self, result_file: str):
+    def evaluate(self, labels_true: [ImgLabel], labels_pred: [ImgLabel], image_files: [str]):
         results = {m: [] for m in self.metrics.keys()}
-        file_content = load_file(result_file)
-        labels_true = file_content['labels_true']
-        labels_pred = file_content['labels_pred']
-        image_files = file_content['image_files']
         tic()
         for i in range(len(labels_true)):
             image = imread(image_files[i], self.color_format)

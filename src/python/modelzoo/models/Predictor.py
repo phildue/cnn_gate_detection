@@ -22,7 +22,7 @@ class Predictor:
     def encoder(self) -> Encoder:
         return self._encoder
 
-    def compile(self, params, metrics):
+    def compile(self, params=None, metrics=None):
         self.net.compile(params, metrics)
 
     def predict(self, sample):

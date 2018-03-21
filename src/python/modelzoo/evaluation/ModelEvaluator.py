@@ -1,11 +1,16 @@
+import numpy as np
+
+from modelzoo.evaluation.Metric import Metric
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
-from utils.fileaccess.utils import save_file
+from utils.fileaccess.utils import save_file, create_dirs
 from utils.timing import toc, tic
 
 
 class ModelEvaluator:
-    def evaluate_generator(self, generator: DatasetGenerator, n_batches=10):
+    def evaluate_generator(self, generator: DatasetGenerator, n_batches=None):
+        if n_batches is None:
+            n_batches = int(np.floor(generator.n_samples / generator.batch_size))
         it = iter(generator.generate())
         labels_true = []
         labels_pred = []
@@ -28,7 +33,9 @@ class ModelEvaluator:
                 content = {'labels_true': labels_true,
                            'labels_pred': labels_pred,
                            'image_files': image_files}
-                save_file(content, self.out_file)
+                save_file(content, self.out_file, verbose=self.verbose)
+
+        return labels_true, labels_pred, image_files
 
     def __init__(self, model: Predictor, out_file=None, verbose=True):
         self.verbose = verbose

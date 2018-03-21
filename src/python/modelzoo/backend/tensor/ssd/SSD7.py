@@ -16,6 +16,10 @@ class SSD7(SSDNet):
     def backend(self):
         return self._model
 
+    @backend.setter
+    def backend(self, model):
+        self._model = model
+
     def __init__(self, img_shape,
                  variances,
                  scales,

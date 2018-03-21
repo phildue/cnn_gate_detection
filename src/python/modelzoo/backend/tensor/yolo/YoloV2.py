@@ -38,6 +38,10 @@ class YoloV2(Net):
     def backend(self):
         return self._model
 
+    @backend.setter
+    def backend(self, model):
+        self._model = model
+
     def __init__(self,
                  loss: Loss,
                  norm=(416, 416),

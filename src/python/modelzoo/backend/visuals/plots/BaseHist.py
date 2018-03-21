@@ -4,9 +4,9 @@ from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 
 class BaseHist(BasePlot):
-    def __init__(self, x_data, y_data, size=(6, 5), font_size=12, title='', line_style='--', x_label='x', y_label='y',
+    def __init__(self, y_data, size=(6, 5), font_size=12, title='', line_style='--', x_label='x', y_label='y',
                  n_bins=1):
-        super().__init__(x_data, y_data, size, font_size, title, line_style, x_label, y_label)
+        super().__init__(None, y_data, size, font_size, title, line_style, x_label, y_label)
         self.bin_width = n_bins
 
     def create_fig(self):
