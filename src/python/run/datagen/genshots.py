@@ -5,6 +5,7 @@ from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.GateGen import GateGen
 from samplegen.shotgen.ShotCreate import ShotCreate
 from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.engine3d.opengl.GLSquare import GLSquare
 from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
 from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
 from samplegen.shotgen.lightgen.ConstantLightGen import ConstantLightGen
@@ -17,7 +18,7 @@ from utils.workdir import work_dir
 
 work_dir()
 
-name = "thick_gate"
+name = "thick_square"
 shot_path = "resource/ext/shots/" + name + "/"
 
 N = 0
@@ -38,7 +39,7 @@ gate_pos_range_x = (-4, 4)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GateGLTall(), GateGLThickLarge()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GLSquare(), GateGLTall(), GateGLThickLarge()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 

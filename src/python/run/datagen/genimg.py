@@ -21,22 +21,22 @@ background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/ext/samples/bebop20k/"
-shot_path = "resource/ext/shots/thick_gate/"
+sample_path = "resource/ext/samples/bebop20k_nodistort/"
+shot_path = "resource/ext/shots/thick_square/"
 
-n_backgrounds = 1250
-batch_size = 50
+n_backgrounds = 25000
+batch_size = 100
 output_shape = (160, 315)
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='bmp')
-set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=18750)
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=20000)
 
-augmenter = RandomEnsemble(augmenters=[
-    (1.0, TransformResize((160, 315))),
-    (1.0, TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl'), crop=0.1))])
+augmenter = None  # RandomEnsemble(augmenters=[
+# (1.0, TransformResize((160, 315))),
+# (1.0, TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl'), crop=0.1))])
 generator = RandomImgGen(background_path,
                          output_shape=output_shape,
                          image_transformer=augmenter)

@@ -1,6 +1,6 @@
 import os
 
-from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
+from modelzoo.evaluation.DataEvaluator import DataEvaluator
 from modelzoo.evaluation.MetricOneGate import MetricOneGate
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
@@ -37,9 +37,9 @@ create_dirs([result_path, result_img_path])
 generator = GateGenerator(directories=image_source, batch_size=BATCH_SIZE, img_format='jpg',
                           shuffle=False, color_format=color_format)
 
-evaluator = DetectionEvaluator(model,
-                               metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
-                               out_file=result_path + result_file)
+evaluator = DataEvaluator(model,
+                          metrics=[MetricOneGate(iou_thresh=iou_thresh, show_=True, store_path=result_img_path)],
+                          out_file=result_path + result_file)
 
 evaluator.evaluate(generator, n_batches=n_batches)
 
