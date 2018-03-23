@@ -3,6 +3,7 @@ import random
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.transform.RandomColorNoise import RandomColorNoise
 from utils.imageprocessing.transform.RandomMerge import RandomMerge
+from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.RandomRotate import RandomRotate
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
@@ -22,32 +23,20 @@ from utils.imageprocessing.transform.TransformSubsample import TransformSubsampl
 from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
+from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import work_dir
-from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Backend import resize, imread
 
 work_dir()
+sigma = 1.0
+img_org = imread('resource/samples/norway.jpeg', 'bgr')
+show(img_org, 'org')
 
-generator = GateGenerator(directories=['resource/ext/samples/bebop20k/'],
-                          batch_size=100, color_format='bgr',
-                          shuffle=True, start_idx=0, valid_frac=0,
-                          label_format='xml', img_format='jpg')
-batch = next(generator.generate())
-idx = random.randint(0, 80)
-img = batch[idx][0]
-label = batch[idx][1]
-ssd_augmenter = SSDAugmenter()
-augmenters = [RandomColorShift((.5, 1.0), (0, 0), (0, 0)), RandomMerge(), RandomRotate(10, 30),
-              TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
-              RandomBrightness(b_max=0.9), TransformFlip(), TransformGray(),
-              TransformHistEq(), TransformSubsample(), RandomGrayNoise(), TransformerBlur(iterations=10),
-              RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
+img, _ = TransformMotionBlur('vertical', sigma).transform(img_org, ImgLabel([]))
+show(img, 'vertical')
 
-augmenters = [TransformMotionBlur('left')]
+img, _ = TransformMotionBlur('horizontal', sigma).transform(img_org, ImgLabel([]))
+show(img, 'horizontal')
 
-for img, label, _ in batch:
-    img, label = resize(img, (180, 315), label=label)
-    show(img, name='Org')
-
-    for augmenter in augmenters:
-        img_aug, label_aug = augmenter.transform(img, label)
-        show(img_aug, name=augmenter.__class__.__name__)
+img, _ = RandomMotionBlur().transform(img_org, ImgLabel([]))
+show(img, 'random')
