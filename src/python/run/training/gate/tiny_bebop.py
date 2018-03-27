@@ -20,7 +20,7 @@ batch_size = 4
 image_source = ["resource/ext/samples/bebop20k/"]
 test_image_source = ['resource/ext/samples/cyberzoo']
 max_epochs = 300
-n_samples = 10
+n_samples = 25000
 
 anchors = np.array([[0.13809687, 0.27954467],
                     [0.17897748, 0.56287585],
