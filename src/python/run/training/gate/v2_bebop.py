@@ -18,15 +18,15 @@ batch_size = 4
 image_source = ["resource/ext/samples/bebop20k/"]
 test_image_source = ['resource/ext/samples/cyberzoo']
 max_epochs = 300
-n_samples = 25000
+n_samples = 8
 
 anchors = np.array([[0.13809687, 0.27954467],
                     [0.17897748, 0.56287585],
                     [0.36642611, 0.39084195],
                     [0.60043528, 0.67687858]])
 
-predictor = Yolo.tiny_yolo(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=batch_size,
-                           color_format='bgr', anchors=anchors)
+predictor = Yolo.yolo_V2(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=batch_size,
+                         color_format='bgr', anchors=anchors)
 data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1, n_samples=n_samples,
                                color_format='bgr', label_format='xml')
 test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0, color_format='bgr', label_format='xml')
@@ -62,7 +62,10 @@ def lr_schedule(epoch):
         return 0.000001
 
 
-test_metric = TestMetric(test_gen, ModelEvaluator(predictor, test_result, False))
+test_metric = TestMetric(test_gen,
+                         ModelEvaluator(predictor, verbose=False),
+                         ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
+                                             color_format='bgr'))
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
                     patience=-1,
