@@ -3,6 +3,8 @@ import pprint as pp
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.TestMetrics import TestMetric
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
+from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
+from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
