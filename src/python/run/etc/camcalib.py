@@ -2,9 +2,9 @@ import glob
 import numpy as np
 from utils.imageprocessing.Backend import imread, resize
 from utils.imageprocessing.CamCalibration import CamCalibration
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 src_images = 'resource/camera_calibration/'
 out_file = 'resource/cam_params_bebop.pkl'
 

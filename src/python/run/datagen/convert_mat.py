@@ -4,16 +4,15 @@ import numpy as np
 import scipy.io
 
 from utils.fileaccess.SetFileParser import write_set
-from utils.fileaccess.utils import create_dirs
 from utils.imageprocessing.Backend import imread
 from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.Pose import Pose
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 path = '../gate_detection/basement/'
 out_path = 'resource/samples/basement/'

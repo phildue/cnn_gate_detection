@@ -3,9 +3,9 @@ from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.Imageprocessing import show
 from utils.timing import tic, toc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 # dataset = GateGenerator(directories=['resource/samples/cyberzoo_conv/'],
 #                         batch_size=100, color_format='bgr',
 #                         shuffle=False, start_idx=0, valid_frac=0,

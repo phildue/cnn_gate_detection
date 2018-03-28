@@ -1,9 +1,6 @@
 import random
 
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
-from utils.imageprocessing.transform.RandomColorNoise import RandomColorNoise
-from utils.imageprocessing.transform.RandomMerge import RandomMerge
-from utils.imageprocessing.transform.RandomRotate import RandomRotate
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 from utils.fileaccess.GateGenerator import GateGenerator
@@ -22,10 +19,10 @@ from utils.imageprocessing.transform.TransformSubsample import TransformSubsampl
 from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 from utils.imageprocessing.Backend import resize
 
-work_dir()
+cd_work()
 
 generator = GateGenerator(directories=['resource/ext/samples/bebop20k/'],
                           batch_size=100, color_format='bgr',

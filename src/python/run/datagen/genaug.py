@@ -6,9 +6,9 @@ from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.timing import tic, toc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 image_source = 'resource/samples/mult_gate_aligned_blur'
 batch_size = 20
 n_samples = 10000

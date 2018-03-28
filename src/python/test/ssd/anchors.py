@@ -6,9 +6,9 @@ from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 predictor = SSD.ssd300(conf_thresh=0)
 

@@ -14,21 +14,21 @@ from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
-name = "thick_square"
-shot_path = "resource/ext/shots/" + name + "/"
+name = "thick_square_roll"
+shot_path = "resource/shots/" + name + "/"
 
 N = 0
-n_positions = 10000 - N * 100
+n_positions = 1000 - N * 100
 n_batches = 100 - N
 cam_range_side = (-1, 1)
 cam_range_forward = (0, 5)
 cam_range_lift = (-0.5, 1.5)
 cam_range_pitch = (-0.1, 0.1)
-cam_range_roll = (-0.1, 0.1)
+cam_range_roll = (-0.5, 0.5)
 cam_range_yaw = (-np.pi, np.pi)
 
 n_light_range = (4, 6)
@@ -39,7 +39,7 @@ gate_pos_range_x = (-4, 4)
 
 width, height = (640, 640)
 
-gate_gen = GateGen(gates=[GLSquare(), GateGLTall(), GateGLThickLarge()], n_gate_range=n_gate_range,
+gate_gen = GateGen(gates=[GateGLTall(), GateGLThickLarge(), GLSquare(), GLSquare()], n_gate_range=n_gate_range,
                    forw_gate_range=gate_pos_range_z
                    , side_gate_range=gate_pos_range_x, min_gate_dist=(2, 2))
 

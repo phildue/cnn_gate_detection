@@ -24,10 +24,10 @@ from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
 from utils.labels.ImgLabel import ImgLabel
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 from utils.imageprocessing.Backend import resize, imread
 
-work_dir()
+cd_work()
 sigma = 1.0
 img_org = imread('resource/samples/norway.jpeg', 'bgr')
 show(img_org, 'org')

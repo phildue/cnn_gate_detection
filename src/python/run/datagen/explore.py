@@ -13,9 +13,9 @@ from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.utils import create_dirs
 from utils.labels.Pose import Pose
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 cam = Camera(1000, init_pose=Pose(dist_forward=5))
 

@@ -4,9 +4,9 @@ from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize, annotate_text
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 batch_size = 4
 yolo = Yolo.yolo_v2(class_names=['gate'], conf_thresh=0, batch_size=batch_size,

@@ -5,9 +5,9 @@ from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc, tuc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 # background_path = ["samplegen/resource/backgrounds/lmsun/",
 #                    "samplegen/resource/backgrounds/google-fence-gate-industry/"]

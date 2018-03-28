@@ -1,8 +1,12 @@
 import glob
 import random
+from scipy import signal
+
+import numpy as np
 
 from samplegen.imggen.ImgGen import ImgGen
-from utils.imageprocessing.Backend import imread, replace_background, blur, noisy, convert_color, COLOR_BGR2YUV, resize
+from utils.imageprocessing.Backend import imread, replace_background, blur, noisy, convert_color, COLOR_BGR2YUV, resize, \
+    brightness
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
@@ -11,11 +15,15 @@ from utils.labels.ImgLabel import ImgLabel
 class RandomImgGen(ImgGen):
     def __init__(self, background_path="../resource/backgrounds",
                  output_shape=(416, 416),
-                 image_transformer: ImgTransform = None):
+                 preprocessor: ImgTransform = None, background_color=(0, 0, 0), postprocessor: ImgTransform = None,
+                 merge_kernels=None):
+        self.merge_kernels = merge_kernels
+        self.postprocessor = postprocessor
+        self.background_color = background_color
         self.output_shape = output_shape
         paths = background_path if isinstance(background_path, list) else [background_path]
         self.files = [f for folder in [glob.glob(p + "/*.jpg") for p in paths] for f in folder]
-        self.image_transformer = image_transformer
+        self.preprocessor = preprocessor
 
     def generate(self, shots: [Image], labels: [ImgLabel], n_backgrounds=10) -> (
             [Image], [ImgLabel]):
@@ -25,12 +33,17 @@ class RandomImgGen(ImgGen):
             background = imread(random.choice(self.files), 'bgr')
             i = random.randint(0, len(shots) - 1)
             shot = shots[i]
-
-            img = replace_background(shot, background)
             label = labels[i]
 
-            if self.image_transformer:
-                img, label = self.image_transformer.transform(img, label)
+            shot, label = resize(shot, background.shape[:2], label=label)
+
+            if self.preprocessor:
+                shot, label = self.preprocessor.transform(shot, label)
+
+            img = self.merge(shot, background, kernels=self.merge_kernels)
+
+            if self.postprocessor:
+                shot, label = self.preprocessor.transform(shot, label)
 
             img, label = resize(img, shape=self.output_shape, label=label)
             samples.append(img)
@@ -38,13 +51,50 @@ class RandomImgGen(ImgGen):
 
         return samples, labels_created
 
-    def gen_empty_samples(self, n_samples) -> ([Image], [ImgLabel]):
-        labels_created = []
-        samples = []
-        for j in range(n_samples):
-            background = imread(random.choice(self.files), 'bgr')
+    def merge(self, shot: Image, background: Image, kernels=[]):
 
-            samples.append(background)
-            labels_created.append(ImgLabel([]))
+        new_img = background.copy()
+        idx_fg = shot.array != self.background_color
+        new_img.array[idx_fg] = shot.array[idx_fg]
 
-        return samples, labels_created
+        if not np.any(idx_fg):
+            return new_img
+        else:
+            new_img = self.convolve(idx_fg, new_img, kernels)
+
+        return new_img
+
+    def convolve(self, idx_fg, new_img, kernels):
+        new_img = new_img.copy()
+        h, w = new_img.shape[:2]
+
+        idx_y = np.mgrid[:h, :w][0][idx_fg[:, :, 0]]
+        idx_x = np.mgrid[:h, :w][1][idx_fg[:, :, 0]]
+
+        for kernel in kernels:
+
+            k = kernel / np.sum(kernel)
+            k_offset = int(np.floor((k.shape[0] - 1) / 2))
+            padded = np.zeros((h + 2 * k_offset, w + 2 * k_offset, 3))
+
+            # padding
+            padded[:k_offset] = padded[k_offset:2 * k_offset]
+            padded[-k_offset:] = padded[-2 * k_offset:-k_offset]
+
+            padded[:, :k_offset] = padded[:, k_offset:2 * k_offset]
+            padded[:, -k_offset:] = padded[:, -2 * k_offset:-k_offset]
+
+            padded[k_offset:-k_offset, k_offset:-k_offset] = new_img.array.copy()
+            kernel_stretched = np.reshape(k, (-1,))
+            for idx in range(len(idx_x)):
+                x, y = idx_x[idx], idx_y[idx]
+                patch = padded[y + 1 - k_offset:y + 1 + k_offset + 1, x + 1 - k_offset:x + 1 + k_offset + 1]
+                try:
+                    new_img.array[y, x, 0] = kernel_stretched.T.dot(patch[:, :, 0].reshape((-1,)))
+                    new_img.array[y, x, 1] = kernel_stretched.T.dot(patch[:, :, 1].reshape((-1,)))
+                    new_img.array[y, x, 2] = kernel_stretched.T.dot(patch[:, :, 2].reshape((-1,)))
+                except ValueError:
+                    pass
+                    # FIXME whats causing this?
+                    # print(patch)
+        return new_img

@@ -2,9 +2,9 @@ from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 batch_size = 20
 dataset = VocGenerator(batch_size=batch_size, shuffle=True).generate()
 batch = next(dataset)

@@ -1,5 +1,7 @@
 .idea
-resource
+resource/backgrounds
+resource/samples
+resource/shots
 logs
 research
 downloads

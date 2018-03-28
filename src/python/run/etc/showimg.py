@@ -3,9 +3,9 @@ from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 
 def show_voc():
@@ -18,7 +18,7 @@ def show_voc():
 
 
 def show_img(path):
-    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml')
+    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg')
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -37,6 +37,6 @@ def show_shot(path="samplegen/resource/shots/stream/"):
         show(ann_img, 'labeled', labels=label)
 
 
-# show_shot(path="samplegen/resource/shots/mult_gate_aligned/")
-show_img(path=['resource/samples/basement/'])
+# show_shot(path="samplegen/resource/samples/bebop_merge/")
+show_img(path=['resource/samples/bebop_merge'])
 # show_voc()

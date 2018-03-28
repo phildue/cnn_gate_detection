@@ -1,9 +1,9 @@
 import numpy as np
 
 from utils.fileaccess.utils import load_file
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 result_file = 'logs/yolov2_10k/speed_server/result.pkl'
 
 content = load_file(result_file)

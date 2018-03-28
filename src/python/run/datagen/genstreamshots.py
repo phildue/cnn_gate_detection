@@ -12,9 +12,9 @@ from samplegen.shotgen.positiongen.TrajectoryGen import TrajectoryGen
 from utils.fileaccess.SetFileParser import write_set
 from utils.labels.Pose import Pose
 from utils.timing import tic, toc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 name = "stream_3"
 shot_path = "resource/shots/" + name + "/"

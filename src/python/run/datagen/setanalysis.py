@@ -6,9 +6,9 @@ from modelzoo.backend.visuals.plots.BaseHist import BaseHist
 from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from utils.imageprocessing.Backend import imread, brightness
 from utils.timing import tic, toc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 tic()
 path = 'resource/ext/samples/bebop20k/'
 img_shape = (180, 315)

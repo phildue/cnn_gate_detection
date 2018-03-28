@@ -5,9 +5,9 @@ from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize, annotate_text
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
 from utils.labels.ObjectLabel import ObjectLabel
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 batch_size = 5
 ssd = SSD.ssd_test(n_classes=20, conf_thresh=0, batch_size=batch_size,

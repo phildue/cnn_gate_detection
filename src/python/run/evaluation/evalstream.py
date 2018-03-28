@@ -5,9 +5,9 @@ from modelzoo.evaluation.MetricOneGate import MetricOneGate
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 
 name = 'stream3'

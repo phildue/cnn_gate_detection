@@ -7,9 +7,9 @@ from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 
 def interp(results: ResultByConfidence, recall_levels=None):

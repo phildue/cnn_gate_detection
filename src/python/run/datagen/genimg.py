@@ -10,9 +10,9 @@ from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.timing import tic, toc, tuc
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
-work_dir()
+cd_work()
 
 background_path = ["resource/ext/backgrounds/google-fence-gate-industry/",
                    'resource/ext/backgrounds/lmsun/']
@@ -39,7 +39,7 @@ augmenter = None  # RandomEnsemble(augmenters=[
 # (1.0, TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl'), crop=0.1))])
 generator = RandomImgGen(background_path,
                          output_shape=output_shape,
-                         image_transformer=augmenter)
+                         preprocessor=augmenter)
 for i in range(n_batches):
     tic()
     shots, shot_labels = shot_loader.get_shots(n_shots=250)

@@ -9,7 +9,7 @@ from utils.fileaccess.GateGenerator import GateGenerator
 import numpy as np
 from utils.imageprocessing.Backend import resize
 from utils.fileaccess.utils import save_file
-from utils.workdir import work_dir
+from utils.workdir import cd_work
 
 
 def generate_anchors(boxes_wh, n_anchors):
@@ -50,7 +50,7 @@ def plot_iou_vs_center(box_dims, range_anchors):
     return iou_c_plot
 
 
-work_dir()
+cd_work()
 path = 'resource/ext/samples/bebop20k/'
 set_analyzer = SetAnalyzer((180, 315), path)
 
