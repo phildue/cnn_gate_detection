@@ -1,15 +1,14 @@
-from abc import abstractmethod
-
-from utils.Plot import Plot
+from abc import ABC, abstractmethod
 
 
-class PyPlot(Plot):
+class PyPlot(ABC):
+
     @abstractmethod
-    def save(self, file_path):
+    def show(self, block=True):
         pass
 
     @abstractmethod
-    def show(self):
+    def save(self, filename: str = None):
         pass
 
     @abstractmethod

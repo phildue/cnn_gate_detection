@@ -26,6 +26,10 @@ class TinyYolo(Net):
     def backend(self):
         return self._model
 
+    @backend.setter
+    def backend(self, model):
+        self._model = model
+
     @property
     def train_params(self):
         return self._params

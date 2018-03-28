@@ -40,6 +40,11 @@ class SSDNet(Net):
     def backend(self):
         pass
 
+    @backend.setter
+    @abstractmethod
+    def backend(self, model):
+        pass
+
     def compile(self, params=None, metrics=None):
 
         if params is not None:

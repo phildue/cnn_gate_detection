@@ -2,7 +2,6 @@ from abc import abstractmethod
 
 import keras.backend as K
 
-from modelzoo.backend.tensor.iou import iou_k
 from modelzoo.backend.tensor.metrics.Metric import Metric
 
 
@@ -187,7 +186,7 @@ class AveragePrecision(Metric):
 
         w_true = K.cast(K.greater(conf_true, 0), K.floatx())
 
-        iou = iou_k(coord_true_sorted, coord_pred_sorted)
+        iou = Metric.iou(coord_true_sorted, coord_pred_sorted)
 
         w_class_match = self.class_match(class_true_sorted, class_pred_sorted)
 

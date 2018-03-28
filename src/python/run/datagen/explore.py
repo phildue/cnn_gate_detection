@@ -2,9 +2,11 @@ import numpy as np
 
 from samplegen.scene.Camera import Camera
 from samplegen.scene.Scene import Scene
+from samplegen.scene.Square import Square
 from samplegen.shotgen.GateGen import GateGen
 from samplegen.shotgen.engine3d.Explorer import Explorer
 from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
+from samplegen.shotgen.engine3d.opengl.GLSquare import GLSquare
 from samplegen.shotgen.engine3d.opengl.GateGLLarge import GateGLThickLarge
 from samplegen.shotgen.engine3d.opengl.GateGLOpen import GateGLOpen
 from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
@@ -15,7 +17,6 @@ from utils.workdir import work_dir
 
 work_dir()
 
-
 cam = Camera(1000, init_pose=Pose(dist_forward=5))
 
 gate_path = "resource/gates/"
@@ -23,11 +24,12 @@ gate_file = "gate250.obj"
 
 gate_1 = (GateGLOpen(), Pose().to_scene_unit)
 gate_2 = (GateGLThickLarge(), Pose().to_scene_unit)
+gate_3 = (GLSquare(), Pose().to_scene_unit)
 
 gate_generator = GateGen(gates=[GateGLThickLarge(), GateGLTall()], n_gate_range=(3, 8))
 
-gates = [gate_2]
-#gates = gate_generator.generate()
+gates = [gate_3]
+# gates = gate_generator.generate()
 scene_engine = SceneEngine(Scene(cam, objects=gates))
 
 cam_range_side = (-1, 1)

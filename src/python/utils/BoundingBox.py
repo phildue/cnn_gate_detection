@@ -53,13 +53,19 @@ class BoundingBox:
         """
         box_labels = []
         for box in boxes:
-            xmin = int((box.cx - box.w / 2))
-            xmax = int((box.cx + box.w / 2))
-            ymin = int((box.cy - box.h / 2))
-            ymax = int((box.cy + box.h / 2))
+            try:
+                xmin = int((box.cx - box.w / 2))
+                xmax = int((box.cx + box.w / 2))
+                ymin = int((box.cy - box.h / 2))
+                ymax = int((box.cy + box.h / 2))
+            except ValueError:
+                xmin = 0
+                xmax = 0
+                ymin = 0
+                ymax = 0
             box_labels.append(ObjectLabel(ObjectLabel.id_to_name(box.prediction),
-                                          [(xmin, ymin),
-                                           (xmax, ymax)], box.class_conf))
+                                          np.array([[xmin, ymin],
+                                                    [xmax, ymax]]), box.class_conf))
         return ImgLabel(box_labels)
 
     @staticmethod

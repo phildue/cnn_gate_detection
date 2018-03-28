@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 
+
 class ObjectLabel:
     classes = []
 
@@ -22,10 +23,10 @@ class ObjectLabel:
         if class_name not in ObjectLabel.classes:
             ObjectLabel.classes.append(class_name)
         self.class_name = class_name
-        self.y_min = bounding_box[0][1]
-        self.x_min = bounding_box[0][0]
-        self.y_max = bounding_box[1][1]
-        self.x_max = bounding_box[1][0]
+        self.y_min = np.min(bounding_box[:, 1])
+        self.x_min = np.min(bounding_box[:, 0])
+        self.y_max = np.max(bounding_box[:, 1])
+        self.x_max = np.max(bounding_box[:, 0])
 
     def __repr__(self):
         return '{0:s}: \t{1!s}->{2!s}'.format(self.class_name, (self.y_min, self.x_min),

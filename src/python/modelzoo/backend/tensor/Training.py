@@ -10,49 +10,58 @@ from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 
 class Training:
     def __init__(self,
-                 predictor: Predictor, dataset_gen: DatasetGenerator, out_file, patience=3,
-                 log_dir='./logs', stop_on_nan=True
-                 , lr_schedule=None, lr_reduce=-1, log_csv=True, initial_epoch=0, epochs=100):
+                 predictor: Predictor,
+                 dataset_gen: DatasetGenerator,
+                 out_file,
+                 patience=3,
+                 log_dir='./logs',
+                 stop_on_nan=True,
+                 lr_schedule=None,
+                 lr_reduce=-1,
+                 log_csv=True,
+                 initial_epoch=0,
+                 epochs=100,
+                 callbacks=None):
         self.initial_epoch = initial_epoch
         self.epochs = epochs
         self.dataset_gen = dataset_gen
         self.predictor = predictor
-        callbacks = []
+        self.callbacks = []
         if patience > -1:
             early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience, mode='min', verbose=1)
-            callbacks.append(early_stop)
+            self.callbacks.append(early_stop)
         if out_file is not None:
             checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_loss', verbose=2, save_best_only=True,
                                          mode='min', save_weights_only=False,
                                          period=1)
-            callbacks.append(checkpoint)
+            self.callbacks.append(checkpoint)
         if log_dir is not None:
             tensorboard = TensorBoard(batch_size=dataset_gen.batch_size, log_dir=log_dir, write_images=True,
                                       histogram_freq=0)
-            callbacks.append(tensorboard)
+            self.callbacks.append(tensorboard)
 
         if stop_on_nan:
             stop_nan = TerminateOnNaN()
-            callbacks.append(stop_nan)
+            self.callbacks.append(stop_nan)
 
         if lr_schedule is not None:
             schedule = LearningRateScheduler(schedule=lr_schedule)
-            callbacks.append(schedule)
+            self.callbacks.append(schedule)
 
         if lr_reduce > -1:
             reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience - 1, min_lr=0.00001)
-            callbacks.append(reducer)
+            self.callbacks.append(reducer)
 
         if log_csv:
             log_file_name = log_dir + '/log.csv'
             append = Path(log_file_name).is_file() and initial_epoch > 0
             csv_logger = CSVLogger(log_file_name, append=append)
-            callbacks.append(csv_logger)
-
+            self.callbacks.append(csv_logger)
+        if callbacks is not None:
+            self.callbacks.extend(callbacks)
         history = History()
-        callbacks.append(history)
+        self.callbacks.append(history)
 
-        self.callbacks = callbacks
 
     def fit_generator(self):
 

@@ -4,6 +4,8 @@ from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.fileaccess.utils import load_file
+from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.Imageprocessing import show
 from utils.workdir import work_dir
 
 work_dir()
@@ -43,12 +45,21 @@ def mean_avg_prec(results):
     return mean_pr, mean_rec
 
 
-result_path = 'logs/yolov2_10k/0703/'
-result_file = 'result_0703.pkl'
+result_path = '/run/user/1000/gvfs/sftp:host=student-linux.tudelft.nl/home/nfs/pdurnay/dronevision/logs' \
+              '/v2_bebop_distort/results/'
+result_file = 'cyberzoo--8.pkl'
 results = load_file(result_path + result_file)
+
+# for i, f in enumerate(results['image_files']):
+#     label_true = results['labels_true'][i]
+#     label_pred = results['labels_pred'][i][0.3]
+#     path = '/run/user/1000/gvfs/sftp:host=student-linux.tudelft.nl/'
+#     img = imread(path + f,'bgr')
+#     show(img, labels=[label_true, label_pred], colors=[(0, 255, 0), (255, 0, 0)])
 #
-# mean_pr_10k, mean_rec_10k = mean_avg_prec(results)
-# BasePlot(y_data=mean_pr_10k,x_data=mean_rec_10k)
+mean_pr_10k, mean_rec_10k = mean_avg_prec(results)
+BasePlot(y_data=mean_pr_10k, x_data=mean_rec_10k).show()
+
 # result_path = 'logs/yolov2_25k/set_aligned/'
 # result_file = 'result_set_aligned.pkl'
 # results = load_file(result_path + result_file)

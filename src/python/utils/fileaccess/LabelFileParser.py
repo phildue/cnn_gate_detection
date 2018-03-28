@@ -127,7 +127,7 @@ class LabelFileParser:
                 xmax = max((x1, x2))
                 ymin = min((y1, y2))
                 ymax = max((y1, y2))
-                label = ObjectLabel(name, [(xmin, ymin), (xmax, ymax)])
+                label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
                 label.y_min = ymin
                 label.y_max = ymax
                 label.x_min = xmin

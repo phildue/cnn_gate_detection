@@ -17,6 +17,10 @@ class SSD300(SSDNet):
     def backend(self):
         return self._model
 
+    @backend.setter
+    def backend(self, model):
+        self._model = model
+
     def __init__(self, variances, img_shape: (int, int, int), loss: Loss, scales, aspect_ratios,
                  weight_file=None, n_classes=20, n_boxes=None):
         super().__init__(img_shape, variances, scales, aspect_ratios, loss)
