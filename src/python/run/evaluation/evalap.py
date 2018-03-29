@@ -1,24 +1,32 @@
 import os
 
+import numpy as np
+
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.models.yolo.Yolo import Yolo
-from utils.fileaccess.utils import create_dirs, save_file
+from utils.fileaccess.utils import create_dirs, save_file, load_file
 from utils.workdir import cd_work
 
 cd_work()
 
-name = '0703'
-op_dir = 'logs/yolov2_20k_new/'
+name = '2803'
+op_dir = 'logs/v2_bebop_distort/'
 # Source
-in_file = op_dir + '0703/result_0703.pkl'
+in_file = op_dir + name + '/result_2803.pkl'
 color_format = 'bgr'
 
 # Model
 conf_thresh = 0
 weight_file = op_dir + '/YoloV2.h5'
-model = Yolo.yolo_v2(class_names=['gate'], weight_file=weight_file, conf_thresh=conf_thresh, color_format='yuv')
 
+anchors = np.array([[0.13809687, 0.27954467],
+                    [0.17897748, 0.56287585],
+                    [0.36642611, 0.39084195],
+                    [0.60043528, 0.67687858]])
+
+model = Yolo.yolo_v2(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=4,
+                       color_format='bgr', anchors=anchors,weight_file=weight_file)
 # Evaluator
 iou_thresh = 0.4
 
@@ -32,8 +40,12 @@ create_dirs([result_path, result_img_path])
 
 evaluator = ConfidenceEvaluator(model, metrics=[MetricDetection(show_=False)], out_file=result_path + result_file,
                                 color_format=color_format)
+file_content = load_file(in_file)
+labels_true = file_content['labels_true']
+image_files = file_content['image_files']
+labels_pred = file_content['labels_pred']
 
-evaluator.evaluate(in_file)
+evaluator.evaluate(labels_true, labels_pred, image_files)
 
 exp_params = {'name': name,
               'model': model.net.__class__.__name__,

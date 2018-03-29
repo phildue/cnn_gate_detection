@@ -21,7 +21,7 @@ cd_work()
 
 batch_size = 4
 
-image_source = ["resource/ext/samples/bebop_merge/"]
+image_source = ["resource/ext/samples/bebop_merge/", "resource/ext/samples/google_merge_distort/"]
 test_image_source = ['resource/ext/samples/cyberzoo']
 max_epochs = 300
 n_samples = 10000
@@ -43,7 +43,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
 
 model_name = predictor.net.__class__.__name__
 
-name = 'v2_bebop_merge'
+name = 'v2_bebop_google_merge'
 result_path = 'logs/' + name + '/'
 test_result = result_path + 'results/cyberzoo-'
 

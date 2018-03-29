@@ -5,7 +5,7 @@ from modelzoo.evaluation.Metric import Metric
 from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.utils import load_file, save_file
-from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.Backend import imread, resize
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 
@@ -29,7 +29,8 @@ class ConfidenceEvaluator(DataEvaluator):
                 m.update(label_true=label_true, label_pred=label_reduced)
                 results_by_m_c[name] = m.result
                 if m.show:
-                    m.show_result(img)
+                    img_res = resize(img,self.model.input_shape)
+                    m.show_result(img_res)
 
             results_by_conf[c] = results_by_m_c
             labels_pred[c] = label_reduced

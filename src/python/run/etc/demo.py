@@ -8,10 +8,11 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/samples/cyberzoo/'],
+generator = GateGenerator(directories=['resource/samples/video/eth'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=0, valid_frac=1.0,
-                          label_format='xml')
+                          shuffle=False, start_idx=73, valid_frac=1.0,
+                          label_format='pkl',
+                          )
 #
 # generator = VocGenerator(batch_size=8)
 #
@@ -22,6 +23,6 @@ anchors = np.array([[0.13809687, 0.27954467],
                     [0.36642611, 0.39084195],
                     [0.60043528, 0.67687858]])
 
-model = Yolo.yolo_v2(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=8, conf_thresh=0.1,
-                     color_format='bgr', anchors=anchors, weight_file='logs/v2_bebop/YoloV2.h5')
+model = Yolo.tiny_yolo(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=8, conf_thresh=0.1,
+                     color_format='bgr', anchors=anchors, weight_file='logs/tiny_bebop_merge/TinyYolo.h5')
 demo_generator(model, generator, t_show=0)

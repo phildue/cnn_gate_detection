@@ -4,8 +4,10 @@ from modelzoo.evaluation.Metric import Metric
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.fileaccess.utils import save_file, create_dirs
+from utils.imageprocessing.Imageprocessing import show
+from utils.labels.utils import resize_label
 from utils.timing import toc, tic
-
+from utils.imageprocessing.Backend import resize
 
 class ModelEvaluator:
     def evaluate_generator(self, generator: DatasetGenerator, n_batches=None):
@@ -23,6 +25,10 @@ class ModelEvaluator:
 
             tic()
             predictions = self.model.predict(images)
+            # for i,p in enumerate(predictions):
+            #     img = resize(images[i],self.model.input_shape)
+            #     show(img,labels=predictions[i])
+            labels = [resize_label(l,images[0].shape[:2],self.model.input_shape) for l in labels]
             labels_true.extend(labels)
             labels_pred.extend(predictions)
             image_files.extend(image_files_batch)

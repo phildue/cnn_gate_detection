@@ -42,7 +42,7 @@ create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='bmp')
-set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=0)
+set_writer = SetFileParser(sample_path, img_format='jpg', label_format='xml', start_idx=4000)
 
 preprocessor = RandomEnsemble([
     (1.0, RandomBrightness(0.5, 3.0))])

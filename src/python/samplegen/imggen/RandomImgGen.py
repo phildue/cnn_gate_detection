@@ -41,11 +41,11 @@ class RandomImgGen(ImgGen):
                 shot, label = self.preprocessor.transform(shot, label)
 
             img = self.merge(shot, background, kernels=self.merge_kernels)
+            img, label = resize(img, shape=self.output_shape, label=label)
 
             if self.postprocessor:
                 shot, label = self.preprocessor.transform(shot, label)
 
-            img, label = resize(img, shape=self.output_shape, label=label)
             samples.append(img)
             labels_created.append(label)
 

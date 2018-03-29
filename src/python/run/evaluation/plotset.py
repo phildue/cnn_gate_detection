@@ -45,11 +45,6 @@ def mean_avg_prec(results):
     return mean_pr, mean_rec
 
 
-result_path = '/run/user/1000/gvfs/sftp:host=student-linux.tudelft.nl/home/nfs/pdurnay/dronevision/logs' \
-              '/v2_bebop_distort/results/'
-result_file = 'cyberzoo--8.pkl'
-results = load_file(result_path + result_file)
-
 # for i, f in enumerate(results['image_files']):
 #     label_true = results['labels_true'][i]
 #     label_pred = results['labels_pred'][i][0.3]
@@ -57,8 +52,51 @@ results = load_file(result_path + result_file)
 #     img = imread(path + f,'bgr')
 #     show(img, labels=[label_true, label_pred], colors=[(0, 255, 0), (255, 0, 0)])
 #
-mean_pr_10k, mean_rec_10k = mean_avg_prec(results)
-BasePlot(y_data=mean_pr_10k, x_data=mean_rec_10k).show()
+
+result_path = 'logs/tiny_bebop_nodistort/results/'
+result_file = 'cyberzoo--21.pkl'
+results = load_file(result_path + result_file)
+
+mean_pr_nodistort, mean_rec_nodistort = mean_avg_prec(results)
+
+result_path = 'logs/tiny_bebop_distort/results/'
+result_file = 'cyberzoo--14.pkl'
+results = load_file(result_path + result_file)
+mean_pr_distort, mean_rec_distort = mean_avg_prec(results)
+
+result_path = 'logs/tiny_bebop_merge/results/'
+result_file = 'cyberzoo--39.pkl'
+results = load_file(result_path + result_file)
+mean_pr_merge, mean_rec_merge = mean_avg_prec(results)
+
+BaseMultiPlot(y_data=[mean_pr_distort, mean_pr_merge, mean_pr_nodistort],
+              x_data=[mean_rec_distort, mean_rec_merge, mean_rec_nodistort],
+              y_label='Precision', x_label='Recall',
+              legend=['Distorted', 'Cyberzoo Background', 'Not Distorted'],
+              title='Tiny Yolo on mavset').show()
+
+
+result_path = 'logs/v2_bebop_nodistort/results/'
+result_file = 'cyberzoo--22.pkl'
+results = load_file(result_path + result_file)
+
+mean_pr_nodistort, mean_rec_nodistort = mean_avg_prec(results)
+
+result_path = 'logs/v2_bebop_distort/results/'
+result_file = 'cyberzoo--21.pkl'
+results = load_file(result_path + result_file)
+mean_pr_distort, mean_rec_distort = mean_avg_prec(results)
+
+result_path = 'logs/v2_bebop_merge/results/'
+result_file = 'cyberzoo--36.pkl'
+results = load_file(result_path + result_file)
+mean_pr_merge, mean_rec_merge = mean_avg_prec(results)
+
+BaseMultiPlot(y_data=[mean_pr_distort, mean_pr_merge, mean_pr_nodistort],
+              x_data=[mean_rec_distort, mean_rec_merge, mean_rec_nodistort],
+              y_label='Precision', x_label='Recall',
+              legend=['Distorted', 'Cyberzoo Background', 'Not Distorted'],
+              title='YoloV2 on mavset').show()
 
 # result_path = 'logs/yolov2_25k/set_aligned/'
 # result_file = 'result_set_aligned.pkl'

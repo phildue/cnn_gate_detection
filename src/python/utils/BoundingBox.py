@@ -32,8 +32,8 @@ class BoundingBox:
             if l is None: continue
             if isinstance(l, GateLabel):
                 p1, p2 = get_bounding_box(l.gate_corners)
-                l = ObjectLabel('gate', [p1
-                    , p2])
+                l = ObjectLabel('gate', np.array([p1
+                    , p2]))
             b = BoundingBox(len(ObjectLabel.classes))
             b.w = l.x_max - l.x_min
             b.h = l.y_max - l.y_min
