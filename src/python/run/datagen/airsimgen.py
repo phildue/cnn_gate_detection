@@ -21,10 +21,10 @@ client.confirmConnection()
 found = client.simSetSegmentationObjectID("[\w]*", 0, True);
 print("Done: %r" % (found))
 
-found = client.simSetSegmentationObjectID("bottomright", 4)
-found = client.simSetSegmentationObjectID("bottomleft", 1)
-found = client.simSetSegmentationObjectID("topleft", 2)
-found = client.simSetSegmentationObjectID("topright", 3)
+found = client.simSetSegmentationObjectID("br", 4)
+found = client.simSetSegmentationObjectID("bl", 1)
+found = client.simSetSegmentationObjectID("tl", 2)
+found = client.simSetSegmentationObjectID("tr", 3)
 
 responses = client.simGetImages([
     ImageRequest(0, AirSimImageType.Segmentation, False, False),  # scene vision image in uncompressed RGBA array
@@ -41,16 +41,22 @@ def response2numpy(response):
 
 seg = response2numpy(responses[0])
 scene = response2numpy(responses[1])
+
+cv2.imshow("Segmentation", seg)
+cv2.imshow("Scene", scene)
+cv2.waitKey(0)
+
 hcam, wcam = scene.shape[:2]
 hseg, wseg = seg.shape[:2]
 hscale = hcam / hseg
 wscale = wcam / wseg
+# TODO replace mean with max/min
 bottomright = np.where(np.all(seg == [190, 225, 64, 255], -1))
 bottomright = np.mean(bottomright, -1)
 bottomleft = np.where(np.all(seg == [153, 108, 6, 255], -1))
 bottomleft = np.mean(bottomleft, -1)
 topleft = np.where(np.all(seg == [112, 105, 191, 255], -1))
-topleft = np.mean(topleft, -1)
+topleft = np.min(topleft, -1)
 topright = np.where(np.all(seg == [89, 121, 72, 255], -1))
 topright = np.mean(topright, -1)
 print(bottomright)
@@ -62,8 +68,7 @@ cv2.circle(annotated, (int(bottomright[1] * wscale), int(bottomright[0] * hscale
 cv2.circle(annotated, (int(bottomleft[1] * wscale), int(bottomleft[0] * hscale)), 5, (0, 255, 0))
 cv2.circle(annotated, (int(topright[1] * wscale), int(topright[0] * hscale)), 5, (0, 255, 0))
 cv2.circle(annotated, (int(topleft[1] * wscale), int(topleft[0] * hscale)), 5, (0, 255, 0))
-cv2.imshow("Segmentation", seg)
-cv2.imshow("Scene", scene)
+
 cv2.imshow("Annotated", annotated)
 
 cv2.waitKey(0)
