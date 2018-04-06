@@ -8,66 +8,16 @@ import numpy as np
 from cv2.cv2 import circle, cvtColor, COLOR_RGB2BGR, COLOR_RGBA2BGR
 
 import utils
+from samplegen.airsim.AirSimClient import AirSimClient
 from samplegen.scene.Camera import Camera
+from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
 from utils.workdir import cd_work
 
 sys.path.extend(["c:/Users/mail-/Documents/code/dronerace2018/target/simulator/AirSim/PythonClient"])
 from AirSimClient import *
 
 cd_work()
-client = MultirotorClient()
-client.confirmConnection()
+client = AirSimClient(n_gates=1)
+img, label = client.retrieve_samples()
 
-found = client.simSetSegmentationObjectID("[\w]*", 0, True)
-print("Done: %r" % (found))
-
-found = client.simSetSegmentationObjectID("br", 4)
-found = client.simSetSegmentationObjectID("bl", 1)
-found = client.simSetSegmentationObjectID("tl", 2)
-found = client.simSetSegmentationObjectID("tr", 3)
-
-responses = client.simGetImages([
-    ImageRequest(0, AirSimImageType.Segmentation, False, False),  # scene vision image in uncompressed RGBA array
-    ImageRequest(0, AirSimImageType.Scene, False, False)])
-print('Retrieved images: %d', len(responses))
-
-
-def response2numpy(response):
-    img1d = np.fromstring(response.image_data_uint8, dtype=np.uint8)  # get numpy array
-    img_rgba = img1d.reshape(response.height, response.width, 4)  # reshape array to 4 channel image array H X W X 4
-    # img_rgba = np.flipud(img_rgba)  # original image is fliped vertically
-    return img_rgba
-
-seg = response2numpy(responses[0])
-scene = response2numpy(responses[1])
-scene = cvtColor(scene, COLOR_RGBA2BGR, 4)
-cv2.imshow("Segmentation", seg)
-cv2.imshow("Scene", scene)
-cv2.waitKey(0)
-
-hcam, wcam = scene.shape[:2]
-hseg, wseg = seg.shape[:2]
-hscale = hcam / hseg
-wscale = wcam / wseg
-# TODO replace mean with max/min
-bottomright = np.where(np.all(seg == [190, 225, 64, 255], -1))
-bottomright = np.mean(bottomright, -1)
-bottomleft = np.where(np.all(seg == [153, 108, 6, 255], -1))
-bottomleft = np.mean(bottomleft, -1)
-topleft = np.where(np.all(seg == [112, 105, 191, 255], -1))
-topleft = np.min(topleft, -1)
-topright = np.where(np.all(seg == [89, 121, 72, 255], -1))
-topright = np.mean(topright, -1)
-print(bottomright)
-print(bottomleft)
-print(topleft)
-print(topright)
-annotated = scene.copy()
-cv2.circle(annotated, (int(bottomright[1] * wscale), int(bottomright[0] * hscale)), 5, (0, 255, 0))
-cv2.circle(annotated, (int(bottomleft[1] * wscale), int(bottomleft[0] * hscale)), 5, (0, 255, 0))
-cv2.circle(annotated, (int(topright[1] * wscale), int(topright[0] * hscale)), 5, (0, 255, 0))
-cv2.circle(annotated, (int(topleft[1] * wscale), int(topleft[0] * hscale)), 5, (0, 255, 0))
-
-cv2.imshow("Annotated", annotated)
-
-cv2.waitKey(0)
+show(img, labels=label, legend=LEGEND_BOX)

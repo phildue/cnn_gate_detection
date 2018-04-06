@@ -198,14 +198,22 @@ def noisy_color(img: Image, var=0.1, iterations=10):
 COLOR_BGR2YUV = cv2.COLOR_BGR2YUV
 COLOR_YUV2BGR = cv2.COLOR_YUV2BGR
 COLOR_BGR2GRAY = cv2.COLOR_BGR2GRAY
-
+COLOR_RGBA2BGR = cv2.COLOR_RGBA2BGR
 
 def convert_color(img: Image, code):
     img_array = cv2.cvtColor(img.array, code)
     if code is COLOR_BGR2GRAY:
         img_array = np.expand_dims(img_array, -1)
         img_array = np.tile(img_array, (1, 1, 3))
-    return Image(img_array, img.format)
+        new_format = 'bgr'
+    elif code is COLOR_BGR2YUV:
+        new_format = 'yuv'
+    elif code is COLOR_RGBA2BGR or COLOR_YUV2BGR:
+        new_format = 'bgr'
+    else:
+        print("Warning image is in unknown format")
+        new_format = img.format
+    return Image(img_array, new_format)
 
 
 def histogram_eq(img: Image):
