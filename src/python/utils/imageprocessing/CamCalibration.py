@@ -30,11 +30,12 @@ class CamCalibration:
         cam_mat_new, roi = cv2.getOptimalNewCameraMatrix(self.camera_mat, self.distortion, (w, h), 1, (w, h))
 
         dst = cv2.undistort(mat, self.camera_mat, self.distortion, None, cam_mat_new)
+        cv2.imshow('calibresult', dst)
 
         # crop the image
         x, y, w, h = roi
         dst = dst[y:y + h, x:x + w]
-        cv2.imshow('calibresult', dst)
+        cv2.imshow('roi', dst)
         cv2.waitKey(0)
 
     def calc_estimation_error(self, obj_points, img_points):

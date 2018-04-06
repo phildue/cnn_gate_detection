@@ -1,0 +1,2 @@
+class AirSimClient:
+    pass

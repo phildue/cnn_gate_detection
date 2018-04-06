@@ -7,10 +7,12 @@ from utils.labels.Pose import Pose
 
 
 class Camera:
-    def __init__(self, focal_length: float, skew: float = 0.0, alpha: float = 1.0, camera_center: (int, int) = (0, 0),
+    def __init__(self, focal_length_x: float, focal_length_y: float, skew: float = 0.0, alpha: float = 1.0,
+                 camera_center: (int, int) = (0, 0),
                  init_pose=Pose()):
         """
-        :param focal_length: distance between image plane and camera center, controls magnification/angle of view, the higher the focal length
+        :param focal_length_x:
+        :param focal_length_y: distance between image plane and camera center, controls magnification/angle of view, the higher the focal length
                              the stronger the magnification -> the smaller the angle of view
         :param skew: use if the pixel array in the sensor is skewed
         :param alpha: used if pixels are non square
@@ -19,15 +21,15 @@ class Camera:
         in most cases its safe to assume default parameters, only focal_length needs to be calibrated
         """
 
-        self.calibration_mat = np.array([[alpha * focal_length, skew, camera_center[0]],
-                                         [0, focal_length, camera_center[1]],
+        self.calibration_mat = np.array([[alpha * focal_length_x, skew, camera_center[0]],
+                                         [0, focal_length_y, camera_center[1]],
                                          [0, 0, 1]])
 
         self.pose = init_pose
 
     def project(self, points: np.array) -> np.array:
         """
-        :param points: n-by-4 matrix with engine3d homogeneous coordinates
+        :param points: n-by-4 matrix with points in 3d homogeneous coordinates
         :return: normalized projection of X on the image plane
         """
         projection_mat = np.matmul(self.calibration_mat, self.pose.transfmat[:3])

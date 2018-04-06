@@ -1,12 +1,15 @@
 import os
 import pickle
 from pprint import pprint
-
+import yaml
 
 def load_file(filename: str):
     if filename.endswith('.txt'):
         with open(filename, 'r') as f:
             return f.read()
+    if filename.endswith('.yml'):
+        with open(filename, 'r') as f:
+            return yaml.load(filename)
     else:
         with open(filename, 'rb') as f:
             return pickle.load(f)
@@ -22,6 +25,9 @@ def save_file(file, name: str, path: str = './', verbose=True):
     elif name.endswith('.txt'):
         with open(path + name, 'w') as f:
             pprint(file, stream=f)
+    elif name.endswith('.yml'):
+        with open(path + name, 'w') as f:
+            yaml.dump(file)
     else:
         name += '.pkl'
         with open(path + name, 'wb') as f:
