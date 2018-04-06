@@ -5,7 +5,7 @@ import cv2
 from math import pi
 
 import numpy as np
-from cv2.cv2 import circle
+from cv2.cv2 import circle, cvtColor, COLOR_RGB2BGR, COLOR_RGBA2BGR
 
 import utils
 from samplegen.scene.Camera import Camera
@@ -18,7 +18,7 @@ cd_work()
 client = MultirotorClient()
 client.confirmConnection()
 
-found = client.simSetSegmentationObjectID("[\w]*", 0, True);
+found = client.simSetSegmentationObjectID("[\w]*", 0, True)
 print("Done: %r" % (found))
 
 found = client.simSetSegmentationObjectID("br", 4)
@@ -38,10 +38,9 @@ def response2numpy(response):
     # img_rgba = np.flipud(img_rgba)  # original image is fliped vertically
     return img_rgba
 
-
 seg = response2numpy(responses[0])
 scene = response2numpy(responses[1])
-
+scene = cvtColor(scene, COLOR_RGBA2BGR, 4)
 cv2.imshow("Segmentation", seg)
 cv2.imshow("Scene", scene)
 cv2.waitKey(0)
