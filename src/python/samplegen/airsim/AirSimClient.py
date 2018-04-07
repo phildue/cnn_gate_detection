@@ -4,8 +4,12 @@ import cv2
 import numpy as np
 from math import isnan
 
+from cv2.cv2 import COLOR_RGBA2GRAY
+
+from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import convert_color, COLOR_RGBA2BGR
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import show
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
@@ -29,6 +33,18 @@ class AirSimClient:
         corner = np.mean(coordinates, -1)
         return corner
 
+    @staticmethod
+    def _segment2box(segment_labels, label_color, scale):
+        h, w = segment_labels.shape[:2]
+        coordinates = np.where(np.all(segment_labels == label_color, -1))
+        coord_sum = np.sum(coordinates, 0)
+        y_min, x_min = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
+        y_max, x_max = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
+        label = BoundingBox(1)
+        label.coords_minmax = x_min * scale[1], (h - y_min) * scale[0], x_max * scale[1], (h - y_max) * scale[0]
+        label.confidence = 1.0
+        return label
+
     def retrieve_samples(self) -> (Image, ImgLabel):
         responses = self.client.simGetImages([
             ImageRequest(0, AirSimImageType.Segmentation, False, False),
@@ -39,44 +55,27 @@ class AirSimClient:
         scene = convert_color(Image(scene, 'bgr'), COLOR_RGBA2BGR)
         hcam, wcam = scene.shape[:2]
         hseg, wseg = seg.shape[:2]
-        hscale = hcam / hseg
-        wscale = wcam / wseg
-        scale = np.array([hscale, wscale])
+        scale = np.array([hcam / hseg, wcam / wseg])
         gate_labels = []
-        for i in range(1, self.n_gates + 1, 4):
-            bottom_left = self._segment2corner(seg, np.array(self._color_lookup[i])) * scale
-            top_left = self._segment2corner(seg, np.array(self._color_lookup[i + 1])) * scale
-            top_right = self._segment2corner(seg, np.array(self._color_lookup[i + 2])) * scale
-            bottom_right = self._segment2corner(seg, np.array(self._color_lookup[i + 3])) * scale
-            center = np.array([(np.abs(top_left[0] + bottom_left[0])) / 2, np.abs(top_left[1] + top_right[1]) / 2])
-            print(bottom_left)
-            # TODO what if one corner is missing
-            if np.isnan(bottom_left).any() or \
-                    np.isnan(top_left).any() or \
-                    np.isnan(top_right).any() or \
-                    np.isnan(bottom_right).any():
-                continue
-            gate_label = GateLabel(position=Pose(), gate_corners=GateCorners((center[1], hcam - center[0]),
-                                                                             (top_left[1], hcam - top_left[0]),
-                                                                             (top_right[1], hcam - top_right[0]),
-                                                                             (bottom_left[1], hcam - bottom_left[0]),
-                                                                             (bottom_right[1], hcam - bottom_right[0])))
-            gate_labels.append(gate_label)
+        for i in range(1, self.n_gates + 1):
+            label = self._segment2box(seg, self._color_lookup[i], scale)
+            gate_labels.append(label)
 
-        return scene, ImgLabel(gate_labels)
+        return scene, BoundingBox.to_label(gate_labels)
+
+    def setPose(self, pose: Pose):
+        # TODO convert to ned
+        self.client.simSetPose(pose.transvec, pose.rotation)
 
     def __init__(self, n_gates, address=None):
         self.client = MultirotorClient()
         self.client.confirmConnection()
         self.client.simSetSegmentationObjectID("[\w]*", 0, True)
 
-        for i in range(1, n_gates + 1, 4):
-            bl = self.client.simSetSegmentationObjectID("bl" + str(i), i)
-            tl = self.client.simSetSegmentationObjectID("tl" + str(i), i + 1)
-            tr = self.client.simSetSegmentationObjectID("tr" + str(i), i + 2)
-            br = self.client.simSetSegmentationObjectID("br" + str(i), i + 3)
-            if not (br and tl and tr and bl):
-                print("AirSimClient::Warning! at least one corner was not found")
+        for i in range(1, n_gates + 1):
+            found = self.client.simSetSegmentationObjectID("frame" + str(i), i)
+            if not found:
+                print("AirSimClient::Warning! A gate was not found")
 
         self.n_gates = n_gates
 
