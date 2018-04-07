@@ -10,12 +10,14 @@ class AirSimGen:
         self.airsim = airsim
         self.pose_gen = posegen
 
-    def generate_samples(self, n_samples) -> [(Image, ImgLabel)]:
+    def generate(self, n_samples) -> [(Image, ImgLabel)]:
         samples = []
+        labels = []
         for i in range(n_samples):
             pose = self.pose_gen.gen_pos()
             self.airsim.setPose(pose)
             img, label = self.airsim.retrieve_samples()
-            samples.append((img, label))
+            samples.append(img)
+            labels.append(img)
 
         return samples

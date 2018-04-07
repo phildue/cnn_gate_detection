@@ -1,24 +1,23 @@
 # In settings.json first activate computer vision mode:
 # https://github.com/Microsoft/AirSim/blob/master/docs/image_apis.md#computer-vision-mode
-import sys
+
+import numpy as np
 
 from samplegen.airsim.AirSimClient import AirSimClient
+from samplegen.airsim.AirSimGen import AirSimGen
+from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.SetFileParser import SetFileParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
+from utils.timing import tic, toc
 from utils.workdir import cd_work
 
-sys.path.extend(["c:/Users/mail-/Documents/code/dronerace2018/target/simulator/AirSim/PythonClient"])
-from AirSimClient import *
-
 cd_work()
-name = "thick_square_roll"
-shot_path = "resource/shots/" + name + "/"
+name = "office"
+shot_path = "resource/samples/" + name + "/"
 
-N = 0
-n_positions = 1000 - N * 100
-n_batches = 100 - N
+n_samples = 1000
+batch_size = 10
 cam_range_side = (-1, 1)
 cam_range_forward = (0, 5)
 cam_range_lift = (-0.5, 1.5)
@@ -34,32 +33,26 @@ gate_pos_range_x = (-4, 4)
 
 width, height = (640, 640)
 
-position_gen = RandomPositionGen(range_dist_side=cam_range_side,
-                                 range_dist_forward=cam_range_forward,
-                                 range_lift=cam_range_lift,
-                                 range_pitch=cam_range_pitch,
-                                 range_roll=cam_range_roll,
-                                 range_yaw=cam_range_yaw)
+posegen = RandomPositionGen(range_dist_side=cam_range_side,
+                            range_dist_forward=cam_range_forward,
+                            range_lift=cam_range_lift,
+                            range_pitch=cam_range_pitch,
+                            range_roll=cam_range_roll,
+                            range_yaw=cam_range_yaw)
 
 client = AirSimClient(n_gates=1)
-img, label = client.retrieve_samples()
+samplegen = AirSimGen(posegen, client)
 
-#
-# create_dirs([shot_path])
-# set_writer = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=0)
-#
-# for i in range(n_batches):
-#     tic()
-#     scene.objects = gate_gen.generate()
-#
-#     set_writer.write(shots, labels)
-#
-#     toc("Batch: {0:d}/{2:d}, {1:d} shots generated after ".format(i + 1, len(shots), n_batches))
-#
-# scene_engine.stop()
-#
-# set_analyzer = SetAnalyzer((height, width), shot_path)
-# set_analyzer.show_summary()
+create_dirs([shot_path])
+set_writer = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=0)
+n_batches = int(n_samples / batch_size)
+for i in range(n_batches):
+    tic()
+    samples, labels = samplegen.generate(n_samples=batch_size)
 
+    set_writer.write(samples, labels)
 
-show(img, labels=label, legend=LEGEND_BOX)
+    toc("Batch: {0:d}/{2:d}, {1:d} shots generated after ".format(i + 1, len(samples), n_batches))
+
+set_analyzer = SetAnalyzer((height, width), shot_path)
+set_analyzer.show_summary()
