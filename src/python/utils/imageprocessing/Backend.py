@@ -46,7 +46,7 @@ def draw_gate_corners(img: Image, label: GateLabel) -> Image:
 
     for i in range(corners.shape[0]):
         if 0 < corners[i, 0] < img.shape[1] and 0 < corners[i, 1] < img.shape[0]:
-            cv2.circle(annotated_img, tuple(corners[i, :]), 3,
+            cv2.circle(annotated_img, tuple(corners[i, :].astype(int)), 3,
                        (0, 0, 255), -1)
 
     return Image(annotated_img, img.format)

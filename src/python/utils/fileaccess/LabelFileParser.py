@@ -87,16 +87,16 @@ class LabelFileParser:
                     ET.SubElement(pose_root, 'pitch').text = '{0:03f}'.format(obj.position.pitch)
                     ET.SubElement(pose_root, 'roll').text = '{0:03f}'.format(obj.position.roll)
                     corner_root = ET.SubElement(obj_root, 'gate_corners')
-                    ET.SubElement(corner_root, 'top_left').text = '{0:d},{1:d}'.format(obj.gate_corners.top_left[0],
-                                                                                       obj.gate_corners.top_left[1])
-                    ET.SubElement(corner_root, 'top_right').text = '{0:d},{1:d}'.format(obj.gate_corners.top_right[0],
-                                                                                        obj.gate_corners.top_right[1])
+                    ET.SubElement(corner_root, 'top_left').text = '{0:d},{1:d}'.format(int(obj.gate_corners.top_left[0]),
+                                                                                       int(obj.gate_corners.top_left[1]))
+                    ET.SubElement(corner_root, 'top_right').text = '{0:d},{1:d}'.format(int(obj.gate_corners.top_right[0]),
+                                                                                            int(obj.gate_corners.top_right[1]))
                     ET.SubElement(corner_root, 'bottom_left').text = '{0:d},{1:d}'.format(
-                        obj.gate_corners.bottom_left[0], obj.gate_corners.bottom_left[1])
+                        obj.gate_corners.bottom_left[0], int(obj.gate_corners.bottom_left[1]))
                     ET.SubElement(corner_root, 'bottom_right').text = '{0:d},{1:d}'.format(
-                        obj.gate_corners.bottom_right[0], obj.gate_corners.bottom_right[1])
-                    ET.SubElement(corner_root, 'center').text = '{0:d},{1:d}'.format(obj.gate_corners.center[1],
-                                                                                     obj.gate_corners.center[1])
+                        obj.gate_corners.bottom_right[0], int(obj.gate_corners.bottom_right[1]))
+                    ET.SubElement(corner_root, 'center').text = '{0:d},{1:d}'.format(int(obj.gate_corners.center[1]),
+                                                                                     int(obj.gate_corners.center[1]))
             tree = ET.ElementTree(root)
             tree.write(path + '/{0:05d}.xml'.format(self.idx))
             self.idx += 1

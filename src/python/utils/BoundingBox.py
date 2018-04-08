@@ -65,7 +65,7 @@ class BoundingBox:
                 ymax = 0
             box_labels.append(ObjectLabel(ObjectLabel.id_to_name(box.prediction),
                                           np.array([[xmin, ymin],
-                                                    [xmax, ymax]]), box.class_conf))
+                                                    [xmax, ymax]]), box.confidence))
         return ImgLabel(box_labels)
 
     @staticmethod

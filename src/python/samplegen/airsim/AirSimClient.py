@@ -6,6 +6,7 @@ from math import isnan
 
 from cv2.cv2 import COLOR_RGBA2GRAY
 
+import utils
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import convert_color, COLOR_RGBA2BGR
 from utils.imageprocessing.Image import Image
@@ -37,11 +38,37 @@ class AirSimClient:
     def _segment2box(segment_labels, label_color, scale):
         h, w = segment_labels.shape[:2]
         coordinates = np.where(np.all(segment_labels == label_color, -1))
+        if not coordinates[0].any():
+            return
         coord_sum = np.sum(coordinates, 0)
-        y_min, x_min = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
-        y_max, x_max = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
-        label = BoundingBox(1)
-        label.coords_minmax = x_min * scale[1], (h - y_min) * scale[0], x_max * scale[1], (h - y_max) * scale[0]
+        y_min_1, x_min_1 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
+        y_max_1, x_max_1 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
+
+        center_x = abs(x_max_1 + x_min_1) / 2
+        center_y = abs(y_max_1 + y_min_1) / 2
+
+        segment_labels_flipped = np.fliplr(segment_labels)
+        coordinates = np.where(np.all(segment_labels_flipped == label_color, -1))
+        coord_sum = np.sum(coordinates, 0)
+        y_min_2, x_min_2 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
+        y_max_2, x_max_2 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
+        x_min_2 = w - x_min_2
+        x_max_2 = w - x_max_2
+
+        x_min_1 *= scale[1]
+        x_min_2 *= scale[1]
+        x_max_1 *= scale[1]
+        x_max_2 *= scale[1]
+        center_x *= scale[1]
+        y_min_1 = (h-y_min_1)*scale[0]
+        y_min_2 = (h-y_min_2)*scale[0]
+        y_max_1 = (h-y_max_1)*scale[0]
+        y_max_2 = (h-y_max_2)*scale[0]
+        center_y = (h-center_y)*scale[0]
+        #TODO add relative Pose
+        label = GateLabel(utils.labels.Pose.Pose(),
+                          GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
+                                      (x_max_2, y_max_2)))
         label.confidence = 1.0
         return label
 
@@ -57,27 +84,30 @@ class AirSimClient:
         hseg, wseg = seg.shape[:2]
         scale = np.array([hcam / hseg, wcam / wseg])
         gate_labels = []
-        for i in range(1, self.n_gates + 1):
-            label = self._segment2box(seg, self._color_lookup[i], scale)
-            gate_labels.append(label)
+        for i in range(self.n_gates):
+            label = self._segment2box(seg, self._color_lookup[i + 1], scale)
+            if label is not None:
+                gate_labels.append(label)
 
-        return scene, BoundingBox.to_label(gate_labels)
+        return scene, ImgLabel(gate_labels)
 
-    def setPose(self, pose: Pose):
-        # TODO convert to ned
-        self.client.simSetPose(pose.transvec, pose.rotation)
+    def setPose(self, pose):
+        self.client.simSetPose(Pose(Vector3r(pose.dist_forward, pose.dist_side, -pose.lift),
+                                    AirSimClientBase.toQuaternion(pose.yaw, pose.roll, pose.pitch)), True)
 
-    def __init__(self, n_gates, address=None):
+    def __init__(self, address=None):
         self.client = MultirotorClient()
         self.client.confirmConnection()
         self.client.simSetSegmentationObjectID("[\w]*", 0, True)
 
-        for i in range(1, n_gates + 1):
-            found = self.client.simSetSegmentationObjectID("frame" + str(i), i)
-            if not found:
-                print("AirSimClient::Warning! A gate was not found")
+        found = True
+        i = 0
+        while found:
+            found = self.client.simSetSegmentationObjectID("frame" + str(i), i + 1)
+            i += 1
+        print("AirSimClient:: {} gates found".format(i))
 
-        self.n_gates = n_gates
+        self.n_gates = i
 
         self._color_lookup = np.array([[55, 181, 57],
                                        [153, 108, 6],

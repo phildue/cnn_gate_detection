@@ -18,6 +18,6 @@ class AirSimGen:
             self.airsim.setPose(pose)
             img, label = self.airsim.retrieve_samples()
             samples.append(img)
-            labels.append(img)
+            labels.append(label)
 
-        return samples
+        return samples,labels
