@@ -26,7 +26,7 @@ test_image_source = ['resource/ext/samples/office/']
 max_epochs = 100
 n_samples = 10
 
-predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=batch_size,
+predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size,
                            color_format='bgr')
 data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
                                color_format='bgr', label_format='xml')
@@ -38,7 +38,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
 
 model_name = predictor.net.__class__.__name__
 
-name = 'tiny_airsim'
+name = 'v2_airsim'
 result_path = 'logs/' + name + '/'
 test_result = result_path + 'results/office-'
 

@@ -3,6 +3,7 @@ import numpy as np
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
@@ -33,7 +34,6 @@ class Preprocessor:
                 img, label = self.augmenter.transform(img, label)
 
             img, label = resize(img, (self.img_height, self.img_width), label=label)
-
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)
             label_enc = np.expand_dims(label_enc, 0)
