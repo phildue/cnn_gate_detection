@@ -13,6 +13,7 @@ class AirSimGen:
     def generate(self, n_samples) -> [(Image, ImgLabel)]:
         samples = []
         labels = []
+        self.airsim.reset()
         for i in range(n_samples):
             pose = self.pose_gen.gen_pos()
             self.airsim.setPose(pose)

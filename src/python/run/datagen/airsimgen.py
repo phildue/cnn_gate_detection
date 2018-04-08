@@ -17,22 +17,15 @@ cd_work()
 name = "office"
 shot_path = "resource/samples/" + name + "/"
 
-n_samples = 10
-batch_size = 10
-cam_range_side = (-3, 3)
-cam_range_forward = (0, -30)
+n_samples = 500
+batch_size = 100
+cam_range_side = (-30, 30)
+cam_range_forward = (0, 10)
 cam_range_lift = (-0.5, 1.5)
-cam_range_pitch = (-0.1, 0.1)
-cam_range_roll = (-0.1+np.pi, 0.1+np.pi)
-cam_range_yaw = (-0.1+np.pi, -0.1+np.pi)
+cam_range_pitch = (-0.2, 0.2)
+cam_range_roll = (-0.2, 0.2)
+cam_range_yaw = (-np.pi, -0.4)
 
-n_light_range = (4, 6)
-n_gate_range = (2, 3)
-
-gate_pos_range_z = (-5, 5)
-gate_pos_range_x = (-4, 4)
-
-width, height = (640, 640)
 #TODO choose simulation environment here + camera settings and start simulation
 
 posegen = RandomPositionGen(range_dist_side=cam_range_side,
@@ -46,16 +39,15 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=0)
+set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=2001)
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
     tic()
     samples, labels = samplegen.generate(n_samples=batch_size)
-    for n in range(len(samples)):
-        show(samples[n],labels=labels[n])
+
     set_writer.write(samples, labels)
 
     toc("Batch: {0:d}/{2:d}, {1:d} shots generated after ".format(i + 1, len(samples), n_batches))
 
-set_analyzer = SetAnalyzer((height, width), shot_path)
+set_analyzer = SetAnalyzer((640, 480), shot_path)
 set_analyzer.show_summary()

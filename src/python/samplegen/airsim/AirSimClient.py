@@ -93,7 +93,11 @@ class AirSimClient:
 
     def setPose(self, pose):
         self.client.simSetPose(Pose(Vector3r(pose.dist_forward, pose.dist_side, -pose.lift),
-                                    AirSimClientBase.toQuaternion(pose.yaw, pose.roll, pose.pitch)), True)
+                                    AirSimClientBase.toQuaternion(pose.pitch, pose.roll, pose.yaw)), True)
+
+    def reset(self):
+        self.client.reset()
+
 
     def __init__(self, address=None):
         self.client = MultirotorClient()

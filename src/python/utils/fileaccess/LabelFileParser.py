@@ -92,9 +92,9 @@ class LabelFileParser:
                     ET.SubElement(corner_root, 'top_right').text = '{0:d},{1:d}'.format(int(obj.gate_corners.top_right[0]),
                                                                                             int(obj.gate_corners.top_right[1]))
                     ET.SubElement(corner_root, 'bottom_left').text = '{0:d},{1:d}'.format(
-                        obj.gate_corners.bottom_left[0], int(obj.gate_corners.bottom_left[1]))
+                        int(obj.gate_corners.bottom_left[0]), int(obj.gate_corners.bottom_left[1]))
                     ET.SubElement(corner_root, 'bottom_right').text = '{0:d},{1:d}'.format(
-                        obj.gate_corners.bottom_right[0], int(obj.gate_corners.bottom_right[1]))
+                        int(obj.gate_corners.bottom_right[0]), int(obj.gate_corners.bottom_right[1]))
                     ET.SubElement(corner_root, 'center').text = '{0:d},{1:d}'.format(int(obj.gate_corners.center[1]),
                                                                                      int(obj.gate_corners.center[1]))
             tree = ET.ElementTree(root)
