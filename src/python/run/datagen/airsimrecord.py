@@ -5,6 +5,7 @@ import numpy as np
 
 from samplegen.airsim.AirSimClient import AirSimClient
 from samplegen.airsim.AirSimGen import AirSimGen
+from samplegen.airsim.AirSimRecord import AirSimRecord
 from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.SetFileParser import SetFileParser
@@ -14,10 +15,10 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_room"
+name = "industrial_room_test"
 shot_path = "resource/samples/" + name + "/"
 
-n_samples = 2000
+n_samples = 1000
 batch_size = 100
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)
@@ -36,11 +37,12 @@ posegen = RandomPositionGen(range_dist_side=cam_range_side,
                             range_yaw=cam_range_yaw)
 
 client = AirSimClient()
-samplegen = AirSimGen(posegen, client)
+samplegen = AirSimRecord(client)
 
 create_dirs([shot_path])
 set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=4000)
 n_batches = int(n_samples / batch_size)
+client.reset()
 for i in range(n_batches):
     tic()
     samples, labels = samplegen.generate(n_samples=batch_size)

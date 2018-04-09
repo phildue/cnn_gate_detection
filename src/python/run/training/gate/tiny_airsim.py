@@ -21,16 +21,15 @@ cd_work()
 
 batch_size = 4
 
-image_source = ["resource/ext/samples/office/"]
-test_image_source = ['resource/ext/samples/office/']
+image_source = ["resource/ext/samples/industrial_room/"]
+test_image_source = ['resource/ext/samples/industrial_room_test/']
 max_epochs = 100
-n_samples = 10
 
 predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=batch_size,
                            color_format='bgr')
 data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
                                color_format='bgr', label_format='xml')
-test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0.9, color_format='bgr', label_format='xml')
+test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0, color_format='bgr', label_format='xml')
 
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
@@ -40,7 +39,7 @@ model_name = predictor.net.__class__.__name__
 
 name = 'tiny_airsim'
 result_path = 'logs/' + name + '/'
-test_result = result_path + 'results/office-'
+test_result = result_path + 'results/industrial_room-'
 
 create_dirs([result_path])
 
