@@ -1,3 +1,5 @@
+import numpy as np
+
 from modelzoo.evaluation.DetectionResult import DetectionResult
 
 
@@ -17,3 +19,5 @@ class ResultByConfidence:
             total[c] = self.results[c] + other.results[c]
 
         return ResultByConfidence(total)
+
+

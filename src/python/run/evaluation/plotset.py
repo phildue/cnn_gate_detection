@@ -3,6 +3,7 @@ import numpy as np
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+from modelzoo.evaluation.utils import average_precision_recall
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread
 from utils.imageprocessing.Imageprocessing import show
@@ -11,63 +12,26 @@ from utils.workdir import cd_work
 cd_work()
 
 
-def interp(results: ResultByConfidence, recall_levels=None):
-    if recall_levels is None:
-        recall_levels = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-
-    sorted_results = results.values
-    precision_raw = np.zeros((1, len(sorted_results)))
-    recall_raw = np.zeros((1, len(sorted_results)))
-    for i, r in enumerate(sorted_results):
-        precision_raw[0, i] = r.precision
-        recall_raw[0, i] = r.recall
-
-    precision = np.zeros(shape=(len(recall_levels)))
-    for i, r in enumerate(recall_levels):
-        try:
-            idx = np.where(recall_raw[0, :] > r)[0][0]
-            precision[i] = np.max(precision_raw[0, idx:])
-        except IndexError:
-            precision[i] = 0
-    return precision, recall_levels.T
-
-
-def mean_avg_prec(results):
-    detection_result = results['results']['MetricDetection']
-    detection_result = [ResultByConfidence(d) for d in detection_result]
-    precision = np.zeros((len(detection_result), 11))
-    recall = np.zeros((len(detection_result), 11))
-    for i, result in enumerate(detection_result):
-        precision[i], recall[i] = interp(result)
-
-    mean_pr = np.mean(precision, 0)
-    mean_rec = np.mean(recall, 0)
-    return mean_pr, mean_rec
-
-
-# for i, f in enumerate(results['image_files']):
-#     label_true = results['labels_true'][i]
-#     label_pred = results['labels_pred'][i][0.3]
-#     path = '/run/user/1000/gvfs/sftp:host=student-linux.tudelft.nl/'
-#     img = imread(path + f,'bgr')
-#     show(img, labels=[label_true, label_pred], colors=[(0, 255, 0), (255, 0, 0)])
-#
-
 result_path = 'logs/tiny_bebop_nodistort/results/'
 result_file = 'cyberzoo--21.pkl'
 results = load_file(result_path + result_file)
-
-mean_pr_nodistort, mean_rec_nodistort = mean_avg_prec(results)
+detection_result = results['results']['MetricDetection']
+detection_result = [ResultByConfidence(d) for d in detection_result]
+mean_pr_nodistort, mean_rec_nodistort = average_precision_recall(detection_result)
 
 result_path = 'logs/tiny_bebop_distort/results/'
 result_file = 'cyberzoo--14.pkl'
 results = load_file(result_path + result_file)
-mean_pr_distort, mean_rec_distort = mean_avg_prec(results)
+detection_result = results['results']['MetricDetection']
+detection_result = [ResultByConfidence(d) for d in detection_result]
+mean_pr_distort, mean_rec_distort = average_precision_recall(detection_result)
 
 result_path = 'logs/tiny_bebop_merge/results/'
 result_file = 'cyberzoo--39.pkl'
 results = load_file(result_path + result_file)
-mean_pr_merge, mean_rec_merge = mean_avg_prec(results)
+detection_result = results['results']['MetricDetection']
+detection_result = [ResultByConfidence(d) for d in detection_result]
+mean_pr_merge, mean_rec_merge = average_precision_recall(detection_result)
 
 BaseMultiPlot(y_data=[mean_pr_distort, mean_pr_merge, mean_pr_nodistort],
               x_data=[mean_rec_distort, mean_rec_merge, mean_rec_nodistort],
@@ -79,18 +43,19 @@ BaseMultiPlot(y_data=[mean_pr_distort, mean_pr_merge, mean_pr_nodistort],
 result_path = 'logs/v2_bebop_nodistort/results/'
 result_file = 'cyberzoo--22.pkl'
 results = load_file(result_path + result_file)
-
-mean_pr_nodistort, mean_rec_nodistort = mean_avg_prec(results)
+detection_result = results['results']['MetricDetection']
+detection_result = [ResultByConfidence(d) for d in detection_result]
+mean_pr_nodistort, mean_rec_nodistort = average_precision_recall(results)
 
 result_path = 'logs/v2_bebop_distort/results/'
 result_file = 'cyberzoo--21.pkl'
 results = load_file(result_path + result_file)
-mean_pr_distort, mean_rec_distort = mean_avg_prec(results)
+mean_pr_distort, mean_rec_distort = average_precision_recall(results)
 
 result_path = 'logs/v2_bebop_merge/results/'
 result_file = 'cyberzoo--36.pkl'
 results = load_file(result_path + result_file)
-mean_pr_merge, mean_rec_merge = mean_avg_prec(results)
+mean_pr_merge, mean_rec_merge = average_precision_recall(results)
 
 BaseMultiPlot(y_data=[mean_pr_distort, mean_pr_merge, mean_pr_nodistort],
               x_data=[mean_rec_distort, mean_rec_merge, mean_rec_nodistort],

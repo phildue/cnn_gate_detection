@@ -1,15 +1,23 @@
+import csv
 import os
 import pickle
 from pprint import pprint
 import yaml
 
+
 def load_file(filename: str):
     if filename.endswith('.txt'):
         with open(filename, 'r') as f:
             return f.read()
-    if filename.endswith('.yml'):
+    elif filename.endswith('.yml'):
         with open(filename, 'r') as f:
-            return yaml.load(filename)
+            return yaml.load(f)
+    elif filename.endswith('.csv'):
+        rows = []
+        with open(filename, 'r') as f:
+            for row in csv.reader(f):
+                rows.append(row)
+        return rows
     else:
         with open(filename, 'rb') as f:
             return pickle.load(f)
