@@ -49,7 +49,7 @@ class Training:
             self.callbacks.append(schedule)
 
         if lr_reduce > -1:
-            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience - 1, min_lr=0.00001)
+            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience-3, min_lr=0.00001)
             self.callbacks.append(reducer)
 
         if log_csv:

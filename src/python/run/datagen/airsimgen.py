@@ -14,7 +14,7 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_room"
+name = "industrial_room_cats"
 shot_path = "resource/samples/" + name + "/"
 
 n_samples = 2000
@@ -39,7 +39,7 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=8000)
+set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=0)
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
     tic()

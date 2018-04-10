@@ -18,7 +18,7 @@ def show_voc():
 
 
 def show_img(path):
-    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg')
+    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',start_idx=8000)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -37,6 +37,6 @@ def show_shot(path="samplegen/resource/shots/stream/"):
         show(ann_img, 'labeled', labels=label)
 
 
-# show_shot(path="samplegen/resource/samples/bebop_merge/")
-show_img(path=['resource/samples/industrial_room'])
+# show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
+show_img(path=['resource/ext/samples/industrial_room'])
 # show_voc()
