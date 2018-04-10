@@ -39,7 +39,7 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=4000)
+set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=8000)
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
     tic()

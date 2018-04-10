@@ -23,7 +23,7 @@ batch_size = 4
 
 image_source = ["resource/ext/samples/industrial_room/"]
 test_image_source = ['resource/ext/samples/industrial_room_test/']
-max_epochs = 100
+max_epochs = 200
 
 predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=batch_size,
                            color_format='bgr')
@@ -54,30 +54,19 @@ params = {'optimizer': 'adam',
 
 predictor.compile(params=params)
 
-
-def lr_schedule(epoch):
-    if 0 <= epoch < 80:
-        return 0.001
-    elif 80 <= epoch <= 100:
-        return 0.0001
-    else:
-        return 0.000001
-
-
 test_metric = TestMetric(test_gen,
                          ModelEvaluator(predictor, verbose=False),
                          ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
                                              color_format='bgr'))
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
-                    patience=-1,
+                    patience=5,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,
                     epochs=max_epochs,
                     log_csv=True,
                     lr_reduce=0.1,
-                    lr_schedule=lr_schedule,
                     callbacks=[test_metric])
 
 create_dirs([result_path, result_path + '/results/'])
