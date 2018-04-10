@@ -51,7 +51,7 @@ def lr_schedule(epoch):
 
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
-                    patience=-1,
+                    patience_early_stop=-1,
                     log_dir=work_path,
                     stop_on_nan=True,
                     initial_epoch=0,

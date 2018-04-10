@@ -48,7 +48,7 @@ predictor.compile(params, metrics=[loss.localization_loss, loss.conf_loss_positi
 
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
-                    patience=3,
+                    patience_early_stop=3,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,

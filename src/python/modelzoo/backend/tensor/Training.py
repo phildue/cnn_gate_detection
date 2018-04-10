@@ -13,7 +13,8 @@ class Training:
                  predictor: Predictor,
                  dataset_gen: DatasetGenerator,
                  out_file,
-                 patience=3,
+                 patience_early_stop=3,
+                 patience_lr_reduce=2,
                  log_dir='./logs',
                  stop_on_nan=True,
                  lr_schedule=None,
@@ -22,13 +23,14 @@ class Training:
                  initial_epoch=0,
                  epochs=100,
                  callbacks=None):
+        self.patience_lr_reduce = patience_lr_reduce
         self.initial_epoch = initial_epoch
         self.epochs = epochs
         self.dataset_gen = dataset_gen
         self.predictor = predictor
         self.callbacks = []
-        if patience > -1:
-            early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience, mode='min', verbose=1)
+        if patience_early_stop > -1:
+            early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience_early_stop, mode='min', verbose=1)
             self.callbacks.append(early_stop)
         if out_file is not None:
             checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_loss', verbose=2, save_best_only=True,
@@ -49,7 +51,7 @@ class Training:
             self.callbacks.append(schedule)
 
         if lr_reduce > -1:
-            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience-3, min_lr=0.00001)
+            reducer = ReduceLROnPlateau(monitor='loss', factor=lr_reduce, patience=patience_lr_reduce, min_lr=0.00001)
             self.callbacks.append(reducer)
 
         if log_csv:
