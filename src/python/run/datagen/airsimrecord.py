@@ -15,7 +15,7 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_room_test"
+name = "industrial_room_cats_test"
 shot_path = "resource/samples/" + name + "/"
 
 n_samples = 1000
@@ -28,13 +28,6 @@ cam_range_roll = (-0.3, 0.3)
 cam_range_yaw = (-np.pi, np.pi)
 
 #TODO choose simulation environment here + camera settings and start simulation
-
-posegen = RandomPositionGen(range_dist_side=cam_range_side,
-                            range_dist_forward=cam_range_forward,
-                            range_lift=cam_range_lift,
-                            range_pitch=cam_range_pitch,
-                            range_roll=cam_range_roll,
-                            range_yaw=cam_range_yaw)
 
 client = AirSimClient()
 samplegen = AirSimRecord(client)

@@ -18,6 +18,6 @@ class AirSimRecord:
             img, label = self.airsim.retrieve_samples()
             samples.append(img)
             labels.append(label)
-            sleep(0.1)
+            sleep(0.5)
 
         return samples,labels

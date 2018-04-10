@@ -60,12 +60,12 @@ class AirSimClient:
         x_max_1 *= scale[1]
         x_max_2 *= scale[1]
         center_x *= scale[1]
-        y_min_1 = (h-y_min_1)*scale[0]
-        y_min_2 = (h-y_min_2)*scale[0]
-        y_max_1 = (h-y_max_1)*scale[0]
-        y_max_2 = (h-y_max_2)*scale[0]
-        center_y = (h-center_y)*scale[0]
-        #TODO add relative Pose
+        y_min_1 = (h - y_min_1) * scale[0]
+        y_min_2 = (h - y_min_2) * scale[0]
+        y_max_1 = (h - y_max_1) * scale[0]
+        y_max_2 = (h - y_max_2) * scale[0]
+        center_y = (h - center_y) * scale[0]
+        # TODO add relative Pose
         label = GateLabel(utils.labels.Pose.Pose(),
                           GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
                                       (x_max_2, y_max_2)))
@@ -98,20 +98,19 @@ class AirSimClient:
     def reset(self):
         self.client.reset()
 
-
     def __init__(self, address=None):
         self.client = MultirotorClient()
         self.client.confirmConnection()
         self.client.simSetSegmentationObjectID("[\w]*", 0, True)
 
-        found = True
-        i = 0
-        while found:
+        n_gates = 0
+        for i in range(255):
             found = self.client.simSetSegmentationObjectID("frame" + str(i), i + 1)
-            i += 1
-        print("AirSimClient:: {} gates found".format(i))
+            n_gates = n_gates + 1 if found else n_gates
 
-        self.n_gates = i
+        print("AirSimClient:: {} gates found".format(n_gates))
+
+        self.n_gates = n_gates
 
         self._color_lookup = np.array([[55, 181, 57],
                                        [153, 108, 6],
