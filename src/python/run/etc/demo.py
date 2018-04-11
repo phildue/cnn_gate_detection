@@ -8,7 +8,7 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/industrial_room_test'],
+generator = GateGenerator(directories=['resource/ext/samples/industrial_room_cats_test'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
@@ -19,5 +19,5 @@ generator = GateGenerator(directories=['resource/ext/samples/industrial_room_tes
 # model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc3/SSD300.h5',
 #                    iou_thresh_nms=0.3)
 model = Yolo.yolo_v2(class_names=['gate'], batch_size=8, conf_thresh=0.1,
-                     color_format='bgr', weight_file='logs/v2_airsim/YoloV2.h5')
+                     color_format='bgr', weight_file='logs/v2_airsim_cats/YoloV2.h5')
 demo_generator(model, generator, t_show=0)

@@ -84,7 +84,7 @@ class AirSimClient:
         hseg, wseg = seg.shape[:2]
         scale = np.array([hcam / hseg, wcam / wseg])
         gate_labels = []
-        for i in range(self.n_gates):
+        for i in self.gate_ids:
             label = self._segment2box(seg, self._color_lookup[i + 1], scale)
             if label is not None:
                 gate_labels.append(label)
@@ -102,15 +102,14 @@ class AirSimClient:
         self.client = MultirotorClient()
         self.client.confirmConnection()
         self.client.simSetSegmentationObjectID("[\w]*", 0, True)
-
-        n_gates = 0
+        self.gate_ids = []
         for i in range(255):
             found = self.client.simSetSegmentationObjectID("frame" + str(i), i + 1)
-            n_gates = n_gates + 1 if found else n_gates
+            if found:
+                self.gate_ids.append(i)
 
-        print("AirSimClient:: {} gates found".format(n_gates))
+        print("AirSimClient:: {} gates found".format(len(self.gate_ids)))
 
-        self.n_gates = n_gates
 
         self._color_lookup = np.array([[55, 181, 57],
                                        [153, 108, 6],

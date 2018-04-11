@@ -11,7 +11,7 @@ from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        self.label_reader = DatasetParser(path, 'xml')
+        self.label_reader = DatasetParser.get_parser(path, 'xml')
         self.labels = self.label_reader.read()
 
     def get_label_map(self):

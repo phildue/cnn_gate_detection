@@ -15,7 +15,7 @@ class AbstractDatasetParser:
 
     def write(self, images: [Image], labels: [ImgLabel]):
         for i, l in enumerate(labels):
-            filename = '{}/{1:05d}'.format(self.directory, self.idx)
+            filename = '{}/{:05d}'.format(self.directory, self.idx)
             self.write_img(images[i], filename + '.' + self.image_format)
             self.write_label(l, filename)
             self.idx += 1

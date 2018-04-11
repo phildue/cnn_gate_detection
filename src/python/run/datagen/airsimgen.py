@@ -7,26 +7,26 @@ from samplegen.airsim.AirSimClient import AirSimClient
 from samplegen.airsim.AirSimGen import AirSimGen
 from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
-from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.fileaccess.utils import create_dirs
 from utils.imageprocessing.Imageprocessing import show
 from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "brick_room"
+name = "brick_room_test"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 2000
+n_samples = 500
 batch_size = 100
-cam_range_side = (-3, 3)
-cam_range_forward = (-8, 8)
+cam_range_side = (-2, 2)
+cam_range_forward = (-5, 5)
 cam_range_lift = (0.5, 2.0)
 cam_range_pitch = (-0.3, 0.3)
 cam_range_roll = (-0.3, 0.3)
 cam_range_yaw = (-np.pi, np.pi)
 
-#TODO choose simulation environment here + camera settings and start simulation
+# TODO choose simulation environment here + camera settings and start simulation
 
 posegen = RandomPositionGen(range_dist_side=cam_range_side,
                             range_dist_forward=cam_range_forward,
@@ -39,7 +39,8 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = SetFileParser(shot_path, img_format='jpg', label_format='xml', start_idx=0)
+set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=8000,
+                                      color_format='bgr')
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
     tic()
@@ -49,5 +50,5 @@ for i in range(n_batches):
 
     toc("Batch: {0:d}/{2:d}, {1:d} shots generated after ".format(i + 1, len(samples), n_batches))
 
-set_analyzer = SetAnalyzer((640, 480), shot_path)
-set_analyzer.show_summary()
+#set_analyzer = SetAnalyzer((640, 480), shot_path)
+#set_analyzer.show_summary()
