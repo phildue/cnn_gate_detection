@@ -1,12 +1,11 @@
 import glob
 import os
-import pickle
 import random
 
 import numpy as np
 
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
-from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.imageprocessing.Backend import imread
 from utils.labels.ImgLabel import ImgLabel
 
@@ -71,8 +70,8 @@ class GateGenerator(DatasetGenerator):
                 file = next(files_it)
                 img = imread(file, self.color_format)
                 if self.label_format is not None:
-                    label = LabelFileParser.read_file(self.label_format,
-                                                      file.replace(self.img_format, self.label_format))
+                    label = DatasetParser.read_label(self.label_format,
+                                                     file.replace(self.img_format, self.label_format))
                 else:
                     label = ImgLabel([])
                 current_batch.append((img, label, file))
