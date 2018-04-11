@@ -11,3 +11,4 @@
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
 srun python3 dronevision/src/python/run/training/gate/v2_brick.py
+
