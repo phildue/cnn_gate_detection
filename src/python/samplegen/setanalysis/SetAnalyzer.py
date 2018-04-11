@@ -5,13 +5,13 @@ from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.backend.visuals.plots.BoxPlot import BoxPlot
 from modelzoo.backend.visuals.plots.Heatmap import Heatmap
 from utils.BoundingBox import BoundingBox
-from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 
 
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        self.label_reader = LabelFileParser(path, 'xml')
+        self.label_reader = DatasetParser(path, 'xml')
         self.labels = self.label_reader.read()
 
     def get_label_map(self):

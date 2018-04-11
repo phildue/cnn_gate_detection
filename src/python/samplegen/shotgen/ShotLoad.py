@@ -2,7 +2,7 @@ import glob
 import random
 
 from samplegen.shotgen.ShotGen import ShotGen
-from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.imageprocessing.Backend import imread
 
 
@@ -26,5 +26,5 @@ class ShotLoad(ShotGen):
                 f = random.choice(files)
 
             shots.append(imread(f, 'bgr'))
-            labels.append(LabelFileParser.read_file(self.label_format, f.replace(self.img_format, self.label_format)))
+            labels.append(DatasetParser.read_label(self.label_format, f.replace(self.img_format, self.label_format)))
         return shots, labels

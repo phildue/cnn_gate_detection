@@ -14,13 +14,13 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_room_cats_test"
-shot_path = "resource/samples/" + name + "/"
+name = "brick_room"
+shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 100
+n_samples = 2000
 batch_size = 100
-cam_range_side = (-10, 10)
-cam_range_forward = (-10, 10)
+cam_range_side = (-3, 3)
+cam_range_forward = (-8, 8)
 cam_range_lift = (0.5, 2.0)
 cam_range_pitch = (-0.3, 0.3)
 cam_range_roll = (-0.3, 0.3)

@@ -1,6 +1,6 @@
 import sys
 
-from utils.fileaccess.LabelFileParser import LabelFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
@@ -8,7 +8,7 @@ from utils.workdir import cd_work
 
 cd_work()
 sys.path.append('utils/labels')
-parser = LabelFileParser('resource/samples/cyberzoo_conv/', 'pkl')
+parser = DatasetParser('resource/samples/cyberzoo_conv/', 'pkl')
 labels = parser.read()
 
 ObjectLabel.classes = 'gate'
