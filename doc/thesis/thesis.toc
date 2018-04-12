@@ -1,33 +1,28 @@
-\babel@toc {english}{}
+\select@language {english}
 \contentsline {chapter}{Summary}{1}{chapter*.3}
 \contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
 \contentsline {chapter}{\numberline {2}Background}{5}{chapter.2}
-\contentsline {section}{\numberline {2.1}Single Shot Detectors}{5}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Basic Concept}{5}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Anchor Boxes}{5}{subsection.2.1.2}
-\contentsline {subsection}{\numberline {2.1.3}Architecture}{6}{subsection.2.1.3}
-\contentsline {subsection}{\numberline {2.1.4}Training Goal}{6}{subsection.2.1.4}
-\contentsline {subsubsection}{Negatives}{7}{subsection.2.1.4}
-\contentsline {subsection}{\numberline {2.1.5}Data Augmentation}{7}{subsection.2.1.5}
-\contentsline {subsection}{\numberline {2.1.6}Comparison}{7}{subsection.2.1.6}
-\contentsline {subsubsection}{Yolo}{7}{subsection.2.1.6}
-\contentsline {subsubsection}{SSD}{7}{Item.4}
-\contentsline {subsection}{\numberline {2.1.7}Additional Work on One-Shot-Detectors}{7}{subsection.2.1.7}
-\contentsline {subsubsection}{LCDNet\cite {TripathiSanDiego}}{7}{subsection.2.1.7}
-\contentsline {subsection}{\numberline {2.1.8}Squeeze Det \cite {Wu}}{8}{subsection.2.1.8}
-\contentsline {subsection}{\numberline {2.1.9}I-SSD \cite {ChengchengNing2017}}{8}{subsection.2.1.9}
-\contentsline {subsection}{\numberline {2.1.10}\cite {Linb}}{8}{subsection.2.1.10}
-\contentsline {section}{\numberline {2.2}Summaries}{8}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Object Detection}{8}{subsection.2.2.1}
-\contentsline {paragraph}{Scalable Object Detection using Deep Neural Networks\cite {Erhan}}{8}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}(Re-) Localization}{8}{subsection.2.2.2}
-\contentsline {paragraph}{PoseNet: A Convolutional Network for Real-Time 6-DOF Camera Relocalization \cite {Kendall}}{8}{subsection.2.2.2}
-\contentsline {paragraph}{A Deep Learning Based 6 Degree-of-Freedom Localization Method for Endoscopic Capsule Robots \cite {Turan2017}}{9}{subsection.2.2.2}
-\contentsline {subsubsection}{Object Pose Estimation}{9}{subsection.2.2.2}
-\contentsline {paragraph}{3D generic object categorization localization and pose estimation \cite {Savarese}}{9}{subsection.2.2.2}
-\contentsline {paragraph}{Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image Eric \cite {Brachmann}}{9}{subsection.2.2.2}
-\contentsline {paragraph}{A Comparative Analysis and Study of Multiview CNN Models for Joint Object Categorization and Pose Estimation\cite {Elhoseiny}}{10}{subsection.2.2.2}
-\contentsline {subsection}{\numberline {2.2.3}Other}{10}{subsection.2.2.3}
-\contentsline {paragraph}{Deformable Convolutional Networks \cite {Dai}}{10}{subsection.2.2.3}
-\contentsline {section}{\numberline {2.3}Method}{10}{section.2.3}
+\contentsline {section}{\numberline {2.1}Object Detection}{5}{section.2.1}
+\contentsline {subsubsection}{Shallow Methods}{5}{section.2.1}
+\contentsline {subsubsection}{Two Stage Detectors}{5}{section.2.1}
+\contentsline {paragraph}{Scalable Object Detection using Deep Neural Networks\cite {Erhan}}{5}{section.2.1}
+\contentsline {subsubsection}{One Stage Detectors}{6}{section.2.1}
+\contentsline {subsubsection}{LCDNet\cite {TripathiSanDiego}}{6}{figure.caption.4}
+\contentsline {subsection}{\numberline {2.1.1}\cite {Linb}}{7}{subsection.2.1.1}
+\contentsline {section}{\numberline {2.2}Pose Estimation}{7}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}(Re-) Localization}{7}{subsection.2.2.1}
+\contentsline {paragraph}{PoseNet: A Convolutional Network for Real-Time 6-DOF Camera Relocalization \cite {Kendall}}{7}{subsection.2.2.1}
+\contentsline {paragraph}{A Deep Learning Based 6 Degree-of-Freedom Localization Method for Endoscopic Capsule Robots \cite {Turan2017}}{8}{subsection.2.2.1}
+\contentsline {subsubsection}{Object Pose Estimation}{8}{subsection.2.2.1}
+\contentsline {paragraph}{3D generic object categorization localization and pose estimation \cite {Savarese}}{8}{subsection.2.2.1}
+\contentsline {paragraph}{Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image Eric \cite {Brachmann}}{8}{subsection.2.2.1}
+\contentsline {paragraph}{A Comparative Analysis and Study of Multiview CNN Models for Joint Object Categorization and Pose Estimation\cite {Elhoseiny}}{9}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Other}{9}{subsection.2.2.2}
+\contentsline {paragraph}{Deformable Convolutional Networks \cite {Dai}}{9}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}Transfer Learning}{9}{section.2.3}
+\contentsline {section}{\numberline {2.4}Speed Optimization}{9}{section.2.4}
+\contentsline {section}{\numberline {2.5}Method}{9}{section.2.5}
+\contentsline {section}{\numberline {2.6}Model}{9}{section.2.6}
+\contentsline {section}{\numberline {2.7}Training}{9}{section.2.7}
+\contentsline {section}{\numberline {2.8}Optimization}{9}{section.2.8}
 \contentsfinish 

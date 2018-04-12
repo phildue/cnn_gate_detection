@@ -1,9 +1,15 @@
 \chapter{Introduction}
 \label{sec:intro}
 
-Recent developments in embedded systems and machine learning enable micro-air vehicles to act more and more autonomously. This gave rise to autonomous drone races, where drones have to complete a race track as fast as possible. Usually, the race track is defined by certain markers that need to be passed. A crucial part to fullfill this task is an accurate vision system that detects these markers and thereby allows the calculation of motion commands. This thesis investigates a computer vision system that detects the gates within a race track.
+Recent developments in embedded systems and artifical intelligence enable micro-air vehicles to act more and more autonomously. This gave rise to autonomous drone races, where drones have to complete a race track as fast as possible. These races give researchers the opportunity to evaluate their algorithms in a competitive environment.
 
-The application gives multiple challenges towards the vision system: (1) The objects that need to be detected consist mainly of a thin frame and are largely occupied by background. (2) Example data is only available at a limited amount. Following from one this bears the chance of overfitting to the background. (3) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition.
+The currently most challenging autonomous drone race is held yearly at the IROS conference. The race track consists of several colored metal gates which need to be passed one after another. The participating drones have to fly fully autonomously with all processing happening on board.
+
+An important part to fullfill this task is an accurate estimation of the MAV's state within its environment. Sensors like inertial measurement units and sonars can deliver accurate data of the drones altitude. However, to determine the MAV's global position these sensors are usually to subjective to noise. As the race happens indoor in a GPS-denied environment the most accurate sensor to determine the global position is a camera.
+
+Hence, high-performing vision algorithms are required in order to complete the race court as fast as possible. This thesis investigates a computer vision system that detects the gates within a race track.
+
+The application gives multiple challenges towards the vision system: (1) The objects that need to be detected consist mainly of a thin frame and are largely occupied by background. (2) Example data is only available at a limited amount. Following from (1) this bears the chance of overfitting to the background. (3) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition.
 
 \begin{itemize}
 	\item How can we detect large objects that are mostly occupied by background?
