@@ -58,10 +58,8 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
 
     for obj in label.objects:
         if obj is None: continue
-        try:
-            confidence = obj.confidence
-        except AttributeError:
-            confidence = 1.0
+        confidence = obj.confidence
+
         if isinstance(obj, GateLabel):
             if legend >= LEGEND_CORNERS:
                 img_ann = draw_gate_corners(img_ann, obj)
@@ -69,13 +67,15 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
                 img_ann = annotate_position(img_ann, obj.position, obj.x_min, obj.y_max + 5, color)
         if isinstance(obj, ObjectLabel):
             if thickness is None:
-                thickness = int(np.round(confidence * 4, 0))
+                thickness_obj = int(np.ceil(confidence * 4))
+            else:
+                thickness_obj = thickness
 
             img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
-                                        color=color, thickness=thickness)
+                                        color=color, thickness=thickness_obj)
 
         if legend >= LEGEND_TEXT:
-            img_ann = annotate_text(obj.class_name + ' - ' + str(confidence), img_ann,
+            img_ann = annotate_text(obj.class_name + ' - ' + str(np.round(confidence,2)), img_ann,
                                     (int(obj.x_min), int(obj.y_max + 5)),
                                     color)
     return img_ann

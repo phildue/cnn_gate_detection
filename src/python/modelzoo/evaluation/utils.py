@@ -3,6 +3,7 @@ import numpy as np
 from modelzoo.evaluation import ResultsByConfidence
 
 
+
 def average_precision_recall(detection_results):
     precision = np.zeros((len(detection_results), 11))
     recall = np.zeros((len(detection_results), 11))

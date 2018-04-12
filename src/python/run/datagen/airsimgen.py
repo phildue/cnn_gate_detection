@@ -14,10 +14,10 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "brick_room_test"
+name = "brick_room_cats"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 500
+n_samples = 2000
 batch_size = 100
 cam_range_side = (-2, 2)
 cam_range_forward = (-5, 5)
@@ -39,7 +39,7 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=8000,
+set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=0,
                                       color_format='bgr')
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):

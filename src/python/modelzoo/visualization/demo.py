@@ -35,8 +35,8 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             boxes_wrong = [b for b in boxes_wrong if b is not None]
             label_correct = BoundingBox.to_label(boxes_correct)
             label_wrong = BoundingBox.to_label(boxes_wrong)
-            show(img.bgr, 'demo', labels=[label, label_correct, label_wrong],
-                 colors=[(0, 255, 0), (255, 255, 255), (0, 0, 255)],
+            show(img.bgr, 'demo', labels=[label_correct, label_wrong],
+                 colors=[(255, 0, 0), (255, 0, 0)],
                  legend=LEGEND_TEXT, t=t_show)
 
             if out_file is not None:
