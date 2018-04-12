@@ -1,0 +1,49 @@
+\documentclass{tudelft-report}
+
+\usepackage{lscape}
+\usepackage{gensymb}
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\usepackage{hyperref}
+
+
+\begin{document}
+
+%% Use Roman numerals for the page numbers of the title pages and table of
+%% contents.
+\frontmatter
+
+\title[Detection of Featureless Objects]{Efficient Gate Detection for Autonomous Drone Racing}
+\author{P.\ Duernay}
+\affiliation{Delft University of Technology}
+%\coverimage{cover.jpg}
+%\makecover
+
+%% Include an optional title page.
+\input{chapters/01_intro/title}
+
+\input{chapters/01_intro/preface}
+
+\tableofcontents
+
+%% Use Arabic numerals for the page numbers of the chapters.
+\mainmatter
+
+\input{chapters/01_intro/summary}
+\input{chapters/01_intro/intro}
+\input{chapters/02_background/background}
+\input{chapters/03_method/method}
+%% Use letters for the chapter numbers of the appendices.
+\appendix
+
+%\input{appendix-a}
+
+\bibliography{thesis}
+
+\end{document}
+

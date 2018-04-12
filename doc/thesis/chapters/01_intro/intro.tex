@@ -1,0 +1,12 @@
+\chapter{Introduction}
+\label{sec:intro}
+
+Recent developments in embedded systems and machine learning enable micro-air vehicles to act more and more autonomously. This gave rise to autonomous drone races, where drones have to complete a race track as fast as possible. Usually, the race track is defined by certain markers that need to be passed. A crucial part to fullfill this task is an accurate vision system that detects these markers and thereby allows the calculation of motion commands. This thesis investigates a computer vision system that detects the gates within a race track.
+
+The application gives multiple challenges towards the vision system: (1) The objects that need to be detected consist mainly of a thin frame and are largely occupied by background. (2) Example data is only available at a limited amount. Following from one this bears the chance of overfitting to the background. (3) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition.
+
+\begin{itemize}
+	\item How can we detect large objects that are mostly occupied by background?
+	\item How can we train such a vision system to perform well in autonomous drone race?
+	\item How can we optimize the efficiency of such a model to perform well on an embedded platform?
+\end{itemize}
