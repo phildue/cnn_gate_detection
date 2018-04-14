@@ -27,7 +27,7 @@ class GateLabel(ObjectLabel):
         return "{0:.3f},{1:.3f},{2:.3f},{3:.3f},{4:.3f},{5:.3f},{6:03d},{7:03d},{8:03d},{9:03d},{10:03d},{11:03d}," \
                "{12:03d},{13:03d}" \
             .format(self.position.dist_x, self.position.dist_y,
-                    self.position.lift, self.position.pitch,
+                    self.position.up, self.position.pitch,
                     self.position.roll,
                     self.position.yaw,
                     self.gate_corners.top_right[0],

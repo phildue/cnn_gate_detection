@@ -45,8 +45,8 @@ class AirSimClient:
         y_min_1, x_min_1 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
         y_max_1, x_max_1 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
 
-        center_x = abs(x_max_1 + x_min_1) / 2
-        center_y = abs(y_max_1 + y_min_1) / 2
+        center_x = abs(x_max_1 - x_min_1) / 2 + x_min_1
+        center_y = abs(y_max_1 - y_min_1) / 2 + y_min_1
 
         segment_labels_flipped = np.fliplr(segment_labels)
         coordinates = np.where(np.all(segment_labels_flipped == label_color, -1))
@@ -75,7 +75,6 @@ class AirSimClient:
         obj_pose = self._convert_pose(self.client.simGetObjectPose(frame_id))
 
         rel_pose = Camera(1.0, 1.0, init_pose=cam_pose).get_rel_pose(obj_pose)
-
         return rel_pose
 
     def retrieve_samples(self) -> (Image, ImgLabel):
@@ -90,15 +89,14 @@ class AirSimClient:
         gate_labels = []
         for i in self.gate_ids:
             pose = self._get_rel_pose('frame' + str(i))
-            if -45.0 < pose.yaw < 45.0:
-                corners = self._segment2corners(segmentation_labels, self._color_lookup[i + 1], scale)
-                if corners is not None:
-                    gate_labels.append(GateLabel(pose, corners))
+            corners = self._segment2corners(segmentation_labels, self._color_lookup[i + 1], scale)
+            if corners is not None:
+                gate_labels.append(GateLabel(pose, corners))
 
         return image, ImgLabel(gate_labels)
 
     def set_pose(self, pose):
-        self.client.simSetPose(Pose(Vector3r(pose.dist_forward, pose.dist_side, -pose.lift),
+        self.client.simSetPose(Pose(Vector3r(pose.north, pose.east, -pose.up),
                                     AirSimClientBase.toQuaternion(pose.pitch, pose.roll, pose.yaw)), True)
 
     def reset(self):

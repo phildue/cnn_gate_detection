@@ -7,16 +7,16 @@ class Pose:
     def __init__(self, north=0.0, east=0.0, up=0.0, roll=0.0, pitch=0.0, yaw=0.0):
         self.pitch = pitch
         self.roll = roll
-        self.lift = up
+        self.up = up
         self.east = east
         self.north = north
         self.yaw = yaw
 
     def __repr__(self):
-        return "|Forward-dist:{0:.3f}|Side-dist:{1:.3f}|Lift:{2:.3f}|\nRoll:{3:.3f}|Pitch:{4:.3f}|Yaw:{5:.3f}|".format(
+        return "|North:{0:.3f}|East:{1:.3f}|Up:{2:.3f}|\nRoll:{3:.3f}|Pitch:{4:.3f}|Yaw:{5:.3f}|".format(
             self.north,
             self.east,
-            self.lift, self.roll,
+            self.up, self.roll,
             self.pitch,
             self.yaw)
 
@@ -29,12 +29,12 @@ class Pose:
                self.yaw == other.yaw and \
                self.north == other.dist_forward and \
                self.east == other.dist_side and \
-               self.lift == other.lift
+               self.up == other.lift
 
     def __add__(self, other):
         return Pose(north=self.north + other.north,
                     east=self.east + other.east,
-                    up=self.lift + other.up,
+                    up=self.up + other.up,
                     yaw=self.yaw + other.yaw,
                     roll=self.roll + other.roll,
                     pitch=self.pitch + other.pitch, )
@@ -42,7 +42,7 @@ class Pose:
     def __sub__(self, other):
         return Pose(north=self.north - other.north,
                     east=self.east - other.east,
-                    up=self.lift - other.up,
+                    up=self.up - other.up,
                     yaw=self.yaw - other.yaw,
                     roll=self.roll - other.roll,
                     pitch=self.pitch - other.pitch, )
@@ -77,12 +77,12 @@ class Pose:
 
     @property
     def transvec(self):
-        return np.array([self.east, self.lift, self.north]).T
+        return np.array([self.east, self.up, self.north]).T
 
     @transvec.setter
     def transvec(self, translation):
         self.east = translation[0]
-        self.lift = translation[1]
+        self.up = translation[1]
         self.north = translation[2]
 
     @property
@@ -94,7 +94,7 @@ class Pose:
     def to_scene_unit(self):
         return Pose(self.north * self.METER_2_SCENE_UNIT,
                     self.east * self.METER_2_SCENE_UNIT,
-                    self.lift * self.METER_2_SCENE_UNIT,
+                    self.up * self.METER_2_SCENE_UNIT,
                     self.roll,
                     self.pitch,
                     self.yaw)
@@ -103,7 +103,7 @@ class Pose:
     def to_meters(self):
         return Pose(self.north / self.METER_2_SCENE_UNIT,
                     self.east / self.METER_2_SCENE_UNIT,
-                    self.lift / self.METER_2_SCENE_UNIT,
+                    self.up / self.METER_2_SCENE_UNIT,
                     self.roll,
                     self.pitch,
                     self.yaw)

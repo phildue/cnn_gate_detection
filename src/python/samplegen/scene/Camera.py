@@ -79,9 +79,12 @@ class Camera:
         plane_pitch = obj_cam_up - obj_cam_center
         plane_yaw = obj_cam_east - obj_cam_center
 
-        yaw_cam = np.math.acos(plane_yaw.dot(cam_north) / (np.linalg.norm(plane_yaw) * np.linalg.norm(cam_north)))
-        pitch_cam = np.math.acos(plane_pitch.dot(cam_north) / (np.linalg.norm(plane_pitch) * np.linalg.norm(cam_north)))
-        roll_cam = np.math.acos(plane_yaw.dot(cam_east) / (np.linalg.norm(plane_yaw) * np.linalg.norm(cam_east)))
+        yaw_cam = np.math.acos(
+            plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
+        pitch_cam = np.math.acos(
+            plane_pitch.dot(obj_cam_center) / (np.linalg.norm(plane_pitch) * np.linalg.norm(obj_cam_center)))
+        roll_cam = np.math.acos(
+            plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
 
         return Pose(north=obj_cam_center[2], east=obj_cam_center[0], up=obj_cam_center[1], yaw=yaw_cam,
                     pitch=pitch_cam, roll=roll_cam)

@@ -6,9 +6,11 @@ import numpy as np
 from utils.fileaccess.labelparser.AbstractDatasetParser import AbstractDatasetParser
 from utils.imageprocessing import Image
 from utils.imageprocessing.Backend import imwrite, imread
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Pose import Pose
 
 
 class XmlParser(AbstractDatasetParser):
@@ -35,25 +37,25 @@ class XmlParser(AbstractDatasetParser):
             ET.SubElement(bnd_box, 'ymax').text = '{0:d}'.format(int(ymax))
             if isinstance(obj, GateLabel):
                 pose_root = ET.SubElement(obj_root, 'pose')
-                ET.SubElement(pose_root, 'dist_forward').text = '{0:03f}'.format(obj.position.dist_forward)
-                ET.SubElement(pose_root, 'dist_side').text = '{0:03f}'.format(obj.position.dist_side)
-                ET.SubElement(pose_root, 'lift').text = '{0:03f}'.format(obj.position.lift)
+                ET.SubElement(pose_root, 'north').text = '{0:03f}'.format(obj.position.north)
+                ET.SubElement(pose_root, 'east').text = '{0:03f}'.format(obj.position.east)
+                ET.SubElement(pose_root, 'up').text = '{0:03f}'.format(obj.position.up)
                 ET.SubElement(pose_root, 'yaw').text = '{0:03f}'.format(obj.position.yaw)
                 ET.SubElement(pose_root, 'pitch').text = '{0:03f}'.format(obj.position.pitch)
                 ET.SubElement(pose_root, 'roll').text = '{0:03f}'.format(obj.position.roll)
                 corner_root = ET.SubElement(obj_root, 'gate_corners')
-                ET.SubElement(corner_root, 'top_left').text = '{0:d},{1:d}'.format(
+                ET.SubElement(corner_root, 'top_left').text = '{},{}'.format(
                     int(obj.gate_corners.top_left[0]),
                     int(obj.gate_corners.top_left[1]))
-                ET.SubElement(corner_root, 'top_right').text = '{0:d},{1:d}'.format(
+                ET.SubElement(corner_root, 'top_right').text = '{},{}'.format(
                     int(obj.gate_corners.top_right[0]),
                     int(obj.gate_corners.top_right[1]))
-                ET.SubElement(corner_root, 'bottom_left').text = '{0:d},{1:d}'.format(
+                ET.SubElement(corner_root, 'bottom_left').text = '{},{}'.format(
                     int(obj.gate_corners.bottom_left[0]), int(obj.gate_corners.bottom_left[1]))
-                ET.SubElement(corner_root, 'bottom_right').text = '{0:d},{1:d}'.format(
+                ET.SubElement(corner_root, 'bottom_right').text = '{},{}'.format(
                     int(obj.gate_corners.bottom_right[0]), int(obj.gate_corners.bottom_right[1]))
-                ET.SubElement(corner_root, 'center').text = '{0:d},{1:d}'.format(int(obj.gate_corners.center[1]),
-                                                                                 int(obj.gate_corners.center[1]))
+                ET.SubElement(corner_root, 'center').text = '{},{}'.format(int(obj.gate_corners.center[0]),
+                                                                           int(obj.gate_corners.center[1]))
         tree = ET.ElementTree(root)
         tree.write(path + '.xml')
 
@@ -68,6 +70,29 @@ class XmlParser(AbstractDatasetParser):
         return samples
 
     @staticmethod
+    def _parse_gate_corners(gate_corners_xml: str) -> GateCorners:
+        top_left = tuple([int(e) for e in gate_corners_xml.find('top_left').text.split(',')])
+        top_right = tuple([int(e) for e in gate_corners_xml.find('top_right').text.split(',')])
+        bottom_left = tuple([int(e) for e in gate_corners_xml.find('bottom_left').text.split(',')])
+        bottom_right = tuple([int(e) for e in gate_corners_xml.find('bottom_right').text.split(',')])
+        center = tuple([int(e) for e in gate_corners_xml.find('center').text.split(',')])
+        gate_corners = GateCorners(center=center, top_left=top_left, top_right=top_right,
+                                   bottom_left=bottom_left, bottom_right=bottom_right)
+        return gate_corners
+
+    @staticmethod
+    def _parse_pose(pose_xml: str) -> Pose:
+        north = float(pose_xml.find('north').text)
+        east = float(pose_xml.find('east').text)
+        up = float(pose_xml.find('up').text)
+        yaw = float(pose_xml.find('yaw').text)
+        pitch = float(pose_xml.find('pitch').text)
+        roll = float(pose_xml.find('roll').text)
+
+        pose = Pose(north, east, up, roll, pitch, yaw)
+        return pose
+
+    @staticmethod
     def read_label(path: str) -> [ImgLabel]:
         with open(path, 'rb') as f:
             tree = ET.parse(f)
@@ -75,19 +100,29 @@ class XmlParser(AbstractDatasetParser):
             for element in tree.findall('object'):
                 # TODO extend this to parse gate corners/pose
                 name = element.find('name').text
-                box = element.find('bndbox')
-                x1 = int(np.round(float(box.find('xmin').text)))
-                y1 = int(np.round(float(box.find('ymin').text)))
-                x2 = int(np.round(float(box.find('xmax').text)))
-                y2 = int(np.round(float(box.find('ymax').text)))
-                xmin = min((x1, x2))
-                xmax = max((x1, x2))
-                ymin = min((y1, y2))
-                ymax = max((y1, y2))
-                label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
-                label.y_min = ymin
-                label.y_max = ymax
-                label.x_min = xmin
-                label.x_max = xmax
-                objects.append(label)
+
+                gate_corners_xml = element.find('gate_corners')
+                if gate_corners_xml:
+
+                    gate_corners = XmlParser._parse_gate_corners(gate_corners_xml)
+                    pose_xml = element.find('pose')
+                    pose = XmlParser._parse_pose(pose_xml)
+                    objects.append(GateLabel(pose, gate_corners))
+
+                else:
+                    box = element.find('bndbox')
+                    x1 = int(np.round(float(box.find('xmin').text)))
+                    y1 = int(np.round(float(box.find('ymin').text)))
+                    x2 = int(np.round(float(box.find('xmax').text)))
+                    y2 = int(np.round(float(box.find('ymax').text)))
+                    xmin = min((x1, x2))
+                    xmax = max((x1, x2))
+                    ymin = min((y1, y2))
+                    ymax = max((y1, y2))
+                    label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
+                    label.y_min = ymin
+                    label.y_max = ymax
+                    label.x_min = xmin
+                    label.x_max = xmax
+                    objects.append(label)
             return ImgLabel(objects)
