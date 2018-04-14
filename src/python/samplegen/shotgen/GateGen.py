@@ -31,7 +31,7 @@ class GateGen:
 
         for i in range(n_gates):
             gate = random.choice(self.gates)
-            position = Pose(dist_forward=forw_dists[i], dist_side=side_dists[i], yaw=random.choice(self.yaw_range))
+            position = Pose(north=forw_dists[i], east=side_dists[i], yaw=random.choice(self.yaw_range))
             gates.append((gate, position))
 
         return gates

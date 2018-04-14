@@ -13,7 +13,7 @@ class PositionPlotCreator:
 
     @staticmethod
     def __eucl_dist(position: Pose):
-        return np.sqrt(position.dist_forward ** 2 + position.lift ** 2 + position.dist_side ** 2)
+        return np.sqrt(position.north ** 2 + position.lift ** 2 + position.east ** 2)
 
     @staticmethod
     def __extract_metric(positions: [Pose], key: str):

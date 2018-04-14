@@ -23,9 +23,9 @@ shot_path = "resource/shots/" + name + "/"
 def yaw_circle(dist_forward, steps):
     waypoints = []
     for i in range(steps):
-        waypoints.append(Pose(dist_forward=dist_forward,
-                              dist_side=0,
-                              lift=0,
+        waypoints.append(Pose(north=dist_forward,
+                              east=0,
+                              up=0,
                               roll=0,
                               pitch=0,
                               yaw=i * 2 * np.pi / steps))
@@ -35,9 +35,9 @@ def yaw_circle(dist_forward, steps):
 def pitch_half_circle(dist_forward, steps):
     waypoints = []
     for i in range(steps):
-        waypoints.append(Pose(dist_forward=dist_forward,
-                              dist_side=0,
-                              lift=0,
+        waypoints.append(Pose(north=dist_forward,
+                              east=0,
+                              up=0,
                               roll=0,
                               pitch=-i * 2 * np.pi / (2 * steps),
                               yaw=0))
@@ -47,9 +47,9 @@ def pitch_half_circle(dist_forward, steps):
 def roll_half_circle(dist_forward, steps):
     waypoints = []
     for i in range(steps):
-        waypoints.append(Pose(dist_forward=dist_forward,
-                              dist_side=0,
-                              lift=0,
+        waypoints.append(Pose(north=dist_forward,
+                              east=0,
+                              up=0,
                               pitch=0,
                               roll=-i * 2 * np.pi / (2 * steps),
                               yaw=0))
@@ -59,9 +59,9 @@ def roll_half_circle(dist_forward, steps):
 def roll_yaw_move(dist_forward, steps):
     waypoints = []
     for i in range(steps):
-        waypoints.append(Pose(dist_forward=dist_forward,
-                              dist_side=0,
-                              lift=0,
+        waypoints.append(Pose(north=dist_forward,
+                              east=0,
+                              up=0,
                               roll=0,
                               pitch=-i * 2 * np.pi / (2 * steps),
                               yaw=i * 2 * np.pi / (2 * steps)))

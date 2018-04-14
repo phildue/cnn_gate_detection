@@ -112,7 +112,7 @@ class AirSimClient:
         pitch = AirSimClientBase.toEulerianAngle(pose.orientation)[0]
         roll = AirSimClientBase.toEulerianAngle(pose.orientation)[1]
         yaw = AirSimClientBase.toEulerianAngle(pose.orientation)[2]
-        return utils.labels.Pose.Pose(dist_forward=north, dist_side=east, lift=-down,
+        return utils.labels.Pose.Pose(north=north, east=east, up=-down,
                                       yaw=yaw, pitch=pitch, roll=roll)
 
     def __init__(self, address=None):

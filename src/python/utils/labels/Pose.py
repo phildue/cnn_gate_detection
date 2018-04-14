@@ -4,18 +4,18 @@ import numpy as np
 class Pose:
     METER_2_SCENE_UNIT = 1.167
 
-    def __init__(self, dist_forward=0.0, dist_side=0.0, lift=0.0, roll=0.0, pitch=0.0, yaw=0.0):
+    def __init__(self, north=0.0, east=0.0, up=0.0, roll=0.0, pitch=0.0, yaw=0.0):
         self.pitch = pitch
         self.roll = roll
-        self.lift = lift
-        self.dist_side = dist_side
-        self.dist_forward = dist_forward
+        self.lift = up
+        self.east = east
+        self.north = north
         self.yaw = yaw
 
     def __repr__(self):
         return "|Forward-dist:{0:.3f}|Side-dist:{1:.3f}|Lift:{2:.3f}|\nRoll:{3:.3f}|Pitch:{4:.3f}|Yaw:{5:.3f}|".format(
-            self.dist_forward,
-            self.dist_side,
+            self.north,
+            self.east,
             self.lift, self.roll,
             self.pitch,
             self.yaw)
@@ -27,22 +27,22 @@ class Pose:
         return self.pitch == other.pitch and \
                self.roll == other.roll and \
                self.yaw == other.yaw and \
-               self.dist_forward == other.dist_forward and \
-               self.dist_side == other.dist_side and \
+               self.north == other.dist_forward and \
+               self.east == other.dist_side and \
                self.lift == other.lift
 
     def __add__(self, other):
-        return Pose(dist_forward=self.dist_forward + other.dist_forward,
-                    dist_side=self.dist_side + other.dist_side,
-                    lift=self.lift + other.lift,
+        return Pose(north=self.north + other.dist_forward,
+                    east=self.east + other.dist_side,
+                    up=self.lift + other.lift,
                     yaw=self.yaw + other.yaw,
                     roll=self.roll + other.roll,
                     pitch=self.pitch + other.pitch, )
 
     def __sub__(self, other):
-        return Pose(dist_forward=self.dist_forward - other.dist_forward,
-                    dist_side=self.dist_side - other.dist_side,
-                    lift=self.lift - other.lift,
+        return Pose(north=self.north - other.dist_forward,
+                    east=self.east - other.dist_side,
+                    up=self.lift - other.lift,
                     yaw=self.yaw - other.yaw,
                     roll=self.roll - other.roll,
                     pitch=self.pitch - other.pitch, )
@@ -77,22 +77,23 @@ class Pose:
 
     @property
     def transvec(self):
-        return np.array([self.dist_side, self.lift, self.dist_forward]).T
+        return np.array([self.east, self.lift, self.north]).T
 
     @transvec.setter
     def transvec(self, translation):
-        self.dist_side = translation[0]
+        self.east = translation[0]
         self.lift = translation[1]
-        self.dist_forward = translation[2]
+        self.north = translation[2]
 
     @property
     def rotmat(self):
-        return np.matmul(np.matmul(self.rotmat_pitch, self.rotmat_yaw), self.rotmat_roll)
+        return self.rotmat_pitch.dot(self.rotmat_yaw).dot(self.rotmat_roll)
+
 
     @property
     def to_scene_unit(self):
-        return Pose(self.dist_forward * self.METER_2_SCENE_UNIT,
-                    self.dist_side * self.METER_2_SCENE_UNIT,
+        return Pose(self.north * self.METER_2_SCENE_UNIT,
+                    self.east * self.METER_2_SCENE_UNIT,
                     self.lift * self.METER_2_SCENE_UNIT,
                     self.roll,
                     self.pitch,
@@ -100,8 +101,8 @@ class Pose:
 
     @property
     def to_meters(self):
-        return Pose(self.dist_forward / self.METER_2_SCENE_UNIT,
-                    self.dist_side / self.METER_2_SCENE_UNIT,
+        return Pose(self.north / self.METER_2_SCENE_UNIT,
+                    self.east / self.METER_2_SCENE_UNIT,
                     self.lift / self.METER_2_SCENE_UNIT,
                     self.roll,
                     self.pitch,
