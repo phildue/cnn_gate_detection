@@ -32,17 +32,17 @@ class Pose:
                self.lift == other.lift
 
     def __add__(self, other):
-        return Pose(north=self.north + other.dist_forward,
-                    east=self.east + other.dist_side,
-                    up=self.lift + other.lift,
+        return Pose(north=self.north + other.north,
+                    east=self.east + other.east,
+                    up=self.lift + other.up,
                     yaw=self.yaw + other.yaw,
                     roll=self.roll + other.roll,
                     pitch=self.pitch + other.pitch, )
 
     def __sub__(self, other):
-        return Pose(north=self.north - other.dist_forward,
-                    east=self.east - other.dist_side,
-                    up=self.lift - other.lift,
+        return Pose(north=self.north - other.north,
+                    east=self.east - other.east,
+                    up=self.lift - other.up,
                     yaw=self.yaw - other.yaw,
                     roll=self.roll - other.roll,
                     pitch=self.pitch - other.pitch, )
