@@ -39,3 +39,49 @@ class Camera:
             projection[i] /= abs(projection[2])
 
         return projection.T
+
+    def get_rel_pose(self, obj_pose: Pose):
+        """
+        Calculates the pose of an object towards the camera.
+        :param obj_pose: pose of the object in world space
+        :return: pose: pose of the object within camera space
+        """
+        # TODO move this to some more global config
+        obj_center = np.array([[0],
+                               [0],
+                               [0]])
+
+        obj_up = np.array([[0],
+                           [1],
+                           [0]])
+        obj_east = np.array([[1],
+                             [0],
+                             [0]])
+
+        cam_north = np.array([[0],
+                              [0],
+                              [1]])
+        cam_east = np.array([[1],
+                             [0],
+                             [0]])
+
+        obj2world = obj_pose.transfmat
+        world2cam = np.linalg.inv(self.pose.transfmat)
+
+        obj_hom = np.vstack([np.hstack([obj_center, obj_up, obj_east]),
+                             [[1, 1, 1]]])
+        obj_world = obj2world.dot(obj_hom)
+        obj_cam = world2cam.dot(obj_world)
+
+        obj_cam_center = obj_cam[:3, 0]
+        obj_cam_up = obj_cam[:3, 1]
+        obj_cam_east = obj_cam[:3, 2]
+        plane_pitch = obj_cam_up - obj_cam_center
+        plane_yaw = obj_cam_east - obj_cam_center
+
+        yaw_cam = np.math.acos(plane_yaw.dot(cam_north) / (np.linalg.norm(plane_yaw) * np.linalg.norm(cam_north)))
+        pitch_cam = np.math.acos(plane_pitch.dot(cam_north) / (np.linalg.norm(plane_pitch) * np.linalg.norm(cam_north)))
+        roll_cam = np.math.acos(plane_yaw.dot(cam_east) / (np.linalg.norm(plane_yaw) * np.linalg.norm(cam_east)))
+
+        return Pose(dist_forward=obj_cam_center[2], dist_side=obj_cam_center[0], lift=obj_cam_center[1], yaw=yaw_cam,
+                    pitch=pitch_cam, roll=roll_cam)

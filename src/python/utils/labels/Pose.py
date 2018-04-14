@@ -77,7 +77,7 @@ class Pose:
 
     @property
     def transvec(self):
-        return np.array([self.dist_side, self.lift, self.dist_forward]).T * self.METER_2_SCENE_UNIT
+        return np.array([self.dist_side, self.lift, self.dist_forward]).T
 
     @transvec.setter
     def transvec(self, translation):
