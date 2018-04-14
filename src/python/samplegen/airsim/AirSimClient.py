@@ -7,6 +7,7 @@ from math import isnan
 from cv2.cv2 import COLOR_RGBA2GRAY
 
 import utils
+from samplegen.scene.Camera import Camera
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import convert_color, COLOR_RGBA2BGR
 from utils.imageprocessing.Image import Image
@@ -35,7 +36,7 @@ class AirSimClient:
         return corner
 
     @staticmethod
-    def _segment2box(segment_labels, label_color, scale):
+    def _segment2corners(segment_labels, label_color, scale):
         h, w = segment_labels.shape[:2]
         coordinates = np.where(np.all(segment_labels == label_color, -1))
         if not coordinates[0].any():
@@ -65,38 +66,54 @@ class AirSimClient:
         y_max_1 = (h - y_max_1) * scale[0]
         y_max_2 = (h - y_max_2) * scale[0]
         center_y = (h - center_y) * scale[0]
-        # TODO add relative Pose
-        label = GateLabel(utils.labels.Pose.Pose(),
-                          GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
-                                      (x_max_2, y_max_2)))
-        label.confidence = 1.0
-        return label
+
+        return GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
+                           (x_max_2, y_max_2))
+
+    def _get_rel_pose(self, frame_id):
+        cam_pose = self._convert_pose(self.client.getCameraInfo(0).pose)
+        obj_pose = self._convert_pose(self.client.simGetObjectPose(frame_id))
+
+        rel_pose = Camera(1.0, 1.0, init_pose=cam_pose).get_rel_pose(obj_pose)
+
+        return rel_pose
 
     def retrieve_samples(self) -> (Image, ImgLabel):
         responses = self.client.simGetImages([
             ImageRequest(0, AirSimImageType.Segmentation, False, False),
             ImageRequest(0, AirSimImageType.Scene, False, False)])
 
-        seg = self._response2mat(responses[0])
-        scene = self._response2mat(responses[1])
-        scene = convert_color(Image(scene, 'bgr'), COLOR_RGBA2BGR)
-        hcam, wcam = scene.shape[:2]
-        hseg, wseg = seg.shape[:2]
-        scale = np.array([hcam / hseg, wcam / wseg])
+        segmentation_labels = self._response2mat(responses[0])
+        image = self._response2mat(responses[1])
+        image = convert_color(Image(image, 'bgr'), COLOR_RGBA2BGR)
+        scale = np.array(image.shape[:2]) / np.array(segmentation_labels.shape[:2])
         gate_labels = []
         for i in self.gate_ids:
-            label = self._segment2box(seg, self._color_lookup[i + 1], scale)
-            if label is not None:
-                gate_labels.append(label)
+            pose = self._get_rel_pose('frame' + str(i))
+            if -45.0 < pose.yaw < 45.0:
+                corners = self._segment2corners(segmentation_labels, self._color_lookup[i + 1], scale)
+                if corners is not None:
+                    gate_labels.append(GateLabel(pose, corners))
 
-        return scene, ImgLabel(gate_labels)
+        return image, ImgLabel(gate_labels)
 
-    def setPose(self, pose):
+    def set_pose(self, pose):
         self.client.simSetPose(Pose(Vector3r(pose.dist_forward, pose.dist_side, -pose.lift),
                                     AirSimClientBase.toQuaternion(pose.pitch, pose.roll, pose.yaw)), True)
 
     def reset(self):
         self.client.reset()
+
+    @staticmethod
+    def _convert_pose(pose):
+        north = pose.position.x_val
+        east = pose.position.y_val
+        down = pose.position.z_val
+        pitch = AirSimClientBase.toEulerianAngle(pose.orientation)[0]
+        roll = AirSimClientBase.toEulerianAngle(pose.orientation)[1]
+        yaw = AirSimClientBase.toEulerianAngle(pose.orientation)[2]
+        return utils.labels.Pose.Pose(dist_forward=north, dist_side=east, lift=-down,
+                                      yaw=yaw, pitch=pitch, roll=roll)
 
     def __init__(self, address=None):
         self.client = MultirotorClient()
@@ -109,7 +126,6 @@ class AirSimClient:
                 self.gate_ids.append(i)
 
         print("AirSimClient:: {} gates found".format(len(self.gate_ids)))
-
 
         self._color_lookup = np.array([[55, 181, 57],
                                        [153, 108, 6],

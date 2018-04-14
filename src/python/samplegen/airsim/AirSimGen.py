@@ -16,7 +16,7 @@ class AirSimGen:
         self.airsim.reset()
         for i in range(n_samples):
             pose = self.pose_gen.gen_pos()
-            self.airsim.setPose(pose)
+            # self.airsim.set_pose(pose)
             img, label = self.airsim.retrieve_samples()
             samples.append(img)
             labels.append(label)
