@@ -36,39 +36,76 @@ class AirSimClient:
         return corner
 
     @staticmethod
+    def _refine_corners(corner, direction: str, segment_labels, label_color):
+        corner_update = corner.copy()
+        if np.any(segment_labels[corner[1], corner[0]] != label_color):
+            direction_x = corner.copy()
+            direction_y = corner.copy()
+            while True:
+
+                if direction is 'up_right':
+                    direction_x[0] += 1
+                    direction_y[1] -= 1
+                elif direction is 'up_left':
+                    direction_x[0] -= 1
+                    direction_y[1] -= 1
+                elif direction is 'down_left':
+                    direction_x[0] -= 1
+                    direction_y[1] += 1
+                elif direction is 'down_right':
+                    direction_x[0] += 1
+                    direction_y[1] += 1
+
+                if np.all(segment_labels[direction_x[1], direction_x[0]] == label_color):
+                    corner_update = direction_x
+                    break
+                if np.all(segment_labels[direction_y[1], direction_y[0]] == label_color):
+                    corner_update = direction_y
+                    break
+
+        if 0 > corner_update[1] > segment_labels[0] or \
+                0 > corner_update[0] > segment_labels[1]:
+            print('corner refinement exceeded image taken bndbox value')
+            return corner
+        return corner_update
+
+    @staticmethod
     def _segment2corners(segment_labels, label_color, scale):
         h, w = segment_labels.shape[:2]
+
         coordinates = np.where(np.all(segment_labels == label_color, -1))
         if not coordinates[0].any():
             return
-        coord_sum = np.sum(coordinates, 0)
-        y_min_1, x_min_1 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
-        y_max_1, x_max_1 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
 
-        center_x = abs(x_max_1 - x_min_1) / 2 + x_min_1
-        center_y = abs(y_max_1 - y_min_1) / 2 + y_min_1
+        x_min = np.min(coordinates[1])
+        x_max = np.max(coordinates[1])
+        y_min = np.min(coordinates[0])
+        y_max = np.max(coordinates[0])
+        top_left = np.array([x_min, y_min])
+        top_right = np.array([x_max, y_min])
+        bottom_left = np.array([x_min, y_max])
+        bottom_right = np.array([x_max, y_max])
 
-        segment_labels_flipped = np.fliplr(segment_labels)
-        coordinates = np.where(np.all(segment_labels_flipped == label_color, -1))
-        coord_sum = np.sum(coordinates, 0)
-        y_min_2, x_min_2 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
-        y_max_2, x_max_2 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
-        x_min_2 = w - x_min_2
-        x_max_2 = w - x_max_2
+        # top_left = AirSimClient._refine_corners(top_left, 'down_right', segment_labels, label_color)
+        # top_right = AirSimClient._refine_corners(top_right, 'down_left', segment_labels, label_color)
+        # bottom_left = AirSimClient._refine_corners(bottom_left, 'up_right', segment_labels, label_color)
+        # bottom_right = AirSimClient._refine_corners(bottom_right, 'up_left', segment_labels, label_color)
 
-        x_min_1 *= scale[1]
-        x_min_2 *= scale[1]
-        x_max_1 *= scale[1]
-        x_max_2 *= scale[1]
-        center_x *= scale[1]
-        y_min_1 = (h - y_min_1) * scale[0]
-        y_min_2 = (h - y_min_2) * scale[0]
-        y_max_1 = (h - y_max_1) * scale[0]
-        y_max_2 = (h - y_max_2) * scale[0]
-        center_y = (h - center_y) * scale[0]
+        center = np.abs(top_left - bottom_right) / 2 + top_left
 
-        return GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
-                           (x_max_2, y_max_2))
+        top_left = top_left.astype(float) * scale
+        top_right = top_right.astype(float) * scale
+        bottom_left = bottom_left.astype(float) * scale
+        bottom_right = bottom_right.astype(float) * scale
+        center = center.astype(float) * scale
+
+        top_left[1] = h - top_left[1]
+        top_right[1] = h - top_right[1]
+        bottom_left[1] = h - bottom_left[1]
+        bottom_right[1] = h - bottom_right[1]
+        center[1] = h - center[1]
+        return GateCorners(tuple(center), tuple(top_left), tuple(top_right), tuple(bottom_right),
+                           tuple(bottom_left))
 
     def _get_rel_pose(self, frame_id):
         cam_pose = self._convert_pose(self.client.getCameraInfo(0).pose)
@@ -85,7 +122,7 @@ class AirSimClient:
         segmentation_labels = self._response2mat(responses[0])
         image = self._response2mat(responses[1])
         image = convert_color(Image(image, 'bgr'), COLOR_RGBA2BGR)
-        scale = np.array(image.shape[:2]) / np.array(segmentation_labels.shape[:2])
+        scale = np.array(tuple(reversed(image.shape[:2]))) / np.array(tuple(reversed(segmentation_labels.shape[:2])))
         gate_labels = []
         for i in self.gate_ids:
             pose = self._get_rel_pose('frame' + str(i))

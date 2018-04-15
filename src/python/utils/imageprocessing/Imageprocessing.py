@@ -71,8 +71,8 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
             else:
                 thickness_obj = thickness
 
-            img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
-                                        color=color, thickness=thickness_obj)
+            # img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
+            #                            color=color, thickness=thickness_obj)
 
         if legend >= LEGEND_TEXT:
             img_ann = annotate_text(obj.class_name + ' - ' + str(np.round(confidence,2)), img_ann,

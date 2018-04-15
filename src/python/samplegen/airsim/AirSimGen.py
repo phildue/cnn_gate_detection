@@ -24,6 +24,17 @@ class AirSimGen:
             self.airsim.set_pose(pose)
             img, label = self.airsim.retrieve_samples()
 
+            filtered = []
+            for o in label.objects:
+                if 0 < o.pose.yaw < 20 or \
+                        160 < o.pose.yaw < 180 or \
+                        10 < o.magnitude < 4:
+                    pass
+                else:
+                    filtered.append(o)
+
+            label = ImgLabel([filtered])
+
             if len(label.objects) is 0:
                 n_empty += 1
                 if n_empty >= n_empty_max:

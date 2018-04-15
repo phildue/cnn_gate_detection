@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 
 
 class Pose:
@@ -89,7 +90,6 @@ class Pose:
     def rotmat(self):
         return self.rotmat_pitch.dot(self.rotmat_yaw).dot(self.rotmat_roll)
 
-
     @property
     def to_scene_unit(self):
         return Pose(self.north * self.METER_2_SCENE_UNIT,
@@ -107,3 +107,7 @@ class Pose:
                     self.roll,
                     self.pitch,
                     self.yaw)
+
+    @property
+    def magnitude(self):
+        return sqrt(self.north ** 2 + self.east ** 2 + self.up ** 2)
