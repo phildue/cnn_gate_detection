@@ -35,7 +35,7 @@ class PointProjector:
                 continue
 
             gate_corners = self.__create_corner_object(corners2d_hom)
-            obj_labels.append(GateLabel(position=relative_camera_pose.to_meters, gate_corners=gate_corners,
+            obj_labels.append(GateLabel(pose=relative_camera_pose.to_meters, gate_corners=gate_corners,
                                         class_name='gate'))
         return obj_labels
 

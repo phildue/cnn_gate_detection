@@ -64,7 +64,7 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
             if legend >= LEGEND_CORNERS:
                 img_ann = draw_gate_corners(img_ann, obj)
             if legend >= LEGEND_POSITION:
-                img_ann = annotate_position(img_ann, obj.position, obj.x_min, obj.y_max + 5, color)
+                img_ann = annotate_position(img_ann, obj.pose, obj.x_min, obj.y_max + 5, color)
         if isinstance(obj, ObjectLabel):
             if thickness is None:
                 thickness_obj = int(np.ceil(confidence * 4))

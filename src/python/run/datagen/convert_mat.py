@@ -34,7 +34,7 @@ for i in range(labels.shape[0]):
         y4 = ymax - y4
         cx = int(x1 + (x3 - x1) / 2)
         cy = int(y1 + (y3 - y1) / 2)
-        gate_label = GateLabel(position=Pose(),
+        gate_label = GateLabel(pose=Pose(),
                                gate_corners=GateCorners((cx, cy), (x4, y4), (x3, y3), (x2, y2), (x1, y1)))
         gate_labels.append(gate_label)
 

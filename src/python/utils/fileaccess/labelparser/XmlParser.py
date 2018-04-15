@@ -37,12 +37,12 @@ class XmlParser(AbstractDatasetParser):
             ET.SubElement(bnd_box, 'ymax').text = '{0:d}'.format(int(ymax))
             if isinstance(obj, GateLabel):
                 pose_root = ET.SubElement(obj_root, 'pose')
-                ET.SubElement(pose_root, 'north').text = '{0:03f}'.format(obj.position.north)
-                ET.SubElement(pose_root, 'east').text = '{0:03f}'.format(obj.position.east)
-                ET.SubElement(pose_root, 'up').text = '{0:03f}'.format(obj.position.up)
-                ET.SubElement(pose_root, 'yaw').text = '{0:03f}'.format(obj.position.yaw)
-                ET.SubElement(pose_root, 'pitch').text = '{0:03f}'.format(obj.position.pitch)
-                ET.SubElement(pose_root, 'roll').text = '{0:03f}'.format(obj.position.roll)
+                ET.SubElement(pose_root, 'north').text = '{0:03f}'.format(obj.pose.north)
+                ET.SubElement(pose_root, 'east').text = '{0:03f}'.format(obj.pose.east)
+                ET.SubElement(pose_root, 'up').text = '{0:03f}'.format(obj.pose.up)
+                ET.SubElement(pose_root, 'yaw').text = '{0:03f}'.format(obj.pose.yaw)
+                ET.SubElement(pose_root, 'pitch').text = '{0:03f}'.format(obj.pose.pitch)
+                ET.SubElement(pose_root, 'roll').text = '{0:03f}'.format(obj.pose.roll)
                 corner_root = ET.SubElement(obj_root, 'gate_corners')
                 ET.SubElement(corner_root, 'top_left').text = '{},{}'.format(
                     int(obj.gate_corners.top_left[0]),
