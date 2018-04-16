@@ -18,10 +18,10 @@ name = "industrial_new"
 shot_path = "resource/ext/samples/" + name + "/"
 
 n_samples = 2000
-batch_size = 100
+batch_size = 50
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)
-cam_range_lift = (0.5, 2.0)
+cam_range_lift = (0.5, 1.5)
 cam_range_pitch = (-0.3, 0.3)
 cam_range_roll = (-0.3, 0.3)
 cam_range_yaw = (-np.pi, np.pi)

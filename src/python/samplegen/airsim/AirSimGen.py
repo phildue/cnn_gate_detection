@@ -18,7 +18,7 @@ class AirSimGen:
         labels = []
         n_empty = 0
         n_empty_max = int(np.round(self.empty_frac * n_samples))
-        self.airsim.reset()
+        # self.airsim.reset()
         while len(samples) < n_samples:
             pose = self.pose_gen.gen_pos()
             self.airsim.set_pose(pose)
@@ -26,15 +26,14 @@ class AirSimGen:
 
             filtered = []
             for o in label.objects:
-                if 0 < o.pose.yaw < 20 or \
-                        160 < o.pose.yaw < 180 or \
-                        10 < o.magnitude < 4:
+                if (165 < np.degrees(o.pose.yaw) or
+                        np.degrees(o.pose.yaw) < 15 or
+                        30 < o.pose.magnitude
+                        or o.pose.magnitude < 5):
                     pass
                 else:
                     filtered.append(o)
-
-            label = ImgLabel([filtered])
-
+            label.objects = filtered
             if len(label.objects) is 0:
                 n_empty += 1
                 if n_empty >= n_empty_max:

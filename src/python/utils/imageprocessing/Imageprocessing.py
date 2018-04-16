@@ -43,7 +43,7 @@ def annotate_gate(img: Image, label: ImgLabel, bounding_box=False) -> Image:
 
 def annotate_position(img: Image, pos: Pose, x, y, color=(0, 255, 0)):
     img_ann = img.copy()
-    lookup = [pos.north, pos.east, pos.up, pos.roll, pos.pitch, pos.yaw]
+    lookup = [pos.north, pos.east, pos.up, np.degrees(pos.roll), np.degrees(pos.pitch), np.degrees(pos.yaw)]
     for i in range(len(lookup)):
         img_ann = annotate_text("{0:0.2f}".format(lookup[i]), img_ann,
                                 (int(x), int(y - (i + 1) * 20)), color)
@@ -71,8 +71,8 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
             else:
                 thickness_obj = thickness
 
-            # img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
-            #                            color=color, thickness=thickness_obj)
+            img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
+                                        color=color, thickness=thickness_obj)
 
         if legend >= LEGEND_TEXT:
             img_ann = annotate_text(obj.class_name + ' - ' + str(np.round(confidence,2)), img_ann,

@@ -12,7 +12,7 @@ from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.Imageprocessing import show
+from utils.imageprocessing.Imageprocessing import show, LEGEND_POSITION
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 from utils.workdir import cd_work
@@ -26,13 +26,16 @@ client = AirSimClient()
 while True:
     sample, label = client.retrieve_samples()
     time.sleep(2)
-    show(sample, labels=label, t=1)
+
+    show(sample, labels=label, colors=[(255, 255, 255)], t=0, legend=LEGEND_POSITION)
     filtered = []
-    # for o in label.objects:
-    #     if 0 < o.position.yaw < 20.0 or \
-    #         160 < o.position.yaw < 180:
-    #         pass
-    #     else:
-    #         filtered.append(o)
-    # l_filtered = ImgLabel(filtered)
-    # show(sample, labels=l_filtered, t=1, name='filtered')
+    for o in label.objects:
+        if (160 < np.degrees(o.pose.yaw) or
+                np.degrees(o.pose.yaw) < 20 or
+                30 < o.pose.magnitude
+                or o.pose.magnitude < 4):
+            pass
+        else:
+            filtered.append(o)
+    l_filtered = ImgLabel(filtered)
+    show(sample, labels=l_filtered, t=0, name='filtered')
