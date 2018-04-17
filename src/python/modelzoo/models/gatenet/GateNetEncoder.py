@@ -53,10 +53,8 @@ class GateNetEncoder(Encoder):
 
             # TODO previous objects are overwritten instead we should assign the anchor that has the highes iou
             # and thus allow multiple true objects per grid
-            label_t[grid_y, grid_x, :, 0:4] = self.n_boxes * [box]
+            label_t[grid_y, grid_x, :, 0:self.n_polygon] = self.n_boxes * [box]
             label_t[grid_y, grid_x, :, 4] = self.n_boxes * [1.]
-            label_t[grid_y, grid_x, :, 5:] = self.n_boxes * [[0.] * 1]
-            label_t[grid_y, grid_x, :, 5 + obj.class_id] = 1.0
 
         label_t = np.reshape(label_t, [self.grid[0] * self.grid[1] * self.n_boxes, 1 + self.n_polygon])
 

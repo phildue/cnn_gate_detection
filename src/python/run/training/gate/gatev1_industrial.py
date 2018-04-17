@@ -22,8 +22,8 @@ cd_work()
 
 batch_size = 4
 
-image_source = ["resource/ext/samples/industrial_room/"]
-test_image_source = ['resource/ext/samples/industrial_room_test/']
+image_source = ["resource/ext/samples/industrial_new/"]
+test_image_source = ['resource/ext/samples/industrial_new_test/']
 max_epochs = 200
 
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),

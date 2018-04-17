@@ -63,17 +63,22 @@ class GateNetV1(Net):
         conv1 = Conv2D(16, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
         act1 = LeakyReLU(alpha=0.1)(norm1)
-        pool1 = MaxPooling2D((4, 4), strides=(2, 2), padding='same')(act1)
+        pool1 = MaxPooling2D((2, 2))(act1)
 
         conv2 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool1)
         norm2 = BatchNormalization()(conv2)
         act2 = LeakyReLU(alpha=0.1)(norm2)
-        pool2 = MaxPooling2D((8, 8), strides=(4, 4), padding='same')(act2)
-
-        final = Conv2D(self.grid[0] * self.grid[1] * n_boxes * (n_polygon + 1), kernel_size=(52, 52), strides=(1, 1))(
-            pool2)
+        pool2 = MaxPooling2D((4, 4))(act2)
+        # 53
+        conv3 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool2)
+        norm3 = BatchNormalization()(conv3)
+        act3 = LeakyReLU(alpha=0.1)(norm3)
+        pool3 = MaxPooling2D((4, 4))(act3)
+        # 13
+        final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
+            pool3)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
-        out = Lambda(self.net2y)(reshape)
+        out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 
         model = Model(input, out)
 
