@@ -1,5 +1,6 @@
 import numpy as np
 
+from modelzoo.backend.tensor.yolo.ShallowYolo import ShallowYolo
 from modelzoo.backend.tensor.yolo.TinyYolo import TinyYolo
 from modelzoo.backend.tensor.yolo.YoloLoss import YoloLoss
 from modelzoo.backend.tensor.yolo.YoloV2 import YoloV2
@@ -62,6 +63,61 @@ class Yolo(Predictor):
                        n_classes=len(class_names),
                        weight_file=weight_file,
                        n_boxes=n_boxes)
+
+        return Yolo(net,
+                    class_names=class_names,
+                    anchors=anchors,
+                    batch_size=batch_size,
+                    grid=grid,
+                    norm=norm,
+                    conf_thresh=conf_thresh,
+                    color_format=color_format)
+
+    @staticmethod
+    def shallow_yolo(norm=(416, 416),
+                     grid=(13, 13),
+                     anchors=None,
+                     batch_size=8,
+                     scale_noob=1.0,
+                     scale_conf=5.0,
+                     scale_coor=1.0,
+                     scale_prob=1.0,
+                     conf_thresh=0.3,
+                     class_names=None,
+                     weight_file=None,
+                     color_format='yuv'):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        if class_names is None:
+            class_names = [
+                "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
+                "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person",
+                "pottedplant", "sheep", "sofa", "train", "tvmonitor"
+            ]
+
+        n_boxes = anchors.shape[0]
+        loss = YoloLoss(grid=grid,
+                        n_boxes=n_boxes,
+                        n_classes=len(class_names),
+                        verbose=False,
+                        weight_loc=scale_coor,
+                        weight_conf=scale_conf,
+                        weight_prob=scale_prob,
+                        weight_noobj=scale_noob)
+
+        net = ShallowYolo(loss=loss,
+                          anchors=anchors,
+                          norm=norm,
+                          grid=grid,
+                          n_classes=len(class_names),
+                          weight_file=weight_file,
+                          n_boxes=n_boxes)
 
         return Yolo(net,
                     class_names=class_names,

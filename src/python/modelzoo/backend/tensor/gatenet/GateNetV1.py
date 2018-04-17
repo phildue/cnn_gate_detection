@@ -59,18 +59,18 @@ class GateNetV1(Net):
                         'decay': 0.0005}
 
         w, h = img_shape
-        input = Input(w, h)
-        conv1 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
+        input = Input((w, h, 3))
+        conv1 = Conv2D(16, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
         act1 = LeakyReLU(alpha=0.1)(norm1)
-        pool1 = MaxPooling2D((2, 2), strides=(1, 1), padding='same', use_bias=False)(act1)
+        pool1 = MaxPooling2D((4, 4), strides=(2, 2), padding='same')(act1)
 
-        conv2 = Conv2D(128, kernel_size=(3, 3))(pool1)
+        conv2 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool1)
         norm2 = BatchNormalization()(conv2)
         act2 = LeakyReLU(alpha=0.1)(norm2)
-        pool2 = MaxPooling2D((2, 2), strides=(1, 1), padding='same', use_bias=False)(act2)
-        # TODO kernel size should be whole feature map of pool2
-        final = Conv2D(self.grid[0] * self.grid[1] * n_boxes * (n_polygon + 1), kernel_size=(3, 3), strides=(1, 1))(
+        pool2 = MaxPooling2D((8, 8), strides=(4, 4), padding='same')(act2)
+
+        final = Conv2D(self.grid[0] * self.grid[1] * n_boxes * (n_polygon + 1), kernel_size=(52, 52), strides=(1, 1))(
             pool2)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
         out = Lambda(self.net2y)(reshape)
@@ -88,8 +88,10 @@ class GateNetV1(Net):
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        pred_xy = K.sigmoid(netout[:, 2])
-        pred_wh = K.exp(netout[:, 2:self.n_polygon]) * K.reshape(K.constant(self.anchors), [-1, self.n_polygon - 2])
-        pred_c = K.sigmoid(netout[:, -1])
+        netout = K.reshape(netout, (-1, self.grid[0] * self.grid[1], self.n_boxes, self.n_polygon + 1))
+        pred_xy = K.sigmoid(netout[:, :, :, :2])
+        pred_wh = K.exp(netout[:, :, :, 2:self.n_polygon]) * K.reshape(K.constant(self.anchors),
+                                                                       [1, 1, self.n_boxes, self.n_polygon - 2])
+        pred_c = K.sigmoid(netout[:, :, :, -1])
 
-        return K.concatenate([pred_xy, pred_wh, pred_c], 4)
+        return K.concatenate([pred_xy, pred_wh, K.expand_dims(pred_c, -1)], 3)
