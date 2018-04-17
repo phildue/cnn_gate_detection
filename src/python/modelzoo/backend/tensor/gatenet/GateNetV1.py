@@ -1,0 +1,95 @@
+from keras import Input, Model
+from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
+from keras.optimizers import Adam
+
+from modelzoo.backend.tensor.metrics import Loss
+from modelzoo.models.Net import Net
+import keras.backend as K
+
+
+class GateNetV1(Net):
+
+    def compile(self, params=None, metrics=None):
+        # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
+        if params is not None:
+            self._params = params
+
+        optimizer = Adam(self._params['lr'], self._params['beta_1'], self._params['beta_2'], self._params['epsilon'],
+                         self._params['decay'])
+
+        self._model.compile(
+            loss=self.loss.compute,
+            optimizer=optimizer,
+            metrics=metrics
+        )
+
+    @property
+    def backend(self):
+        return self._model
+
+    @backend.setter
+    def backend(self, model):
+        self._model = model
+
+    @property
+    def train_params(self):
+        return self._params
+
+    def predict(self, sample):
+        return self._model.predict(sample)
+
+    def __init__(self, loss: Loss,
+                 anchors,
+                 img_shape=(416, 416),
+                 grid=(13, 13),
+                 n_boxes=5,
+                 weight_file=None, n_polygon=4):
+
+        self.loss = loss
+        self.grid = grid
+        self.norm = img_shape
+        self.n_boxes = n_boxes
+        self.anchors = anchors
+        self.n_polygon = n_polygon
+        self._params = {'optimizer': 'adam',
+                        'lr': 0.001,
+                        'beta_1': 0.9,
+                        'beta_2': 0.999,
+                        'epsilon': 1e-08,
+                        'decay': 0.0005}
+
+        w, h = img_shape
+        input = Input(w, h)
+        conv1 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
+        norm1 = BatchNormalization()(conv1)
+        act1 = LeakyReLU(alpha=0.1)(norm1)
+        pool1 = MaxPooling2D((2, 2), strides=(1, 1), padding='same', use_bias=False)(act1)
+
+        conv2 = Conv2D(128, kernel_size=(3, 3))(pool1)
+        norm2 = BatchNormalization()(conv2)
+        act2 = LeakyReLU(alpha=0.1)(norm2)
+        pool2 = MaxPooling2D((2, 2), strides=(1, 1), padding='same', use_bias=False)(act2)
+        # TODO kernel size should be whole feature map of pool2
+        final = Conv2D(self.grid[0] * self.grid[1] * n_boxes * (n_polygon + 1), kernel_size=(3, 3), strides=(1, 1))(
+            pool2)
+        reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
+        out = Lambda(self.net2y)(reshape)
+
+        model = Model(input, out)
+
+        if weight_file is not None:
+            model.load_weights(weight_file)
+
+        self._model = model
+
+    def net2y(self, netout):
+        """
+        Adapt raw network output. (Softmax, exp, sigmoid, anchors)
+        :param netout: Raw network output
+        :return: y as fed for learning
+        """
+        pred_xy = K.sigmoid(netout[:, 2])
+        pred_wh = K.exp(netout[:, 2:self.n_polygon]) * K.reshape(K.constant(self.anchors), [-1, self.n_polygon - 2])
+        pred_c = K.sigmoid(netout[:, -1])
+
+        return K.concatenate([pred_xy, pred_wh, pred_c], 4)
