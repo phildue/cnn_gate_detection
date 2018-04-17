@@ -1,15 +1,19 @@
 \chapter{Introduction}
 \label{sec:intro}
 
-Recent developments in embedded systems and artifical intelligence enable micro-air vehicles to act more and more autonomously. This gave rise to autonomous drone races, where drones have to complete a race track as fast as possible. These races give researchers the opportunity to evaluate their algorithms in a competitive environment.
+Recent developments in embedded systems and artificial intelligence enable micro air vehicles (MAVs) to act more and more autonomously. In the near future autonomous air vehicles will be used in many applications such as automated warehouses, package delivery or even search and rescue scenarios.
+
+The research on algorithms that allow these kind of technologies gave rise to autonomous drone races, where researchers have the opportunity to evaluate their algorithms in a competitive environment.
 
 The currently most challenging autonomous drone race is held yearly at the IROS conference. The race track consists of several colored metal gates which need to be passed one after another. The participating drones have to fly fully autonomously with all processing happening on board.
 
-An important part to fullfill this task is an accurate estimation of the MAV's state within its environment. Sensors like inertial measurement units and sonars can deliver accurate data of the drones altitude. However, to determine the MAV's global position these sensors are usually to subjective to noise. As the race happens indoor in a GPS-denied environment the most accurate sensor to determine the global position is a camera.
+An important part to fulfill this task is an accurate estimation of the MAV's state within its environment. Sensors like inertial measurement units and sonars can deliver accurate data of the drones altitude. However, to determine the MAV's global position these sensors are usually too subjective to noise. As the race happens indoor in a GPS-denied environment the most accurate sensor to determine the global position is a camera. Hence, high-performing vision algorithms are crucial in order to complete the race court as fast as possible. 
 
-Hence, high-performing vision algorithms are required in order to complete the race court as fast as possible. This thesis investigates a computer vision system that detects the gates within a race track.
+The application imposes multiple challenges: (1) Only the arrangement of gates is known a priori. Environmental factors like light conditions and spectators can influence the performance of the vision system a lot. The developed vision system should be robust against these kind of influences. (2) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition. Hence, any vision system should maximally exploit the available resources.
 
-The application gives multiple challenges towards the vision system: (1) The objects that need to be detected consist mainly of a thin frame and are largely occupied by background. (2) Example data is only available at a limited amount. Following from (1) this bears the chance of overfitting to the background. (3) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition.
+Within the field of computer vision big advances could be achieved using supervised machine learning. Here mathematical models are trained using labeled examples of the object of interest. These learned algorithms tend to outperform most human crafted methods by a far extent.
+
+This thesis investigates a learning based vision method in order to complete the race track of the IROS 2018 autonomous drone race. The goal is to get an accurate estimation of the drones position with respect to the racing gates.
 
 \begin{itemize}
 	\item How can we detect large objects that are mostly occupied by background?
