@@ -30,12 +30,9 @@ while True:
     show(sample, labels=label, colors=[(255, 255, 255)], t=0, legend=LEGEND_POSITION)
     filtered = []
     for o in label.objects:
-        if (160 < np.degrees(o.pose.yaw) or
-                np.degrees(o.pose.yaw) < 20 or
-                30 < o.pose.magnitude
-                or o.pose.magnitude < 4):
-            pass
-        else:
+        print(o.height / o.width)
+        if (4 < o.pose.magnitude < 30 and
+                o.height / o.width < 1.05 / (30 / 90)):
             filtered.append(o)
     l_filtered = ImgLabel(filtered)
     show(sample, labels=l_filtered, t=0, name='filtered')

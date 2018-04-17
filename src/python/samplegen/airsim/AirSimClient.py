@@ -107,47 +107,15 @@ class AirSimClient:
         return GateCorners(tuple(center), tuple(top_left), tuple(top_right), tuple(bottom_right),
                            tuple(bottom_left))
 
-    def _get_view_pose(self, frame_id):
+    def _get_rel_pose(self, frame_id):
         """
-        Calculates the relative angle between the camera and the plane of the gate. E.g. if the gate is facing the camera,
-        the yaw angle will be 90°. If the gate is completely visible from the side the yaw angle is 180°/0°
+        Calculates the objects pose with respect to the camera/drone
         :param frame_id: name of the frame the relative pose is calculated to
         :return: relative pose
         """
         cam_pose = self._convert_pose(self.client.getCameraInfo(0).pose)
-        cam_pose.north -= 50
         obj_pose = self._convert_pose(self.client.simGetObjectPose(frame_id))
-        camera = Camera(0, 0, init_pose=cam_pose)
-        # print("Cam Trans",camera.pose.transfmat)
-        obj_pose = camera.convert_to_camera_space(obj_pose)
-        obj_normals = np.array([[0, 1],
-                                [1, 0],
-                                [0, 0],
-                                [1, 1]])
-
-        obj2world = obj_pose.transfmat
-        # print("Obj2World", obj2world)
-
-        obj_world = obj2world.dot(obj_normals)
-        # print("ObjWorld", obj_world)
-
-        obj_cam_center = obj_pose.transvec
-        obj_cam_up = obj_world[:3, 0]
-        obj_cam_east = obj_world[:3, 1]
-        plane_pitch = obj_cam_up - obj_cam_center
-        plane_yaw = obj_cam_east - obj_cam_center
-        # print("Plane Pitch", plane_pitch)
-        # print("Plane Yaw", plane_yaw)
-        yaw_cam = np.math.acos(
-            plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
-        pitch_cam = np.math.acos(
-            plane_pitch.dot(obj_cam_center) / (np.linalg.norm(plane_pitch) * np.linalg.norm(obj_cam_center)))
-        roll_cam = 0  # np.math.acos(
-        # plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
-        # FIXME roll is wrong
-        rel_pose = utils.labels.Pose.Pose(north=obj_cam_center[2], east=obj_cam_center[0], up=obj_cam_center[1],
-                                          yaw=yaw_cam,
-                                          pitch=pitch_cam, roll=roll_cam)
+        rel_pose = Camera(0, 0, init_pose=cam_pose).convert_to_view_space(obj_pose)
 
         return rel_pose
 
@@ -162,7 +130,7 @@ class AirSimClient:
         scale = np.array(tuple(reversed(image.shape[:2]))) / np.array(tuple(reversed(segmentation_labels.shape[:2])))
         gate_labels = []
         for i in self.gate_ids:
-            pose = self._get_view_pose('frame' + str(i))
+            pose = self._get_rel_pose('frame' + str(i))
             corners = self._segment2corners(segmentation_labels, self._color_lookup[i + 1], scale)
             if corners is not None:
                 gate_labels.append(GateLabel(pose, corners))

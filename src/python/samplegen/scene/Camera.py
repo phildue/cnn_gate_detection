@@ -40,13 +40,16 @@ class Camera:
 
         return projection.T
 
-    def convert_to_camera_space(self, obj_pose: Pose):
+    def convert_to_view_space(self, obj_pose: Pose):
         """
-        Calculates the pose of an object towards the camera.
+        Transforms world coordinates to coordinates in view space.
         :param obj_pose: pose of the object in world space
-        :return: pose: pose of the object within camera space
+        :return: pose: pose of the object within view space
         """
-        obj_cam = self.pose.transfmat.dot(obj_pose.transfmat)
+        world2cam = np.linalg.inv(self.pose.transfmat)
+
+        # print("world2cam", world2cam)
+        obj_cam = world2cam.dot(obj_pose.transfmat)
 
         obj_cam_center = obj_cam[:3, 3]
         pitch_cam, yaw_cam, roll_cam = Pose.rotmat2euler(obj_cam[:3, :3])

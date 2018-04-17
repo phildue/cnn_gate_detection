@@ -17,13 +17,13 @@ cd_work()
 name = "industrial_new"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 2000
+n_samples = 1000
 batch_size = 50
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)
 cam_range_lift = (0.5, 1.5)
-cam_range_pitch = (-0.3, 0.3)
-cam_range_roll = (-0.3, 0.3)
+cam_range_pitch = (-0.1, 0.1)
+cam_range_roll = (-0.1, 0.1)
 cam_range_yaw = (-np.pi, np.pi)
 
 # TODO choose simulation environment here + camera settings and start simulation
@@ -39,7 +39,7 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=0,
+set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=3000,
                                       color_format='bgr')
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
