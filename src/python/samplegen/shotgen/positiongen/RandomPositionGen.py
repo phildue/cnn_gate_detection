@@ -16,9 +16,9 @@ class RandomPositionGen(PositionGen):
         self.range_yaw = range_yaw
 
     def gen_pos(self) -> Pose:
-        return Pose(dist_side=random.uniform(self.range_dist_side[0], self.range_dist_side[1]),
-                    dist_forward=random.uniform(self.range_forward[0], self.range_forward[1]),
-                    lift=random.uniform(self.range_lift[0], self.range_lift[1]),
+        return Pose(east=random.uniform(self.range_dist_side[0], self.range_dist_side[1]),
+                    north=random.uniform(self.range_forward[0], self.range_forward[1]),
+                    up=random.uniform(self.range_lift[0], self.range_lift[1]),
                     roll=random.uniform(self.range_roll[0], self.range_roll[1]),
                     pitch=random.uniform(self.range_pitch[0], self.range_pitch[1]),
                     yaw=random.uniform(self.range_yaw[0], self.range_yaw[1]))

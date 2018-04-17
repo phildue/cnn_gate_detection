@@ -2,7 +2,8 @@ from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
-from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX
+from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX, LEGEND_TEXT, LEGEND_POSITION, \
+    LEGEND_CORNERS
 from utils.workdir import cd_work
 
 cd_work()
@@ -22,11 +23,7 @@ def show_img(path):
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
-            # show(img, 'labeled', labels=label, colors=[COLOR_GREEN], legend=LEGEND_BOX)
-            #
-            # img, label = resize(img, shape=(150, 150), label=label)
-            # img, label = resize(img, shape=(80, 166), label=label)
-            show(img, 'resized', labels=label)
+            show(img, 'resized', labels=label, legend=LEGEND_POSITION, thickness=1)
 
 
 def show_shot(path="samplegen/resource/shots/stream/"):
@@ -38,5 +35,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/brick_room'])
+show_img(path=['resource/ext/samples/industrial_new'])
 # show_voc()

@@ -43,7 +43,7 @@ def annotate_gate(img: Image, label: ImgLabel, bounding_box=False) -> Image:
 
 def annotate_position(img: Image, pos: Pose, x, y, color=(0, 255, 0)):
     img_ann = img.copy()
-    lookup = [pos.dist_forward, pos.dist_side, pos.lift, pos.roll, pos.pitch, pos.yaw]
+    lookup = [pos.north, pos.east, pos.up, np.degrees(pos.roll), np.degrees(pos.pitch), np.degrees(pos.yaw)]
     for i in range(len(lookup)):
         img_ann = annotate_text("{0:0.2f}".format(lookup[i]), img_ann,
                                 (int(x), int(y - (i + 1) * 20)), color)
@@ -64,7 +64,7 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
             if legend >= LEGEND_CORNERS:
                 img_ann = draw_gate_corners(img_ann, obj)
             if legend >= LEGEND_POSITION:
-                img_ann = annotate_position(img_ann, obj.position, obj.x_min, obj.y_max + 5, color)
+                img_ann = annotate_position(img_ann, obj.pose, obj.x_min, obj.y_max + 5, color)
         if isinstance(obj, ObjectLabel):
             if thickness is None:
                 thickness_obj = int(np.ceil(confidence * 4))

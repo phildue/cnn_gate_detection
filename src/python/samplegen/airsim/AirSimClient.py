@@ -7,6 +7,7 @@ from math import isnan
 from cv2.cv2 import COLOR_RGBA2GRAY
 
 import utils
+from samplegen.scene.Camera import Camera
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import convert_color, COLOR_RGBA2BGR
 from utils.imageprocessing.Image import Image
@@ -35,68 +36,161 @@ class AirSimClient:
         return corner
 
     @staticmethod
-    def _segment2box(segment_labels, label_color, scale):
+    def _refine_corners(corner, direction: str, segment_labels, label_color):
+        corner_update = corner.copy()
+        if np.any(segment_labels[corner[1], corner[0]] != label_color):
+            direction_x = corner.copy()
+            direction_y = corner.copy()
+            while True:
+
+                if direction is 'up_right':
+                    direction_x[0] += 1
+                    direction_y[1] -= 1
+                elif direction is 'up_left':
+                    direction_x[0] -= 1
+                    direction_y[1] -= 1
+                elif direction is 'down_left':
+                    direction_x[0] -= 1
+                    direction_y[1] += 1
+                elif direction is 'down_right':
+                    direction_x[0] += 1
+                    direction_y[1] += 1
+
+                if np.all(segment_labels[direction_x[1], direction_x[0]] == label_color):
+                    corner_update = direction_x
+                    break
+                if np.all(segment_labels[direction_y[1], direction_y[0]] == label_color):
+                    corner_update = direction_y
+                    break
+
+        if 0 > corner_update[1] > segment_labels[0] or \
+                0 > corner_update[0] > segment_labels[1]:
+            print('corner refinement exceeded image taken bndbox value')
+            return corner
+        return corner_update
+
+    @staticmethod
+    def _segment2corners(segment_labels, label_color, scale):
         h, w = segment_labels.shape[:2]
+
         coordinates = np.where(np.all(segment_labels == label_color, -1))
         if not coordinates[0].any():
             return
-        coord_sum = np.sum(coordinates, 0)
-        y_min_1, x_min_1 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
-        y_max_1, x_max_1 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
 
-        center_x = abs(x_max_1 + x_min_1) / 2
-        center_y = abs(y_max_1 + y_min_1) / 2
+        x_min = np.min(coordinates[1])
+        x_max = np.max(coordinates[1])
+        y_min = np.min(coordinates[0])
+        y_max = np.max(coordinates[0])
+        top_left = np.array([x_min, y_min])
+        top_right = np.array([x_max, y_min])
+        bottom_left = np.array([x_min, y_max])
+        bottom_right = np.array([x_max, y_max])
 
-        segment_labels_flipped = np.fliplr(segment_labels)
-        coordinates = np.where(np.all(segment_labels_flipped == label_color, -1))
-        coord_sum = np.sum(coordinates, 0)
-        y_min_2, x_min_2 = coordinates[0][np.argmin(coord_sum)], coordinates[1][np.argmin(coord_sum)]
-        y_max_2, x_max_2 = coordinates[0][np.argmax(coord_sum)], coordinates[1][np.argmax(coord_sum)]
-        x_min_2 = w - x_min_2
-        x_max_2 = w - x_max_2
+        # top_left = AirSimClient._refine_corners(top_left, 'down_right', segment_labels, label_color)
+        # top_right = AirSimClient._refine_corners(top_right, 'down_left', segment_labels, label_color)
+        # bottom_left = AirSimClient._refine_corners(bottom_left, 'up_right', segment_labels, label_color)
+        # bottom_right = AirSimClient._refine_corners(bottom_right, 'up_left', segment_labels, label_color)
 
-        x_min_1 *= scale[1]
-        x_min_2 *= scale[1]
-        x_max_1 *= scale[1]
-        x_max_2 *= scale[1]
-        center_x *= scale[1]
-        y_min_1 = (h - y_min_1) * scale[0]
-        y_min_2 = (h - y_min_2) * scale[0]
-        y_max_1 = (h - y_max_1) * scale[0]
-        y_max_2 = (h - y_max_2) * scale[0]
-        center_y = (h - center_y) * scale[0]
-        # TODO add relative Pose
-        label = GateLabel(utils.labels.Pose.Pose(),
-                          GateCorners((center_x, center_y), (x_min_1, y_min_1), (x_min_2, y_min_2), (x_max_1, y_max_1),
-                                      (x_max_2, y_max_2)))
-        label.confidence = 1.0
-        return label
+        center = np.abs(top_left - bottom_right) / 2 + top_left
+
+        top_left = top_left.astype(float) * scale
+        top_right = top_right.astype(float) * scale
+        bottom_left = bottom_left.astype(float) * scale
+        bottom_right = bottom_right.astype(float) * scale
+        center = center.astype(float) * scale
+
+        top_left[1] = h - top_left[1]
+        top_right[1] = h - top_right[1]
+        bottom_left[1] = h - bottom_left[1]
+        bottom_right[1] = h - bottom_right[1]
+        center[1] = h - center[1]
+        return GateCorners(tuple(center), tuple(top_left), tuple(top_right), tuple(bottom_right),
+                           tuple(bottom_left))
+
+    def _get_view_pose(self, frame_id):
+        """
+        Calculates the relative angle between the camera and the plane of the gate. E.g. if the gate is facing the camera,
+        the yaw angle will be 90°. If the gate is completely visible from the side the yaw angle is 180°/0°
+        :param frame_id: name of the frame the relative pose is calculated to
+        :return: relative pose
+        """
+        cam_pose = self._convert_pose(self.client.getCameraInfo(0).pose)
+        cam_pose.north -= 50
+        obj_pose = self._convert_pose(self.client.simGetObjectPose(frame_id))
+        camera = Camera(0, 0, init_pose=cam_pose)
+        # print("Cam Trans",camera.pose.transfmat)
+        obj_pose = camera.convert_to_camera_space(obj_pose)
+        obj_normals = np.array([[0, 1],
+                                [1, 0],
+                                [0, 0],
+                                [1, 1]])
+
+        obj2world = obj_pose.transfmat
+        # print("Obj2World", obj2world)
+
+        obj_world = obj2world.dot(obj_normals)
+        # print("ObjWorld", obj_world)
+
+        obj_cam_center = obj_pose.transvec
+        obj_cam_up = obj_world[:3, 0]
+        obj_cam_east = obj_world[:3, 1]
+        plane_pitch = obj_cam_up - obj_cam_center
+        plane_yaw = obj_cam_east - obj_cam_center
+        # print("Plane Pitch", plane_pitch)
+        # print("Plane Yaw", plane_yaw)
+        yaw_cam = np.math.acos(
+            plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
+        pitch_cam = np.math.acos(
+            plane_pitch.dot(obj_cam_center) / (np.linalg.norm(plane_pitch) * np.linalg.norm(obj_cam_center)))
+        roll_cam = 0  # np.math.acos(
+        # plane_yaw.dot(obj_cam_center) / (np.linalg.norm(plane_yaw) * np.linalg.norm(obj_cam_center)))
+        # FIXME roll is wrong
+        rel_pose = utils.labels.Pose.Pose(north=obj_cam_center[2], east=obj_cam_center[0], up=obj_cam_center[1],
+                                          yaw=yaw_cam,
+                                          pitch=pitch_cam, roll=roll_cam)
+
+        return rel_pose
 
     def retrieve_samples(self) -> (Image, ImgLabel):
         responses = self.client.simGetImages([
             ImageRequest(0, AirSimImageType.Segmentation, False, False),
             ImageRequest(0, AirSimImageType.Scene, False, False)])
 
-        seg = self._response2mat(responses[0])
-        scene = self._response2mat(responses[1])
-        scene = convert_color(Image(scene, 'bgr'), COLOR_RGBA2BGR)
-        hcam, wcam = scene.shape[:2]
-        hseg, wseg = seg.shape[:2]
-        scale = np.array([hcam / hseg, wcam / wseg])
+        segmentation_labels = self._response2mat(responses[0])
+        image = self._response2mat(responses[1])
+        image = convert_color(Image(image, 'bgr'), COLOR_RGBA2BGR)
+        scale = np.array(tuple(reversed(image.shape[:2]))) / np.array(tuple(reversed(segmentation_labels.shape[:2])))
         gate_labels = []
         for i in self.gate_ids:
-            label = self._segment2box(seg, self._color_lookup[i + 1], scale)
-            if label is not None:
-                gate_labels.append(label)
+            pose = self._get_view_pose('frame' + str(i))
+            corners = self._segment2corners(segmentation_labels, self._color_lookup[i + 1], scale)
+            if corners is not None:
+                gate_labels.append(GateLabel(pose, corners))
 
-        return scene, ImgLabel(gate_labels)
+        return image, ImgLabel(gate_labels)
 
-    def setPose(self, pose):
-        self.client.simSetPose(Pose(Vector3r(pose.dist_forward, pose.dist_side, -pose.lift),
+    def set_pose(self, pose):
+        self.client.simSetPose(Pose(Vector3r(pose.north, pose.east, -pose.up),
                                     AirSimClientBase.toQuaternion(pose.pitch, pose.roll, pose.yaw)), True)
 
     def reset(self):
         self.client.reset()
+
+    @staticmethod
+    def _convert_pose(pose):
+        """
+        Convert between the airsim pose object to our pose object
+        :param pose: airsim pose type
+        :return: our pose type
+        """
+        north = pose.position.x_val
+        east = pose.position.y_val
+        down = pose.position.z_val
+        pitch = AirSimClientBase.toEulerianAngle(pose.orientation)[0]
+        roll = AirSimClientBase.toEulerianAngle(pose.orientation)[1]
+        yaw = AirSimClientBase.toEulerianAngle(pose.orientation)[2]
+        return utils.labels.Pose.Pose(north=north, east=east, up=-down,
+                                      yaw=yaw, pitch=pitch, roll=roll)
 
     def __init__(self, address=None):
         self.client = MultirotorClient()
@@ -109,7 +203,6 @@ class AirSimClient:
                 self.gate_ids.append(i)
 
         print("AirSimClient:: {} gates found".format(len(self.gate_ids)))
-
 
         self._color_lookup = np.array([[55, 181, 57],
                                        [153, 108, 6],

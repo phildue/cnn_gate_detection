@@ -39,3 +39,18 @@ class Camera:
             projection[i] /= abs(projection[2])
 
         return projection.T
+
+    def convert_to_camera_space(self, obj_pose: Pose):
+        """
+        Calculates the pose of an object towards the camera.
+        :param obj_pose: pose of the object in world space
+        :return: pose: pose of the object within camera space
+        """
+        obj_cam = self.pose.transfmat.dot(obj_pose.transfmat)
+
+        obj_cam_center = obj_cam[:3, 3]
+        pitch_cam, yaw_cam, roll_cam = Pose.rotmat2euler(obj_cam[:3, :3])
+        rel_pose = Pose(north=obj_cam_center[2], east=obj_cam_center[0], up=obj_cam_center[1], yaw=yaw_cam,
+                        pitch=pitch_cam, roll=roll_cam)
+
+        return rel_pose

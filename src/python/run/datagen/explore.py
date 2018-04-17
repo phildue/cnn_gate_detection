@@ -17,7 +17,7 @@ from utils.workdir import cd_work
 
 cd_work()
 
-cam = Camera(1000, init_pose=Pose(dist_forward=5))
+cam = Camera(1000, init_pose=Pose(north=5))
 
 gate_path = "resource/gates/"
 gate_file = "gate250.obj"

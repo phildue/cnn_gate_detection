@@ -34,7 +34,7 @@ class LabelMaker:
                         bottom_left, bottom_right, top_right, top_left = obj
                         cx = int(bottom_left[0] + (top_right[0] - bottom_left[0]) / 2)
                         cy = int(bottom_left[1] + (top_right[1] - bottom_left[1]) / 2)
-                        gate_label = GateLabel(position=Pose(),
+                        gate_label = GateLabel(pose=Pose(),
                                                gate_corners=GateCorners(top_left=top_left, top_right=top_right,
                                                                         bottom_left=bottom_left,
                                                                         bottom_right=bottom_right,
