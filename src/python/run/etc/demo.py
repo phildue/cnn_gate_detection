@@ -9,9 +9,9 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/industrial_room_cats_test'],
+generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          shuffle=True, start_idx=0, valid_frac=1.0,
                           label_format='xml',
                           )
 #
@@ -20,6 +20,6 @@ generator = GateGenerator(directories=['resource/ext/samples/industrial_room_cat
 # model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc3/SSD300.h5',
 #                    iou_thresh_nms=0.3)
 model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.1,
-                     color_format='bgr', weight_file='logs/tiny_industrial_cats/TinyYolo.h5')
+                       color_format='bgr', weight_file='logs/tiny_industrial_new/TinyYolo.h5')
 create_dirs(['logs/tiny_industrial_cast/demo/'])
-demo_generator(model, generator, t_show=1,out_file='logs/tiny_industrial_cats/demo/')
+demo_generator(model, generator, t_show=0)

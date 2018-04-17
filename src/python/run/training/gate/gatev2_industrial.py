@@ -6,6 +6,7 @@ from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYo
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
+from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -25,26 +26,25 @@ image_source = ["resource/ext/samples/industrial_new/"]
 test_image_source = ['resource/ext/samples/industrial_new_test/']
 max_epochs = 200
 
-predictor = Yolo.shallow_yolo(class_names=['gate'], batch_size=batch_size,
-                              color_format='bgr')
-data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
-                               color_format='bgr', label_format='xml', n_samples=2500)
-test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0.8, color_format='bgr',
-                         label_format='xml')
-
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
+predictor = GateNet.v2(batch_size=batch_size,
+                       color_format='bgr',
+                       augmenter=augmenter)
+
+train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
+                          color_format='bgr', label_format='xml')
+test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0, color_format='bgr', label_format='xml')
+
 model_name = predictor.net.__class__.__name__
 
-name = 'shallow_industrial_2500'
+name = 'gatev2_industrial'
 result_path = 'logs/' + name + '/'
 test_result = result_path + 'results/industrial_room-'
 
 create_dirs([result_path])
-
-predictor.preprocessor.augmenter = augmenter
 
 params = {'optimizer': 'adam',
           'lr': 0.001,
@@ -59,9 +59,9 @@ test_metric = TestMetric(test_gen,
                          ModelEvaluator(predictor, verbose=False),
                          ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
                                              color_format='bgr'))
-training = Training(predictor, data_generator,
+training = Training(predictor, train_gen,
                     out_file=model_name + '.h5',
-                    patience_early_stop=-1,
+                    patience_early_stop=20,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,

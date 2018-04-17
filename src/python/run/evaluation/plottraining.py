@@ -8,11 +8,10 @@ from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 
-def plot_training(work_dir):
-    N = 40
+def plot_training(work_dir, n_epochs):
     log_csv = load_file(work_dir + 'log.csv')
-    mat_csv = np.zeros((N, 4), dtype=np.float)
-    for i in range(1, N+1):
+    mat_csv = np.zeros((n_epochs, 4), dtype=np.float)
+    for i in range(1, n_epochs + 1):
         mat_csv[i - 1, 0] = float(log_csv[i][0])
         mat_csv[i - 1, 1] = float(log_csv[i][1])
         mat_csv[i - 1, 2] = float(log_csv[i][2])
@@ -39,5 +38,4 @@ def plot_training(work_dir):
 
 
 cd_work()
-plot_training('logs/v2_airsim/').show(False)
-plot_training('logs/v2_airsim_cats/').show(True)
+plot_training('logs/tiny_industrial_new/', 9).show(True)

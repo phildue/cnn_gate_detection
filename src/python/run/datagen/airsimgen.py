@@ -14,10 +14,10 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_new"
+name = "industrial_new_test"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 1000
+n_samples = 500
 batch_size = 50
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)
@@ -39,7 +39,7 @@ client = AirSimClient()
 samplegen = AirSimGen(posegen, client)
 
 create_dirs([shot_path])
-set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=3000,
+set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=0,
                                       color_format='bgr')
 n_batches = int(n_samples / batch_size)
 for i in range(n_batches):
