@@ -21,8 +21,8 @@ cd_work()
 
 batch_size = 4
 
-image_source = ["resource/ext/samples/industrial_room/"]
-test_image_source = ['resource/ext/samples/industrial_room_test/']
+image_source = ["resource/ext/samples/industrial_new/"]
+test_image_source = ['resource/ext/samples/industrial_new_test/']
 max_epochs = 200
 
 predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size,
@@ -61,7 +61,7 @@ test_metric = TestMetric(test_gen,
                                              color_format='bgr'))
 training = Training(predictor, data_generator,
                     out_file=model_name + '.h5',
-                    patience_early_stop=-1,
+                    patience_early_stop=20,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
