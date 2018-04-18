@@ -5,6 +5,7 @@ from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
 from modelzoo.backend.tensor.gatenet.GateNetV2 import GateNetV2
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
+from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor

@@ -40,7 +40,7 @@ test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0,
 
 model_name = predictor.net.__class__.__name__
 
-name = 'gatev2_industrial'
+name = 'gatev4_industrial'
 result_path = 'logs/' + name + '/'
 test_result = result_path + 'results/industrial_room-'
 

@@ -7,7 +7,7 @@ from modelzoo.models.Net import Net
 import keras.backend as K
 
 
-class GateNetV2(Net):
+class GateNetV4(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
