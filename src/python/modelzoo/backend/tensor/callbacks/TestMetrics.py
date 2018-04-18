@@ -1,6 +1,6 @@
 from keras.callbacks import Callback
 
-from modelzoo.evaluation.DataEvaluator import DataEvaluator
+from modelzoo.evaluation.MetricEvaluator import DataEvaluator
 from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 

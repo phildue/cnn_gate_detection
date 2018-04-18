@@ -1,3 +1,4 @@
+from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.ssd.SSD import SSD
 from modelzoo.models.yolo.Yolo import Yolo
 from modelzoo.visualization.demo import demo_generator
@@ -21,5 +22,6 @@ generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test
 #                    iou_thresh_nms=0.3)
 model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.1,
                        color_format='bgr', weight_file='logs/tiny_industrial_new/TinyYolo.h5')
-create_dirs(['logs/tiny_industrial_cast/demo/'])
+#
+# model = GateNet.v3(weight_file='logs/gatev3_industrial/GateNetV3.h5',conf_thresh=0.2)
 demo_generator(model, generator, t_show=0)

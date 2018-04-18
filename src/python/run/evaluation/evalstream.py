@@ -1,6 +1,6 @@
 import os
 
-from modelzoo.evaluation.DataEvaluator import DataEvaluator
+from modelzoo.evaluation.MetricEvaluator import DataEvaluator
 from modelzoo.evaluation.MetricOneGate import MetricOneGate
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator

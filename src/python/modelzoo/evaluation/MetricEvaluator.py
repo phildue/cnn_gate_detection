@@ -5,7 +5,7 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.timing import toc, tic
 
 
-class DataEvaluator:
+class MetricEvaluator:
     def __init__(self, metrics: [Metric], color_format='bgr', out_file=None, verbose=True):
         self.verbose = verbose
         self.out_file = out_file

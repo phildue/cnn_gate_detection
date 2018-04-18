@@ -1,20 +1,21 @@
 import numpy as np
 
-from modelzoo.evaluation.DataEvaluator import DataEvaluator
 from modelzoo.evaluation.Metric import Metric
+from modelzoo.evaluation.MetricEvaluator import MetricEvaluator
 from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
-from utils.fileaccess.utils import load_file, save_file
+from utils.fileaccess.utils import save_file
 from utils.imageprocessing.Backend import imread, resize
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 
 
-class ConfidenceEvaluator(DataEvaluator):
+class ConfidenceEvaluator(MetricEvaluator):
     def __init__(self, model: Predictor, metrics: [Metric], confidence_levels=11, out_file=None, verbose=True,
                  color_format='bgr'):
-        super().__init__(metrics=metrics, out_file=out_file, verbose=verbose, color_format=color_format)
+        super().__init__(metrics, color_format, out_file, verbose)
         self.model = model
+
         self.confidence_levels = np.round(np.linspace(1.0, 0, confidence_levels), 2)
 
     def evaluate_sample(self, label_pred: ImgLabel, label_true: ImgLabel, img=None):

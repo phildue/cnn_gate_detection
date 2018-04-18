@@ -4,29 +4,25 @@ import numpy as np
 
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
+from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.utils import create_dirs, save_file, load_file
 from utils.workdir import cd_work
 
 cd_work()
 
-name = '2803'
-op_dir = 'logs/v2_bebop_distort/'
+name = '1804'
+op_dir = 'logs/gatev0_industrial/'
 # Source
-in_file = op_dir + name + '/result_2803.pkl'
+in_file = op_dir + name + '/result_1804.pkl'
 color_format = 'bgr'
 
 # Model
 conf_thresh = 0
-weight_file = op_dir + '/YoloV2.h5'
+weight_file = op_dir + '/GateNetV0.h5'
 
-anchors = np.array([[0.13809687, 0.27954467],
-                    [0.17897748, 0.56287585],
-                    [0.36642611, 0.39084195],
-                    [0.60043528, 0.67687858]])
+model = GateNet.v0(weight_file=weight_file, conf_thresh=0.001)
 
-model = Yolo.yolo_v2(norm=(160, 320), grid=(5, 10), class_names=['gate'], batch_size=4,
-                       color_format='bgr', anchors=anchors,weight_file=weight_file)
 # Evaluator
 iou_thresh = 0.4
 
