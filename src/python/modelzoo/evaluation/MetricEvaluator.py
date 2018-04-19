@@ -30,7 +30,7 @@ class MetricEvaluator:
         tic()
         for i in range(len(labels_true)):
             image = imread(image_files[i], self.color_format)
-            sample_result = self.evaluate_sample(labels_pred[j], labels_true[j], image)
+            sample_result = self.evaluate_sample(labels_pred[i], labels_true[i], image)
             for m in self.metrics.keys():
                 results[m].append(sample_result[m])
 
