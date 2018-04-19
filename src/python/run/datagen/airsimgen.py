@@ -14,10 +14,10 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_new_test"
+name = "daylight"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 500
+n_samples = 1000
 batch_size = 50
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)

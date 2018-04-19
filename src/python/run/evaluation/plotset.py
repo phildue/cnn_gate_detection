@@ -11,8 +11,8 @@ from utils.workdir import cd_work
 
 cd_work()
 
-result_path = 'logs/gatev0_industrial/results/'
-result_file = 'industrial_room--38.pkl'
+result_path = 'logs/gatev0_industrial/'
+result_file = 'result_industrial.pkl'
 results = load_file(result_path + result_file)
 detection_result = results['results']['MetricDetection']
 detection_result_sum = ResultByConfidence(detection_result[0])

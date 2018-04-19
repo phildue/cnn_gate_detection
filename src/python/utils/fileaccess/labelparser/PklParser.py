@@ -13,15 +13,17 @@ class PklParser(AbstractDatasetParser):
         with open(path + '.pkl', 'wb') as f:
             pickle.dump(label, f, pickle.HIGHEST_PROTOCOL)
 
-    def read(self, n=0) -> [Image, ImgLabel]:
+    def read(self, n=0) -> ([Image], [ImgLabel]):
         files = sorted(glob.glob(self.directory + '/*.pkl'))
         samples = []
+        labels = []
         for i, file in enumerate(files):
             if 0 < n < i: break
             label = PklParser.read_label(file)
             img = imread(file.replace('pkl', self.image_format), self.color_format)
-            samples.append((img, label))
-        return samples
+            samples.append(img)
+            labels.append(label)
+        return samples, labels
 
     @staticmethod
     def read_label(filepath: str) -> [ImgLabel]:

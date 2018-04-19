@@ -27,7 +27,7 @@ class AbstractDatasetParser:
         pass
 
     @abstractmethod
-    def read(self, n=0) -> [(Image, ImgLabel)]:
+    def read(self, n=0) -> ([Image], [ImgLabel]):
         pass
 
     @staticmethod

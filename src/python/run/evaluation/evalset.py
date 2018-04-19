@@ -34,10 +34,10 @@ create_dirs([result_path, result_img_path])
 generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format='jpg',
                           shuffle=False, color_format=color_format, label_format='xml', start_idx=0)
 
-evaluate_generator(model, generator, n_batches=n_batches, verbose=True, out_file_labels=result_path + result_file)
+# evaluate_generator(model, generator, n_batches=n_batches, verbose=True, out_file_labels=result_path + result_file)
 
-evaluate_file(model, result_path + result_file, metrics=[MetricDetection(show_=False)], verbose=True,
-              out_file_metric=result_path + result_file)
+evaluate_file(model, result_path + result_file + '.pkl', metrics=[MetricDetection(show_=False)], verbose=True,
+              out_file_metric=result_path + result_file + '.pkl')
 
 exp_params = {'name': name,
               'model': model.net.__class__.__name__,

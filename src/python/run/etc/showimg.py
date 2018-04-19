@@ -35,5 +35,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/industrial_new'])
+show_img(path=['resource/ext/samples/daylight'])
 # show_voc()

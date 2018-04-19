@@ -2,8 +2,11 @@ import tensorflow as tf
 from object_detection.utils import dataset_util
 
 from utils.fileaccess.labelparser.AbstractDatasetParser import AbstractDatasetParser
-from utils.imageprocessing import Image
+from utils.imageprocessing.Backend import convert_color, COLOR_BGR2RGB
+from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
+import numpy as np
 
 
 class TfRecordParser(AbstractDatasetParser):
@@ -15,21 +18,56 @@ class TfRecordParser(AbstractDatasetParser):
         flags.DEFINE_string('output_path', self.directory, 'Path to output TFRecord')
         self.FLAGS = flags.FLAGS
 
-    def read(self, n=0) -> [ImgLabel]:
-        pass
+    def read(self, n=0, filename='set.record') -> ([Image], [ImgLabel]):
+        record_iterator = tf.python_io.tf_record_iterator(path=self.directory + filename)
+        images = []
+        labels = []
+        for string_record in record_iterator:
+
+            if len(images) > n: break
+
+            example = tf.train.Example()
+            example.ParseFromString(string_record)
+
+            height = int(example.features.feature['image/height'].int64_list.value[0])
+
+            width = int(example.features.feature['image/width'].int64_list.value[0])
+
+            img_string = (example.features.feature['image/encoded'].bytes_list.value[0])
+
+            # xmins = example.features.feature['image/object/bbox/xmin'].float_list.value
+            # xmaxs = example.features.feature['image/object/bbox/xmax'].float_list
+            # ymins = example.features.feature['image/object/bbox/ymin'].float_list
+            # ymaxs = example.features.feature['image/object/bbox/ymax'].float_list
+            # names = example.features.feature['image/object/class/text'].bytes_list
+
+            objects = []
+            # for i, name in enumerate(names):
+            #     object_label = ObjectLabel(name, tf.np.array([(xmins[i], ymins[i]), (xmaxs[i], ymaxs[i])]))
+            #     objects.append(object_label)
+            labels.append(ImgLabel(objects))
+
+            img_1d = np.fromstring(img_string, dtype=np.uint8)
+            reconstructed_img = img_1d.reshape((height, width, -1))
+            img = Image(reconstructed_img, 'rgb')
+            img = convert_color(img, COLOR_BGR2RGB)
+            img.color_format = 'bgr'
+            images.append(img)
+        return images, labels
 
     @staticmethod
     def read_label(filepath: str) -> [ImgLabel]:
         pass
 
-    def write(self, images: [Image], labels: [ImgLabel]):
-        writer = tf.python_io.TFRecordWriter(self.FLAGS.output_path + '/tfrecord.pbtxt')
+    def write(self, images: [Image], labels: [ImgLabel], filename='/set.record'):
+        writer = tf.python_io.TFRecordWriter(self.FLAGS.output_path + filename)
         i = 0
         for i in range(len(images)):
             filename = tf.compat.as_bytes('{}/{:05d}'.format(self.directory, self.idx))
             height, width = images[i].shape[:2]
-            encoded_image_data = tf.compat.as_bytes(images[i].array.tostring())
-            image_format = tf.compat.as_bytes(self.image_format)
+            mat_rgb = convert_color(images[i], COLOR_BGR2RGB).array
+            encoded_image_data = tf.compat.as_bytes(mat_rgb.tostring())
+            image_format = b'jpg'  # tf.compat.as_bytes(self.image_format)
 
             xmins = []  # List of normalized left x coordinates in bounding box (1 per box)
             xmaxs = []  # List of normalized right x coordinates in bounding box

@@ -59,15 +59,17 @@ class XmlParser(AbstractDatasetParser):
         tree = ET.ElementTree(root)
         tree.write(path + '.xml')
 
-    def read(self, n=0) -> [Image, ImgLabel]:
+    def read(self, n=0) -> ([Image], [ImgLabel]):
         files = sorted(glob.glob(self.directory + '/*.xml'))
         samples = []
+        labels = []
         for i, file in enumerate(files):
             if 0 < n < i: break
             label = XmlParser.read_label(file)
             image = imread(file.replace('xml', self.image_format), self.color_format)
-            samples.append((image, label))
-        return samples
+            samples.append(image)
+            labels.append(label)
+        return samples, labels
 
     @staticmethod
     def _parse_gate_corners(gate_corners_xml: str) -> GateCorners:

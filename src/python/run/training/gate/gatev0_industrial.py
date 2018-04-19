@@ -1,7 +1,8 @@
 import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.backend.tensor.callbacks.TestMetrics import TestMetric
+from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
+from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
@@ -55,10 +56,11 @@ params = {'optimizer': 'adam',
 
 predictor.compile(params=params)
 
-test_metric = TestMetric(test_gen,
-                         ModelEvaluator(predictor, verbose=False),
-                         ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
-                                             color_format='bgr'))
+test_metric = MeanAveragePrecision(predictor=predictor,
+                                   test_set=test_gen,
+                                   out_file=test_result,
+                                   color_format='bgr')
+
 training = Training(predictor, train_gen,
                     out_file=model_name + '.h5',
                     patience_early_stop=20,
