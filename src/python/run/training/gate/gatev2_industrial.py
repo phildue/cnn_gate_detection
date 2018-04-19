@@ -1,6 +1,7 @@
 import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
+from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
@@ -20,32 +21,44 @@ import numpy as np
 
 cd_work()
 
+"""
+Model
+"""
 batch_size = 4
-
-image_source = ["resource/ext/samples/industrial_new/"]
-test_image_source = ['resource/ext/samples/industrial_new_test/']
-max_epochs = 200
-
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
 predictor = GateNet.v2(batch_size=batch_size,
-                       color_format='bgr',
+                       color_format='yuv',
                        augmenter=augmenter)
+
+"""
+Datasets
+"""
+image_source = ["resource/ext/samples/industrial_new/"]
+test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
+test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
 train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
                           color_format='bgr', label_format='xml')
-test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0, color_format='bgr', label_format='xml')
+test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
+                           label_format='xml')
+test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
+                           label_format='xml')
 
-model_name = predictor.net.__class__.__name__
+"""
+Paths
+"""
+result_path = 'logs/gatev2_industrial/'
+test_result_1 = result_path + 'results/industrial--'
+test_result_2 = result_path + 'results/daylight--'
 
-name = 'gatev2_industrial'
-result_path = 'logs/' + name + '/'
-test_result = result_path + 'results/industrial_room-'
+create_dirs([result_path, result_path + '/results/'])
 
-create_dirs([result_path])
-
+"""
+Optimizer Config
+"""
 params = {'optimizer': 'adam',
           'lr': 0.001,
           'beta_1': 0.9,
@@ -55,23 +68,29 @@ params = {'optimizer': 'adam',
 
 predictor.compile(params=params)
 
-test_metric = Evaluator(test_gen,
-                        ModelEvaluator(predictor, verbose=False),
-                        ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
-                                             color_format='bgr'))
+"""
+Training Config
+"""
+
+test_metric_1 = MeanAveragePrecision(predictor=predictor,
+                                     test_set=test_gen_1,
+                                     out_file=test_result_1)
+
+test_metric_2 = MeanAveragePrecision(predictor=predictor,
+                                     test_set=test_gen_2,
+                                     out_file=test_result_2)
+
 training = Training(predictor, train_gen,
-                    out_file=model_name + '.h5',
+                    out_file='model.h5',
                     patience_early_stop=20,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,
-                    epochs=max_epochs,
+                    epochs=100,
                     log_csv=True,
                     lr_reduce=0.1,
-                    callbacks=[test_metric])
-
-create_dirs([result_path, result_path + '/results/'])
+                    callbacks=[test_metric_1, test_metric_2])
 
 pp.pprint(training.summary)
 

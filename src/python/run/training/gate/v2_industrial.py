@@ -1,50 +1,54 @@
 import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
-from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
+from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.MavvAugmenter import MavvAugmenter
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 
+"""
+Model
+"""
 batch_size = 4
-
-image_source = ["resource/ext/samples/industrial_new/"]
-test_image_source = ['resource/ext/samples/industrial_new_test/']
-max_epochs = 200
-
-predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size,
-                           color_format='bgr')
-data_generator = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
-                               color_format='bgr', label_format='xml')
-test_gen = GateGenerator(test_image_source, batch_size=batch_size, valid_frac=0, color_format='bgr', label_format='xml')
-
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-model_name = predictor.net.__class__.__name__
-
-name = 'v2_airsim'
-result_path = 'logs/' + name + '/'
-test_result = result_path + 'results/industrial_room-'
-
-create_dirs([result_path])
-
+predictor = Yolo.yolo_v2(batch_size=batch_size, color_format='yuv')
 predictor.preprocessor.augmenter = augmenter
+"""
+Datasets
+"""
+image_source = ["resource/ext/samples/industrial_new/"]
+test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
+test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
+train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
+                          color_format='bgr', label_format='xml')
+test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
+                           label_format='xml')
+test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
+                           label_format='xml')
+
+"""
+Paths
+"""
+result_path = 'logs/v2_industrial/'
+test_result_1 = result_path + 'results/industrial--'
+test_result_2 = result_path + 'results/daylight--'
+
+create_dirs([result_path, result_path + '/results/'])
+
+"""
+Optimizer Config
+"""
 params = {'optimizer': 'adam',
           'lr': 0.001,
           'beta_1': 0.9,
@@ -54,23 +58,29 @@ params = {'optimizer': 'adam',
 
 predictor.compile(params=params)
 
-test_metric = Evaluator(test_gen,
-                        ModelEvaluator(predictor, verbose=False),
-                        ConfidenceEvaluator(predictor, metrics=[MetricDetection(show_=False)], out_file=test_result,
-                                             color_format='bgr'))
-training = Training(predictor, data_generator,
-                    out_file=model_name + '.h5',
+"""
+Training Config
+"""
+
+test_metric_1 = MeanAveragePrecision(predictor=predictor,
+                                     test_set=test_gen_1,
+                                     out_file=test_result_1)
+
+test_metric_2 = MeanAveragePrecision(predictor=predictor,
+                                     test_set=test_gen_2,
+                                     out_file=test_result_2)
+
+training = Training(predictor, train_gen,
+                    out_file='model.h5',
                     patience_early_stop=20,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,
-                    epochs=max_epochs,
+                    epochs=100,
                     log_csv=True,
                     lr_reduce=0.1,
-                    callbacks=[test_metric])
-
-create_dirs([result_path, result_path + '/results/'])
+                    callbacks=[test_metric_1, test_metric_2])
 
 pp.pprint(training.summary)
 

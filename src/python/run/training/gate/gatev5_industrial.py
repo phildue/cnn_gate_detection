@@ -29,7 +29,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = GateNet.v1(batch_size=batch_size,
+predictor = GateNet.v5(batch_size=batch_size,
                        color_format='yuv',
                        augmenter=augmenter)
 
@@ -50,7 +50,7 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 """
 Paths
 """
-result_path = 'logs/gatev1_industrial/'
+result_path = 'logs/gatev5_industrial/'
 test_result_1 = result_path + 'results/industrial--'
 test_result_2 = result_path + 'results/daylight--'
 
