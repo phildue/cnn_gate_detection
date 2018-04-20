@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
 from modelzoo.evaluation import evaluate_generator
 from modelzoo.evaluation.MetricDetection import MetricDetection

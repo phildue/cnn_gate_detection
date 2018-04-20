@@ -1,5 +1,4 @@
 from keras.callbacks import Callback
-from tensorflow.contrib.tpu.profiler.op_profile_pb2 import Metrics
 
 from modelzoo.evaluation import evaluate_generator
 from modelzoo.models.Predictor import Predictor
