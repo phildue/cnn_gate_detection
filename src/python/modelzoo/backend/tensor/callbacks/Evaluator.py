@@ -1,13 +1,12 @@
 from keras.callbacks import Callback
 
-from modelzoo.evaluation import evaluate_generator
+from modelzoo.evaluation import evaluate_generator, Metric
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.fileaccess.utils import create_dirs
 
-
 class Evaluator(Callback):
-    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metrics], out_file=None):
+    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metric], out_file=None):
         super().__init__()
 
         self.out_file = out_file
