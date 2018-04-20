@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 from object_detection.utils import dataset_util
 
@@ -65,9 +66,9 @@ class TfRecordParser(AbstractDatasetParser):
         for i in range(len(images)):
             filename = tf.compat.as_bytes('{}/{:05d}'.format(self.directory, self.idx))
             height, width = images[i].shape[:2]
-            mat_rgb = convert_color(images[i], COLOR_BGR2RGB).array
-            encoded_image_data = tf.compat.as_bytes(mat_rgb.tostring())
-            image_format = b'jpg'  # tf.compat.as_bytes(self.image_format)
+            with tf.gfile.GFile(os.path.abspath(images[i].path), 'rb') as fid:
+                encoded_image_data = fid.read()
+            image_format = 'jpeg'.encode('utf8')  # tf.compat.as_bytes(self.image_format)
 
             xmins = []  # List of normalized left x coordinates in bounding box (1 per box)
             xmaxs = []  # List of normalized right x coordinates in bounding box
