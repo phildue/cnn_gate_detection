@@ -6,13 +6,10 @@ cd_work()
 reader = DatasetParser.get_parser('resource/ext/samples/industrial_new_test/',
                                   label_format='xml',
                                   color_format='bgr',
+                                  image_format='jpg'
                                   )
-writer = DatasetParser.get_parser('temp/',
+writer = DatasetParser.get_parser('resource/ext/samples/industrial_new_test/',
                                   label_format='tf_record',
                                   color_format='bgr')
-images, labels = reader.read(2)
-writer.write(images, labels, 'industrial_train.record')
-images, labels = writer.read(2, 'industrial_train.record')
-
-for img in images:
-    show(img)
+images, labels = reader.read(500)
+writer.write(images, labels, 'industrial_valid.record')
