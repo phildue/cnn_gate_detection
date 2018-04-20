@@ -30,7 +30,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.2, RandomShift(-.3, .3))])
 
 predictor = GateNet.v5(batch_size=batch_size,
-                       color_format='bgr',
+                       color_format='yuv',
                        augmenter=augmenter)
 pp.pprint(predictor.net.backend.summary())
 

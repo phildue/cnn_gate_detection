@@ -21,7 +21,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size, color_format='bgr')
+predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size, color_format='yuv')
 predictor.preprocessor.augmenter = augmenter
 pp.pprint(predictor.net.backend.summary())
 
