@@ -23,6 +23,8 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
 
 predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size, color_format='bgr')
 predictor.preprocessor.augmenter = augmenter
+pp.pprint(predictor.net.backend.summary())
+
 """
 Datasets
 """
