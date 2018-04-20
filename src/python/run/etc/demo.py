@@ -20,8 +20,8 @@ generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test
 #
 # model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc3/SSD300.h5',
 #                    iou_thresh_nms=0.3)
-# model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.1,
-#                        color_format='bgr', weight_file='logs/tiny_industrial_new/TinyYolo.h5')
-#
-model = GateNet.v3(weight_file='logs/gatev3_industrial/GateNetV3.h5', conf_thresh=0.2, color_format='bgr')
+model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.1,
+                       color_format='bgr', weight_file='logs/tiny_industrial_bgr/TinyYolo.h5')
+
+# model = GateNet.v5(weight_file='logs/gatev5_industrial/model.h5', conf_thresh=0.01, color_format='yuv')
 demo_generator(model, generator, t_show=0)

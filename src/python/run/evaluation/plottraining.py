@@ -24,7 +24,7 @@ def plot_training(work_dir, n_epochs):
     n = len(epochs)
     mAP = np.zeros((n,))
     for i in range(n):
-        file = load_file(work_dir + 'results/industrial_room--{}.pkl'.format(i))
+        file = load_file(work_dir + 'results/industrial--{0:03d}.pkl'.format(i))
         results = [ResultByConfidence(d) for d in file['results']['MetricDetection']]
         avg_precision, recall = average_precision_recall(results)
         mAP[i] = np.mean(avg_precision)
@@ -39,11 +39,11 @@ def plot_training(work_dir, n_epochs):
 
 cd_work()
 
-plot_training('logs/gatev0_industrial/', 10).show(False)
-plot_training('logs/gatev1_industrial/', 10).show(False)
+# plot_training('logs/gatev0_industrial/', 10).show(False)
+# plot_training('logs/gatev1_industrial/', 10).show(False)
 # plot_training('logs/gatev2_industrial/', 10).show(False)
-plot_training('logs/gatev3_industrial/', 10).show(False)
-plot_training('logs/gatev4_industrial/', 10).show(False)
-plot_training('logs/v2_industrial_new/', 30).show(False)
-plot_training('logs/tiny_industrial_new/', 30).show(False)
-plot_training('logs/shallow_industrial/', 30).show(True)
+# plot_training('logs/gatev3_industrial/', 10).show(False)
+plot_training('logs/gatev5_industrial/', 5).show(False)
+plot_training('logs/gatev5_daylight/', 5).show(True)
+# plot_training('logs/v2_industrial/', 5).show(False)
+# plot_training('logs/tiny_industrial/', 5).show(False)
