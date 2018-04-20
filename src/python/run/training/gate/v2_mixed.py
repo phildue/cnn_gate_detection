@@ -2,22 +2,14 @@ import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
-from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
-from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.MavvAugmenter import MavvAugmenter
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 
@@ -29,14 +21,12 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = GateNet.v2(batch_size=batch_size,
-                       color_format='yuv',
-                       augmenter=augmenter)
-
+predictor = Yolo.yolo_v2(class_names=['gate'], batch_size=batch_size, color_format='yuv')
+predictor.preprocessor.augmenter = augmenter
 """
 Datasets
 """
-image_source = ["resource/ext/samples/industrial_new/"]
+image_source = ["resource/ext/samples/mixed_rooms/"]
 test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
 test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
@@ -50,7 +40,7 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 """
 Paths
 """
-result_path = 'logs/gatev2_industrial/'
+result_path = 'logs/v2_mixed/'
 test_result_1 = result_path + 'results/industrial--'
 test_result_2 = result_path + 'results/daylight--'
 

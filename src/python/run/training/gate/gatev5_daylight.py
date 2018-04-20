@@ -2,7 +2,7 @@ import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
+from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection

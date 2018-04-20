@@ -2,7 +2,7 @@ import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.callbacks.TestMetrics import Evaluator
+from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
 from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
 from modelzoo.evaluation.MetricDetection import MetricDetection
@@ -29,14 +29,14 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = GateNet.v0(batch_size=batch_size,
+predictor = GateNet.v5(batch_size=batch_size,
                        color_format='yuv',
                        augmenter=augmenter)
 
 """
 Datasets
 """
-image_source = ["resource/ext/samples/industrial_new/"]
+image_source = ["resource/ext/samples/mixed_rooms/"]
 test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
 test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
@@ -50,7 +50,7 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 """
 Paths
 """
-result_path = 'logs/gatev0_industrial/'
+result_path = 'logs/gatev5_mixed/'
 test_result_1 = result_path + 'results/industrial--'
 test_result_2 = result_path + 'results/daylight--'
 

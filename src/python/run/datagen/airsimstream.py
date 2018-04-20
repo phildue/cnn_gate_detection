@@ -27,12 +27,12 @@ while True:
     sample, label = client.retrieve_samples()
     time.sleep(2)
 
-    show(sample, labels=label, colors=[(255, 255, 255)], t=0, legend=LEGEND_POSITION)
-    filtered = []
-    for o in label.objects:
-        print(o.height / o.width)
-        if (4 < o.pose.magnitude < 30 and
-                o.height / o.width < 1.05 / (30 / 90)):
-            filtered.append(o)
-    l_filtered = ImgLabel(filtered)
-    show(sample, labels=l_filtered, t=0, name='filtered')
+    show(sample, labels=label, colors=[(255, 255, 255)], t=1, legend=LEGEND_POSITION)
+    # filtered = []
+    # for o in label.objects:
+    #     print(o.height / o.width)
+    #     if (4 < o.pose.magnitude < 30 and
+    #             o.height / o.width < 1.05 / (30 / 90)):
+    #         filtered.append(o)
+    # l_filtered = ImgLabel(filtered)
+    # show(sample, labels=l_filtered, t=0, name='filtered')

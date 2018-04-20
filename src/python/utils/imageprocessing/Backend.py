@@ -244,13 +244,26 @@ def brightness(img: Image, scale):
 
     Protected against overflow.
     """
-    hsv = cv2.cvtColor(img.array, cv2.COLOR_RGB2HSV)
+    if img.format is 'bgr':
+        hsv = cv2.cvtColor(img.array, cv2.COLOR_RGB2HSV)
+    elif img.format is 'yuv':
+        rgb = cv2.cvtColor(img.array, cv2.COLOR_YUV2RGB)
+        hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+    else:
+        raise ValueError("Unknown Color format")
 
     img_transf = hsv[:, :, 2] * scale
     mask = img_transf > 255
     v_channel = np.where(mask, 255, img_transf)
     hsv[:, :, 2] = v_channel
-    org = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+    if img.format is 'bgr':
+        org = cv2.cvtColor(img.array, cv2.COLOR_HSV2RGB)
+    elif img.format is 'yuv':
+        rgb = cv2.cvtColor(img.array, cv2.COLOR_HSV2RGB)
+        org = cv2.cvtColor(rgb, cv2.COLOR_RGB2YUV)
+    else:
+        raise ValueError("Unknown Color format")
 
     return Image(org, img.format)
 

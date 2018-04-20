@@ -8,11 +8,9 @@ from utils.fileaccess.utils import create_dirs
 
 
 class Evaluator(Callback):
-    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metrics], out_file=None,
-                 color_format='bgr'):
+    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metrics], out_file=None):
         super().__init__()
 
-        self.color_format = color_format
         self.out_file = out_file
         self.predictor = predictor
         self.metrics = metrics

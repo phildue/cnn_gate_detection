@@ -14,10 +14,10 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "daylight"
+name = "industrial_new_test"
 shot_path = "resource/ext/samples/" + name + "/"
 
-n_samples = 1000
+n_samples = 500
 batch_size = 50
 cam_range_side = (-10, 10)
 cam_range_forward = (-10, 10)
@@ -36,7 +36,7 @@ posegen = RandomPositionGen(range_dist_side=cam_range_side,
                             range_yaw=cam_range_yaw)
 
 client = AirSimClient()
-samplegen = AirSimGen(posegen, client)
+samplegen = AirSimGen(posegen, client, empty_frac=0.0)
 
 create_dirs([shot_path])
 set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=0,
@@ -50,5 +50,5 @@ for i in range(n_batches):
 
     toc("Batch: {0:d}/{2:d}, {1:d} shots generated after ".format(i + 1, len(samples), n_batches))
 
-#set_analyzer = SetAnalyzer((640, 480), shot_path)
-#set_analyzer.show_summary()
+# set_analyzer = SetAnalyzer((640, 480), shot_path)
+# set_analyzer.show_summary()

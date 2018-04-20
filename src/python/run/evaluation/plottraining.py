@@ -38,11 +38,12 @@ def plot_training(work_dir, n_epochs):
 
 
 cd_work()
-# plot_training('logs/v2_industrial_new/', 30).show(False)
-# plot_training('logs/tiny_industrial_new/', 30).show(False)
-# plot_training('logs/shallow_industrial/', 30).show(False)
-plot_training('logs/gatev0_industrial/', 30).show(False)
+
+plot_training('logs/gatev0_industrial/', 10).show(False)
 plot_training('logs/gatev1_industrial/', 10).show(False)
-plot_training('logs/gatev2_industrial/', 10).show(False)
+# plot_training('logs/gatev2_industrial/', 10).show(False)
 plot_training('logs/gatev3_industrial/', 10).show(False)
-plot_training('logs/gatev4_industrial/', 10).show(True)
+plot_training('logs/gatev4_industrial/', 10).show(False)
+plot_training('logs/v2_industrial_new/', 30).show(False)
+plot_training('logs/tiny_industrial_new/', 30).show(False)
+plot_training('logs/shallow_industrial/', 30).show(True)

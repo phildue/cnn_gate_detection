@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder

@@ -21,7 +21,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = Yolo.tiny_yolo(batch_size=batch_size, color_format='yuv')
+predictor = Yolo.tiny_yolo(class_names=['gate'], batch_size=batch_size, color_format='yuv')
 predictor.preprocessor.augmenter = augmenter
 """
 Datasets
@@ -31,11 +31,11 @@ test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
 test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
 train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
-                          color_format='bgr', label_format='xml')
+                          color_format='bgr', label_format='xml', n_samples=10)
 test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                           label_format='xml')
+                           label_format='xml', n_samples=10)
 test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                           label_format='xml')
+                           label_format='xml', n_samples=10)
 
 """
 Paths
