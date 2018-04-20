@@ -10,7 +10,7 @@ from utils.labels.utils import resize_label
 
 
 def imread(path, color_format) -> Image:
-    return Image(cv2.imread(path), color_format)
+    return Image(cv2.imread(path), color_format, path)
 
 
 def imwrite(img: Image, path):
@@ -258,9 +258,9 @@ def brightness(img: Image, scale):
     hsv[:, :, 2] = v_channel
 
     if img.format is 'bgr':
-        org = cv2.cvtColor(img.array, cv2.COLOR_HSV2RGB)
+        org = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
     elif img.format is 'yuv':
-        rgb = cv2.cvtColor(img.array, cv2.COLOR_HSV2RGB)
+        rgb = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         org = cv2.cvtColor(rgb, cv2.COLOR_RGB2YUV)
     else:
         raise ValueError("Unknown Color format")

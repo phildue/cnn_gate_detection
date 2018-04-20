@@ -2,7 +2,8 @@ import cv2
 
 
 class Image:
-    def __init__(self, array, color_format):
+    def __init__(self, array, color_format, path='./'):
+        self.path = path
         self.format = color_format
         self.array = array
 
