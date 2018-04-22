@@ -5,15 +5,24 @@ Recent developments in embedded systems and artificial intelligence enable micro
 
 The research on algorithms that allow these kind of technologies gave rise to autonomous drone races, where researchers have the opportunity to evaluate their algorithms in a competitive environment.
 
-The currently most challenging autonomous drone race is held yearly at the IROS conference. The race track consists of several colored metal gates which need to be passed one after another. The participating drones have to fly fully autonomously with all processing happening on board.
+The currently most challenging autonomous drone race is held yearly at the IROS conference. The race track consists of several coloured metal gates which need to be passed one after another. The participating drones have to fly fully autonomously with all processing happening on board.
 
-An important part to fulfill this task is an accurate estimation of the MAV's state within its environment. Sensors like inertial measurement units and sonars can deliver accurate data of the drones altitude. However, to determine the MAV's global position these sensors are usually too subjective to noise. As the race happens indoor in a GPS-denied environment the most accurate sensor to determine the global position is a camera. Hence, high-performing vision algorithms are crucial in order to complete the race court as fast as possible. 
+An important part to fulfil this task is an accurate estimation of the MAV's state within its environment. Sensors like inertial measurement units and sonars can deliver accurate data of the drones altitude. However, to determine the MAV's global position these sensors are usually too subjective to noise. As the race happens indoor in a GPS-denied environment the most accurate sensor to determine the global position is a camera. Hence, high-performing vision algorithms are crucial in order to complete the race court as fast as possible. 
 
-The application imposes multiple challenges: (1) Only the arrangement of gates is known a priori. Environmental factors like light conditions and spectators can influence the performance of the vision system a lot. The developed vision system should be robust against these kind of influences. (2) The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition. Hence, any vision system should maximally exploit the available resources.
+Within the field of computer vision big advances could be achieved using supervised machine learning. Here mathematical models are trained using labelled examples of the object of interest. These learned algorithms tend to outperform most human crafted methods by a far extent. However, they are heavily dependent on examples used during training.
 
-Within the field of computer vision big advances could be achieved using supervised machine learning. Here mathematical models are trained using labeled examples of the object of interest. These learned algorithms tend to outperform most human crafted methods by a far extent.
+This thesis investigates a learning based vision method in order to complete the race track of the IROS 2018 autonomous drone race. The goal is to get an accurate estimation of the drones position with respect to the racing gates. The estimated position is then used by the control system to generate the optimal trajectory.
 
-This thesis investigates a learning based vision method in order to complete the race track of the IROS 2018 autonomous drone race. The goal is to get an accurate estimation of the drones position with respect to the racing gates.
+The application imposes multiple challenges for a vision system:
+\begin{enumerate}
+	\item The object of interest consists only of several thin metal poles. Thus not many distinct features of the object can be identified
+	\item No large annotated datasets are available. 
+	\item Only the arrangement of gates is known a priori. Environmental factors like light conditions and spectators can influence the performance of the vision system a lot. The developed vision system should be robust against these kind of influences.
+	\item The hardware resources on the MAV are quite limited and within the race the drone needs to be fast by definition. Hence, any vision system should maximally exploit the available resources.
+\end{enumerate} 
+
+
+
 
 \begin{itemize}
 	\item How can we detect large objects that are mostly occupied by background?

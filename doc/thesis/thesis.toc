@@ -19,7 +19,7 @@
 \contentsline {paragraph}{A Comparative Analysis and Study of Multiview CNN Models for Joint Object Categorization and Pose Estimation\cite {Elhoseiny}}{9}{subsection.2.2.1}
 \contentsline {subsection}{\numberline {2.2.2}Other}{9}{subsection.2.2.2}
 \contentsline {paragraph}{Deformable Convolutional Networks \cite {Dai}}{9}{subsection.2.2.2}
-\contentsline {section}{\numberline {2.3}Transfer Learning}{9}{section.2.3}
+\contentsline {section}{\numberline {2.3}Training}{9}{section.2.3}
 \contentsline {section}{\numberline {2.4}Speed Optimization}{9}{section.2.4}
 \contentsline {chapter}{\numberline {3}Method}{11}{chapter.3}
 \contentsline {section}{\numberline {3.1}Model}{11}{section.3.1}

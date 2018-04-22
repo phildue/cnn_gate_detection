@@ -1,2 +1,10 @@
-\section{Transfer Learning}
-\label{sec:transfer_learning}
+\section{Training}
+\label{sec:bg:training}
+
+The performance of machine learning models heavily depends on the available training data. If the labelled examples do not sufficiently represent the real world, any learned algorithm will fail when applied in the wild. As the model complexity increases, its potential performance increases as long as there is enough training data available with which the model parameters can be tuned. Is not enough training data available the model may overfit to the training data, meaning it will perform well on the training set but fail on any other data set. Overfitting can be introduced by a limited amount of available training samples but also when the training data stems from a different domain than the test data. This scenario is also referred to as domain shift.
+
+For the computer vision system investigated in this work this mean
+
+If there are not enough labelled samples models can overfit to the particular training set. This means a low error can be achieved on the training data but the model performs poorly when applied in the wild.
+
+Similar effec
