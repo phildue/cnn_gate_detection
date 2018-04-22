@@ -8,16 +8,23 @@ from utils.labels.ImgLabel import ImgLabel
 
 class AirSimRecord:
 
-    def __init__(self, airsim: AirSimClient):
+    def __init__(self, airsim: AirSimClient, period=0.1):
+        self.period = period
         self.airsim = airsim
 
     def generate(self, n_samples) -> [(Image, ImgLabel)]:
         samples = []
         labels = []
+        responses = []
+
         for i in range(n_samples):
-            img, label = self.airsim.retrieve_samples()
+            response = self.airsim.query_airsim()
+            responses.append(response)
+            sleep(self.period)
+
+        for r in responses:
+            img, label = self.airsim.response2sample(r)
             samples.append(img)
             labels.append(label)
-            sleep(1)
 
         return samples, labels

@@ -10,7 +10,7 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_new_test"
+name = "daylight_flight"
 shot_path = "resource/ext/samples/" + name + "/"
 
 n_samples = 100
@@ -18,7 +18,7 @@ n_samples = 100
 #TODO choose simulation environment here + camera settings and start simulation
 
 client = AirSimClient()
-samplegen = AirSimRecord(client)
+samplegen = AirSimRecord(client, 0.2)
 
 create_dirs([shot_path])
 set_writer = DatasetParser.get_parser(shot_path,

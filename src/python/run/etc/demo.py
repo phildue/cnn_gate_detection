@@ -10,18 +10,21 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test'],
+generator = GateGenerator(directories=['resource/ext/samples/video/eth'],
                           batch_size=8, color_format='bgr',
-                          shuffle=True, start_idx=0, valid_frac=1.0,
-                          label_format='xml',
+                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          label_format='pkl',
                           )
 #
 # generator = VocGenerator(batch_size=8)
 #
 # model = SSD.ssd300(n_classes=20, conf_thresh=0.1, color_format='bgr', weight_file='logs/ssd300_voc3/SSD300.h5',
 #                    iou_thresh_nms=0.3)
-model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.1,
-                       color_format='bgr', weight_file='logs/tiny_industrial_bgr/TinyYolo.h5')
+# model = Yolo.yolo_v2(class_names=['gate'], batch_size=8, conf_thresh=0.3,
+#                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
+# model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
+#                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
 
-# model = GateNet.v5(weight_file='logs/gatev5_industrial/model.h5', conf_thresh=0.01, color_format='yuv')
-demo_generator(model, generator, t_show=0)
+model = GateNet.v5(weight_file='logs/gatev5_mixed/model.h5', conf_thresh=0.3, color_format='yuv')
+create_dirs(['logs/gatev5_mixed/demo/eth'])
+demo_generator(model, generator, t_show=1, out_file='logs/gatev5_mixed/demo/eth', n_samples=150)

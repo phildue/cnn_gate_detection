@@ -100,5 +100,6 @@ class Training:
                    'n_samples': self.dataset_gen.n_samples,
                    'transform': augmentation,
                    'initial_epoch': self.initial_epoch,
-                   'epochs': self.epochs}
+                   'epochs': self.epochs,
+                   'architecture': self.predictor.net.backend.summary()}
         return summary

@@ -74,7 +74,7 @@ with K.get_session() as sess:
     ap_out = sess.run(ap, {y_true: label_true_t,
                            y_pred: label_pred_t})
     toc("Average Precision in ")
-    boxes_pred = model.postprocessor.postprocess(label_pred_t)
+    boxes_pred = model.postprocessor.response2sample(label_pred_t)
 
 for i in range(batch_size):
     print("True positives ", tp[i])

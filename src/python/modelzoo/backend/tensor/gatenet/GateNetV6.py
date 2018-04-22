@@ -7,7 +7,7 @@ from modelzoo.models.Net import Net
 import keras.backend as K
 
 
-class GateNetV5(Net):
+class GateNetV6(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
@@ -38,7 +38,7 @@ class GateNetV5(Net):
     def predict(self, sample):
         return self._model.predict(sample)
 
-    def  __init__(self, loss: Loss,
+    def __init__(self, loss: Loss,
                  anchors,
                  img_shape=(416, 416),
                  grid=(13, 13),
@@ -75,20 +75,32 @@ class GateNetV5(Net):
         act3 = LeakyReLU(alpha=0.1)(norm3)
         pool3 = MaxPooling2D((4, 4))(act3)
         # 13
-        conv4 = Conv2D(128, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool3)
+        conv4 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool3)
         norm4 = BatchNormalization()(conv4)
         act4 = LeakyReLU(alpha=0.1)(norm4)
 
-        conv5 = Conv2D(256, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act4)
+        conv5 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act4)
         norm5 = BatchNormalization()(conv5)
         act5 = LeakyReLU(alpha=0.1)(norm5)
 
-        conv6 = Conv2D(512, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act5)
+        conv6 = Conv2D(128, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act5)
         norm6 = BatchNormalization()(conv6)
         act6 = LeakyReLU(alpha=0.1)(norm6)
 
+        conv7 = Conv2D(128, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act6)
+        norm7 = BatchNormalization()(conv7)
+        act7 = LeakyReLU(alpha=0.1)(norm7)
+
+        conv8 = Conv2D(128, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act7)
+        norm8 = BatchNormalization()(conv8)
+        act8 = LeakyReLU(alpha=0.1)(norm8)
+
+        conv9 = Conv2D(128, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act8)
+        norm9 = BatchNormalization()(conv9)
+        act8 = LeakyReLU(alpha=0.1)(norm9)
+
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            act6)
+            act8)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
         out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 

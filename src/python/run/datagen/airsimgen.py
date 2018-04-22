@@ -14,7 +14,7 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-name = "industrial_new_test"
+name = "daylight_test_full"
 shot_path = "resource/ext/samples/" + name + "/"
 
 n_samples = 500
@@ -36,7 +36,7 @@ posegen = RandomPositionGen(range_dist_side=cam_range_side,
                             range_yaw=cam_range_yaw)
 
 client = AirSimClient()
-samplegen = AirSimGen(posegen, client, empty_frac=0.0)
+samplegen = AirSimGen(posegen, client, empty_frac=0.0, range_magnitude=(4, 100), max_angle=0.001)
 
 create_dirs([shot_path])
 set_writer = DatasetParser.get_parser(shot_path, image_format='jpg', label_format='xml', start_idx=0,

@@ -90,8 +90,10 @@ def annotate_labels(img: Image, labels: [ImgLabel], colors=None, legend=LEGEND_P
             colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 0, 255), (0, 255, 255), (255, 255, 0),
                       (255, 255, 255), (0, 0, 0)]
             color = colors[i % len(colors)]
-
-        img_ann = annotate_label(img_ann, l, color, legend, thickness)
+        try:
+            img_ann = annotate_label(img_ann, l, color, legend, thickness)
+        except OverflowError:
+            print("Label: Overflow error")
 
     return img_ann
 

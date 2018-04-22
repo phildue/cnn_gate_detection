@@ -119,11 +119,7 @@ class AirSimClient:
 
         return rel_pose
 
-    def retrieve_samples(self) -> (Image, ImgLabel):
-        responses = self.client.simGetImages([
-            ImageRequest(0, AirSimImageType.Segmentation, False, False),
-            ImageRequest(0, AirSimImageType.Scene, False, False)])
-
+    def response2sample(self, responses):
         segmentation_labels = self._response2mat(responses[0])
         image = self._response2mat(responses[1])
         image = convert_color(Image(image, 'bgr'), COLOR_RGBA2BGR)
@@ -136,6 +132,16 @@ class AirSimClient:
                 gate_labels.append(GateLabel(pose, corners))
 
         return image, ImgLabel(gate_labels)
+
+    def query_airsim(self):
+        responses = self.client.simGetImages([
+            ImageRequest(0, AirSimImageType.Segmentation, False, False),
+            ImageRequest(0, AirSimImageType.Scene, False, False)])
+        return responses
+
+    def retrieve_samples(self) -> (Image, ImgLabel):
+        responses = self.query_airsim()
+        return self.response2sample(responses)
 
     def set_pose(self, pose):
         self.client.simSetPose(Pose(Vector3r(pose.north, pose.east, -pose.up),

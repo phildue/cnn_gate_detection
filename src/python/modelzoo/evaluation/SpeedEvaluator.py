@@ -32,7 +32,7 @@ class SpeedEvaluator(ModelEvaluator):
             tic()
             predictions = []
             for i in range(netout.shape[0]):
-                predictions.append(self.model.postprocessor.postprocess(netout[i]))
+                predictions.append(self.model.postprocessor.response2sample(netout[i]))
             time_pp = toc()
             fps_enc = len(images) / time_enc
             fps_pred = len(images) / time_pred

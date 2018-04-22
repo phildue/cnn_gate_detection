@@ -7,10 +7,13 @@ from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labele
 from utils.labels.utils import resize_label
 
 
-def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None):
+def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None,
+                   n_samples=None):
+    if n_samples is None:
+        n_samples = generator.n_samples
     iterator = iter(generator.generate_valid())
     idx = 0
-    while True:
+    for i in range(int(n_samples / generator.batch_size)):
         batch = next(iterator)
         for i in range(len(batch)):
 
@@ -21,26 +24,31 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             boxes_pred = BoundingBox.from_label(label_pred)
             boxes_true = BoundingBox.from_label(label)
 
-            boxes_correct_idx = []
-            for b_true in boxes_true:
-                for j, b_pred in enumerate(boxes_pred):
-                    if b_pred.iou(b_true) > iou_thresh and b_pred.prediction == b_true.prediction:
-                        boxes_correct_idx.append(int(j))
+            false_negatives = []
+            false_positives = boxes_pred.copy()
+            true_positives = []
+            for j in range(len(boxes_true)):
+                match = False
+                box_true = boxes_true[j]
+                for k in range(len(false_positives)):
+                    box_pred = false_positives[k]
+                    match = box_pred.iou(box_true) > iou_thresh and box_pred.prediction == box_true.prediction
+                    if match:
+                        true_positives.append(box_pred)
+                        false_positives.remove(box_pred)
                         break
+                if not match:
+                    false_negatives.append(box_true)
 
-            boxes_correct = np.where(np.arange(0, len(boxes_pred)) == boxes_correct_idx, boxes_pred, None)
-            boxes_correct = [b for b in boxes_correct if b is not None]
-
-            boxes_wrong = np.where(np.arange(0, len(boxes_pred)) != boxes_correct_idx, boxes_pred, None)
-            boxes_wrong = [b for b in boxes_wrong if b is not None]
-            label_correct = BoundingBox.to_label(boxes_correct)
-            label_wrong = BoundingBox.to_label(boxes_wrong)
-            show(img.bgr, 'demo', labels=[label_correct, label_wrong],
-                 colors=[(255, 0, 0), (255, 0, 0)],
+            label_tp = BoundingBox.to_label(true_positives)
+            label_fp = BoundingBox.to_label(false_positives)
+            label_fn = BoundingBox.to_label(false_negatives)
+            show(img.bgr, 'demo', labels=[label_tp, label_fp, label_fn],
+                 colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
                  legend=LEGEND_TEXT, t=t_show)
 
             if out_file is not None:
-                save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_pred],
-                             colors=[(255, 0, 0)],
+                save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_tp, label_fp, label_fn],
+                             colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
                              legend=LEGEND_TEXT)
                 idx += 1

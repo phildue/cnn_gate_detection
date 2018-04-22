@@ -57,9 +57,10 @@ def flip_y(point: tuple, ymax) -> tuple:
 
 
 def draw_bounding_box(img: Image, p1: tuple, p2: tuple, color=(0, 255, 0), thickness=2) -> Image:
-    return Image(
-        cv2.rectangle(img.array.copy(), flip_y(p1, img.shape[0]), flip_y(p2, img.shape[0]), color, thickness=thickness),
-        img.format)
+    img_bb = img.array.copy()
+    cv2.rectangle(img_bb, flip_y(p1, img.shape[0]), flip_y(p2, img.shape[0]), color, thickness=thickness)
+
+    return Image(img_bb, img.format)
 
 
 def imshow(img: Image, name: str = "Img", t=0):

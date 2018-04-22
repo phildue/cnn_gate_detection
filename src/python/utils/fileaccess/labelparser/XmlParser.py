@@ -107,8 +107,12 @@ class XmlParser(AbstractDatasetParser):
                 if gate_corners_xml:
 
                     gate_corners = XmlParser._parse_gate_corners(gate_corners_xml)
-                    pose_xml = element.find('pose')
-                    pose = XmlParser._parse_pose(pose_xml)
+                    try:
+                        pose_xml = element.find('pose')
+                        pose = XmlParser._parse_pose(pose_xml)
+                    except AttributeError:
+                        pose = Pose()
+
                     objects.append(GateLabel(pose, gate_corners))
 
                 else:
