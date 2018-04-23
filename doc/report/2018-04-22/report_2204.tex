@@ -79,9 +79,13 @@ A new room was created. This room contains windows and is mainly lightened throu
 \caption{"Daylight" Room}
 \end{figure}
 
-\section{Model}
+\section{SSD}
 
-After our last experiment we hypothesized a much smaller model, learning are more shallow representation of the gate should be able to perform equally well if not better. \autoref{fig:architecture} shows the architecture of GateNet which is so far the yolo model with a smaller architecture. The class probabilities were removed from the loss function instead only 1 confidence value is predicted. The architecture was found in an iterative fashion. Starting from the blue part different configurations were tested until a decent performance could be achieved. As comparison the YoloV2 model has around 50 Mio. trainable parameters, TinyYolo around 15 Mio., GateNet only 1.5 Mio.
+SSD can be used now using tensorflow-object-detection api. A training was started however, the training does not seem to converge. The loss function changes quite randomly.
+
+\section{Experiments I}
+
+After our last experiment we hypothesized a much smaller model, learning are more shallow representation of the gate should be able to perform equally well if not better. \autoref{fig:architecture} shows the architecture of GateNet which is the yolo model with a smaller architecture. The class probabilities were removed from the loss function instead only 1 confidence value is predicted. The architecture was found in an iterative fashion. Starting from the blue part different configurations were tested until a decent performance could be achieved. As comparison the YoloV2 model has around 50 Mio. trainable parameters, TinyYolo around 15 Mio., GateNet only 1.5 Mio.
 
 \begin{figure}
 	\centering
@@ -90,16 +94,14 @@ After our last experiment we hypothesized a much smaller model, learning are mor
 	\caption{Architecture of GateNet, after each batch normalization leaky relu activation is applied}
 \end{figure}
 
-\section{Experiments}
-
-We generate 3 training sets with 10 000 samples each. The distance as well as the angle towards a gate is limited, meaning there are no samples that contain gates that have an angle of less than 30 degrees towards the camera.
+We generate 3 training sets with 10 000 samples each. The distance as well as the angle towards a gate is limited, meaning there are no samples that contain gates with an angle less than 30 degrees.
 \begin{itemize}
 	\item Basement. Contains images from the room of the previous report.
 	\item Daylight. Contains only images from the room shown in \autoref{fig:daylight}.
 	\item Mixed. Contains 5000 images from each of the datasets above. 
 \end{itemize}
 
-We generate 2 test sets with 500 samples for each room in the same way as the training data. Each model is trained on each training set and tested on each test set. Results can be seen in \autoref{fig:pr}.
+We generate 2 test sets with 500 samples for each room in the same way as the training data. Each model is trained on each training set and tested on each test set. Results can be seen in \autoref{fig:results}.
 
 \begin{figure}
 	\centering
@@ -109,13 +111,17 @@ We generate 2 test sets with 500 samples for each room in the same way as the tr
 	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=\linewidth]{fig/pr_daylight_all}
 	\end{minipage}
+\caption{Precision-Recall as average over images.}
+\label{fig:results}
 \end{figure}
 
 First thing to notice is the huge improvement towards the last training. Limiting the training samples seem to have really benefited the model.
+\\
 
 If we look at the performance of the models that have been trained in the basement room and tested in the daylight room we see quite a drop in performance. The most complex model yolov2 seem to have learned to most robust presentation as it looses only a bit of precision. The other way we see a smaller drop in performance for all models. It seems that the daylight set requires the model to learn a more robust representation, maybe because we have higher light contrasts due to the windows in the room. However, it could also be that the basement set has generally easier samples. Here the simplest model GateNet is the most robust one while v2 looses the most performance.
+\\
 
-When comparing the performance of models that have been trained in both rooms to the models that have been trained in the same environment as tested, we see only small differences. The models are able to perform well in both environments. This is different to previous experiments where it seemed pretty hard to learn a general model. As we are interested in a robust general model we look closer at the performance of the models that have been trained on the mixed-dataset.
+When comparing the performance of models that have been trained in both rooms to the models that have been trained in the same environment as tested, we see only small differences. The models are able to perform well in both environments. This is different to previous experiments where it seemed pretty hard to learn a general model. As we are interested in a robust model we look closer at the performance of the models that have been trained on the mixed-dataset.
 
 
 \begin{figure}
@@ -129,14 +135,16 @@ When comparing the performance of models that have been trained in both rooms to
 	\begin{minipage}{0.30\linewidth}
 		\includegraphics[width=\linewidth]{fig/detection_v2}
 	\end{minipage}
+\caption{Detections as average over images.}
 \label{fig:conf}
 \end{figure}
 
 \autoref{fig:conf} shows the number of true positives/predictions over confidence. We see how the predictions resemble the number of objects in the image. Even at low confidence values the model does not produce a lot of false positives. At a confidence of 0.6 all models reach 100 \% precision, while differing in number of false negatives. While GateNet and TinyYolo have 0.2 false negatives, YoloV2 stays at 0.1 false negatives. It is also apparent how, as the model get more complex the model get more confident in their predictions.
+\\
 
-Finally we can look at some predictions \autopageref{fig:examples}. We see GateNet on the left, YoloV2 on the right.
+Now we can look at some examples \autopageref{fig:examples}. We see GateNet on the left, YoloV2 on the right.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\begin{minipage}{0.3\linewidth}
 		\includegraphics[width=\linewidth]{fig/gate_comp}
@@ -167,32 +175,53 @@ Finally we can look at some predictions \autopageref{fig:examples}. We see GateN
 	\begin{minipage}{0.3\linewidth}
 		\includegraphics[width=\linewidth]{fig/v2_comp5}
 	\end{minipage}
-	\caption{YoloV5 seemed to have learned a weird pattern on this particular wall. There are several examples where it produces numerous bounding boxes like in this example. This did not happen to GateNet.}
+	\caption{YoloV5 seemed to have learned a weird pattern on this particular wall. There are several examples where it produces numerous bounding boxes like in this example. However, on average this did not seem to harm precision. This did not happen to GateNet.}
 		\label{fig:examples}
 \end{figure}
 
+\section{Experiments II}
+
+After the initial experiments a problem of GateNet seemed to be gates that are very close the camera. A reason could be the receptive field of the filters. As we just removed layers, the prediction layer only sees a limited part of the image. In this experiment further architectures are evaluated. The model architectures are shown in \autoref{fig:architecture2}. To this end the results for GateNetV8 are still missing. The other results are shown in \autoref{fig:results2}.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{fig/architecture2}
+	\label{fig:architecture2}
+	\caption{Architectures of GateNet, after each batch normalization leaky relu activation is applied}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{fig/pr_industry_tuning}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{fig/pr_daylight_tuning}
+	\end{minipage}
+\caption{Results of different architectures. Precision-Recall as average over images.}
+\label{fig:results2}
+\end{figure}
+
+The new architectures are generally thinner but deeper. We see how despite having further decreased the number of parameters, the models perform equally well if not better. However, the best performing model is still YoloV2.
 
 \section{Conclusion}
 
 \begin{itemize}
-	\item The biggest problem was caused by high gate angles.
-	\item With a much smaller model we can achieve almost similar performance in terms of precision and recall. Although this is very good, it does not confirm our assumption that the gate detection does not benefit from a deep representation. However, if we look at the images the reason for the better performance of YoloV2 might not be the deeper representation but rather the receptive field of the predictors.
+	\item The biggest problem was caused by high gate angles. Without having these gates in the training set, the models can learn a better representation.
+	\item With a much smaller model we can achieve almost similar performance in terms of precision and recall. This enforces the hypothesis that the detection does not benefit from a very deep network. However, the best model is still the deepest and widest one.
+	\item YoloV2 seems to outperform the other models when gates are occluded/difficult angle like in Figure 5.
+	\item Training on one room and applying in another one worked better than in previous experiments.
 \end{itemize}
 
 \section{Next Step}
 \begin{itemize}
-	\item
+	\item Investigate further what makes YoloV2 perform better.
+	\item Debug SSD (object-detection api).
+	\item Do some tests on real data.
 \end{itemize}
 %----------------------------------------------------------------------------------------
 
-
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
-%----------------------------------------------------------------------------------------
-
-\bibliographystyle{abbrv}
-
-\bibliography{literature}
 
 %----------------------------------------------------------------------------------------
 
