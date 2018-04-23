@@ -114,6 +114,7 @@ cd_work()
 pr_basement_all = pr_plot(files=['logs/gatev5_industrial/results/industrial--024.pkl',
                                  'logs/gatev5_daylight/results/industrial--024.pkl',
                                  'logs/gatev5_mixed/results/industrial--024.pkl',
+                                 'logs/gatev6_mixed/results/industrial--006.pkl',
                                  'logs/tiny_industrial/results/industrial--024.pkl',
                                  'logs/tiny_daylight/results/industrial--024.pkl',
                                  'logs/tiny_mixed/results/industrial--024.pkl',
@@ -124,6 +125,7 @@ pr_basement_all = pr_plot(files=['logs/gatev5_industrial/results/industrial--024
                           legend=['GateNet-Basement',
                                   'GateNet-Daylight',
                                   'GateNet-Mixed',
+                                  'GateNet6-Mixed',
                                   'Tiny-Basement',
                                   'Tiny-Daylight',
                                   'Tiny-Mixed',
@@ -132,10 +134,11 @@ pr_basement_all = pr_plot(files=['logs/gatev5_industrial/results/industrial--024
                                   'V2-Mixed'
                                   ],
                           title='Test on Basement',
-                          line_style=['x-', 'x-', 'x-', 'o:', 'o:', 'o:', '.-', '.-', '.-'])
+                          line_style=['x-', 'x-', 'x-', 'x-', 'o:', 'o:', 'o:', '.-', '.-', '.-'])
 pr_daylight_all = pr_plot(files=['logs/gatev5_industrial/results/daylight--024.pkl',
                                  'logs/gatev5_daylight/results/daylight--024.pkl',
                                  'logs/gatev5_mixed/results/daylight--024.pkl',
+                                 'logs/gatev6_mixed/results/daylight--006.pkl',
                                  'logs/tiny_industrial/results/daylight--024.pkl',
                                  'logs/tiny_daylight/results/daylight--023.pkl',
                                  'logs/tiny_mixed/results/daylight--099.pkl',
@@ -146,6 +149,7 @@ pr_daylight_all = pr_plot(files=['logs/gatev5_industrial/results/daylight--024.p
                           legend=['GateNet-Basement',
                                   'GateNet-Daylight',
                                   'GateNet-Mixed',
+                                  'GateNet6-Mixed',
                                   'Tiny-Basement',
                                   'Tiny-Daylight',
                                   'Tiny-Mixed',
@@ -154,7 +158,7 @@ pr_daylight_all = pr_plot(files=['logs/gatev5_industrial/results/daylight--024.p
                                   'V2-Mixed'
                                   ],
                           title='Test on Daylight',
-                          line_style=['x-', 'x-', 'x-', 'o:', 'o:', 'o:', '.-', '.-', '.-'])
+                          line_style=['x-', 'x-', 'x-', 'x-', 'o:', 'o:', 'o:', '.-', '.-', '.-'])
 
 #
 # industrial_plot = pr_plot(files=['logs/gatev5_mixed/results/industrial--020.pkl',
@@ -179,18 +183,21 @@ pr_daylight_all = pr_plot(files=['logs/gatev5_industrial/results/daylight--024.p
 #                         title='Test on Daylight')
 # daylight_plot.show()
 detection_gate = detection_plot('logs/gatev5_mixed/results/daylight--024.pkl', 'GateNet on Daylight')
+detection_gate6 = detection_plot('logs/gatev6_mixed/results/daylight--005.pkl', 'GateNet6 on Daylight')
 detection_v2 = detection_plot('logs/v2_mixed/results/daylight--019.pkl', 'YoloV2 on Daylight')
 detection_tiny = detection_plot('logs/tiny_mixed/results/daylight--023.pkl', 'TinyYolo on Daylight')
 
-# pr_daylight_all.show(False)
-# pr_basement_all.show(False)
-#
-# detection_gate.show(False)
-# detection_v2.show(False)
-# detection_tiny.show()
-#
-pr_basement_all.save('doc/report/2018-04-22/fig/pr_basement_all.png')
-pr_daylight_all.save('doc/report/2018-04-22/fig/pr_daylight_all.png')
-detection_gate.save('doc/report/2018-04-22/fig/detection_gate.png')
-detection_v2.save('doc/report/2018-04-22/fig/detection_v2.png')
-detection_tiny.save('doc/report/2018-04-22/fig/detection_tiny.png')
+pr_daylight_all.show(False)
+pr_basement_all.show(False)
+
+detection_gate6.show(False)
+detection_gate.show(False)
+detection_v2.show(False)
+detection_tiny.show()
+
+# pr_basement_all.save('doc/report/2018-04-22/fig/pr_basement_all.png')
+# pr_daylight_all.save('doc/report/2018-04-22/fig/pr_daylight_all.png')
+# detection_gate.save('doc/report/2018-04-22/fig/detection_gate.png')
+# detection_v2.save('doc/report/2018-04-22/fig/detection_v2.png')
+# detection_tiny.save('doc/report/2018-04-22/fig/detection_tiny.png')
+# detection_gate6.save('doc/report/2018-04-22/fig/detection_gate6.png')

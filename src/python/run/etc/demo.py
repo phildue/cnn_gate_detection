@@ -10,10 +10,10 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/video/eth'],
+generator = GateGenerator(directories=['resource/ext/samples/daylight_test'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
-                          label_format='pkl',
+                          label_format='xml',
                           )
 #
 # generator = VocGenerator(batch_size=8)
@@ -25,6 +25,6 @@ generator = GateGenerator(directories=['resource/ext/samples/video/eth'],
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
 
-model = GateNet.v5(weight_file='logs/gatev5_mixed/model.h5', conf_thresh=0.3, color_format='yuv')
-create_dirs(['logs/gatev5_mixed/demo/eth'])
-demo_generator(model, generator, t_show=1, out_file='logs/gatev5_mixed/demo/eth', n_samples=150)
+model = GateNet.v6(weight_file='logs/gatev6_mixed/model.h5', conf_thresh=0.3, color_format='yuv')
+create_dirs(['logs/gatev6_mixed/demo/daylight_test'])
+demo_generator(model, generator, t_show=1, out_file='logs/gatev6_mixed/demo/daylight_test', n_samples=500)
