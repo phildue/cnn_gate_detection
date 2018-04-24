@@ -84,6 +84,14 @@
 		\item Uses confidence score plus class probability although only one object shall be detected
 	\end{itemize}
 		
+	\subsubsection{YoloV3 \cite{Redmona}}
+	\begin{itemize}
+		\item binary cross entropy loss for class predictions
+		\item 3 boxes at each scale (3 scales)
+		\item merge lower level features with higher level features and predict another tensor
+		\item new network with several residual layers, in between 1x1 convolutions, fully connected layer at the end (53 layers)
+		\item runs at 22-51ms depending on resolution
+	\end{itemize}
 
 \begin{table}[]
 	

@@ -17,7 +17,7 @@ def average_precision_recall(detection_results):
 
 def interpolate(results: ResultsByConfidence, recall_levels=None):
     if recall_levels is None:
-        recall_levels = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        recall_levels = np.array([0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
 
     sorted_results = results.values
     precision_raw = np.zeros((1, len(sorted_results)))

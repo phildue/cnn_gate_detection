@@ -8,3 +8,24 @@ For the computer vision system investigated in this work this mean
 If there are not enough labelled samples models can overfit to the particular training set. This means a low error can be achieved on the training data but the model performs poorly when applied in the wild.
 
 Similar effec
+
+\section{Summaries}
+\subsection{Modeling Camera Effects to Improve Deep Vision for Real and Synthetic Data\cite{Carlson2018}}
+\begin{itemize}
+	\item heaps of references in how camera properties influence object detectors
+	\item introduces image augmentation pipeline based on physical model: chromatic aberration, blur, exposure, noise and color shift
+	\item input parameters are modelled by hand, then randomly selected within "realistic" range
+	\item no lense distortion
+	\item method seem to benefit for small objects and when oversaturation applies due to camera effects
+\end{itemize}
+\subsection{Domain Randomization\cite{Tremblay2018a}}
+\begin{itemize}
+	\item uses ue4 engine with custom plugin
+	\item model is supposed to learn independent of domain
+	\item textures are randomly applied
+	\item object models are randomly selected
+	\item approach cant capture patterns like how cars are parked (similar could happend when randomly placing the gates)
+	\item Tuning lower layers on simulated data fine tuning on real data
+	\item Effects of DR-parameters: light augmentation 0.1\%, light placement 10, \% texture 4\%, data augmentation 1.6\%, flying distractors 1.1 \%
+	\item pretraining on imagenet helps a lot, freezing weights when training on synthetic data does not help
+\end{itemize}
