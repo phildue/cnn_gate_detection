@@ -16,6 +16,10 @@ from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
 
 class SSD(Predictor):
     @property
+    def output_shape(self):
+        return self._output_shape
+
+    @property
     def input_shape(self):
         return self.img_shape
 
@@ -172,6 +176,7 @@ class SSD(Predictor):
                  iou_thresh_nms=0.45,
                  color_format='bgr',
                  iou_thresh_background=0.2):
+        self._output_shape = (len(n_classes) + 5), 3
         self.variances = variances
         self.clip_boxes = clip_boxes
         self.img_shape = img_shape
