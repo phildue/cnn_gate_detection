@@ -2,6 +2,8 @@
 resource/backgrounds
 resource/samples
 resource/shots
+resource/video
+resource/ext
 temp/
 logs
 research
