@@ -15,6 +15,11 @@ class Predictor:
         pass
 
     @property
+    @abstractmethod
+    def output_shape(self):
+        pass
+
+    @property
     def decoder(self) -> Decoder:
         return self._decoder
 
