@@ -3,6 +3,7 @@ import numpy as np
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
+from modelzoo.backend.tensor.gatenet.GateNetV10 import GateNetV10
 from modelzoo.backend.tensor.gatenet.GateNetV2 import GateNetV2
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
@@ -10,6 +11,7 @@ from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
 from modelzoo.backend.tensor.gatenet.GateNetV7 import GateNetV7
 from modelzoo.backend.tensor.gatenet.GateNetV8 import GateNetV8
+from modelzoo.backend.tensor.gatenet.GateNetV9 import GateNetV9
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
