@@ -5,10 +5,15 @@ import sys
 
 
 def cd_work():
-    if sys.platform is 'win32' or 'win64':
-        os.chdir('e:/doc/study/thesis/mavv')
+    print("Platform: ", sys.platform)
+    if sys.platform is ('win32' or 'win64'):
+        wd = 'e:/doc/study/thesis/mavv'
     else:
-     os.chdir(expanduser('~') + '/dronevision/')
+        wd = expanduser('~') + '/dronevision/'
+
+    print("Working Directory: ", wd)
+
+    os.chdir(wd)
 
 
 def home():
