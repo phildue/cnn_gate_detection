@@ -6,13 +6,13 @@ from utils.imageprocessing.Backend import imread, resize
 from utils.imageprocessing.CamCalibration import CamCalibration
 from utils.workdir import cd_work
 
-cd_work()
-src_images = 'resource/camera_calibration/unreal/'
-out_file = 'resource/cam_params_unreal.pkl'
+#cd_work()
+src_images = '/home/phil/'
+out_file = '/home/phil/cam_params_unreal.pkl'
 
 files = glob.glob(src_images + '*.jpg')
 images = [imread(f, 'bgr') for f in files]
-cam_calib = CamCalibration(images[0].shape[:2], 'chess', (6, 6))
+cam_calib = CamCalibration(images[0].shape[:2], 'chess', (5, 5))
 error = cam_calib.calibrate(images)
 print("Estimation error:", error)
 cam_calib.save(out_file)
