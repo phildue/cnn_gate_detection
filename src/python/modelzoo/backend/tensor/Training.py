@@ -101,5 +101,5 @@ class Training:
                    'transform': augmentation,
                    'initial_epoch': self.initial_epoch,
                    'epochs': self.epochs,
-                   'architecture': self.predictor.net.backend.summary()}
+                   'architecture': self.predictor.net.backend.get_config()}
         return summary
