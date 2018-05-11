@@ -7,7 +7,7 @@ from modelzoo.models.Net import Net
 import keras.backend as K
 
 
-class GateNetV11(Net):
+class GateNetV12(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
@@ -60,21 +60,21 @@ class GateNetV11(Net):
 
         w, h = img_shape
         input = Input((w, h, 3))
-        conv1 = Conv2D(16, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(input)
+        conv1 = Conv2D(16, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
         act1 = LeakyReLU(alpha=0.1)(norm1)
         pool1 = MaxPooling2D((2, 2))(act1)
         # 208
-        conv2 = Conv2D(32, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool1)
+        conv2 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool1)
         norm2 = BatchNormalization()(conv2)
         act2 = LeakyReLU(alpha=0.1)(norm2)
-        pool2 = MaxPooling2D((2, 2))(act2)
-        # 104
-        conv3 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool2)
+        pool2 = MaxPooling2D((4, 4))(act2)
+        # 52
+        conv3 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool2)
         norm3 = BatchNormalization()(conv3)
         act3 = LeakyReLU(alpha=0.1)(norm3)
-        pool3 = MaxPooling2D((2, 2))(act3)
-        # 52
+        pool3 = MaxPooling2D((4, 4))(act3)
+        # 13
         conv4 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool3)
         norm4 = BatchNormalization()(conv4)
         act4 = LeakyReLU(alpha=0.1)(norm4)
