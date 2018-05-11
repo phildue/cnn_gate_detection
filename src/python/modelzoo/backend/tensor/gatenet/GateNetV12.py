@@ -75,17 +75,15 @@ class GateNetV12(Net):
         act3 = LeakyReLU(alpha=0.1)(norm3)
         pool3 = MaxPooling2D((4, 4))(act3)
         # 13
-        conv4 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool3)
+        conv4 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool3)
         norm4 = BatchNormalization()(conv4)
         act4 = LeakyReLU(alpha=0.1)(norm4)
-        pool4 = MaxPooling2D((2, 2))(act4)
-        # 26
-        conv5 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool4)
+
+        conv5 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act4)
         norm5 = BatchNormalization()(conv5)
         act5 = LeakyReLU(alpha=0.1)(norm5)
-        pool5 = MaxPooling2D((2, 2))(act5)
-        # 13
-        conv6 = Conv2D(64, kernel_size=(9, 9), strides=(1, 1), padding='same', use_bias=False)(pool5)
+
+        conv6 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act5)
         norm6 = BatchNormalization()(conv6)
         act6 = LeakyReLU(alpha=0.1)(norm6)
 
@@ -93,16 +91,8 @@ class GateNetV12(Net):
         norm7 = BatchNormalization()(conv7)
         act7 = LeakyReLU(alpha=0.1)(norm7)
 
-        conv8 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act7)
-        norm8 = BatchNormalization()(conv8)
-        act8 = LeakyReLU(alpha=0.1)(norm8)
-
-        conv9 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(act8)
-        norm9 = BatchNormalization()(conv9)
-        act9 = LeakyReLU(alpha=0.1)(norm9)
-
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            act9)
+            act7)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
         out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 
