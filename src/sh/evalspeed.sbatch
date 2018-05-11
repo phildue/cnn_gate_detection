@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/scripts/python/evaluation/evalspeed.py ${1} ${2}
+srun python3 dronevision/src/python/run/evaluation/evalspeed.py ${1} ${2}
