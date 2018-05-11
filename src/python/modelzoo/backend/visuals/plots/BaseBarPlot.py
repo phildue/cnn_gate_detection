@@ -19,7 +19,7 @@ class BaseBarPlot(BasePlot):
         h = []
         if isinstance(self.y_data, list):
             for i in range(len(self.y_data)):
-                h += plt.bar(self.x_data[i], self.y_data[i], color=self.colors[i], align='center', alpha=0.5,
+                h += plt.bar(self.x_data[i], self.y_data[i], color=None, align='center', alpha=0.5,
                              width=self.width)
         else:
             h += plt.bar(self.x_data, self.y_data, color=self.colors, align='center', alpha=0.5, width=self.width)
