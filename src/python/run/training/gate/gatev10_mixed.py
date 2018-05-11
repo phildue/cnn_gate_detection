@@ -33,7 +33,7 @@ test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
 test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
 train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
-                          color_format='bgr', label_format='xml', n_samples=20)
+                          color_format='bgr', label_format='xml')
 test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
                            label_format='xml')
 test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
