@@ -12,7 +12,7 @@ parser.add_argument("model", help="model name",
                     type=str)
 parser.add_argument("work_dir", help="Working directory", type=str)
 parser.add_argument("--image_source", help="List of folders to be scanned for test images", type=[str],
-                    default=['resource/ext/samples/daylight_test'])
+                    default='resource/ext/samples/daylight_test')
 parser.add_argument("--batch_size", help="Batch Size", type=int, default=1)
 parser.add_argument("--n_batches", help="Amount of batches", type=int, default=None)
 args = parser.parse_args()
@@ -25,7 +25,7 @@ work_dir = args.work_dir
 Image Source
 """
 batch_size = args.batch_size
-image_source = args.image_source
+image_source = [args.image_source]
 color_format = 'bgr'
 
 generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format='jpg',
