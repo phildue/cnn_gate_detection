@@ -1,21 +1,15 @@
+import pprint as pp
+
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
-from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.MavvAugmenter import MavvAugmenter
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 
