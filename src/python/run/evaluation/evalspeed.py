@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("model", help="model name",
                     type=str)
 parser.add_argument("work_dir", help="Working directory", type=str)
-parser.add_argument("--image_source", help="List of folders to be scanned for test images", type=[str],
+parser.add_argument("--image_source", help="List of folders to be scanned for test images", type=str,
                     default='resource/ext/samples/daylight_test')
 parser.add_argument("--batch_size", help="Batch Size", type=int, default=1)
 parser.add_argument("--n_batches", help="Amount of batches", type=int, default=None)
@@ -68,8 +68,7 @@ exp_param_file = 'experiment_parameters.txt'
 
 create_dirs([result_path])
 
-evaluator = SpeedEvaluator(model,
-                           out_file=result_path + result_file)
+evaluator = SpeedEvaluator(model, out_file=result_path + result_file)
 
 evaluator.evaluate_generator(generator, n_batches=n_batches)
 

@@ -17,38 +17,41 @@ class SpeedEvaluator(ModelEvaluator):
 
     def evaluate_generator(self, generator: DatasetGenerator, n_batches=10):
         it = iter(generator.generate())
-        results = []
+        results_enc = np.zeros((n_batches,))
+        results_pred = np.zeros((n_batches,))
+        results_pp = np.zeros((n_batches,))
+        results_total = np.zeros((n_batches,))
         for i in range(n_batches):
             batch = next(it)
             images = [b[0] for b in batch]
             tic()
             sample_t = self.model.preprocessor.preprocess_batch(images)
-            time_enc = toc()
+            time_enc = toc(verbose=False)
             tic()
             netout = self.predict([sample_t, 0])[0]
-            time_pred = toc()
+            time_pred = toc(verbose=False)
 
             tic()
             predictions = self.model.postprocessor.postprocess(netout)
-            time_pp = toc()
-            fps_enc = len(images) / time_enc
-            fps_pred = len(images) / time_pred
-            fps_pp = len(images) / time_pp
+            time_pp = toc(verbose=False)
 
-            fps_total = len(images) / (time_enc + time_pred + time_pp)
+            results_enc[i] = time_enc / len(images)
+            results_pred[i] = time_pred / len(images)
+            results_pp[i] = time_pp / len(images)
+            results_total[i] = (time_enc + time_pred + time_pp) / len(images)
 
-            results_batch = {'T_Encoding [s]': 1 / fps_enc,
-                             'T_Prediction [s]': 1 / fps_pred,
-                             'T_Postprocessing [s]': 1 / fps_pp,
-                             'T_Total [s]': 1 / fps_total}
+        results_dict = {'T_Encoding [s]': np.mean(results_enc),
+                        'T_Prediction [s]': np.mean(results_pred),
+                        'T_Postprocessing [s]': np.mean(results_pp),
+                        'T_Total [s]': np.mean(results_total)}
+        if self.verbose:
+            pprint("Done.")
+            pprint(results_dict)
+        if self.out_file is not None:
+            content = {'results_enc': results_enc,
+                       'results_pred': results_pred,
+                       'results_pp': results_pp,
+                       'results_mean': results_dict}
+            save_file(content, self.out_file)
 
-            results.append(results_batch)
-
-            if self.verbose:
-                pprint("Evaluated batch {0:d}/{1:d}".format(i, n_batches))
-                pprint(results_batch)
-            if self.out_file is not None:
-                content = {'results': results}
-                save_file(content, self.out_file)
-
-        return results
+        return results_dict
