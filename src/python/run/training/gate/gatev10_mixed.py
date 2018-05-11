@@ -85,6 +85,7 @@ training = Training(predictor, train_gen,
                     callbacks=[test_metric_1, test_metric_2])
 
 pp.pprint(training.summary)
+predictor.net.backend.summary()
 
 save_file(training.summary, 'training_params.txt', result_path, verbose=False)
 

@@ -4,6 +4,7 @@ from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
 from modelzoo.backend.tensor.gatenet.GateNetV10 import GateNetV10
+from modelzoo.backend.tensor.gatenet.GateNetV11 import GateNetV11
 from modelzoo.backend.tensor.gatenet.GateNetV2 import GateNetV2
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4

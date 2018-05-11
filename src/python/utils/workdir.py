@@ -11,9 +11,8 @@ def cd_work():
     else:
         wd = expanduser('~') + '/dronevision/'
 
-    print("Working Directory: ", wd)
-
     os.chdir(wd)
+    print("Working Directory: ", os.getcwd())
 
 
 def home():
