@@ -24,7 +24,6 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
 predictor = GateNet.v10(batch_size=batch_size,
                         color_format='yuv',
                         augmenter=augmenter)
-pp.pprint(predictor.net.backend.summary())
 
 """
 Datasets
@@ -33,8 +32,8 @@ image_source = ["resource/ext/samples/mixed_rooms/"]
 test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
 test_image_source_2 = ['resource/ext/samples/daylight_test/']
 
-train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
-                          color_format='bgr', label_format='xml')
+train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+                          color_format='bgr', label_format='xml', n_samples=20)
 test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
                            label_format='xml')
 test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',

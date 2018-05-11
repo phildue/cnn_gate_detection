@@ -32,7 +32,6 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
 predictor = GateNet.v7(batch_size=batch_size,
                        color_format='yuv',
                        augmenter=augmenter)
-pp.pprint(predictor.net.backend.summary())
 
 """
 Datasets

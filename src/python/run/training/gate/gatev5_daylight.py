@@ -66,7 +66,6 @@ params = {'optimizer': 'adam',
           'epsilon': 1e-08,
           'decay': 0.0005}
 
-predictor.compile(params=params)
 
 """
 Training Config
