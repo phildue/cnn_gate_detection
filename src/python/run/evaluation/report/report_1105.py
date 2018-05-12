@@ -126,6 +126,25 @@ sp = speed_plot(['out/gatev5_mixed/speed/result.pkl',
                  'TinyYolo',
                  'YoloV2'])
 
+sp_laptop = speed_plot(['out/gatev5_mixed/speed/speed_laptop.pkl',
+                        'out/gatev8_mixed/speed/speed_laptop.pkl',
+                        'out/gatev9_mixed/speed/speed_laptop.pkl',
+                        'out/gatev10_mixed/speed/speed_laptop.pkl',
+                        'out/gatev11_mixed/speed/speed_laptop.pkl',
+                        'out/gatev12_mixed/speed/speed_laptop.pkl',
+                        'out/gatev13_mixed/speed/speed_laptop.pkl',
+                        'out/tiny_mixed/speed/speed_laptop.pkl',
+                        'out/v2_mixed/speed/speed_laptop.pkl'],
+                       ['GateV5',
+                        'GateV8',
+                        'GateV9',
+                        'GateV10',
+                        'GateV11',
+                        'GateV12',
+                        'GateV13',
+                        'TinyYolo',
+                        'YoloV2'])
+
 pr_daylight_tuning = pr_plot(files=[
     'out/gatev5_mixed/results/daylight--024.pkl',
     'out/gatev6-1/results/daylight--017.pkl',
@@ -184,6 +203,6 @@ pr_basement_tuning = pr_plot(files=[
     line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
     y_range=(0.8, 1.0))
 sp.show(False)
-
+sp_laptop.show(False)
 pr_basement_tuning.show(False)
 pr_daylight_tuning.show(True)
