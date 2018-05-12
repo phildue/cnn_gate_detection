@@ -1,6 +1,7 @@
 import argparse
 
 from modelzoo.evaluation.SpeedEvaluator import SpeedEvaluator
+from modelzoo.models.ModelBuilder import ModelBuilder
 from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
@@ -36,30 +37,7 @@ n_batches = args.n_batches if args.n_batches is not None else int(generator.n_sa
 """
 Model config
 """
-if args.model == "tiny_yolo":
-    model = Yolo.tiny_yolo(batch_size=batch_size)
-elif args.model == "yolo":
-    model = Yolo.yolo_v2(batch_size=batch_size)
-elif args.model == "gatev5":
-    model = GateNet.v5(batch_size=batch_size)
-elif args.model == "gatev6":
-    model = GateNet.v6(batch_size=batch_size)
-elif args.model == "gatev7":
-    model = GateNet.v7(batch_size=batch_size)
-elif args.model == "gatev8":
-    model = GateNet.v8(batch_size=batch_size)
-elif args.model == "gatev9":
-    model = GateNet.v9(batch_size=batch_size)
-elif args.model == "gatev10":
-    model = GateNet.v10(batch_size=batch_size)
-elif args.model == "gatev11":
-    model = GateNet.v11(batch_size=batch_size)
-elif args.model == "gatev12":
-    model = GateNet.v12(batch_size=batch_size)
-elif args.model == "gatev13":
-    model = GateNet.v13(batch_size=batch_size)
-else:
-    raise ValueError("Unknown model name!")
+model = ModelBuilder.get_model(args.model, args.batch_size)
 """
 Evaluator
 """
