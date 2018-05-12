@@ -86,52 +86,74 @@ def detection_plot(src_file, title):
                          title=title)
 
 
-def speed_plot(src_files):
+def speed_plot(src_files, names):
     curves = []
     ind = []
-    colors = []
+    names_lookup = []
     for i, src_file in enumerate(src_files, 1):
         results = load_file(src_file)
         results_pred = results['results_pred']
         results_pp = results['results_pp']
-        results_total = np.sum([results_pp, results_pred], 0)
-        curves.extend([np.mean(results_pred), np.mean(results_pp), np.mean(results_total)])
-        ind.extend([i] * 3)
-        colors.extend(['blue', 'red', 'green'])
+        results_total = np.sum([results_pred, results_pp], 0)
+        c = [np.mean(results_pred)]
+        curves.extend(c)
+        ind.extend([i] * len(c))
+        names_lookup.extend([names[i - 1]] * len(c))
     return BaseBarPlot(x_data=ind,
+                       names=names_lookup,
                        y_data=curves,
-                       colors=None)
+                       colors=None,
+                       width=0.4)
 
 
 cd_work()
-speed_plot(['out/gatev9_mixed/speed/result.pkl', 'out/gatev10_mixed/speed/result.pkl']).show()
-# pr_daylight_tuning = pr_plot(files=[
-#     'out/gatev5_mixed/results/daylight--024.pkl',
-#     'out/gatev6-1/results/daylight--017.pkl',
-#     'out/gatev7_mixed/results/daylight--022.pkl',
-#     'out/gatev8_mixed/results/daylight--020.pkl',
-#     'out/gatev9_mixed/results/daylight--011.pkl',
-#     'out/gatev10_mixed/results/daylight--011.pkl',
-#     'out/gatev11_mixed/results/daylight--008.pkl',
-#     'out/gatev12_mixed/results/daylight--008.pkl',
-#     'out/gatev13_mixed/results/daylight--008.pkl',
-#     'out/tiny_mixed/results/daylight--023.pkl',
-#     'out/v2_mixed/results/daylight--019.pkl'
-# ],
-#     legend=['GateNet5-Mixed',
-#             'GateNet6-Mixed',
-#             'GateNet7-Mixed',
-#             'GateNet8-Mixed',
-#             'GateNet9-Mixed',
-#             'GateNet10-Mixed',
-#             'GateNet11-Mixed',
-#             'GateNet12-Mixed',
-#             'GateNet13-Mixed',
-#             'Tiny-Mixed',
-#             'V2-Mixed'
-#             ],
-#     title='Test on Daylight',
-#     line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
-#     y_range=(0.8, 1.0))
-#
-# pr_daylight_tuning.show(True)
+sp = speed_plot(['out/gatev5_mixed/speed/result.pkl',
+                 'out/gatev8_mixed/speed/result.pkl',
+                 'out/gatev9_mixed/speed/result.pkl',
+                 'out/gatev10_mixed/speed/result.pkl',
+                 'out/gatev11_mixed/speed/result.pkl',
+                 'out/gatev12_mixed/speed/result.pkl',
+                 'out/gatev13_mixed/speed/result.pkl',
+                 'out/tiny_mixed/speed/result.pkl',
+                 'out/v2_mixed/speed/result.pkl'],
+                ['GateV5',
+                 'GateV8',
+                 'GateV9',
+                 'GateV10',
+                 'GateV11',
+                 'GateV12',
+                 'GateV13',
+                 'TinyYolo',
+                 'YoloV2'])
+sp.show(False)
+
+pr_daylight_tuning = pr_plot(files=[
+    'out/gatev5_mixed/results/daylight--024.pkl',
+    'out/gatev6-1/results/daylight--017.pkl',
+    'out/gatev7_mixed/results/daylight--022.pkl',
+    'out/gatev8_mixed/results/daylight--020.pkl',
+    'out/gatev9_mixed/results/daylight--020.pkl',
+    'out/gatev10_mixed/results/daylight--020.pkl',
+    'out/gatev11_mixed/results/daylight--018.pkl',
+    'out/gatev12_mixed/results/daylight--018.pkl',
+    'out/gatev13_mixed/results/daylight--018.pkl',
+    'out/tiny_mixed/results/daylight--023.pkl',
+    'out/v2_mixed/results/daylight--019.pkl'
+],
+    legend=['GateNet5-Mixed',
+            'GateNet6-Mixed',
+            'GateNet7-Mixed',
+            'GateNet8-Mixed',
+            'GateNet9-Mixed',
+            'GateNet10-Mixed',
+            'GateNet11-Mixed',
+            'GateNet12-Mixed',
+            'GateNet13-Mixed',
+            'Tiny-Mixed',
+            'V2-Mixed'
+            ],
+    title='Test on Daylight',
+    line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
+    y_range=(0.8, 1.0))
+
+pr_daylight_tuning.show(True)

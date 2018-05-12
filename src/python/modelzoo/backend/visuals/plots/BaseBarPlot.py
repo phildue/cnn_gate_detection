@@ -6,8 +6,9 @@ from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 class BaseBarPlot(BasePlot):
     def __init__(self, x_data, y_data, size=(6, 5), font_size=12, title='', line_style='--', x_label='x', y_label='y',
                  width=0.1,
-                 colors='blue', legend=None):
+                 colors='blue', legend=None, names=['0']):
         super().__init__(x_data, y_data, size, font_size, title, line_style, x_label, y_label, )
+        self.names = names
         self.legend = legend
         self.colors = colors
         self.width = width
@@ -23,7 +24,8 @@ class BaseBarPlot(BasePlot):
                              width=self.width)
         else:
             h += plt.bar(self.x_data, self.y_data, color=self.colors, align='center', alpha=0.5, width=self.width)
-        plt.xticks(fontsize=self.font_size)
+        plt.xticks(self.x_data, self.names, fontsize=self.font_size)
         plt.yticks(fontsize=self.font_size)
+
         if self.legend is not None:
             plt.legend(h, self.legend)
