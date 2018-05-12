@@ -721,7 +721,7 @@ class GateNet(Predictor):
                        n_polygon=n_polygon)
 
     @staticmethod
-    def v13(norm=(416, 416),
+    def v14(norm=(416, 416),
             grid=(13, 13),
             anchors=None,
             batch_size=8,

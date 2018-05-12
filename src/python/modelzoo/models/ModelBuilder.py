@@ -1,0 +1,40 @@
+from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.yolo.Yolo import Yolo
+
+
+class ModelBuilder:
+
+    @staticmethod
+    def get_model(name, batch_size, src_dir=None):
+
+        if src_dir is not None:
+            weight_file = src_dir + 'model.h5'
+        else:
+            weight_file = None
+
+        if name == "tiny_yolo":
+            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file)
+        elif name == "yolo":
+            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev5":
+            model = GateNet.v5(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev6":
+            model = GateNet.v6(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev7":
+            model = GateNet.v7(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev8":
+            model = GateNet.v8(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev9":
+            model = GateNet.v9(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev10":
+            model = GateNet.v10(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev11":
+            model = GateNet.v11(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev12":
+            model = GateNet.v12(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev13":
+            model = GateNet.v13(batch_size=batch_size, weight_file=weight_file)
+        else:
+            raise ValueError("Unknown model name!")
+
+        return model
