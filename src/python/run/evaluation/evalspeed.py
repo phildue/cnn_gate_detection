@@ -15,6 +15,7 @@ parser.add_argument("--image_source", help="List of folders to be scanned for te
                     default='resource/ext/samples/daylight_test')
 parser.add_argument("--batch_size", help="Batch Size", type=int, default=1)
 parser.add_argument("--n_batches", help="Amount of batches", type=int, default=None)
+parser.add_argument("--result_file_name", type=str, default='speed_result.pkl')
 args = parser.parse_args()
 
 cd_work()
@@ -63,7 +64,7 @@ else:
 Evaluator
 """
 result_path = work_dir + name + '/'
-result_file = 'result.pkl'
+result_file = args.result_file_name
 exp_param_file = 'experiment_parameters.txt'
 
 create_dirs([result_path])

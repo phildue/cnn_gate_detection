@@ -125,7 +125,6 @@ sp = speed_plot(['out/gatev5_mixed/speed/result.pkl',
                  'GateV13',
                  'TinyYolo',
                  'YoloV2'])
-sp.show(False)
 
 pr_daylight_tuning = pr_plot(files=[
     'out/gatev5_mixed/results/daylight--024.pkl',
@@ -156,4 +155,35 @@ pr_daylight_tuning = pr_plot(files=[
     line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
     y_range=(0.8, 1.0))
 
+pr_basement_tuning = pr_plot(files=[
+    'out/gatev5_mixed/results/industrial--023.pkl',
+    'out/gatev6-1/results/industrial--017.pkl',
+    'out/gatev7_mixed/results/industrial--022.pkl',
+    'out/gatev8_mixed/results/industrial--020.pkl',
+    'out/gatev9_mixed/results/industrial--020.pkl',
+    'out/gatev10_mixed/results/industrial--020.pkl',
+    'out/gatev11_mixed/results/industrial--018.pkl',
+    'out/gatev12_mixed/results/industrial--018.pkl',
+    'out/gatev13_mixed/results/industrial--018.pkl',
+    'out/tiny_mixed/results/industrial--023.pkl',
+    'out/v2_mixed/results/industrial--019.pkl'
+],
+    legend=['GateNet5-Mixed',
+            'GateNet6-Mixed',
+            'GateNet7-Mixed',
+            'GateNet8-Mixed',
+            'GateNet9-Mixed',
+            'GateNet10-Mixed',
+            'GateNet11-Mixed',
+            'GateNet12-Mixed',
+            'GateNet13-Mixed',
+            'Tiny-Mixed',
+            'V2-Mixed'
+            ],
+    title='Test on Basement',
+    line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
+    y_range=(0.8, 1.0))
+sp.show(False)
+
+pr_basement_tuning.show(False)
 pr_daylight_tuning.show(True)
