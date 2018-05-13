@@ -59,6 +59,7 @@ class GateNetV9(Net):
                         'decay': 0.0005}
 
         w, h = img_shape
+        # increased kernel sizes
         input = Input((w, h, 3))
         conv1 = Conv2D(16, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)

@@ -58,8 +58,8 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 Paths
 """
 result_path = 'out/' + args.work_dir + '/'
-test_result_1 = result_path + 'results/test_1--'
-test_result_2 = result_path + 'results/test_2--'
+test_result_1 = result_path + 'results/set_1-'
+test_result_2 = result_path + 'results/set_2--'
 
 create_dirs([result_path, result_path + '/results/'])
 

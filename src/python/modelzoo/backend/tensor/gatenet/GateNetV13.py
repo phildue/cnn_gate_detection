@@ -60,6 +60,7 @@ class GateNetV13(Net):
 
         w, h = img_shape
         input = Input((w, h, 3))
+        # 4by4 pooling deeper
         conv1 = Conv2D(16, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
         act1 = LeakyReLU(alpha=0.1)(norm1)
