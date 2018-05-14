@@ -24,7 +24,7 @@ def mean_pr_c(result_by_conf):
     return mean_precision, mean_recall, confidence
 
 
-def avg_pr_file(src_file):
+def avg_pr_per_image_file(src_file):
     results = load_file(src_file)
     detection_result = results['results']['MetricDetection']
     detection_result = [ResultByConfidence(d) for d in detection_result]
@@ -32,11 +32,28 @@ def avg_pr_file(src_file):
     return mean_pr, mean_rec
 
 
+def avg_pr_file(src_file):
+    results = load_file(src_file)
+    detection_result = results['results']['MetricDetection']
+
+    detection_result = [ResultByConfidence(d) for d in detection_result]
+    detection_sum = detection_result[0]
+    for d in detection_result[1:]:
+        detection_sum += d
+    precision = np.zeros((10,))
+    recall = np.zeros((10,))
+    for j, c in enumerate(np.round(np.linspace(0.0, 0.9, 10), 2)):
+        precision[j] = detection_sum.results[c].precision
+        recall[j] = detection_sum.results[c].recall
+
+    return precision, recall
+
+
 def pr_plot(files, legend, title, line_style=None, y_range=(0.5, 1.0)):
     recalls = []
     precisions = []
     for f in files:
-        mean_p, mean_r = avg_pr_file(f)
+        mean_p, mean_r = avg_pr_per_image_file(f)
         recalls.append(mean_r)
         precisions.append(mean_p)
 
@@ -122,8 +139,10 @@ def performance_speed_plot(performance_files, speed_files, names):
         performance_file_cont = load_file(performance_file)
         detection_result = performance_file_cont['results']['MetricDetection']
         detection_result = [ResultByConfidence(d) for d in detection_result]
-        mean_pr, mean_r = average_precision_recall(detection_result)
-        performances.append([np.mean(mean_pr)])
+        precision, _ = avg_pr_per_image_file(performance_file)
+        print("MAP:{}:{}+-{}".format(names[i], np.mean(precision), np.std(precision)))
+        print("Speed: {}:{}+-{}".format(names[i], t_pred, np.std(speed_file_cont['results_pred'][1:])))
+        performances.append([np.mean(precision)])
         linestyle.append(symbols[i % len(symbols)])
 
     return BaseMultiPlot(x_data=times, x_label='Inference Time [s]',
@@ -132,7 +151,7 @@ def performance_speed_plot(performance_files, speed_files, names):
                          legend=names)
 
 
-def params_speed_plot(params, speed_files, names):
+def params_speed_plot(params, speed_files, names, linestyle=None):
     times = []
     performances = []
     for i in range(len(speed_files)):
@@ -145,11 +164,11 @@ def params_speed_plot(params, speed_files, names):
 
     return BaseMultiPlot(x_data=times, x_label='Inference Time [s]',
                          y_data=performances, y_label='Weights',
-                         line_style=['o'] * len(speed_files),
+                         line_style=linestyle,
                          legend=names)
 
 
-def layers_speed_plot(n_layers, speed_files, names):
+def layers_speed_plot(n_layers, speed_files, names, linestyle=None):
     times = []
     performances = []
     for i in range(len(speed_files)):
@@ -163,16 +182,35 @@ def layers_speed_plot(n_layers, speed_files, names):
 
     return BaseMultiPlot(x_data=times, x_label='Inference Time [s]',
                          y_data=performances, y_label='Layers',
-                         line_style=['o'] * len(speed_files),
+                         line_style=linestyle,
+                         legend=names)
+
+
+def performance_weights(performance_files, params, names):
+    performances = []
+    params_l = []
+    symbols = ['x', 'o', '*']
+    linestyle = []
+    for i in range(len(performance_files)):
+        params_l.append([params[i]])
+        performance_file = performance_files[i]
+        performance_file_cont = load_file(performance_file)
+        detection_result = performance_file_cont['results']['MetricDetection']
+        detection_result = [ResultByConfidence(d) for d in detection_result]
+        precision, _ = avg_pr_per_image_file(performance_file)
+        print("{}:{}+-{}".format(names[i], np.mean(precision), np.std(precision)))
+        performances.append([np.mean(precision)])
+        linestyle.append(symbols[i % len(symbols)])
+
+    return BaseMultiPlot(x_data=params_l, x_label='Weights [s]',
+                         y_data=performances, y_label='Mean Average Precision',
+                         line_style=linestyle,
                          legend=names)
 
 
 cd_work()
 
-pr_daylight_tuning = pr_plot(files=[
-    'out/gatev5_mixed/results/daylight--024.pkl',
-    'out/gatev6-1/results/daylight--017.pkl',
-    'out/gatev7_mixed/results/daylight--022.pkl',
+daylight_result_files = [
     'out/gatev8_mixed/results/daylight--020.pkl',
     'out/gatev9_mixed/results/daylight--020.pkl',
     'out/gatev10_mixed/results/daylight--020.pkl',
@@ -182,34 +220,15 @@ pr_daylight_tuning = pr_plot(files=[
     'out/gatev14_mixed/results/daylight--018.pkl',
     'out/gatev15_mixed/results/test_2--009.pkl',
     'out/gatev16_mixed/results/test_2--019.pkl',
-    'out/gatev17_mixed/results/test_2--019.pkl',
+    'out/gatev17_mixed/results/set_2--017.pkl',
+    'out/gatev18_mixed/results/set_2--017.pkl',
+    'out/gatev19/results/set_2--017.pkl',
+    'out/gatev20/results/set_2--017.pkl',
     'out/tiny_mixed/results/daylight--023.pkl',
     'out/v2_mixed/results/daylight--019.pkl'
-],
-    legend=['GateNet5-Mixed',
-            'GateNet6-Mixed',
-            'GateNet7-Mixed',
-            'GateNet8-Mixed',
-            'GateNet9-Mixed',
-            'GateNet10-Mixed',
-            'GateNet11-Mixed',
-            'GateNet12-Mixed',
-            'GateNet13-Mixed',
-            'GateNet14-Mixed',
-            'GateNet15-Mixed',
-            'GateNet16-Mixed',
-            'GateNet17-Mixed',
-            'Tiny-Mixed',
-            'V2-Mixed'
-            ],
-    title='Test on Daylight',
-    line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
-    y_range=(0.8, 1.0))
-#
-pr_basement_tuning = pr_plot(files=[
-    'out/gatev5_mixed/results/industrial--023.pkl',
-    'out/gatev6-1/results/industrial--017.pkl',
-    'out/gatev7_mixed/results/industrial--022.pkl',
+]
+
+basement_result_files = [
     'out/gatev8_mixed/results/industrial--020.pkl',
     'out/gatev9_mixed/results/industrial--020.pkl',
     'out/gatev10_mixed/results/industrial--020.pkl',
@@ -220,46 +239,14 @@ pr_basement_tuning = pr_plot(files=[
     'out/gatev15_mixed/results/test_1--009.pkl',
     'out/gatev16_mixed/results/test_1--019.pkl',
     'out/gatev17_mixed/results/test_1--019.pkl',
+    'out/gatev18_mixed/results/set_1-017.pkl',
+    'out/gatev19/results/set_1-017.pkl',
+    'out/gatev20/results/set_1-017.pkl',
     'out/tiny_mixed/results/industrial--023.pkl',
     'out/v2_mixed/results/industrial--019.pkl'
-],
-    legend=['GateNet5-Mixed',
-            'GateNet6-Mixed',
-            'GateNet7-Mixed',
-            'GateNet8-Mixed',
-            'GateNet9-Mixed',
-            'GateNet10-Mixed',
-            'GateNet11-Mixed',
-            'GateNet12-Mixed',
-            'GateNet13-Mixed',
-            'GateNet14-Mixed',
-            'GateNet15-Mixed',
-            'GateNet16-Mixed',
-            'GateNet17-Mixed',
-            'Tiny-Mixed',
-            'V2-Mixed'
-            ],
-    title='Test on Basement',
-    line_style=['x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'x-', 'o:', '.-', ],
-    y_range=(0.8, 1.0))
-#
-ps_plot = performance_speed_plot(performance_files=[
-    'out/gatev5_mixed/results/daylight--023.pkl',
-    'out/gatev8_mixed/results/daylight--020.pkl',
-    'out/gatev9_mixed/results/daylight--020.pkl',
-    'out/gatev10_mixed/results/daylight--020.pkl',
-    'out/gatev11_mixed/results/daylight--018.pkl',
-    'out/gatev12_mixed/results/daylight--018.pkl',
-    'out/gatev13_mixed/results/daylight--018.pkl',
-    'out/gatev14_mixed/results/daylight--018.pkl',
-    'out/gatev15_mixed/results/test_2--009.pkl',
-    'out/gatev16_mixed/results/test_2--018.pkl',
-    'out/gatev17_mixed/results/test_2--018.pkl',
-    'out/tiny_mixed/results/industrial--023.pkl',
-    'out/v2_mixed/results/industrial--019.pkl'
-],
-    speed_files=['out/gatev5_mixed/speed/result.pkl',
-                 'out/gatev8_mixed/speed/result.pkl',
+]
+
+speed_results = ['out/gatev8_mixed/speed/result.pkl',
                  'out/gatev9_mixed/speed/result.pkl',
                  'out/gatev10_mixed/speed/result.pkl',
                  'out/gatev11_mixed/speed/result.pkl',
@@ -269,113 +256,109 @@ ps_plot = performance_speed_plot(performance_files=[
                  'out/gatev15_mixed/speed/result.pkl',
                  'out/gatev16_mixed/speed/speed_result.pkl',
                  'out/gatev17_mixed/speed/speed_result.pkl',
+                 'out/gatev18_mixed/speed/speed_result.pkl',
+                 'out/gatev19/speed/speed_result.pkl',
+                 'out/gatev20/speed/speed_result.pkl',
                  'out/tiny_mixed/speed/result.pkl',
-                 'out/v2_mixed/speed/result.pkl'],
-    names=['GateNet5-Mixed',
-           'GateNet8-Mixed',
-           'GateNet9-Mixed',
-           'GateNet10-Mixed',
-           'GateNet11-Mixed',
-           'GateNet12-Mixed',
-           'GateNet13-Mixed',
-           'GateNet14-Mixed',
-           'GateNet15-Mixed',
-           'GateNet16-Mixed',
-           'GateNet17-Mixed',
-           'Tiny-Mixed',
-           'V2-Mixed'
-           ]
-)
+                 'out/v2_mixed/speed/result.pkl']
 
-params_speed = params_speed_plot([1588617,
-                                  619529,
+legend = ['GateNet8',
+          'GateNet9',
+          'GateNet10',
+          'GateNet11',
+          'GateNet12',
+          'GateNet13',
+          'GateNet14',
+          'GateNet15',
+          'GateNet16',
+          'GateNet17',
+          'GateNet18',
+          'GateNet19',
+          'GateNet20',
+          'Tiny',
+          'V2'
+          ]
+
+symbols = ['x-', '*-', 'o-']
+linestyles = [symbols[i % len(symbols)] for i, s in enumerate(legend)]
+
+pr_daylight_tuning = pr_plot(files=daylight_result_files,
+                             legend=legend,
+                             title='Test on Daylight',
+                             line_style=linestyles,
+                             y_range=(0.8, 1.0))
+#
+pr_basement_tuning = pr_plot(files=basement_result_files,
+                             legend=legend,
+                             title='Test on Basement',
+                             line_style=linestyles,
+                             y_range=(0.8, 1.0))
+#
+ps_plot = performance_speed_plot(performance_files=daylight_result_files, speed_files=speed_results, names=legend)
+
+params_speed = params_speed_plot([619529,
                                   248265,
                                   723417,
                                   613337,
                                   285385,
                                   174025,
                                   285385,
-                                  15867885,
                                   36341,
                                   244441,
-                                  244441
+                                  687577,
+                                  723929,
+                                  542921,
+                                  640073,
+                                  15867885
                                   #                                  50676436,
                                   ],
-                                 speed_files=['out/gatev5_mixed/speed/result.pkl',
-                                              'out/gatev8_mixed/speed/result.pkl',
-                                              'out/gatev9_mixed/speed/result.pkl',
-                                              'out/gatev10_mixed/speed/result.pkl',
-                                              'out/gatev11_mixed/speed/result.pkl',
-                                              'out/gatev12_mixed/speed/result.pkl',
-                                              'out/gatev13_mixed/speed/result.pkl',
-                                              'out/gatev14_mixed/speed/speed_result.pkl',
-                                              'out/gatev15_mixed/speed/result.pkl',
-                                              'out/gatev16_mixed/speed/speed_result.pkl',
-                                              'out/gatev17_mixed/speed/speed_result.pkl',
-                                              'out/tiny_mixed/speed/result.pkl',
-                                              #                                              'out/v2_mixed/speed/result.pkl'
-                                              ],
-                                 names=['GateNet5-Mixed',
-                                        'GateNet8-Mixed',
-                                        'GateNet9-Mixed',
-                                        'GateNet10-Mixed',
-                                        'GateNet11-Mixed',
-                                        'GateNet12-Mixed',
-                                        'GateNet13-Mixed',
-                                        'GateNet14-Mixed',
-                                        'GateNet15-Mixed',
-                                        'GateNet16-Mixed',
-                                        'GateNet17-Mixed',
-                                        'Tiny-Mixed',
-                                        #                                        'V2-Mixed'
-                                        ]
+                                 speed_files=speed_results[:-1],
+                                 names=legend[:-1],
+                                 linestyle=linestyles
                                  )
 
 layers_speed = layers_speed_plot([6,
                                   9,
                                   6,
                                   8,
-                                  10,
+                                  7,
                                   10,
                                   7,
                                   10,
                                   4,
                                   8,
                                   7,
-                                  10
-                                  #                                  50676436,
+                                  10,
+                                  8,
+                                  8,
+                                  22,
                                   ],
-                                 speed_files=['out/gatev5_mixed/speed/result.pkl',
-                                              'out/gatev8_mixed/speed/result.pkl',
-                                              'out/gatev9_mixed/speed/result.pkl',
-                                              'out/gatev10_mixed/speed/result.pkl',
-                                              'out/gatev11_mixed/speed/result.pkl',
-                                              'out/gatev12_mixed/speed/result.pkl',
-                                              'out/gatev13_mixed/speed/result.pkl',
-                                              'out/gatev14_mixed/speed/speed_result.pkl',
-                                              'out/gatev15_mixed/speed/result.pkl',
-                                              'out/gatev16_mixed/speed/speed_result.pkl',
-                                              'out/gatev17_mixed/speed/speed_result.pkl',
-                                              'out/tiny_mixed/speed/result.pkl',
-                                              #                                              'out/v2_mixed/speed/result.pkl'
-                                              ],
-                                 names=['GateNet5-Mixed',
-                                        'GateNet8-Mixed',
-                                        'GateNet9-Mixed',
-                                        'GateNet10-Mixed',
-                                        'GateNet11-Mixed',
-                                        'GateNet12-Mixed',
-                                        'GateNet13-Mixed',
-                                        'GateNet14-Mixed',
-                                        'GateNet15-Mixed',
-                                        'GateNet16-Mixed',
-                                        'GateNet17-Mixed',
-                                        'Tiny-Mixed',
-                                        #                                        'V2-Mixed'
-                                        ]
+                                 speed_files=speed_results,
+                                 names=legend,
+                                 linestyle=linestyles
+
                                  )
+pw_plot = performance_weights(performance_files=daylight_result_files[:-2],
+                              params=[619529,
+                                      248265,
+                                      723417,
+                                      613337,
+                                      285385,
+                                      174025,
+                                      285385,
+                                      36341,
+                                      244441,
+                                      687577,
+                                      723929,
+                                      542921,
+                                      640073,
+                                      # 15867885,
+                                      # 50676436,
+                                      ],
+                              names=legend)
 ps_plot.show(False)
 params_speed.show(False)
 layers_speed.show(False)
+pw_plot.show(False)
 pr_basement_tuning.show(False)
 pr_daylight_tuning.show(True)

@@ -5,7 +5,7 @@ from modelzoo.models.yolo.Yolo import Yolo
 class ModelBuilder:
 
     @staticmethod
-    def get_model(name, batch_size, src_dir=None):
+    def get_model(name, batch_size=8, src_dir=None):
 
         if src_dir is not None:
             weight_file = src_dir + 'model.h5'

@@ -8,6 +8,13 @@ def average_precision_recall(detection_results):
     precision = np.zeros((len(detection_results), 11))
     recall = np.zeros((len(detection_results), 11))
     for i, result in enumerate(detection_results):
+        skip = False
+        for c in result.results.keys():
+            if (result.results[c].false_positives < 0 or
+                    result.results[c].true_positives < 0 or
+                    result.results[c].false_negatives < 0):
+                skip = True
+        if skip: continue
         precision[i], recall[i] = interpolate(result)
 
     mean_pr = np.mean(precision, 0)

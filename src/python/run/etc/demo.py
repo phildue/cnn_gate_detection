@@ -26,5 +26,5 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
 
 model = GateNet.v10(weight_file='out/gatev10_mixed/model.h5', conf_thresh=0.6, color_format='yuv')
-# create_dirs(['logs/gatev6_mixed/demo/daylight_test'])
-demo_generator(model, generator, t_show=1, n_samples=150)
+create_dirs(['logs/gatev10_mixed/demo/daylight_test'])
+demo_generator(model, generator, t_show=1, n_samples=150, out_file='logs/gatev10_mixed/demo/daylight_test')
