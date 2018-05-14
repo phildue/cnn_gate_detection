@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
@@ -24,7 +26,7 @@ def plot_training(work_dir, n_epochs):
     n = len(epochs)
     mAP = np.zeros((n,))
     for i in range(n):
-        file = load_file(work_dir + 'results/daylight--{0:03d}.pkl'.format(i))
+        file = load_file(work_dir + 'results/set_2--{0:03d}.pkl'.format(i))
         results = [ResultByConfidence(d) for d in file['results']['MetricDetection']]
         avg_precision, recall = average_precision_recall(results)
         mAP[i] = np.mean(avg_precision)
@@ -37,18 +39,12 @@ def plot_training(work_dir, n_epochs):
     return training_plot
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("dir", help="Model Directory",
+                    type=str)
+parser.add_argument("epoch", help="Epoch until history will be printed", type=int)
+args = parser.parse_args()
+
 cd_work()
 
-# plot_training('logs/gatev0_industrial/', 10).show(False)
-# plot_training('logs/gatev1_industrial/', 10).show(False)
-# plot_training('logs/gatev2_industrial/', 10).show(False)
-# plot_training('logs/gatev3_industrial/', 10).show(False)
-plot_training('logs/gatev5_industrial/', 20).show(False)
-plot_training('logs/gatev5_daylight/', 20).show(False)
-plot_training('logs/gatev5_mixed/', 20).show(False)
-plot_training('logs/tiny_industrial/', 20).show(False)
-plot_training('logs/tiny_daylight/', 20).show(False)
-plot_training('logs/tiny_mixed/', 20).show(False)
-plot_training('logs/v2_industrial/', 18).show(False)
-plot_training('logs/v2_daylight/', 18).show(False)
-plot_training('logs/v2_mixed/', 18).show(True)
+plot_training(args.dir, args.epoch).show(True)

@@ -1,48 +1,54 @@
+import argparse
 import pprint as pp
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
-from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.evaluation.ConfidenceEvaluator import ConfidenceEvaluator
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
+from modelzoo.models.ModelBuilder import ModelBuilder
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.MavvAugmenter import MavvAugmenter
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
+parser = argparse.ArgumentParser()
+parser.add_argument("model", help="model name",
+                    type=str)
+parser.add_argument("work_dir", help="Working directory", type=str)
+parser.add_argument("--image_source", help="List of folders to be scanned for train images", type=str,
+                    default="resource/ext/samples/mixed_rooms/")
+parser.add_argument("--test_image_source_1", help="List of folders to be scanned for test images", type=str,
+                    default='resource/ext/samples/industrial_new_test/')
+parser.add_argument("--test_image_source_2", help="List of folders to be scanned for test images", type=str,
+                    default='resource/ext/samples/daylight_test/')
+parser.add_argument("--batch_size", help="Batch Size", type=int, default=4)
+parser.add_argument("--n_samples", type=int, default=None)
+
+args = parser.parse_args()
 
 """
 Model
 """
-batch_size = 4
+batch_size = args.batch_size
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = GateNet.v8(batch_size=batch_size,
-                       color_format='yuv',
-                       augmenter=augmenter)
-pp.pprint(predictor.net.backend.summary())
+predictor = ModelBuilder.get_model(args.model, batch_size)
+predictor.preprocessor.augmenter = augmenter
 
 """
 Datasets
 """
-image_source = ["resource/ext/samples/mixed_rooms/"]
-test_image_source_1 = ['resource/ext/samples/industrial_new_test/']
-test_image_source_2 = ['resource/ext/samples/daylight_test/']
+image_source = [args.image_source]
+test_image_source_1 = [args.test_image_source_1]
+test_image_source_2 = [args.test_image_source_2]
 
-train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.1,
-                          color_format='bgr', label_format='xml')
+train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+                          color_format='bgr', label_format='xml', n_samples=args.n_samples)
 test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
                            label_format='xml')
 test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
@@ -51,9 +57,9 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 """
 Paths
 """
-result_path = 'logs/gatev8_mixed/'
-test_result_1 = result_path + 'results/industrial--'
-test_result_2 = result_path + 'results/daylight--'
+result_path = 'out/' + args.work_dir + '/'
+test_result_1 = result_path + 'results/set_1-'
+test_result_2 = result_path + 'results/set_2--'
 
 create_dirs([result_path, result_path + '/results/'])
 
@@ -95,6 +101,7 @@ training = Training(predictor, train_gen,
 
 pp.pprint(training.summary)
 
-save_file(training.summary, 'training_params.txt', result_path, verbose=False)
+save_file(training.summary, 'summary.txt', result_path, verbose=False)
+predictor.net.backend.summary()
 
 training.fit_generator()

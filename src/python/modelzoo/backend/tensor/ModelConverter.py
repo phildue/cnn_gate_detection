@@ -1,7 +1,13 @@
 import tensorflow as tf
 
 from modelzoo.models.Predictor import Predictor
+import tensorflow as tf
+# manually put back imported modules
+import tempfile
+import subprocess
 
+tf.contrib.lite.tempfile = tempfile
+tf.contrib.lite.subprocess = subprocess
 
 class ModelConverter:
 

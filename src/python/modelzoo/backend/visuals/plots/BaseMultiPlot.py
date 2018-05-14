@@ -26,5 +26,6 @@ class BaseMultiPlot(BasePlot):
         plt.xticks(fontsize=self.font_size)
         plt.yticks(fontsize=self.font_size)
         plt.ylim(self.y_lim)
+        plt.grid(b=True, which='both', color='0.65', linestyle='-')
         if self.legend is not None:
             plt.legend(hs, self.legend)

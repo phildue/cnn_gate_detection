@@ -1,13 +1,13 @@
 #!/bin/sh
 
 #SBATCH --partition=general
-#SBATCH --qos=short
-#SBATCH --time=01:00:00
+#SBATCH --qos=long
+#SBATCH --time=32:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=8192
+#SBATCH --mem=12000
 #SBATCH --mail-type=ALL
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/scripts/python/evaluation/evalspeed.py
+srun python3 dronevision/src/python/run/training/gate/train.py gatev20 gatev20

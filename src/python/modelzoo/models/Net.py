@@ -24,3 +24,4 @@ class Net(ABC):
     @abstractmethod
     def train_params(self):
         pass
+

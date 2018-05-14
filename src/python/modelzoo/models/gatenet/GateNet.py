@@ -3,13 +3,25 @@ import numpy as np
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
+from modelzoo.backend.tensor.gatenet.GateNetV10 import GateNetV10
+from modelzoo.backend.tensor.gatenet.GateNetV11 import GateNetV11
+from modelzoo.backend.tensor.gatenet.GateNetV12 import GateNetV12
+from modelzoo.backend.tensor.gatenet.GateNetV13 import GateNetV13
+from modelzoo.backend.tensor.gatenet.GateNetV14 import GateNetV14
+from modelzoo.backend.tensor.gatenet.GateNetV15 import GateNetV15
+from modelzoo.backend.tensor.gatenet.GateNetV16 import GateNetV16
+from modelzoo.backend.tensor.gatenet.GateNetV17 import GateNetV17
+from modelzoo.backend.tensor.gatenet.GateNetV18 import GateNetV18
+from modelzoo.backend.tensor.gatenet.GateNetV19 import GateNetV19
 from modelzoo.backend.tensor.gatenet.GateNetV2 import GateNetV2
+from modelzoo.backend.tensor.gatenet.GateNetV20 import GateNetV20
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
 from modelzoo.backend.tensor.gatenet.GateNetV7 import GateNetV7
 from modelzoo.backend.tensor.gatenet.GateNetV8 import GateNetV8
+from modelzoo.backend.tensor.gatenet.GateNetV9 import GateNetV9
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
@@ -458,6 +470,594 @@ class GateNet(Predictor):
                         weight_file=weight_file,
                         n_boxes=n_boxes,
                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v9(norm=(416, 416),
+           grid=(13, 13),
+           anchors=None,
+           batch_size=8,
+           scale_noob=1.0,
+           scale_conf=5.0,
+           scale_coor=1.0,
+           scale_prob=1.0,
+           conf_thresh=0.3,
+           weight_file=None,
+           color_format='yuv',
+           augmenter: ImgTransform = None,
+           n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV9(loss=loss,
+                        anchors=anchors,
+                        img_shape=norm,
+                        grid=grid,
+                        weight_file=weight_file,
+                        n_boxes=n_boxes,
+                        n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v10(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV10(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v11(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV11(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v12(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV12(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v13(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV13(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v14(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV14(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v15(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV15(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v16(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV16(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v17(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV17(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v18(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV18(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v19(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV19(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
+
+    @staticmethod
+    def v20(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV20(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
 
         return GateNet(net,
                        anchors=anchors,

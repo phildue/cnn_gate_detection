@@ -13,10 +13,24 @@
 # - start_i: position of the first feature's receptive field in layer i (idx start from 0, negative means the center fall into padding)
 import math
 
-convnet = [[3, 1, 1], [2, 2, 0], [3, 1, 1], [4, 4, 0], [3, 1, 1], [4, 4, 1], [3, 1, 1], [3, 1, 1], [3, 1, 1], [3, 1, 1],
-           [3, 1, 1], [3, 1, 1]]
-layer_names = ['conv1', 'pool1', 'conv2', 'pool2', 'conv3', 'pool3', 'conv4', 'conv5', 'conv6', 'conv7', 'conv8',
-               'conv9']
+net = {'conv1': [3, 1, 1],
+       'pool1': [2, 2, 0],
+       'conv2': [3, 1, 1],
+       'pool2': [2, 2, 0],
+       'conv3': [3, 1, 1],
+       'conv4': [3, 1, 1],
+       'pool4': [2, 2, 0],
+       'conv5': [6, 1, 1],
+       'pool5': [2, 2, 0],
+       'conv6': [6, 1, 1],
+       'pool6': [2, 2, 0],
+       'conv7': [6, 1, 1],
+       'conv8': [3, 1, 1],
+
+       }
+layers = list(net.values())
+layer_names = list(net.keys())
+
 imsize = 416
 
 
@@ -52,8 +66,8 @@ if __name__ == '__main__':
     print("-------Net summary------")
     currentLayer = [imsize, 1, 1, 0.5]
     printLayer(currentLayer, "input image")
-    for i in range(len(convnet)):
-        currentLayer = outFromIn(convnet[i], currentLayer)
+    for i in range(len(layers)):
+        currentLayer = outFromIn(layers[i], currentLayer)
         layerInfos.append(currentLayer)
         printLayer(currentLayer, layer_names[i])
     print("------------------------")
