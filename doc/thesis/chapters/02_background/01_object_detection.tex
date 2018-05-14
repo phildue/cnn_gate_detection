@@ -1,9 +1,6 @@
-
-	
-	
 	\section{Object Detection}
 	\label{sec:bg:object_detection}
-	Object Detection is a well studied topic since the very beginning of computer vision. It can be separated in two individual problems which are classification: Which object does the image contain? and localization: Where in the image is the object?.
+	Object Detection is a well studied topic since the very beginning of computer vision. It can be separated in two individual problems which are Classification: Which object does the image/ a patch of the image contain? and Localization: Where in the image is the object?.
 	
 	Existing methods can broadly be grouped in three categories. These are described in the following:
 
@@ -13,8 +10,7 @@
 	
 	Popular features are haar-features \cite{Viola2004} and the Histogram of Gradients\cite{Forsyth}. These methods give good results as long as the object is fully visible and the position in the test set does not change too much. This issue gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs \cite{Viola2004}.
 	
-	The methods are usually pretty fast but not so accurate.
-	
+
 	\subsubsection{Two Stage Detectors}
 	
 			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
@@ -41,7 +37,7 @@
 		\item Object Proposal: A convolutional net proposes regions that contain an object. This is either done in sliding window fashion or in one pass.
 		\item Classification: All proposed regions are fed into a classifier. This can either be a "traditional" one or another CNN.
 	\end{itemize}
-	These methods are usually pretty accurate but also slow.
+
 	\subsubsection{One Stage Detectors}
 	
 	\begin{figure}[h]
@@ -67,18 +63,7 @@
 	
 	A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
 	
-	\subsubsection{LCDNet\cite{TripathiSanDiego}}
-	
-	Aims to bring one shot detection to be runnable on embedded devices.
-	
-	\begin{itemize}
-		\item Quantizies model for inference with 8bit. Records min and max value for each layer and quantizes everything between 0,255
-		\item Replaces fully connected layers with convolutional layers
-		\item Replaces LeakyRelu with Relu in all but the last (faster?)
-		\item Softmax on classification, Sigmoid on confidence
-		\item Sigmoid if only one class
-		\item quantization mainly effects localization
-	\end{itemize}
+
 	
 	\subsection{\cite{Linb}}
 	
@@ -120,4 +105,4 @@
 		
 		\end{table}
 
-
+Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
