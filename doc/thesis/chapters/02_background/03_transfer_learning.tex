@@ -1,13 +1,17 @@
-\section{Training}
+\section{Learning with Limited Data}
 \label{sec:bg:training}
 
-The performance of machine learning models heavily depends on the available training data. If the labelled examples do not sufficiently represent the real world, any learned algorithm will fail when applied in the wild. As the model complexity increases, its potential performance increases as long as there is enough training data available with which the model parameters can be tuned. Is not enough training data available the model may overfit to the training data, meaning it will perform well on the training set but fail on any other data set. Overfitting can be introduced by a limited amount of available training samples but also when the training data stems from a different domain than the test data. This scenario is also referred to as domain shift.
+As illustrated in the introduction the amount of training data is limited. This is critical for the performance of machine learning methods as they heavily depend on the available training data.
 
-For the computer vision system investigated in this work this mean
+Limited data can happen in multiple ways:
+\begin{enumerate}
+	\item The amount of data is too small thus the parameters can not be tuned effectively. Subsequently the model underfits or overfits the training data.
+	
+	\item The captured variety in the data set is limited. If the labeled examples do not sufficiently represent the objects in the real world, the model will fail in the wild.
+	
+	\item There is a domain shift between the training data and the test data.
+\end{enumerate}
 
-If there are not enough labelled samples models can overfit to the particular training set. This means a low error can be achieved on the training data but the model performs poorly when applied in the wild.
-
-Similar effec
 
 \section{Summaries}
 \subsection{Modeling Camera Effects to Improve Deep Vision for Real and Synthetic Data\cite{Carlson2018}}

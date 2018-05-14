@@ -5,9 +5,9 @@ import sys
 
 
 def cd_work():
-    if sys.platform is 'win32' or 'win64':
-        os.chdir('e:/doc/study/thesis/mavv')
-    else:
+#    if sys.platform is 'win32' or 'win64':
+#        os.chdir('e:/doc/study/thesis/mavv')
+#    else:
      os.chdir(expanduser('~') + '/dronevision/')
 
 
