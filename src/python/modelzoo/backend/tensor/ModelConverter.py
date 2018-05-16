@@ -1,22 +1,27 @@
-import tensorflow as tf
-
-from modelzoo.models.Predictor import Predictor
-import tensorflow as tf
 # manually put back imported modules
-import tempfile
-import subprocess
+import keras.backend as K
+from keras import Model
 
-tf.contrib.lite.tempfile = tempfile
-tf.contrib.lite.subprocess = subprocess
+from modelzoo.backend.tensor.graphconv import convert_model
+from modelzoo.backend.tensor.gatenet.PostprocessLayer import PostprocessLayer
+from modelzoo.models.ModelBuilder import ModelBuilder
+
 
 class ModelConverter:
 
-    @staticmethod
-    def convert(model: Predictor, path, filename=None):
-        if not filename:
-            filename = model.net.__class__.__name__
-        img = tf.placeholder(name="img", dtype=tf.float32, shape=model.input_shape)
-        out = tf.identity(model.output_shape, name="out")
-        with tf.Session() as sess:
-            tflite_model = tf.contrib.lite.toco_convert(sess.graph_def, [img], [out])
-            open(path + filename + ".tflite", "wb").write(tflite_model)
+    def __init__(self, model_name, directory):
+        self.model_name = model_name
+        self.directory = directory
+
+    def finalize(self, quantize=False):
+        K.set_learning_phase(0)
+        model = ModelBuilder.get_model(self.model_name, batch_size=1, src_dir=self.directory)
+
+        backend = model.net.backend
+        out = backend.layers[-1].output
+        input = backend.layers[0].input
+        postprocessed = PostprocessLayer()(out)
+        inference_model = Model(input, postprocessed)
+        sess = K.get_session()
+        convert_model(sess, inference_model, out_name=self.directory + self.model_name, out_format=['tflite'],
+                      quantize=quantize,input_shape=model.input_shape)

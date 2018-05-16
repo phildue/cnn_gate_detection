@@ -1,6 +1,7 @@
 import argparse
 import pprint as pp
 
+from modelzoo.backend.tensor.ModelConverter import ModelConverter
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.models.ModelBuilder import ModelBuilder
@@ -105,3 +106,9 @@ save_file(training.summary, 'summary.txt', result_path, verbose=False)
 predictor.net.backend.summary()
 
 training.fit_generator()
+
+"""
+Create TFLite Model
+"""
+
+ModelConverter(args.model, result_path).finalize()
