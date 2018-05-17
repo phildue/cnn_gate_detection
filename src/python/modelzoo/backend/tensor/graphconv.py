@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import tensorflow as tf
+import lib.tensorflow.tensorflow as tf
 from tensorflow.python.framework import graph_util
 from tensorflow.python.framework import graph_io
 # manually put back imported modules

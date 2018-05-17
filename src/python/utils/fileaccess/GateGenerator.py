@@ -77,6 +77,7 @@ class GateGenerator(DatasetGenerator):
                 current_batch.append((img, label, file))
                 if len(current_batch) >= self.batch_size:
                     yield current_batch
+                    del current_batch
                     current_batch = []
             except StopIteration:
                 if self.shuffle: random.shuffle(files)
