@@ -21,7 +21,7 @@ class ModelConverter:
         out = backend.layers[-1].output
         input = backend.layers[0].input
         postprocessed = PostprocessLayer()(out)
-        inference_model = Model(input, postprocessed)
+        inference_model = backend #Model(input, postprocessed)
         sess = K.get_session()
         convert_model(sess, inference_model, out_name=self.directory + self.model_name, out_format=['tflite'],
                       quantize=quantize,input_shape=model.input_shape)

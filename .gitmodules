@@ -4,6 +4,6 @@
 [submodule "lib/tensorflow"]
 	path = lib/tensorflow
 	url = https://github.com/tensorflow/tensorflow
-[submodule "lib/protobuf"]
-	path = lib/protobuf
-	url = https://github.com/google/protobuf.git
+[submodule "lib/flatbuf"]
+	path = lib/flatbuf
+	url = https://github.com/google/flatbuffers.git

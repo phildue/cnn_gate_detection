@@ -1,14 +1,13 @@
+cmake_minimum_required(VERSION 3.5)
+set(PROJECT_ROOT ../../)
 project(mavv)
+set (CMAKE_CXX_STANDARD 11)
+include_directories(	${PROJECT_ROOT}/lib/tensorflow/contrib/lite
+			${PROJECT_ROOT}/lib/tensorflow/
+			${PROJECT_ROOT}/lib/flatbuf/include)
+link_directories(${PROJECT_ROOT}/lib/tensorflow/bazel-bin/tensorflow/contrib/lite)
+add_executable(run_tflite ../cpp/inference_test.cpp)
+target_link_libraries(run_tflite libtflite.so)
 
-set(Eigen3_DIR ../../lib/eigen/cmake)
 
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-
-set(Protobuf_DIR ../../lib/protobuf/cmake)
-
-find_package (Protobuf REQUIRED)
-
-add_executable(mavv ../cpp/inference_test.cpp)
-target_link_libraries (mavv Eigen3::Eigen)
-target_link_libraries (mavv ${Protobuf_LIBRARIES})
 
