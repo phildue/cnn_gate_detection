@@ -15,6 +15,6 @@ args = parser.parse_args()
 name = args.name
 output_file = args.output_file
 
-model = ModelBuilder.get_model(name)
+model = ModelBuilder.build(name)
 
 ModelPlot(model).save(output_file)

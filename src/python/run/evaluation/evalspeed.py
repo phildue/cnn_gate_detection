@@ -37,7 +37,7 @@ n_batches = args.n_batches if args.n_batches is not None else int(generator.n_sa
 """
 Model config
 """
-model = ModelBuilder.get_model(args.model, args.batch_size)
+model = ModelBuilder.build(args.model, args.batch_size)
 """
 Evaluator
 """

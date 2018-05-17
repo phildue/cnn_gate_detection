@@ -104,10 +104,10 @@ class GateNetV22(Net):
 
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
             act8)
-        # reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
-        # out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
+        reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
+        out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 
-        model = Model(input, final)
+        model = Model(input, out)
 
         if weight_file is not None:
             model.load_weights(weight_file)

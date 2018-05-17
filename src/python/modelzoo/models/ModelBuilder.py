@@ -5,7 +5,7 @@ from modelzoo.models.yolo.Yolo import Yolo
 class ModelBuilder:
 
     @staticmethod
-    def get_model(name, batch_size=8, src_dir=None):
+    def build(name, batch_size=8, src_dir=None):
 
         if src_dir is not None:
             weight_file = src_dir + 'model.h5'
@@ -50,6 +50,8 @@ class ModelBuilder:
             model = GateNet.v20(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev21":
             model = GateNet.v21(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev22":
+            model = GateNet.v22(batch_size=batch_size, weight_file=weight_file)
         else:
             raise ValueError("Unknown model name!")
 

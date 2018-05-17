@@ -5,7 +5,6 @@ from modelzoo.backend.tensor.ModelConverter import ModelConverter
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.models.ModelBuilder import ModelBuilder
-from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -38,7 +37,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelBuilder.get_model(args.model, batch_size)
+predictor = ModelBuilder.build(args.model, batch_size)
 predictor.preprocessor.augmenter = augmenter
 
 """

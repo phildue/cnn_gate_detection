@@ -16,7 +16,7 @@ class ModelConverter:
 
     def finalize(self, quantize=False):
         K.set_learning_phase(0)
-        model = ModelBuilder.get_model(self.model_name, batch_size=1, src_dir=self.directory)
+        model = ModelBuilder.build(self.model_name, batch_size=1, src_dir=self.directory)
 
         backend = model.net.backend
         out = backend.layers[-1].output

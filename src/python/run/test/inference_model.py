@@ -9,7 +9,7 @@ from utils.imageprocessing.Imageprocessing import show
 from utils.workdir import cd_work
 
 cd_work()
-model = ModelBuilder.get_model('gatev10', src_dir='out/gatev10_mixed/')
+model = ModelBuilder.build('gatev10', src_dir='out/gatev10_mixed/')
 
 keras_model = model.net.backend
 out = keras_model.layers[-1].output
