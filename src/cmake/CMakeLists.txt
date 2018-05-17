@@ -6,7 +6,7 @@ include_directories(	${PROJECT_ROOT}/lib/tensorflow/contrib/lite
 			${PROJECT_ROOT}/lib/tensorflow/
 			${PROJECT_ROOT}/lib/flatbuf/include)
 link_directories(${PROJECT_ROOT}/lib/tensorflow/bazel-bin/tensorflow/contrib/lite)
-add_executable(run_tflite ../cpp/inference_test.cpp)
+add_executable(run_tflite ../cpp/main.cpp)
 target_link_libraries(run_tflite libtflite.so)
 
 
