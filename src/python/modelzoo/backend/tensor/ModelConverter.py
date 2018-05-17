@@ -9,7 +9,8 @@ from modelzoo.models.ModelBuilder import ModelBuilder
 
 class ModelConverter:
 
-    def __init__(self, model_name, directory):
+    def __init__(self, model_name, directory, output_format=['tflite', 'pb']):
+        self.format = output_format
         self.model_name = model_name
         self.directory = directory
 
@@ -21,7 +22,7 @@ class ModelConverter:
         out = backend.layers[-1].output
         input = backend.layers[0].input
         postprocessed = PostprocessLayer()(out)
-        inference_model = backend #Model(input, postprocessed)
+        inference_model = backend  # Model(input, postprocessed)
         sess = K.get_session()
-        convert_model(sess, inference_model, out_name=self.directory + self.model_name, out_format=['tflite'],
-                      quantize=quantize,input_shape=model.input_shape)
+        convert_model(sess, inference_model, out_name=self.directory + self.model_name, out_format=self.format,
+                      quantize=quantize, input_shape=model.input_shape)

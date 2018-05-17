@@ -459,13 +459,14 @@ class GateNet(Predictor):
                                 [16.62, 10.52]])
 
         n_boxes = anchors.shape[0]
-        loss = GateDetectionLoss(grid=grid,
-                                 n_boxes=n_boxes,
-                                 n_polygon=4,
-                                 weight_loc=scale_coor,
-                                 weight_conf=scale_conf,
-                                 weight_prob=scale_prob,
-                                 weight_noobj=scale_noob)
+        loss = None
+        # GateDetectionLoss(grid=grid,
+        #                          n_boxes=n_boxes,
+        #                          n_polygon=4,
+        #                          weight_loc=scale_coor,
+        #                          weight_conf=scale_conf,
+        #                          weight_prob=scale_prob,
+        #                          weight_noobj=scale_noob)
 
         net = GateNetV8(loss=loss,
                         anchors=anchors,
