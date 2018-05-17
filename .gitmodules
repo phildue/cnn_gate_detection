@@ -1,6 +1,9 @@
 [submodule "lib/tf-models"]
 	path = lib/tf-models
 	url = https://github.com/tensorflow/models.git
-[submodule "lib/keras_to_tensorflow"]
-	path = lib/keras_to_tensorflow
-	url = https://github.com/amir-abdi/keras_to_tensorflow.git
+[submodule "lib/tensorflow"]
+	path = lib/tensorflow
+	url = https://github.com/tensorflow/tensorflow
+[submodule "lib/protobuf"]
+	path = lib/protobuf
+	url = https://github.com/google/protobuf.git
