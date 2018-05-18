@@ -6,9 +6,10 @@ from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.fileaccess.utils import create_dirs
 
 class Evaluator(Callback):
-    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metric], out_file=None):
+    def __init__(self, predictor: Predictor, test_set: DatasetGenerator, metrics: [Metric], out_file=None, period=2):
         super().__init__()
 
+        self.period = period
         self.out_file = out_file
         self.predictor = predictor
         self.metrics = metrics
@@ -25,11 +26,12 @@ class Evaluator(Callback):
         return
 
     def on_epoch_end(self, epoch, logs={}):
-        self.predictor.net.backend = self.model
-        evaluate_generator(self.predictor,
-                           generator=self.data_gen,
-                           metrics=self.metrics,
-                           out_file_metric=self.out_file)
+        if epoch % self.period == 0:
+            self.predictor.net.backend = self.model
+            evaluate_generator(self.predictor,
+                               generator=self.data_gen,
+                               metrics=self.metrics,
+                               out_file_metric=self.out_file)
         return
 
     def on_batch_begin(self, batch, logs={}):
