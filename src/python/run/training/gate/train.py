@@ -1,9 +1,9 @@
 import argparse
 import pprint as pp
 
-from modelzoo.backend.tensor.ModelConverter import ModelConverter
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
+from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelBuilder import ModelBuilder
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -73,7 +73,13 @@ params = {'optimizer': 'adam',
           'epsilon': 1e-08,
           'decay': 0.0005}
 
-predictor.compile(params=params)
+
+def average_precision(y_true, y_pred):
+    return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+                                   norm=predictor.norm).compute(y_true, y_pred)
+
+
+predictor.compile(params=params, metrics=[average_precision])
 
 """
 Training Config
@@ -81,11 +87,13 @@ Training Config
 
 test_metric_1 = MeanAveragePrecision(predictor=predictor,
                                      test_set=test_gen_1,
-                                     out_file=test_result_1)
+                                     out_file=test_result_1,
+                                     period=5)
 
 test_metric_2 = MeanAveragePrecision(predictor=predictor,
                                      test_set=test_gen_2,
-                                     out_file=test_result_2)
+                                     out_file=test_result_2,
+                                     period=5)
 
 training = Training(predictor, train_gen,
                     out_file='model.h5',
@@ -94,7 +102,7 @@ training = Training(predictor, train_gen,
                     log_dir=result_path,
                     stop_on_nan=True,
                     initial_epoch=0,
-                    epochs=100,
+                    epochs=40,
                     log_csv=True,
                     lr_reduce=0.1,
                     callbacks=[test_metric_1, test_metric_2])
@@ -106,8 +114,4 @@ predictor.net.backend.summary()
 
 training.fit_generator()
 
-"""
-Create TFLite Model
-"""
 
-ModelConverter(args.model, result_path).finalize()

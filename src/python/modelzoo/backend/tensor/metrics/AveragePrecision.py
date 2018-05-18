@@ -6,7 +6,6 @@ from modelzoo.backend.tensor.metrics.Metric import Metric
 
 
 class AveragePrecision(Metric):
-    @abstractmethod
     def compute(self, y_true, y_pred):
         pass
 
