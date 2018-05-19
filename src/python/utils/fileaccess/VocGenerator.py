@@ -31,8 +31,29 @@ class VocGenerator(DatasetGenerator):
     def __init__(self, dir_voc2012: str = "resource/ext/backgrounds/VOCdevkit/VOC2012/",
                  dir_voc2007='resource/ext/backgrounds/VOCdevkit/VOC2007/',
                  dir_voc2007_test='resource/ext/backgrounds/VOCdevkit/VOC2007_Test/',
-                 batch_size: int = 10, shuffle: bool = True, n_samples=None, start_idx=0):
+                 batch_size: int = 10, shuffle: bool = True, n_samples=None, start_idx=0,
+                 classes=None, frac_emtpy=0.1):
+        """
+        Generator for Pascal VOC Dataset
+        :param dir_voc2012: directory for voc2012 data
+        :param dir_voc2007: directory for voc2007 data
+        :param dir_voc2007_test: directory for voc2007 test data
+        :param batch_size: size of one batch
+        :param shuffle: shuffle set after each epoch or not
+        :param n_samples: number of samples to use defaults to all
+        :param start_idx: start index for files to use
+        :param classes: which classes to use other images will not be load
+        :param frac_emtpy: max amount of images without objects
+        """
 
+        self.frac_empty = frac_emtpy
+        if classes is None:
+            classes = [
+                "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
+                "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person",
+                "pottedplant", "sheep", "sofa", "train", "tvmonitor"
+            ]
+        self.classes = classes
         self._color_format = 'bgr'
         self.shuffle = shuffle
         self.directory = [dir_voc2012, dir_voc2007]
@@ -76,38 +97,45 @@ class VocGenerator(DatasetGenerator):
 
         self.__n_samples = len(self.files)
 
-        class_names = [
-            "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
-            "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person",
-            "pottedplant", "sheep", "sofa", "train", "tvmonitor"
-        ]
-
-        ObjectLabel.classes = class_names
+        ObjectLabel.classes = classes
 
     def generate(self):
-        return self.__generate(self.files)
+        return self._generate(self.files)
 
     def generate_valid(self):
         if not self.test_files:
             print("No valid fraction for test files specified")
-        return self.__generate(self.test_files)
+        return self._generate(self.test_files)
 
-    def __generate(self, files):
+    def _generate(self, files):
         current_batch = []
         files_it = iter(files)
+        n_empty = 0
+        n_empty_max = int(np.ceil(self.batch_size * self.frac_empty))
         while True:
             try:
                 name, label_path, img_path = next(files_it)
                 label_file = label_path + name + '.xml'
-                current_batch.append(self.__parse_file(label_file, img_path))
+                img, label, img_file = self._parse_file(label_file, img_path)
+
+                objects_filtered = [l for l in label.objects if l.class_name in self.classes]
+
+                if objects_filtered:
+                    current_batch.append((img, ImgLabel(objects_filtered), img_file))
+                elif n_empty < n_empty_max:
+                    current_batch.append((img, ImgLabel(objects_filtered), img_file))
+                    n_empty += 1
+
                 if len(current_batch) >= self.batch_size:
                     yield current_batch
                     current_batch = []
             except StopIteration:
-                if self.shuffle: random.shuffle(files)
+                if self.shuffle:
+                    random.shuffle(files)
+
                 files_it = iter(files)
 
-    def __parse_file(self, path, img_directory) -> (Image, ImgLabel):
+    def _parse_file(self, path, img_directory) -> (Image, ImgLabel):
         with open(path, 'rb') as f:
             tree = ET.parse(f)
             objects = []
