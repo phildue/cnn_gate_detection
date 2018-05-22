@@ -13,7 +13,7 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model = 'tiny_yolo'
+model_name = 'tiny_yolo'
 work_dir = 'test'
 batch_size = 4
 n_samples = None
@@ -22,22 +22,26 @@ Parse Command Line
 """
 cd_work()
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", help="model name", default=model)
+parser.add_argument("--model", help="model name", default=model_name)
 parser.add_argument("--work_dir", help="Working directory", type=str, default=work_dir)
 parser.add_argument("--batch_size", help="Batch Size", type=int, default=batch_size)
 parser.add_argument("--n_samples", type=int, default=n_samples)
 
 args = parser.parse_args()
 
+model_name = args.model
+work_dir = args.work_dir
+batch_size = args.batch_size
+n_samples = args.n_samples
+
 """
 Model
 """
-batch_size = args.batch_size
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelBuilder.build(args.model, batch_size)
+predictor = ModelBuilder.build(model_name, batch_size)
 predictor.preprocessor.augmenter = augmenter
 
 """
@@ -48,7 +52,7 @@ train_gen = VocGenerator(batch_size=batch_size, classes=['cat'])
 """
 Paths
 """
-result_path = 'out/' + args.work_dir + '/'
+result_path = 'out/' + work_dir + '/'
 
 create_dirs([result_path])
 
@@ -64,11 +68,11 @@ params = {'optimizer': 'adam',
 
 
 def average_precision(y_true, y_pred):
-    if 'yolo' in model:
+    if 'yolo' in model_name:
         return AveragePrecisionYolo(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
                                     n_classes=predictor.n_classes,
                                     norm=predictor.norm).compute(y_true, y_pred)
-    elif 'gate' in model:
+    elif 'gate' in model_name:
         return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
                                        norm=predictor.norm).compute(y_true, y_pred)
     else:
