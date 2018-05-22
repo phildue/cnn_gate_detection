@@ -10,16 +10,16 @@ cd_work()
 
 
 def show_voc():
-    dataset = VocGenerator(batch_size=2).generate()
+    dataset = VocGenerator(batch_size=2, classes=['cat']).generate()
     for batch in dataset:
         for img, label, _ in batch:
-            img, label = resize(img, shape=(150, 315), label=label)
             # img, label = resize(img, shape=(416, 416), label=label)
             show(img, 'resized', labels=label)
 
 
 def show_img(path):
-    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',start_idx=0)
+    gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
+                                   start_idx=0)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -35,5 +35,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight_test_full'])
-# show_voc()
+# show_img(path=['resource/ext/samples/daylight_test_full'])
+show_voc()
