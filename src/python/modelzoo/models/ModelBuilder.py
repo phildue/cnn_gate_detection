@@ -13,9 +13,9 @@ class ModelBuilder:
             weight_file = None
 
         if name == "tiny_yolo":
-            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file)
+            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file, class_names=['person'])
         elif name == "yolo":
-            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file)
+            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file, class_names=['person'])
         elif name == "gatev5":
             model = GateNet.v5(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev6":
@@ -54,6 +54,8 @@ class ModelBuilder:
             model = GateNet.v22(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev23":
             model = GateNet.v23(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev24":
+            model = GateNet.v24(batch_size=batch_size, weight_file=weight_file)
         else:
             raise ValueError("Unknown model name!")
 

@@ -1,3 +1,4 @@
+import glob
 import random
 import xml.etree.ElementTree as ET
 
@@ -28,12 +29,12 @@ class VocGenerator(DatasetGenerator):
     def n_samples(self):
         return self.__n_samples
 
-    def __init__(self, dir_voc="resource/ext/backgrounds/VOCdevkit/",
+    def __init__(self, dir="resource/ext/backgrounds/Kitti/",
                  batch_size: int = 10, shuffle: bool = True, n_samples=None, start_idx=0,
-                 classes=None, frac_emtpy=0.1):
+                 classes=None, frac_emtpy=0.1, frac_valid=0.05):
         """
-        Generator for Pascal VOC Dataset
-        :param dir_voc: directory of VOCdevkit
+        Generator for Kitti Dataset
+        :param dir: directory of dataset
         :param batch_size: size of one batch
         :param shuffle: shuffle set after each epoch or not
         :param n_samples: number of samples to use defaults to all
@@ -52,50 +53,27 @@ class VocGenerator(DatasetGenerator):
         self.classes = classes
         self._color_format = 'bgr'
         self.shuffle = shuffle
-        dir_voc2012 = dir_voc + "VOC2012/"
-        dir_voc2007 = dir_voc + "VOC2007/"
 
-        self.directory = [dir_voc2012, dir_voc2007]
-        self.__batch_size = batch_size
-        imgs_2007 = dir_voc2007 + "JPEGImages/"
-        imgs_2012 = dir_voc2012 + "JPEGImages/"
-
-        labels_2007 = dir_voc2007 + "Annotations/"
-        labels_2012 = dir_voc2012 + "Annotations/"
-
-        set_2007_train = load_file(dir_voc2007 + "ImageSets/Main/train.txt").split('\n')
-        set_2007_train = [(name, labels_2007, imgs_2007) for name in set_2007_train if len(name) > 2]
-
-        set_2007_valid = load_file(dir_voc2007 + "ImageSets/Main/val.txt").split('\n')
-        set_2007_valid = [(name, labels_2007, imgs_2007) for name in set_2007_valid if len(name) > 2]
-
-        set_2012_train = load_file(dir_voc2012 + "ImageSets/Main/train.txt").split('\n')
-        set_2012_train = [(name, labels_2012, imgs_2012) for name in set_2012_train if len(name) > 2]
-
-        set_2012_valid = load_file(dir_voc2012 + "ImageSets/Main/val.txt").split('\n')
-        set_2012_valid = [(name, labels_2012, imgs_2012) for name in set_2012_valid if len(name) > 2]
-
-        set_2007_test = load_file(dir_voc2007 + "ImageSets/Main/test.txt").split('\n')
-        set_2007_test = [(name, labels_2007, imgs_2007) for name in set_2007_test if len(name) > 2]
-
-        self.files = set_2007_train + set_2007_valid + set_2012_train + set_2007_test
-        self.test_files = set_2012_valid
+        files = sorted(glob.glob(dir + 'data_object_label_2/training/label_2/*.txt'))
 
         if n_samples is not None:
-            self.files = self.files[start_idx:n_samples]
+            files = files[start_idx:n_samples]
         else:
-            self.files = self.files[start_idx:]
+            files = files[start_idx:]
 
         if shuffle:
             random.shuffle(self.files)
             random.shuffle(self.test_files)
 
+        self.train_files = files[:int(np.ceil((1 - frac_valid) * len(files)))]
+        self.test_files = files[:int(np.floor(frac_valid * len(files)))]
+
         self.files = self._filter_classes(self.files)
         self.test_files = self._filter_classes(self.test_files)
 
-        print('VOCGenerator::{} samples found. Using {} for training and {} for testing'.format(len(self.files),
-                                                                                                len(self.files),
-                                                                                                len(self.test_files)))
+        print('KittiGenerator::{} samples found. Using {} for training and {} for testing'.format(len(self.files),
+                                                                                                  len(self.files),
+                                                                                                  len(self.test_files)))
 
         self.__n_samples = len(self.files)
 

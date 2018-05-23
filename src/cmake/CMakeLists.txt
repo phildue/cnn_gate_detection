@@ -11,7 +11,7 @@ link_directories(${PROJECT_ROOT}/lib/tensorflow/bazel-bin/tensorflow/contrib/lit
 
 
 ## Include Opencv
-set(OpenCV_DIR ${PROJECT_ROOT}../dronerace2018/lib/opencv/build)
+set(OpenCV_DIR C:/Users/mail-/Documents/code/dronerace2018/lib/opencv/build)
 find_package(OpenCV REQUIRED)
 
 add_executable(run_tflite ../cpp/main.cpp ../cpp/exp.cpp ../cpp/exp.h)

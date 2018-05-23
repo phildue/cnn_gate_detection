@@ -39,3 +39,4 @@ class Evaluator(Callback):
 
     def on_batch_end(self, batch, logs={}):
         return
+

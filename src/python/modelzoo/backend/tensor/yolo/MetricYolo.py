@@ -85,7 +85,7 @@ class MetricYolo(Metric):
 
         class_pred_reshape_t = K.reshape(class_pred_t, (self.batch_size, -1, self.n_classes))
 
-        class_pred_nms_batch = self.map_adapter.non_max_suppression_batch(coord_pred_t,
+        class_pred_nms_batch = self.map_adapter.non_max_suppression_batch(coord_pred_reshape_t,
                                                                           class_pred_reshape_t,
                                                                           self.batch_size,
                                                                           self.n_boxes * self.grid[0] * self.grid[1],
