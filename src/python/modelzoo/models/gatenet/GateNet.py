@@ -19,6 +19,7 @@ from modelzoo.backend.tensor.gatenet.GateNetV21 import GateNetV21
 from modelzoo.backend.tensor.gatenet.GateNetV22 import GateNetV22
 from modelzoo.backend.tensor.gatenet.GateNetV23 import GateNetV23
 from modelzoo.backend.tensor.gatenet.GateNetV24 import GateNetV24
+from modelzoo.backend.tensor.gatenet.GateNetV25 import GateNetV25
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
