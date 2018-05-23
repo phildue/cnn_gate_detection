@@ -13,7 +13,7 @@ class ModelBuilder:
             weight_file = None
 
         if name == "tiny_yolo":
-            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file, class_names=['cat'])
+            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file, class_names=['person'])
         elif name == "yolo":
             model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file, class_names=['cat'])
         elif name == "gatev5":

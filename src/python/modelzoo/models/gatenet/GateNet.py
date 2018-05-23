@@ -1254,7 +1254,7 @@ class GateNet(Predictor):
         self._output_shape = grid[0] * grid[1], self.n_boxes * (n_polygon + 1)
 
         encoder = GateNetEncoder(img_norm=norm,
-                                 grid=grid,
+                                 grids=[grid],
                                  n_boxes=self.n_boxes,
                                  n_polygon=n_polygon)
         preprocessor = Preprocessor(augmenter=augmenter,

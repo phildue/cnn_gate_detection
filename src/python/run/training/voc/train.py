@@ -13,7 +13,7 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'tiny_yolo'
+model_name = 'gatev10'
 work_dir = 'test'
 batch_size = 4
 n_samples = None
@@ -47,7 +47,7 @@ predictor.preprocessor.augmenter = augmenter
 """
 Datasets
 """
-train_gen = VocGenerator(batch_size=batch_size, classes=['cat'])
+train_gen = VocGenerator(batch_size=batch_size, classes=['person'])
 
 """
 Paths
