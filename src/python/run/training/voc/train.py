@@ -47,7 +47,7 @@ predictor.preprocessor.augmenter = augmenter
 """
 Datasets
 """
-train_gen = VocGenerator(batch_size=batch_size, classes=['cat'])
+train_gen = VocGenerator(batch_size=batch_size, classes=['person'])
 
 """
 Paths
