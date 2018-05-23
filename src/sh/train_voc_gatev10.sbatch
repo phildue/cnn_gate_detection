@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/training/voc/train.py --model gatev10 --work_dir gatev10_cat
+srun python3 dronevision/src/python/run/training/voc/train_person.py --model gatev10 --work_dir gatev10_person
