@@ -58,6 +58,8 @@ class ModelBuilder:
             model = GateNet.v24(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev25":
             model = GateNet.v25(batch_size=batch_size, weight_file=weight_file)
+        elif name == "gatev26":
+            model = GateNet.v26(batch_size=batch_size, weight_file=weight_file)
         else:
             raise ValueError("Unknown model name!")
 
