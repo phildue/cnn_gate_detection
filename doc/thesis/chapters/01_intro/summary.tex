@@ -2,6 +2,24 @@
 \addcontentsline{toc}{chapter}{Summary}
 \setheader{Summary}
 
-Summary in English\ldots
+Recent developments in embedded systems and artificial intelligence enable micro air vehicles (MAVs) to act more and more autonomously. In the near future autonomous air vehicles will be used in many applications such as automated warehouses, package delivery or even search and rescue scenarios.
+
+An important part to enable such technologies is an accurate estimation of the MAVs state and its environment. Due to its low weight, power consumption and robustness against noise (?) the most reliable sensor is often a camera. 
+
+However, this requires fast and accurate vision algorithms that interpret the obtained multidimensional signal. Research on such algorithms gave rise to autonomous drone races, where researchers have the opportunity to evaluate their methods in a competitive environment.
+
+Other methods like SLAM, Visual Odometry suffer from this this and that. A very efficient method is the method from last year. However its pretty subjective against noise.
+
+Learning based, in particular deep learning based methods came to success in the last years. However, their high computational requirements pose a serious limitation to mobile/embedded devices. Additionally, they require large amount of annotated data to perform well.
+
+The particularity of the object poses an easily underestimated problem for object detection. As the objects consists of relatively simple shapes and most of its area is covered by background a learning based method will easily overfit to the background if not sufficient variation in the training data is provided. This makes the generation of training data quite expensive.
+
+We show the limitations of deep features when used on  simple shaped objects that are largely occupied by background, such as gates, .. .
+
+We show how by exploiting this insight a deep learning model can be reduced by factor 100000 while maintaining accuracy.
+
+We show how with further optimization such a method can be used on an embedded device for obstacle detection/scene understanding.
+
+We show how simulated data can be used to train such a method.
 
 
