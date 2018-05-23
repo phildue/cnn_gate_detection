@@ -1273,6 +1273,54 @@ class GateNet(Predictor):
                        augmenter=augmenter,
                        n_polygon=n_polygon)
 
+    @staticmethod
+    def v25(norm=(416, 416),
+            grid=(13, 13),
+            anchors=None,
+            batch_size=8,
+            scale_noob=1.0,
+            scale_conf=5.0,
+            scale_coor=1.0,
+            scale_prob=1.0,
+            conf_thresh=0.3,
+            weight_file=None,
+            color_format='yuv',
+            augmenter: ImgTransform = None,
+            n_polygon=4):
+
+        if anchors is None:
+            anchors = np.array([[1.08, 1.19],
+                                [3.42, 4.41],
+                                [6.63, 11.38],
+                                [9.42, 5.11],
+                                [16.62, 10.52]])
+
+        n_boxes = anchors.shape[0]
+        loss = GateDetectionLoss(grid=grid,
+                                 n_boxes=n_boxes,
+                                 n_polygon=4,
+                                 weight_loc=scale_coor,
+                                 weight_conf=scale_conf,
+                                 weight_prob=scale_prob,
+                                 weight_noobj=scale_noob)
+
+        net = GateNetV25(loss=loss,
+                         anchors=anchors,
+                         img_shape=norm,
+                         grid=grid,
+                         weight_file=weight_file,
+                         n_boxes=n_boxes,
+                         n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
 
     def __init__(self,
                  net,
