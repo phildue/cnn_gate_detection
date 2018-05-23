@@ -17,6 +17,8 @@ model_name = 'tiny_yolo'
 work_dir = 'test'
 batch_size = 4
 n_samples = None
+epochs = 100
+initial_epoch = 0
 """
 Parse Command Line
 """
@@ -26,14 +28,15 @@ parser.add_argument("--model", help="model name", default=model_name)
 parser.add_argument("--work_dir", help="Working directory", type=str, default=work_dir)
 parser.add_argument("--batch_size", help="Batch Size", type=int, default=batch_size)
 parser.add_argument("--n_samples", type=int, default=n_samples)
-
+parser.add_argument("--epochs", type=int, default=epochs)
+parser.add_argument("--initial_epoch", type=int, default=initial_epoch)
 args = parser.parse_args()
 
 model_name = args.model
 work_dir = args.work_dir
 batch_size = args.batch_size
 n_samples = args.n_samples
-
+initial_epoch = args.initial_epoch
 """
 Model
 """
@@ -78,6 +81,7 @@ def average_precision(y_true, y_pred):
     else:
         raise ValueError("Unknown Model Name for average precision!")
 
+
 predictor.compile(params=params, metrics=[average_precision])
 
 """
@@ -90,8 +94,8 @@ training = Training(predictor, train_gen,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
-                    initial_epoch=0,
-                    epochs=40,
+                    initial_epoch=initial_epoch,
+                    epochs=epochs,
                     log_csv=True,
                     lr_reduce=0.1)
 
