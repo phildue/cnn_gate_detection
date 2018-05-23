@@ -13,9 +13,11 @@ class ModelBuilder:
             weight_file = None
 
         if name == "tiny_yolo":
-            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file, class_names=['person'])
+            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file)
         elif name == "yolo":
-            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file, class_names=['person'])
+            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file)
+        elif name == "thin_yolo":
+            model = Yolo.thin_yolo(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev5":
             model = GateNet.v5(batch_size=batch_size, weight_file=weight_file)
         elif name == "gatev6":
