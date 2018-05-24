@@ -13,42 +13,63 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
+model_name = 'tiny_yolo'
+work_dir = 'test'
+batch_size = 4
+n_samples = None
+epochs = 100
+initial_epoch = 0
+learning_rate = 0.001
+model_src = None
+
 cd_work()
 parser = argparse.ArgumentParser()
-parser.add_argument("model", help="model name",
-                    type=str)
-parser.add_argument("work_dir", help="Working directory", type=str)
+parser.add_argument("--model_name", help="model name",
+                    type=str, default=model_name)
+parser.add_argument("--work_dir", help="Working directory", type=str, default=work_dir)
 parser.add_argument("--image_source", help="List of folders to be scanned for train images", type=str,
                     default="resource/ext/samples/mixed_rooms/")
 parser.add_argument("--test_image_source_1", help="List of folders to be scanned for test images", type=str,
                     default='resource/ext/samples/industrial_new_test/')
 parser.add_argument("--test_image_source_2", help="List of folders to be scanned for test images", type=str,
                     default='resource/ext/samples/daylight_test/')
-parser.add_argument("--batch_size", help="Batch Size", type=int, default=4)
-parser.add_argument("--n_samples", type=int, default=None)
+parser.add_argument("--batch_size", help="Batch Size", type=int, default=batch_size)
+parser.add_argument("--n_samples", type=int, default=n_samples)
+parser.add_argument("--initial_epoch", type=int, default=initial_epoch)
+parser.add_argument("--epochs", type=int, default=epochs)
+parser.add_argument("--learning_rate", type=float, default=learning_rate)
+parser.add_argument("--model_src", default=model_src)
+
 
 args = parser.parse_args()
+
+model_name = args.model_name
+work_dir = args.work_dir
+batch_size = args.batch_size
+n_samples = args.n_samples
+initial_epoch = args.initial_epoch
+learning_rate = args.learning_rate
+model_src = args.weight_file
+image_source = [args.image_source]
+test_image_source_1 = [args.test_image_source_1]
+test_image_source_2 = [args.test_image_source_2]
 
 """
 Model
 """
-batch_size = args.batch_size
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelBuilder.build(args.model, batch_size)
+predictor = ModelBuilder.build(model_name, batch_size, src_dir=model_src)
 predictor.preprocessor.augmenter = augmenter
 
 """
 Datasets
 """
-image_source = [args.image_source]
-test_image_source_1 = [args.test_image_source_1]
-test_image_source_2 = [args.test_image_source_2]
 
 train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
-                          color_format='bgr', label_format='xml', n_samples=args.n_samples)
+                          color_format='bgr', label_format='xml', n_samples=n_samples)
 test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
                            label_format='xml')
 test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
@@ -57,7 +78,7 @@ test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_fra
 """
 Paths
 """
-result_path = 'out/' + args.work_dir + '/'
+result_path = 'out/' + work_dir + '/'
 test_result_1 = result_path + 'results/set_1-'
 test_result_2 = result_path + 'results/set_2--'
 
@@ -67,7 +88,7 @@ create_dirs([result_path, result_path + '/results/'])
 Optimizer Config
 """
 params = {'optimizer': 'adam',
-          'lr': 0.001,
+          'lr': learning_rate,
           'beta_1': 0.9,
           'beta_2': 0.999,
           'epsilon': 1e-08,
@@ -101,8 +122,8 @@ training = Training(predictor, train_gen,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
-                    initial_epoch=0,
-                    epochs=40,
+                    initial_epoch=initial_epoch,
+                    epochs=epochs,
                     log_csv=True,
                     lr_reduce=0.1,
                     callbacks=[test_metric_1, test_metric_2])
