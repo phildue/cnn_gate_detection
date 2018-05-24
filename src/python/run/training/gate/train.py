@@ -50,6 +50,7 @@ n_samples = args.n_samples
 initial_epoch = args.initial_epoch
 learning_rate = args.learning_rate
 model_src = args.weight_file
+epochs = args.epochs
 image_source = [args.image_source]
 test_image_source_1 = [args.test_image_source_1]
 test_image_source_2 = [args.test_image_source_2]
