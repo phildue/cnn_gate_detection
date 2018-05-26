@@ -26,6 +26,8 @@ from modelzoo.backend.tensor.gatenet.GateNetV29 import GateNetV29
 from modelzoo.backend.tensor.gatenet.GateNetV3 import GateNetV3
 from modelzoo.backend.tensor.gatenet.GateNetV30 import GateNetV30
 from modelzoo.backend.tensor.gatenet.GateNetV31 import GateNetV31
+from modelzoo.backend.tensor.gatenet.GateNetV32 import GateNetV32
+from modelzoo.backend.tensor.gatenet.GateNetV33 import GateNetV33
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
@@ -74,6 +76,8 @@ class GateNet(Predictor):
         'GateNetV29': GateNetV29,
         'GateNetV30': GateNetV30,
         'GateNetV31': GateNetV31,
+        'GateNetV32': GateNetV32,
+        'GateNetV33': GateNetV33,
     }
 
     @property
