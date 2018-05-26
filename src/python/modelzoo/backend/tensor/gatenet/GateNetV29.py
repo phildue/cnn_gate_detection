@@ -88,7 +88,9 @@ class GateNetV29(Net):
             pool2)
         conv34 = Conv2D(8, kernel_size=(3, 3), dilation_rate=(12, 12), strides=(1, 1), padding='same', use_bias=False)(
             pool2)
-        conv3 = Concatenate()([conv31, conv32, conv33, conv34])
+        conv35 = Conv2D(8, kernel_size=(3, 3), dilation_rate=(15, 15), strides=(1, 1), padding='same', use_bias=False)(
+            pool2)
+        conv3 = Concatenate()([conv31, conv32, conv33, conv34, conv35])
         norm3 = BatchNormalization()(conv3)
         act3 = LeakyReLU(alpha=0.1)(norm3)
         pool3 = MaxPooling2D((4, 4))(act3)

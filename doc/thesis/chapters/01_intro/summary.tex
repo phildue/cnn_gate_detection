@@ -6,20 +6,25 @@ Recent developments in embedded systems and artificial intelligence enable micro
 
 An important part to enable such technologies is an accurate estimation of the MAVs state and its environment. Due to its low weight, power consumption and robustness against noise (?) the most reliable sensor is often a camera. 
 
-However, this requires fast and accurate vision algorithms that interpret the obtained multidimensional signal. Research on such algorithms gave rise to autonomous drone races, where researchers have the opportunity to evaluate their methods in a competitive environment.
+However, this requires fast and accurate vision algorithms that interpret the obtained multidimensional signal. Research on such algorithms gave rise to autonomous drone races, where researchers have the opportunity to evaluate their methods in a competitive environment. The most advanced example of such races takes place at the IROS conference, where MAVs have to complete a race court consisting of several colored metal gates.
 
 Other methods like SLAM, Visual Odometry suffer from this this and that. A very efficient method is the method from last year. However its pretty subjective against noise.
 
-Learning based, in particular deep learning based methods came to success in the last years. However, their high computational requirements pose a serious limitation to mobile/embedded devices. Additionally, they require large amount of annotated data to perform well.
+Learning based, in particular deep learning based methods came to success in the last years within the computer vision community[The unreasonable effectiveness of deep features]. However, their high computational requirements pose a serious limitation to mobile/embedded devices. E.g. all the published systems participating in the autonomous drone race either rely on a very simple method or use strong hardware components [SSD, method of last year]. This limits the size and weight of the drone and thus their capability of flying aggressive and fast manoeuvres. Additionally, they require large amount of annotated data to perform well.
 
-The particularity of the object poses an easily underestimated problem for object detection. As the objects consists of relatively simple shapes and most of its area is covered by background a learning based method will easily overfit to the background if not sufficient variation in the training data is provided. This makes the generation of training data quite expensive.
+The shape of the gate poses particular problem for object detection[Wire Paper]. As it consists of relatively simple shapes and most of its area is covered by background a learning based method will easily overfit to the background if not sufficient variation of backgrounds in the training data is provided. This makes the generation of annotated samples quite expensive. Hence, the amount of publicly available data is limited. 
 
-We show the limitations of deep features when used on  simple shaped objects that are largely occupied by background, such as gates, .. .
+Also the abstraction of the object that a model can learn is limited. CNNs base on the assumption that lower order features like edges and corners combine to higher level features [Paper that visualizes feature maps]. We show the limitations of deep features when used on such simple shaped objects that are largely occupied by background. <Show performance vs maximal angle of gate>.
 
-We show how by exploiting this insight a deep learning model can be reduced by factor 100000 while maintaining accuracy.
+We show how by exploiting the particularity of the object a deep learning model can be reduced by factor XX while maintaining accuracy. <Show comparison between yolo/ssd and gatenet>,<Show how the method does not perform well on other objects>
 
-We show how with further optimization such a method can be used on an embedded device for obstacle detection/scene understanding.
+if network runs fast enough on jevois:
+	We show how due to the simplicity of the object and the fact that its rigid a small network can learn to estimate its pose. <Predict 3d position of gate>
+else :
+	We show how with further optimization [MobileNet, ...] such a method can be used as perception network for autonomous drone racing/aggressive flight manoeuvres, even on small and lightweight drones.
 
-We show how simulated data can be used to train such a method.
+We show the importance of context information when training such a method. <Compare results of simulator training with random backgrounds>
+
+
 
 
