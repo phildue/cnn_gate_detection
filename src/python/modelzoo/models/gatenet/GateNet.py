@@ -1,5 +1,6 @@
 import numpy as np
 
+from modelzoo.backend.tensor.gatenet import GateNetV34
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
@@ -78,6 +79,8 @@ class GateNet(Predictor):
         'GateNetV31': GateNetV31,
         'GateNetV32': GateNetV32,
         'GateNetV33': GateNetV33,
+        'GateNetV34': GateNetV34,
+
     }
 
     @property
