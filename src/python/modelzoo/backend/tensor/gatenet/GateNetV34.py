@@ -7,7 +7,7 @@ from modelzoo.backend.tensor.metrics import Loss
 from modelzoo.models.Net import Net
 
 
-class GateNetV33(Net):
+class GateNetV34(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)

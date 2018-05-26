@@ -1,6 +1,5 @@
 import numpy as np
 
-from modelzoo.backend.tensor.gatenet import GateNetV34
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
@@ -29,6 +28,7 @@ from modelzoo.backend.tensor.gatenet.GateNetV30 import GateNetV30
 from modelzoo.backend.tensor.gatenet.GateNetV31 import GateNetV31
 from modelzoo.backend.tensor.gatenet.GateNetV32 import GateNetV32
 from modelzoo.backend.tensor.gatenet.GateNetV33 import GateNetV33
+from modelzoo.backend.tensor.gatenet.GateNetV34 import GateNetV34
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
