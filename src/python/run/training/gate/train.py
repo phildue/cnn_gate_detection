@@ -13,7 +13,7 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'gatev29'
+model_name = 'GateNetV31'
 work_dir = 'atrous_merge_test'
 batch_size = 4
 n_samples = None

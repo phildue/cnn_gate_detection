@@ -1,12 +1,7 @@
-from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.ssd.SSD import SSD
-from modelzoo.models.yolo.Yolo import Yolo
+from modelzoo.models.ModelBuilder import ModelBuilder
 from modelzoo.visualization.demo import demo_generator
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.VocGenerator import VocGenerator
-from utils.fileaccess.utils import create_dirs
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 
@@ -24,7 +19,5 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-
-model = GateNet.v10(weight_file='out/gatev10_mixed/model.h5', conf_thresh=0.6, color_format='yuv')
-create_dirs(['logs/gatev10_mixed/demo/daylight_test'])
-demo_generator(model, generator, t_show=1, n_samples=150, out_file='logs/gatev10_mixed/demo/daylight_test')
+model = ModelBuilder.build('GateNetV29', src_dir='out/gatev29/')
+demo_generator(model, generator, t_show=0, n_samples=150)
