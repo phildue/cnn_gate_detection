@@ -13,8 +13,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'tiny_yolo'
-work_dir = 'test'
+model_name = 'gatev29'
+work_dir = 'atrous_merge_test'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -49,7 +49,7 @@ batch_size = args.batch_size
 n_samples = args.n_samples
 initial_epoch = args.initial_epoch
 learning_rate = args.learning_rate
-model_src = args.weight_file
+model_src = args.model_src
 epochs = args.epochs
 image_source = [args.image_source]
 test_image_source_1 = [args.test_image_source_1]
