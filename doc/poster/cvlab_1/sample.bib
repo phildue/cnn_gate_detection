@@ -1,0 +1,36 @@
+@article{Redmon,
+	abstract = {We introduce YOLO9000, a state-of-the-art, real-time object detection system that can detect over 9000 object categories. First we propose various improvements to the YOLO detection method, both novel and drawn from prior work. The improved model, YOLOv2, is state-of-the-art on standard detection tasks like PASCAL VOC and COCO. At 67 FPS, YOLOv2 gets 76.8 mAP on VOC 2007. At 40 FPS, YOLOv2 gets 78.6 mAP, outperforming state-of-the-art methods like Faster RCNN with ResNet and SSD while still running significantly faster. Finally we propose a method to jointly train on object detection and classification. Using this method we train YOLO9000 simultaneously on the COCO detection dataset and the ImageNet classification dataset. Our joint training allows YOLO9000 to predict detections for object classes that don't have labelled detection data. We validate our approach on the ImageNet detection task. YOLO9000 gets 19.7 mAP on the ImageNet detection validation set despite only having detection data for 44 of the 200 classes. On the 156 classes not in COCO, YOLO9000 gets 16.0 mAP. But YOLO can detect more than just 200 classes; it predicts detections for more than 9000 different object categories. And it still runs in real-time.},
+	archivePrefix = {arXiv},
+	arxivId = {1612.08242},
+	author = {Redmon et al.},
+	doi = {10.1142/9789812771728_0012},
+	eprint = {1612.08242},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Redmon, Farhadi - Unknown - YOLO9000 Better, Faster, Stronger(2).pdf:pdf},
+	isbn = {1879-2057 (Electronic)$\backslash$n0001-4575 (Linking)},
+	issn = {0146-4833},
+	journal = {Data Mining with Decision Trees},
+	keywords = {convolutional neural network,deep learning,denoising auto-encoder,image denoising,large-scale machine learning,real-time object detection},
+	number = {3},
+	pages = {352350},
+	pmid = {23021419},
+	title = {{YOLO9000: Better, Faster, Stronger}},
+	url = {https://arxiv.org/abs/1612.08242},
+	volume = {7},
+	year = {2016}
+}
+@inproceedings{felzenszwalb2008discriminatively,
+	title={A discriminatively trained, multiscale, deformable part model},
+	author={Felzenszwalb, Pedro and McAllester, David and Ramanan, Deva},
+	booktitle={Computer Vision and Pattern Recognition, 2008. CVPR 2008. IEEE Conference on},
+	pages={1--8},
+	year={2008},
+	organization={IEEE}
+}
+@article{Liu,
+	abstract = {We present a method for detecting objects in images using a single deep neural network. Our approach, named SSD, discretizes the output space of bounding boxes into a set of default boxes over different aspect ratios and scales per feature map location. At prediction time, the network generates scores for the presence of each object category in each default box and produces adjustments to the box to better match the object shape. Additionally, the network combines pre-dictions from multiple feature maps with different resolutions to naturally handle objects of various sizes. SSD is simple relative to methods that require object proposals because it completely eliminates proposal generation and subsequent pixel or feature resampling stages and encapsulates all computation in a single network. This makes SSD easy to train and straightforward to integrate into sys-tems that require a detection component. Experimental results on the PASCAL VOC, COCO, and ILSVRC datasets confirm that SSD has competitive accuracy to methods that utilize an additional object proposal step and is much faster, while providing a unified framework for both training and inference. For 300 × 300 in-put, SSD achieves 74.3{\%} mAP 1 on VOC2007 test at 59 FPS on a Nvidia Titan X and for 512 × 512 input, SSD achieves 76.9{\%} mAP, outperforming a compa-rable state-of-the-art Faster R-CNN model. Compared to other single stage meth-ods, SSD has much better accuracy even with a smaller input image size. Code is available at: https://github.com/weiliu89/caffe/tree/ssd .},
+	author = {Liu, Wei et al.},
+	file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Liu et al. - Unknown - SSD Single Shot MultiBox Detector.pdf:pdf},
+	keywords = {Convolutional Neural Network,Real-time Object Detection},
+	title = {{SSD: Single Shot MultiBox Detector}},
+	url = {https://www.cs.unc.edu/{~}wliu/papers/ssd.pdf}
+}

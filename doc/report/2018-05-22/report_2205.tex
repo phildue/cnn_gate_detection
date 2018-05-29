@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+%\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\usepackage{hyperref}
+ \usepackage{pdflscape}
+\usepackage[a4paper,margin=0.5in]{geometry}
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Gate Detection} % Title
+
+\author{Philipp \textsc{Duernay}} % Author name
+
+\date{\today} % Date for the report
+
+\begin{document}
+\maketitle
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Recap}
+In the last meeting from 22.04.2018 several next steps were defined:
+\begin{itemize}
+	\item Formulate outline for thesis
+\end{itemize}
+
+
+\section{Review}
+
+A quick review on the results so far:
+
+\begin{itemize}
+	\item Data generation:
+	\begin{itemize}
+		\item Incorporating more context information e.g. aligning the gates with the background up to creating an actual environment improved the performance.
+		\item Incorporating more factors of the real data was important such as lense resolution, distortion, motion blur
+		\item Mimicking, Varying the light conditions was important to learn a robust representation
+	\end{itemize}  
+	\item Method (Yolo):
+	\begin{itemize}
+		\item The method struggled the most with gates from the side so very thin objects. Removing those from the dataset gave a huge boost in performance.
+		\item The same performance can be achieved with 9 instead of 23 layers and a much lower width. This seems to be because it is a simple object but also because its just one class we want to detect and the variation is much lower (There is a much higher variation in faces/cats etc).
+		\item The network can be simplified further by using less layers but at cost of performance
+	\end{itemize}
+	\item Speed:
+	\begin{itemize}
+		\item Reducing the number of parameters made the model faster but not as much faster as expected. However, this might hold only on the powerful GPU where the convolutions of one layer can be calculated in parallel, no matter if you use 64 feature maps or 512.
+		\item Depth-wise separable convolutions hurt performance and did not increase speed.
+	\end{itemize}
+
+\section{Outline}
+
+Based on the insights so far I can think of several main stories:
+
+\begin{itemize}
+	
+	\item \textbf{Efficient and robust gate detection.} Other publications for gate detection either use a more traditional computer vision approach  or only train a big network and use it with expensive hardware \cite{Falanga, Jung, Jung2018}, [Method from last year]. They don't describe the training process, the tradeoffs in accuracy and computational requirements etc. Also no one seem to have used a network to directly predict the corners or even the pose of the gate, which we could try to make work still. The main story could be a comparison between the existing methods especially between the old method with traditional vision vs the learning based approach. This would be quite close to what I did so far but also very particular to the application.
+\begin{itemize}
+	\item show how model can learn to deal with distortion + motion blur
+	\item show influence of background/context/lightning conditions when training
+	\item show how a much simpler network can achieve equal performance than learning based approaches other teams used \cite{Jung}
+	\item show how network can predict corners/pose directly
+	\item compare (deep) learning based approach with traditional approach in terms of cpu/energy requirements, accuracy and robustness
+\end{itemize}
+	
+	\item \textbf{Obstacle detection of thin frame objects.} Comparable objects are fences, rails, cables etc. So we could try if it is also possible to detect these objects with a very shallow network. That would be useful for lightweight drones/robots. However, there it doesn't really make sense to predict bounding boxes and it would rather be a segmentation problem. The advantage would be that the simulator already outputs labels for this, so the infrastructure would be there, but it would add up a new field to investigate.	
+	I found some stuff on wire detection in the sky but maybe we could look at some other objects \cite{8206190, 8014779}.
+	\begin{itemize}
+		\item show that deep features do not help the segmentation
+		\item show that our method performs equally well to a deeper net
+		\item show that our method does not perform well on "normal" objects where our assumptions don't hold
+		\item show how incorporating lense distortion, motion blur etc can help performance,
+		\item apply some methods to increase inference speed and show how network can run faster/smaller GPUs
+	\end{itemize}
+	
+	\item \textbf{Detection of stick figure/ thin frame objects.} If we stay in the detection domain it is hard to think of any other object where the same conditions hold. Also I feel we would need to show that our method is better than a regular object detector but so far that is not the case. Where the detector really seemed to have a problem was when we included high angles so that you could only see a thin line. If we solve that, that could be a main story. I couldn't find related work.
+	\begin{itemize}
+		\item show that deep features do not help the detection
+		\item show that our method performs better than a standard object detector
+		\item show that our method does not perform well on "normal" objects where our assumptions don't hold
+	\end{itemize}
+	
+	
+	\item \textbf{Model Speedup/Simplification.} I could look into different ways to speed up/ simplify a bigger network. There are a couple of methods on increasing performance \cite{Zhang2017a,Howard2017,Li,Ghosh2017} and knowledge distillation\cite{Shen2016,Hinton2015,Romero2014} so the study could be a comparison of these methods for networks to be applied on very limited hardware.
+	
+	The story could be: We have a big network that can do the task but we want to do it smaller and faster. Since the objects are quite simple a small network should be able to handle the task.
+	
+	\begin{itemize}
+		\item Investigate knowledge distillation and its affect on performance
+		\item Apply different speed optimization techniques and investigate their effect on performance
+		\item Apply different intuitive changes in the architecture and see their effect (Like what we did so far: larger pooling, dilated kernels etc.)
+		\item In the small models investigate what does it actually learn. E.g. why do we still need 9 layers? How important is context?
+	\end{itemize}
+
+	
+\end{itemize}
+
+\end{itemize}
+
+
+
+
+%----------------------------------------------------------------------------------------
+\bibliographystyle{abbrv}
+
+\bibliography{literature}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}\grid

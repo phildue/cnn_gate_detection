@@ -21,7 +21,7 @@
 %%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
 %%
 %% These macros specify information about the presentation
-\title{Lightweight Gate Detection for Autonomous Drone Racing} %% that will be typeset on the
+\title{Robust Gate Detection for Autonomous Drone Racing} %% that will be typeset on the
 \subtitle{Mid-Term Presentation} %% title page.
 \author{Philipp Dürnay}
 %% These additional packages are used within the document:
@@ -37,63 +37,75 @@
 \begin{document}
   \frame{\maketitle}
 
-  \AtBeginSection[2,3,4]{% Print an outline at the beginning of sections
-    \begin{frame}<beamer>
-      \frametitle{Outline for Section \thesection}
-      \tableofcontents[currentsection]
-    \end{frame}}
+  %\AtBeginSection[2,3,4]{% Print an outline at the beginning of sections
+  %  \begin{frame}<beamer>
+  %    \frametitle{Outline for Section \thesection}
+  %    \tableofcontents[currentsection]
+  %  \end{frame}}
 
   \begin{darkframes}
   	\begin{frame}{Outline}
   		\tableofcontents
   	\end{frame}
-    \section{Background}
-    \subsection{Application}
+	\section{Application}
     \begin{frame}{IROS2018}
-    	content...
+    	\includegraphics[width=\textwidth]{fig/application}
     \end{frame}
-    \begin{frame}{Training Data}
+    \begin{frame}{Current Method}
        	content...
-    \end{frame}
-	\subsection{Research Question}    
-	\begin{frame}{Research Question}
-	\textbf{How can we efficiently detect objects that are largely occupied by backround}, when there is only little amount of training data and the computational resources are limited?
-	\end{frame}
-    \subsection{Object Detection}
-    \begin{frame}{Object Detection}
-    	\includegraphics[width=\linewidth]{resources/ObjectDetection}
-    \end{frame}
-    \begin{frame}{Convolutional Networks}
-	\includegraphics[width=\linewidth]{resources/cnn}
-    \end{frame}
-    \begin{frame}{One Stage Detectors}
-       	content...
+       	show loop
     \end{frame}
 
-        
-    \section{Proposed Method}
-    \begin{frame}{Architecture}
-    	content...
+	\section{Research Question}    
+	\begin{frame}{Research Question}
+	\textbf{How can we efficiently detect thin frame objects on a micro-air vehicle?}
+	\end{frame}
+    \section{Background}
+
+	\begin{frame}{Object Detection}
+	\includegraphics[width=\textwidth]{fig/ObjectDetection}
+	\end{frame}
+	
+		\begin{frame}{Convolutional Networks}
+	\includegraphics[width=\textwidth]{fig/cnn}
+\end{frame}
+
+    
+    \section{Approach}
+  
+    \begin{frame}{Approach}
+  show reduced network mention weights
     \end{frame}
     
-    \section{Evaluation}
+    \section{Results}
     \begin{frame}{Results}
-    	content...
+    	\includegraphics[width=\textwidth]{fig/pr}
     \end{frame}
+
+    \begin{frame}{Results - Examples}
+    	\includegraphics[width=\textwidth]{fig/examples}
+	\end{frame}
     
     \section{Conclusion}
-    \subsection{Conclusion}
     \begin{frame}{Conclusion}
-    	content...
+
+    \begin{itemize}
+    	\item number of filters per layer can largely be reduced
+    	\item depth can be decreased up to 9 layers
+    \end{itemize}
     \end{frame}
-    \subsection{Next Steps}
+
     \begin{frame}{Next Steps}
-    	content...
+    	\begin{itemize}
+    		\item Analyzing what the deeper layers learn.
+    		\item Analyzing further bottlenecks in speed.
+    	\end{itemize}
     \end{frame}
     
-    \section{Questions}
+
     \begin{frame}{Questions}
-    	content...
+    \centering
+\huge ?
     	\end{frame}
     
     
