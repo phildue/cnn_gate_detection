@@ -23,7 +23,7 @@
 %% These macros specify information about the presentation
 \title{Robust Gate Detection for Autonomous Drone Racing} %% that will be typeset on the
 \subtitle{Mid-Term Presentation} %% title page.
-\author{Philipp Dürnay}
+\author{Philipp Dürnay\\ Supervisors:	 David M. J. Tax, Guido de Chroon}
 %% These additional packages are used within the document:
 \usepackage{ragged2e}  % `\justifying` text
 \usepackage{booktabs}  % Tables
@@ -47,7 +47,8 @@
   	\begin{frame}{Outline}
   		\tableofcontents
   	\end{frame}
-	\section{Application}
+	\section{Introduction}
+	\subsection{Application}
     \begin{frame}{IROS2018}
     	\includegraphics[width=\textwidth]{fig/application}
     \end{frame}
@@ -56,28 +57,28 @@
        	show loop
     \end{frame}
 
-	\section{Research Question}    
+	\subsection{Research Question}    
 	\begin{frame}{Research Question}
 	\textbf{How can we efficiently detect thin frame objects on a micro-air vehicle?}
 	\end{frame}
     \section{Background}
-
+\subsection{Object Detection}
 	\begin{frame}{Object Detection}
 	\includegraphics[width=\textwidth]{fig/ObjectDetection}
 	\end{frame}
-	
+	\subsection{Convolutional Networks}
 		\begin{frame}{Convolutional Networks}
 	\includegraphics[width=\textwidth]{fig/cnn}
 \end{frame}
 
     
     \section{Approach}
-  
+  \subsection{Method}
     \begin{frame}{Approach}
   show reduced network mention weights
     \end{frame}
     
-    \section{Results}
+    \subsection{Results}
     \begin{frame}{Results}
     	\includegraphics[width=\textwidth]{fig/pr}
     \end{frame}
@@ -90,15 +91,16 @@
     \begin{frame}{Conclusion}
 
     \begin{itemize}
-    	\item number of filters per layer can largely be reduced
-    	\item depth can be decreased up to 9 layers
+    	\item Deeper layers don't serve much but objects in difficult poses are detected better.
+    	\item Width can largely be reduced.
+    	\item With less than 9 layers performance deteriorates with every layer.
     \end{itemize}
     \end{frame}
 
     \begin{frame}{Next Steps}
     	\begin{itemize}
     		\item Analyzing what the deeper layers learn.
-    		\item Analyzing further bottlenecks in speed.
+    		\item Investigate further methods to reduce model size/ speed up computations.
     	\end{itemize}
     \end{frame}
     
