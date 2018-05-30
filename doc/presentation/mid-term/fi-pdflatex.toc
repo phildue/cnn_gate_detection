@@ -1,7 +1,11 @@
 \babel@toc {english}{}
-\beamer@sectionintoc {1}{Application}{3}{0}{1}
-\beamer@sectionintoc {2}{Research Question}{5}{0}{2}
-\beamer@sectionintoc {3}{Background}{6}{0}{3}
-\beamer@sectionintoc {4}{Approach}{8}{0}{4}
-\beamer@sectionintoc {5}{Results}{9}{0}{5}
-\beamer@sectionintoc {6}{Conclusion}{11}{0}{6}
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Application}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Research Problem}{5}{0}{1}
+\beamer@sectionintoc {2}{Background}{6}{0}{2}
+\beamer@subsectionintoc {2}{1}{Object Detection}{7}{0}{2}
+\beamer@subsectionintoc {2}{2}{Convolutional Neural Networks}{8}{0}{2}
+\beamer@sectionintoc {3}{Approach}{9}{0}{3}
+\beamer@subsectionintoc {3}{1}{Method}{10}{0}{3}
+\beamer@subsectionintoc {3}{2}{Results}{11}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{13}{0}{4}

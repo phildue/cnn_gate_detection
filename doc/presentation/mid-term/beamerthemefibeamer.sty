@@ -158,10 +158,10 @@
   \patchcmd{\Gin@ii}% Make `\includegraphics` use `@fallbackLogo`.
     {\begingroup}% <search>
     {\begingroup\renewcommand{\@latex@error}[2]{%
-       \includegraphics[#1]\fibeamer@fallbackLogo}}% <replace>
+       \includegraphics[height=0.3\textheight]\fibeamer@fallbackLogo}}% <replace>
     {}% <success>
     {}% <failure>
-  \includegraphics[#1]\fibeamer@logo}}
+  \includegraphics[height=0.3\textheight]\fibeamer@logo}}
 \def\fibeamer@patch#1#2{%
   \def\fibeamer@patch@versions{#1}%
   \def\fibeamer@patch@action{#2}%
