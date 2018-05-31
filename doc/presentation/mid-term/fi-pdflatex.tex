@@ -23,7 +23,7 @@
 %% These macros specify information about the presentation
 \title{Robust Gate Detection for Autonomous Drone Racing} %% that will be typeset on the
 \subtitle{Mid-Term Presentation} %% title page.
-\author{Philipp Dürnay\\ \bigskip \bigskip Guido de Chroon \hfill	\includegraphics[width=3cm]{fig/mavlab}\\
+\author{Philipp Dürnay\\ \bigskip \bigskip Guido de Croon \hfill	\includegraphics[width=3cm]{fig/mavlab}\\
 	 David M. J. Tax  \hfill \includegraphics[width=3cm]{fig/prgroup}%
 }
 %% These additional packages are used within the document:
@@ -54,15 +54,17 @@
     \begin{frame}{IROS2018}
     	\includegraphics[width=\textwidth]{fig/application}
     \end{frame}
+%So we start with the background. The final application will be at the Autonomous Drone Race at the IROS2018 conference in spain. There you have a track that consists of multiple orange gates that need to be passed one after another. So here on the top you see the race court of two years ago. On the bottom you see an example of how a drone looks like. And here on the right you see an example of the training data. So in our method we use these gates to determine our own position. So we detect the gate estimate our own position relative to it and then this goes to the control loop and we fly through. In my thesis I am concerned with the detection of these gates.
     \begin{frame}{Current Method}
        	\includegraphics[width=\textwidth]{fig/current_method}
     \end{frame}
-
+%Now currently we have a very basic computer vision method that basically looks for orange pixels and if it finds a square it extracts the corners and together with the known geometry of the gate we can estimate our own position.
+%As you can imagine this method is purely colour based and very brittle. You need to tune the colour values depending on the light conditions of the room. And even then if you have strong shadows the method fails. Also it can happend that you are quite far away from the gate and then you don't see the square anymore but only the pole. In this case the method also doesnt work. So we want to improve this by using a learning based approach. As we hope this results in a more robust and flexible method. For example a learning based method you can train if the shapes of the gate change. So this brings me to the underlying research problem. Which can be formulated as follows.
 	\subsection{Research Problem}    
 	\begin{frame}{Research Problem}
 	\textbf{Efficient and robust detection of wire frame objects with limited resources.}
 	\end{frame}
-    
+ % Since it needs to run on a drone it should be fast and the faster it gets the better for the control, the faster we can fly/ a smaller drone we can use. The wire frame objects we refer to as the objects we want to detect consists only out of a thin frame but I will get back to that later. So I will look at some background in object detection.   
     \section{Background}
     \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
@@ -81,7 +83,7 @@
 % State of the art methods all use convolutional neural networks and the reason that is beliefed to be responsible for that performance is the fact that you can combine all these steps in one model and train it end to end on the task so instead of manually enginnering and training models you combine it all in one.
 	\subsection{Convolutional Neural Networks}
 		\begin{frame}{Convolutional Networks}
-	\includegraphics[width=\textwidth]{fig/cnn}
+	\includegraphics[width=\textwidth]{fig/cnn_mine}
 \end{frame}
 
 % So now we can look at an example for a convolutional network and at the different layers. So typically you apply per layer a certain amount of filters, then you apply pooling and non-linearity and you stack several of these filters and at the end you have your output.
@@ -95,34 +97,56 @@
   \subsection{Method}
     \begin{frame}{Approach}
   Hypothesis: A much smaller network should be able to learn the task.
-  TODO drawing
+  \\ \bigskip \bigskip
+	\includegraphics[width=\textwidth]{fig/approach}
     \end{frame}
+% Our hypothesis is a much small network should be able to learn the task. So we take a well performing deep object detector and try to scale it down. For now we took the yolo object detector with 23 layers, like you can see here exemplified. And our goal is to make the model smaller and thus also faster. To this end we use an intuitive approach by just modifying the architecture and train the network again.
     
     \subsection{Results}
     \begin{frame}{Results}
-    	\includegraphics[width=\textwidth]{fig/pr}
+    	\includegraphics[width=\textwidth]{fig/params_perf}
     \end{frame}
+% Here you can see some results we see, mean average precision which is a metric for object detection over the number of weights. We see the original detector as a dot and several of our architectures with different hyperparameters as crosses. And you can see how the performance stays the same although the number of weights is reduced quite a lot. Now of course this is not only because we have a simpler object but also because we only want to detect one class while the original detector detected up to 20 classes.
+
+    \begin{frame}{Results}
+\includegraphics[width=\textwidth]{fig/params_perf_close}
+\end{frame}
+
+    \begin{frame}{Results}
+	\includegraphics[width=\textwidth]{fig/params_speed}
+	\end{frame}
+
+% In the next step we also analyze speed. So these measurements are taken out on the INSY cluster with quite a big GPU. On the drone these values will probably still vary. In total you can see again a huge drop in weights and a boost in performance.
+
+    \begin{frame}{Results}
+\includegraphics[width=\textwidth]{fig/params_speed_close}
+\end{frame}
+% However, if we look closer we also see how the boost in speed gets smaller at some point. So reducing the number of weights further does not increase to such a significant speed up anymore. Hence, the bottleneck seems to be somewhere else now.
+
 
     \begin{frame}{Results - Examples}
     	\includegraphics[width=\textwidth]{fig/examples}
 	\end{frame}
+% Here you see some results, on the left the original yolo model on the right our model with 9 layers. White are correct detections, blue are missed gates and red are false detections. We see how the bigger model produces more accurate bounding boxes and can handle the difficult angles better.
+
     
     \section{Conclusion}
+            \begin{frame}{Outline for Section \thesection}
+    \tableofcontents[currentsection]
+\end{frame}
     \begin{frame}{Conclusion}
 
     \begin{itemize}
-    	\item Initial assumption confirmed. Much less layers are necessary. However, 9 layers is still quite deep.
-    	\item Deeper layers don't serve much but objects in difficult poses are detected better.
-    	\item Number of filters can largely be reduced.
-    	\item Reduction in parameters does not lead to same equal reduction in speedup.
+    	\item Initial assumption confirmed. Much less layers are necessary. However, with less then 9 layers the performance starts dropping.
+    	\item Deeper network handles objects in difficult poses better.
+    	\item Number of weights is much smaller, however reduction in parameters does not lead equal speed up.
     \end{itemize}
     \end{frame}
 
     \begin{frame}{Next Steps}
     	\begin{itemize}
-    		\item Analyzing what the deeper layers learn.
-    		\item Investigating speed bottlenecks.
-    		\item Investigating further methods to reduce model size/ speed up computations.
+    		\item Analysing where most performance/time gets lost
+    		\item Investigating further methods to reduce model size/ speed up computations while maintaining accuracy.
     	\end{itemize}
     \end{frame}
     
