@@ -1,3 +1,4 @@
+from modelzoo.backend.tensor.simple_tf import simple_tf
 from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 
@@ -20,6 +21,8 @@ class ModelBuilder:
             model = Yolo.thin_yolo(batch_size=batch_size, weight_file=weight_file)
         elif 'Gate' in name:
             model = GateNet.create(name, batch_size=batch_size, weight_file=weight_file)
+        elif name == 'test':
+            model = simple_tf()
         else:
             raise ValueError("Unknown model name!")
 

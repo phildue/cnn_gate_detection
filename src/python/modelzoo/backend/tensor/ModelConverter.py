@@ -24,5 +24,5 @@ class ModelConverter:
         postprocessed = PostprocessLayer()(out)
         inference_model = backend  # Model(input, postprocessed)
         sess = K.get_session()
-        convert_model(sess, inference_model, out_name=self.directory + self.model_name, out_format=self.format,
+        convert_model(sess, model, out_name=self.directory + self.model_name, out_format=self.format,
                       quantize=quantize, input_shape=model.input_shape)
