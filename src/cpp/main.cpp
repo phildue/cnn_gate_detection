@@ -74,13 +74,22 @@ int main(int argc, char *argv[]) {
     cvimg.convertTo(cvimg,CV_32FC3,1/255.0);
     cv::imshow("Input",cvimg);
     cv::waitKey(1);
-    //int dims = interpreter->tensor(0)->dims->data;
     std::cout << "Input Dims:"
                  << interpreter->tensor(0)->dims->data[0]
               << "|" << interpreter->tensor(0)->dims->data[1]
               << "|" << interpreter->tensor(0)->dims->data[2]
               << "|" << interpreter->tensor(0)->dims->data[3] << std::endl;
-  // Allocate tensor buffers.
+
+    int output = interpreter->outputs()[0];
+    std::cout << "Output Dims:"
+              << interpreter->tensor(output)->dims->data[0]
+              << "|" << interpreter->tensor(output)->dims->data[1]
+              << "|" << interpreter->tensor(output)->dims->data[2]
+              << "|" << interpreter->tensor(output)->dims->data[3] << std::endl;
+
+
+
+    // Allocate tensor buffers.
   TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
     // Fill input buffers
 
@@ -98,7 +107,29 @@ int main(int argc, char *argv[]) {
 
   // Read output buffers
   // TODO(user): Insert getting data out code.
-    int output = interpreter->outputs()[0];
-    std::cout << interpreter->typed_output_tensor<float>(0) << std::endl;
+    float *out = interpreter->typed_output_tensor<float>(0);
+    if (out != NULL){
+        int rows = interpreter->tensor(output)->dims->data[1];
+        int columns = interpreter->tensor(output)->dims->data[2];
+        int channels = interpreter->tensor(output)->dims->data[3];
+        for (int r=0; r < rows; r++){
+            std::cout << std::endl;
+            for (int c=0; c < columns; c++){
+                std::cout << "|";
+                for (int ch=0; ch < channels; ch++){
+                    std::cout << *out << ", ";
+                    out++;
+                }
+            }
+        }
+    }else{
+        std::cout << "Output node is NULL" << std::endl;
+    }
+
+//    for (int i = 0; i < 100; i++){
+//        std::cout << *out << std::endl;
+//        out ++;
+//    }
+    std::cout << *out << std::endl;
   return 0;
 }

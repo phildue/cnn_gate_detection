@@ -13,7 +13,7 @@ tf.contrib.lite.subprocess = subprocess
 cd_work()
 if __name__ == '__main__':
 
-    input_layer = tf.placeholder(tf.float32, [1, 480, 640, 3])
+    input_layer = tf.placeholder(tf.float32, [1, 480, 640, 3],name='Image')
     quantize = False
     out_name = 'build/test.tflite'
     conv1 = tf.layers.conv2d(
@@ -30,8 +30,22 @@ if __name__ == '__main__':
         strides=2,
     )
 
+    conv2 = tf.layers.conv2d(
+        inputs=pool1,
+        filters=16,
+        kernel_size=[3, 3],
+        padding='same',
+        activation=tf.nn.relu,
+        use_bias=False,
+    )
+    pool2 = tf.layers.max_pooling2d(
+        conv2,
+        pool_size=[2, 2],
+        strides=2,
+    )
+
     predictions = tf.layers.conv2d(
-        pool1,
+        pool2,
         filters=5,
         kernel_size=[16, 16],
         strides=16,
