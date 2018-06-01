@@ -22,6 +22,24 @@ using namespace tflite;
   }
 
 
+  void postprocessing(int rows, int columns, int n_boxes, int n_params, const float* out){
+      for (int r=0; r < rows; r++){
+          for (int c=0; c < columns; c++){
+                  float cx = *out;
+                  float cy = *(out+1);
+                  float w = *(out+2);
+                  float h = *(out+3);
+                  float conf = *(out+4);
+          //        if (conf > 0.1){
+                      std::cout << "|" << cx << "," << cy << "|" << w << "," << h << "|" << conf << std::endl;
+          //        }
+              out+=n_boxes*n_params;
+
+              }
+
+      }
+  }
+
 int main(int argc, char *argv[]) {
   if(argc != 3) {
     fprintf(stderr, "Usage: <model> <image>\n");
@@ -114,16 +132,7 @@ int main(int argc, char *argv[]) {
         int rows = interpreter->tensor(output)->dims->data[1];
         int columns = interpreter->tensor(output)->dims->data[2];
         int channels = interpreter->tensor(output)->dims->data[3];
-        for (int r=0; r < rows; r++){
-            std::cout << std::endl;
-            for (int c=0; c < columns; c++){
-                std::cout << "|";
-                for (int ch=0; ch < channels; ch++){
-                   // std::cout << *out << ", ";
-                    out++;
-                }
-            }
-        }
+        postprocessing(rows,columns,5,5,out);
     }else{
         std::cout << "Output node is NULL" << std::endl;
     }
