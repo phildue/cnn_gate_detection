@@ -6,39 +6,16 @@ from tensorflow.python.framework import graph_io
 import tempfile
 import subprocess
 
+from utils.workdir import cd_work
+
 tf.contrib.lite.tempfile = tempfile
 tf.contrib.lite.subprocess = subprocess
-
-def simple_tf():
-    input_layer = tf.placeholder(tf.float16, [1, 416, 416, 3])
-    conv1 = tf.layers.conv2d(
-        inputs=input_layer,
-        filters=32,
-        kernel_size=[3, 3],
-        padding='same',
-        activation=tf.nn.relu
-    )
-    pool1 = tf.layers.max_pooling2d(
-        conv1,
-        pool_size=[2, 2],
-        strides=2,
-    )
-
-    predictions = tf.layers.conv2d(
-        pool1,
-        filters=5,
-        kernel_size=[16, 16],
-        strides=16,
-        activation=tf.nn.relu
-    )
-
-    return predictions
-
+cd_work()
 if __name__ == '__main__':
 
     input_layer = tf.placeholder(tf.float32, [1, 480, 640, 3])
     quantize = False
-    out_name = 'test'
+    out_name = 'build/test.tflite'
     conv1 = tf.layers.conv2d(
         inputs=input_layer,
         filters=16,

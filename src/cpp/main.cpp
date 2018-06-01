@@ -6,6 +6,7 @@
 #include "tensorflow/contrib/lite/kernels/kernel_util.h"
 #include <cstdio>
 #include <iostream>
+#include <tensorflow/contrib/lite/context.h>
 #include "exp.h"
 #include "opencv2/highgui.hpp"
 #include "opencv2/core.hpp"
@@ -40,7 +41,7 @@ int main(int argc, char *argv[]) {
 
   // Build the interpreter
   tflite::ops::builtin::BuiltinOpResolver resolver;
-  resolver.AddCustom("Exp", Register_EXP());
+  //resolver.AddCustom("Exp", Register_EXP());
 
   InterpreterBuilder builder(*model.get(), resolver);
   std::unique_ptr<Interpreter> interpreter;
@@ -70,16 +71,28 @@ int main(int argc, char *argv[]) {
 
 
     cv::Mat cvimg = cv::imread(imagefile);
+    cvimg.convertTo(cvimg,CV_32FC3,1/255.0);
     cv::imshow("Input",cvimg);
-    cv::waitKey(0);
-
+    cv::waitKey(1);
+    //int dims = interpreter->tensor(0)->dims->data;
+    std::cout << "Input Dims:"
+                 << interpreter->tensor(0)->dims->data[0]
+              << "|" << interpreter->tensor(0)->dims->data[1]
+              << "|" << interpreter->tensor(0)->dims->data[2]
+              << "|" << interpreter->tensor(0)->dims->data[3] << std::endl;
   // Allocate tensor buffers.
   TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
     // Fill input buffers
 
     int input = interpreter->inputs()[0];
-    memcpy(interpreter->typed_tensor<float>(input), cvimg.data, cvimg.total() * cvimg.elemSize());
 
+
+    std::cout << cvimg.rows << "|" << cvimg.cols << std::endl;
+    std::cout<< cvimg.total() << "|" << cvimg.elemSize() << std::endl;
+    std::cout << 480*640*3*sizeof(float) << std::endl;
+    float *in = interpreter->typed_tensor<float>(input);
+    memcpy(in, cvimg.data, cvimg.total()*cvimg.elemSize());
+    std::cout << "Running inference "<< std::endl;
   // Run inference
   TFLITE_MINIMAL_CHECK(interpreter->Invoke() == kTfLiteOk);
 
