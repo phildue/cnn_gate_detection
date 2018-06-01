@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <tensorflow/contrib/lite/context.h>
+#include <opencv2/imgproc.hpp>
 #include "exp.h"
 #include "opencv2/highgui.hpp"
 #include "opencv2/core.hpp"
@@ -72,6 +73,7 @@ int main(int argc, char *argv[]) {
 
     cv::Mat cvimg = cv::imread(imagefile);
     cvimg.convertTo(cvimg,CV_32FC3,1/255.0);
+    cv::resize(cvimg,cvimg,cv::Size(416,416));
     cv::imshow("Input",cvimg);
     cv::waitKey(1);
     std::cout << "Input Dims:"
@@ -117,7 +119,7 @@ int main(int argc, char *argv[]) {
             for (int c=0; c < columns; c++){
                 std::cout << "|";
                 for (int ch=0; ch < channels; ch++){
-                    std::cout << *out << ", ";
+                   // std::cout << *out << ", ";
                     out++;
                 }
             }
@@ -126,10 +128,6 @@ int main(int argc, char *argv[]) {
         std::cout << "Output node is NULL" << std::endl;
     }
 
-//    for (int i = 0; i < 100; i++){
-//        std::cout << *out << std::endl;
-//        out ++;
-//    }
-    std::cout << *out << std::endl;
+
   return 0;
 }

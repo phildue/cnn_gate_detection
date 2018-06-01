@@ -11,45 +11,68 @@ from utils.workdir import cd_work
 tf.contrib.lite.tempfile = tempfile
 tf.contrib.lite.subprocess = subprocess
 cd_work()
+
+
+def conv_pool_norm(input):
+    conv = tf.layers.conv2d(
+        inputs=input,
+        filters=32,
+        kernel_size=[6, 6],
+        padding='same',
+        activation=tf.nn.relu,
+        use_bias=False,
+    )
+    pool = tf.layers.max_pooling2d(
+        conv,
+        pool_size=[2, 2],
+        strides=2,
+    )
+
+    norm = tf.layers.batch_normalization(
+        inputs=pool
+    )
+
+    return norm
+
+
+def conv_norm(input, kernel_size):
+    conv = tf.layers.conv2d(
+        inputs=input,
+        filters=32,
+        kernel_size=kernel_size,
+        padding='same',
+        activation=tf.nn.relu,
+        use_bias=False,
+    )
+
+    norm = tf.layers.batch_normalization(
+        inputs=conv
+    )
+
+    return norm
+
+
 if __name__ == '__main__':
 
-    input_layer = tf.placeholder(tf.float32, [1, 480, 640, 3],name='Image')
+    input_layer = tf.placeholder(tf.float32, [1, 416, 416, 3], name='Image')
     quantize = False
-    out_name = 'build/test.tflite'
-    conv1 = tf.layers.conv2d(
-        inputs=input_layer,
-        filters=16,
-        kernel_size=[3, 3],
-        padding='same',
-        activation=tf.nn.relu,
-        use_bias=False,
-    )
-    pool1 = tf.layers.max_pooling2d(
-        conv1,
-        pool_size=[2, 2],
-        strides=2,
-    )
+    out_name = 'build/test'
 
-    conv2 = tf.layers.conv2d(
-        inputs=pool1,
-        filters=16,
-        kernel_size=[3, 3],
-        padding='same',
-        activation=tf.nn.relu,
-        use_bias=False,
-    )
-    pool2 = tf.layers.max_pooling2d(
-        conv2,
-        pool_size=[2, 2],
-        strides=2,
-    )
+    layer1 = conv_pool_norm(input_layer)
+    layer2 = conv_pool_norm(layer1)
+    layer3 = conv_pool_norm(layer2)
+    layer4 = conv_pool_norm(layer3)
+    layer5 = conv_pool_norm(layer4)
+    layer6 = conv_norm(layer5, [6, 6])
+    layer7 = conv_norm(layer6, [3, 3])
+    layer8 = conv_norm(layer7, [3, 3])
 
     predictions = tf.layers.conv2d(
-        pool2,
-        filters=5,
-        kernel_size=[16, 16],
-        strides=16,
-        activation=tf.nn.relu,
+        layer8,
+        filters=5 * 5,
+        kernel_size=[1, 1],
+        strides=1,
+        activation=None,  # linear
         use_bias=False,
     )
 
