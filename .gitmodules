@@ -7,3 +7,6 @@
 [submodule "lib/flatbuf"]
 	path = lib/flatbuf
 	url = https://github.com/google/flatbuffers.git
+[submodule "lib/gatenet-jevois"]
+	path = lib/gatenet-jevois
+	url = https://github.com/phildue/gatenet-jevois
