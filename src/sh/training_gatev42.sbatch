@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/training/gate/train.py --model_name GateNetV42 --work_dir gatev42 --img_res 52,52
+srun python3 dronevision/src/python/run/training/gate/train.py --model_name GateNetV42 --work_dir gatev42  --img_height 52  --img_width 52

@@ -48,7 +48,8 @@ parser.add_argument("--initial_epoch", type=int, default=initial_epoch)
 parser.add_argument("--epochs", type=int, default=epochs)
 parser.add_argument("--learning_rate", type=float, default=learning_rate)
 parser.add_argument("--model_src", default=model_src)
-parser.add_argument("--img_res", default=img_res)
+parser.add_argument("--img_width", default=img_res[1])
+parser.add_argument("--img_height", default=img_res[0])
 
 args = parser.parse_args()
 
@@ -63,7 +64,7 @@ epochs = args.epochs
 image_source = [args.image_source]
 test_image_source_1 = [args.test_image_source_1]
 test_image_source_2 = [args.test_image_source_2]
-img_res = args.img_res
+img_res = args.img_height, args.img_width
 
 """
 Model
