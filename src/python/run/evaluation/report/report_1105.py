@@ -211,6 +211,7 @@ def performance_weights(performance_files, params, names):
 cd_work()
 
 daylight_result_files = [
+    'out/gatev5_mixed/results/daylight--020.pkl',
     'out/gatev8_mixed/results/daylight--020.pkl',
     'out/gatev9_mixed/results/daylight--020.pkl',
     'out/gatev10_mixed/results/daylight--020.pkl',
@@ -224,11 +225,17 @@ daylight_result_files = [
     'out/gatev18_mixed/results/set_2--017.pkl',
     'out/gatev19/results/set_2--017.pkl',
     'out/gatev20/results/set_2--017.pkl',
+    # 'out/gatev30/results/set_2--035.pkl',
+    # 'out/gatev34/results/set_2--035.pkl',
+    # 'out/gatev35/results/set_2--035.pkl',
+    # 'out/gatev36/results/set_2--035.pkl',
+    # 'out/gatev37/results/set_2--040.pkl',
     'out/tiny_mixed/results/daylight--023.pkl',
     'out/v2_mixed/results/daylight--019.pkl'
 ]
 
 basement_result_files = [
+    'out/gatev5_mixed/results/industrial--020.pkl',
     'out/gatev8_mixed/results/industrial--020.pkl',
     'out/gatev9_mixed/results/industrial--020.pkl',
     'out/gatev10_mixed/results/industrial--020.pkl',
@@ -242,27 +249,35 @@ basement_result_files = [
     'out/gatev18_mixed/results/set_1-017.pkl',
     'out/gatev19/results/set_1-017.pkl',
     'out/gatev20/results/set_1-017.pkl',
+    # 'out/gatev30/results/set_1-035.pkl',
+    # 'out/gatev34/results/set_1-035.pkl',
+    # 'out/gatev35/results/set_1-035.pkl',
+    # 'out/gatev36/results/set_1-035.pkl',
+    # 'out/gatev37/results/set_1-040.pkl',
     'out/tiny_mixed/results/industrial--023.pkl',
     'out/v2_mixed/results/industrial--019.pkl'
 ]
 
-speed_results = ['out/gatev8_mixed/speed/result.pkl',
-                 'out/gatev9_mixed/speed/result.pkl',
-                 'out/gatev10_mixed/speed/result.pkl',
-                 'out/gatev11_mixed/speed/result.pkl',
-                 'out/gatev12_mixed/speed/result.pkl',
-                 'out/gatev13_mixed/speed/result.pkl',
-                 'out/gatev14_mixed/speed/speed_result.pkl',
-                 'out/gatev15_mixed/speed/result.pkl',
-                 'out/gatev16_mixed/speed/speed_result.pkl',
-                 'out/gatev17_mixed/speed/speed_result.pkl',
-                 'out/gatev18_mixed/speed/speed_result.pkl',
-                 'out/gatev19/speed/speed_result.pkl',
-                 'out/gatev20/speed/speed_result.pkl',
-                 'out/tiny_mixed/speed/result.pkl',
-                 'out/v2_mixed/speed/result.pkl']
+speed_results = [
+    'out/gatev5_mixed/speed/result.pkl',
+    'out/gatev8_mixed/speed/result.pkl',
+    'out/gatev9_mixed/speed/result.pkl',
+    'out/gatev10_mixed/speed/result.pkl',
+    'out/gatev11_mixed/speed/result.pkl',
+    'out/gatev12_mixed/speed/result.pkl',
+    'out/gatev13_mixed/speed/result.pkl',
+    'out/gatev14_mixed/speed/speed_result.pkl',
+    'out/gatev15_mixed/speed/result.pkl',
+    'out/gatev16_mixed/speed/speed_result.pkl',
+    'out/gatev17_mixed/speed/speed_result.pkl',
+    'out/gatev18_mixed/speed/speed_result.pkl',
+    'out/gatev19/speed/speed_result.pkl',
+    'out/gatev20/speed/speed_result.pkl',
+    'out/tiny_mixed/speed/result.pkl',
+    'out/v2_mixed/speed/result.pkl']
 
-legend = ['GateNet8',
+legend = ['GateNet5',
+          'GateNet8',
           'GateNet9',
           'GateNet10',
           'GateNet11',
@@ -275,6 +290,11 @@ legend = ['GateNet8',
           'GateNet18',
           'GateNet19',
           'GateNet20',
+          #     'GateNet30',
+          #     'GateNet34',
+          #     'GateNet35',
+          #     'GateNet36',
+          #     'GateNet37',
           'Tiny',
           'V2'
           ]
@@ -286,16 +306,16 @@ pr_daylight_tuning = pr_plot(files=daylight_result_files,
                              legend=legend,
                              title='Test on Daylight',
                              line_style=linestyles,
-                             y_range=(0.8, 1.0))
-#
+                             y_range=(0.85, 1.0))
+# #
 pr_basement_tuning = pr_plot(files=basement_result_files,
                              legend=legend,
                              title='Test on Basement',
                              line_style=linestyles,
-                             y_range=(0.8, 1.0))
-#
+                             y_range=(0.85, 1.0))
+# #
 ps_plot = performance_speed_plot(performance_files=daylight_result_files, speed_files=speed_results, names=legend)
-
+#
 params_speed = params_speed_plot([619529,
                                   248265,
                                   723417,
@@ -309,56 +329,56 @@ params_speed = params_speed_plot([619529,
                                   723929,
                                   542921,
                                   640073,
-                                  15867885
-                                  #                                  50676436,
+                                  # 15867885
+                                  50676436,
                                   ],
                                  speed_files=speed_results[:-1],
                                  names=legend[:-1],
                                  linestyle=linestyles
                                  )
-
-layers_speed = layers_speed_plot([6,
-                                  9,
-                                  6,
-                                  8,
-                                  7,
-                                  10,
-                                  7,
-                                  10,
-                                  4,
-                                  8,
-                                  7,
-                                  10,
-                                  8,
-                                  8,
-                                  22,
-                                  ],
-                                 speed_files=speed_results,
-                                 names=legend,
-                                 linestyle=linestyles
-
-                                 )
-pw_plot = performance_weights(performance_files=daylight_result_files[:-2],
-                              params=[619529,
-                                      248265,
-                                      723417,
-                                      613337,
-                                      285385,
-                                      174025,
-                                      285385,
-                                      36341,
-                                      244441,
-                                      687577,
-                                      723929,
-                                      542921,
-                                      640073,
-                                      # 15867885,
-                                      # 50676436,
-                                      ],
-                              names=legend)
+#
+# layers_speed = layers_speed_plot([6,
+#                                   9,
+#                                   6,
+#                                   8,
+#                                   7,
+#                                   10,
+#                                   7,
+#                                   10,
+#                                   4,
+#                                   8,
+#                                   7,
+#                                   10,
+#                                   8,
+#                                   8,
+#                                   22,
+#                                   ],
+#                                  speed_files=speed_results,
+#                                  names=legend,
+#                                  linestyle=linestyles
+#
+#                                  )
+# pw_plot = performance_weights(performance_files=daylight_result_files[:-2],
+#                               params=[619529,
+#                                       248265,
+#                                       723417,
+#                                       613337,
+#                                       285385,
+#                                       174025,
+#                                       285385,
+#                                       36341,
+#                                       244441,
+#                                       687577,
+#                                       723929,
+#                                       542921,
+#                                       640073,
+#                                       # 15867885,
+#                                       # 50676436,
+#                                       ],
+#                               names=legend)
 ps_plot.show(False)
-params_speed.show(False)
-layers_speed.show(False)
-pw_plot.show(False)
+# params_speed.show(False)
+# layers_speed.show(False)
+# pw_plot.show(False)
 pr_basement_tuning.show(False)
 pr_daylight_tuning.show(True)

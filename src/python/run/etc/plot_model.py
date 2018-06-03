@@ -1,7 +1,7 @@
 import argparse
 
 from modelzoo.backend.tensor.ModelPlot import ModelPlot
-from modelzoo.models.ModelBuilder import ModelBuilder
+from modelzoo.models.ModelFactory import ModelFactory
 from utils.workdir import cd_work
 
 cd_work()
@@ -15,6 +15,6 @@ args = parser.parse_args()
 name = args.name
 output_file = args.output_file
 
-model = ModelBuilder.build(name)
+model = ModelFactory.build(name)
 
 ModelPlot(model).save(output_file)

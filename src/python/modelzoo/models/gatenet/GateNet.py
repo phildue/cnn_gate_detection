@@ -32,7 +32,15 @@ from modelzoo.backend.tensor.gatenet.GateNetV34 import GateNetV34
 from modelzoo.backend.tensor.gatenet.GateNetV35 import GateNetV35
 from modelzoo.backend.tensor.gatenet.GateNetV36 import GateNetV36
 from modelzoo.backend.tensor.gatenet.GateNetV37 import GateNetV37
+from modelzoo.backend.tensor.gatenet.GateNetV38 import GateNetV38
+from modelzoo.backend.tensor.gatenet.GateNetV39 import GateNetV39
 from modelzoo.backend.tensor.gatenet.GateNetV4 import GateNetV4
+from modelzoo.backend.tensor.gatenet.GateNetV40 import GateNetV40
+from modelzoo.backend.tensor.gatenet.GateNetV41 import GateNetV41
+from modelzoo.backend.tensor.gatenet.GateNetV42 import GateNetV42
+from modelzoo.backend.tensor.gatenet.GateNetV43 import GateNetV43
+from modelzoo.backend.tensor.gatenet.GateNetV44 import GateNetV44
+from modelzoo.backend.tensor.gatenet.GateNetV45 import GateNetV45
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
 from modelzoo.backend.tensor.gatenet.GateNetV7 import GateNetV7
@@ -86,7 +94,14 @@ class GateNet(Predictor):
         'GateNetV35': GateNetV35,
         'GateNetV36': GateNetV36,
         'GateNetV37': GateNetV37,
-
+        'GateNetV38': GateNetV38,
+        'GateNetV39': GateNetV39,
+        'GateNetV40': GateNetV40,
+        'GateNetV41': GateNetV41,
+        'GateNetV42': GateNetV42,
+        'GateNetV43': GateNetV43,
+        'GateNetV44': GateNetV44,
+        'GateNetV45': GateNetV45,
     }
 
     @property
@@ -121,7 +136,8 @@ class GateNet(Predictor):
                                 [16.62, 10.52]])
 
         n_boxes = anchors.shape[0]
-        loss = GateDetectionLoss(grid=grid,
+        loss = GateDetectionLoss(
+            grid=grid,
                                  n_boxes=n_boxes,
                                  n_polygon=4,
                                  weight_loc=scale_coor,

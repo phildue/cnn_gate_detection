@@ -4,7 +4,7 @@ import pprint as pp
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.models.ModelBuilder import ModelBuilder
+from modelzoo.models.ModelFactory import ModelFactory
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -44,7 +44,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelBuilder.build(model_name, batch_size)
+predictor = ModelFactory.build(model_name, batch_size)
 predictor.preprocessor.augmenter = augmenter
 
 """
