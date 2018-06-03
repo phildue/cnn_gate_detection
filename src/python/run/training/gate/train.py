@@ -31,6 +31,7 @@ def learning_rate_schedule(epoch):
 
 model_src = None
 img_res = (26, 26)
+
 cd_work()
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_name", help="model name",
@@ -48,8 +49,8 @@ parser.add_argument("--initial_epoch", type=int, default=initial_epoch)
 parser.add_argument("--epochs", type=int, default=epochs)
 parser.add_argument("--learning_rate", type=float, default=learning_rate)
 parser.add_argument("--model_src", default=model_src)
-parser.add_argument("--img_width", default=img_res[1])
-parser.add_argument("--img_height", default=img_res[0])
+parser.add_argument("--img_width", default=img_res[1], type=int)
+parser.add_argument("--img_height", default=img_res[0], type=int)
 
 args = parser.parse_args()
 
