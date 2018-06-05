@@ -41,7 +41,13 @@ from modelzoo.backend.tensor.gatenet.GateNetV42 import GateNetV42
 from modelzoo.backend.tensor.gatenet.GateNetV43 import GateNetV43
 from modelzoo.backend.tensor.gatenet.GateNetV44 import GateNetV44
 from modelzoo.backend.tensor.gatenet.GateNetV45 import GateNetV45
+from modelzoo.backend.tensor.gatenet.GateNetV46 import GateNetV46
+from modelzoo.backend.tensor.gatenet.GateNetV47 import GateNetV47
+from modelzoo.backend.tensor.gatenet.GateNetV48 import GateNetV48
+from modelzoo.backend.tensor.gatenet.GateNetV49 import GateNetV49
 from modelzoo.backend.tensor.gatenet.GateNetV5 import GateNetV5
+from modelzoo.backend.tensor.gatenet.GateNetV50 import GateNetV50
+from modelzoo.backend.tensor.gatenet.GateNetV51 import GateNetV51
 from modelzoo.backend.tensor.gatenet.GateNetV6 import GateNetV6
 from modelzoo.backend.tensor.gatenet.GateNetV7 import GateNetV7
 from modelzoo.backend.tensor.gatenet.GateNetV8 import GateNetV8
@@ -102,6 +108,12 @@ class GateNet(Predictor):
         'GateNetV43': GateNetV43,
         'GateNetV44': GateNetV44,
         'GateNetV45': GateNetV45,
+        'GateNetV46': GateNetV46,
+        'GateNetV47': GateNetV47,
+        'GateNetV48': GateNetV48,
+        'GateNetV49': GateNetV49,
+        'GateNetV50': GateNetV50,
+        'GateNetV51': GateNetV51,
     }
 
     @property
