@@ -13,8 +13,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNetV45'
-work_dir = 'gatev45'
+model_name = 'GateNetV46'
+work_dir = 'gatev46'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -30,7 +30,7 @@ def learning_rate_schedule(epoch):
 
 
 model_src = None
-img_res = (26, 26)
+img_res = (104, 104)
 
 cd_work()
 parser = argparse.ArgumentParser()

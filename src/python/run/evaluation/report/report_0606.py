@@ -6,6 +6,7 @@ from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
+from matplotlib import pyplot as plt
 
 
 def avg_pr_per_image_file(src_file):
@@ -35,7 +36,7 @@ def avg_pr_file(src_file):
 
 def performance_resolution(performance_files, resolution, names):
     performances = []
-    symbols = ['x', 'o', '*']
+    symbols = ['.', 'x', 'o', '*']
     linestyle = []
     resolutions = []
     for i in range(len(performance_files)):
@@ -65,109 +66,129 @@ def performance_layers(performance_files, layers, names):
 
     return BaseMultiPlot(x_data=layers, x_label='N_Layers',
                          y_data=p, y_label='Mean Average Precision',
-                         line_style=['x', 'o', '*'],
+                         line_style=['x', 'o', '*', 'v', '<'],
                          legend=names,
-                         y_lim=(0.5, 1.0))
+                         y_lim=(0, 1.0),
+                         size=(10, 5))
 
 
-def speed_layers(n_layers, speed_files, names, linestyle=None):
-    times = []
-    performances = []
-    for i in range(len(speed_files)):
-        speed_file = speed_files[i]
-        speed_file_cont = load_file(speed_file)
-        t_pred = np.mean(speed_file_cont['results_pred'][1:])
-        print(np.std(speed_file_cont['results_pred'][1:]))
-        times.append([t_pred])
-
-        performances.append([n_layers[i]])
-
-    return BaseMultiPlot(x_data=times, x_label='Inference Time [s]',
-                         y_data=performances, y_label='Layers',
-                         line_style=linestyle,
-                         legend=names)
+def speed_width(width, speed):
+    return BasePlot(x_data=width, x_label='N_Filters',
+                    y_data=speed, y_label='Inference Time [ms]',
+                    line_style='x', title='1Layer at 128x128')
 
 
-def speed_resolution(resolution, speed_files, names, linestyle=None):
-    times = []
-    resolutions = []
-    for i in range(len(speed_files)):
-        speed_file = speed_files[i]
-        speed_file_cont = load_file(speed_file)
-        t_pred = np.mean(speed_file_cont['results_pred'][1:])
-        print(np.std(speed_file_cont['results_pred'][1:]))
-        times.append([t_pred])
-
-        resolutions.append([resolution[i][0] * resolution[i][1]])
-
-    return BaseMultiPlot(x_data=times, x_label='Inference Time [s]',
-                         y_data=resolutions, y_label='Layers',
-                         line_style=linestyle,
-                         legend=names)
+def speed_layers(layers, speed):
+    return BasePlot(x_data=layers, x_label='N_Layers',
+                    y_data=speed, y_label='Inference Time [ms]',
+                    line_style='x', title='16Kernels at 128x128')
 
 
-def speed_width():
-    pass
+def speed_resolution(resolution, speed):
+    plt.figure()
+    plt.xticks([1, 2, 3, 4, 5, 6], ['16x16', '32x32', '64x64', '128x128', '256x256', '512x512'])
+    plt.plot(resolution, speed, 'x')
+    plt.title('1Layer 32Kernels')
+    plt.ylabel('Inference Time [ms]')
+    plt.xlabel('Resolution')
+    plt.show(False)
 
 
 cd_work()
 
-performance_res = performance_resolution([
-    'out/gatev10_mixed/results/daylight--020.pkl',
-    'out/gatev37/results/set_1-020.pkl',
-    'out/gatev39/results/set_1-020.pkl',
-    'out/gatev45/results/set_1-020.pkl',
-],
-    [
-        (416, 416),
-        (104, 104),
-        (52, 52),
-        (26, 26),
+performance_lay = performance_layers(
+    [['out/v2_mixed/results/daylight--019.pkl'
+      ],
+     ['out/gatev10_mixed/results/daylight--020.pkl'
+      ],
+     [
+         'out/gatev37/results/set_1-040.pkl',
+         'out/gatev40/results/set_1-040.pkl',
+         'out/gatev41/results/set_1-040.pkl',
+         'out/gatev46/results/set_1-040.pkl',
 
-    ],
-    ['416x416',
-     '104x104',
-     '52x52',
-     '26x26']
-)
+     ],
+     [
+         'out/gatev39/results/set_1-040.pkl',
+         'out/gatev42/results/set_1-040.pkl',
+         'out/gatev43/results/set_1-040.pkl',
+         'out/gatev44/results/set_1-040.pkl',
+         'out/gatev47/results/set_1-040.pkl',
+     ],
+     [
+         'out/gatev45/results/set_1-040.pkl',
+         'out/gatev48/results/set_1-040.pkl',
+         'out/gatev49/results/set_1-040.pkl',
+         'out/gatev50/results/set_1-040.pkl',
+         'out/gatev51/results/set_1-040.pkl',
+     ]
+     ],
+    np.array([[23],
+              [9],
+              [
+                  9,
+                  7,
+                  5,
+                  3,
+              ],
+              [
+                  9,
+                  7,
+                  5,
+                  4,
+                  2
 
-performance_lay = performance_layers([[
-    'out/gatev37/results/set_1-020.pkl',
-    'out/gatev40/results/set_1-020.pkl',
-    'out/gatev41/results/set_1-020.pkl',
-],
-    [
-        'out/gatev39/results/set_1-020.pkl',
-        'out/gatev42/results/set_1-020.pkl',
-        'out/gatev43/results/set_1-020.pkl',
-        'out/gatev44/results/set_1-020.pkl',
-    ],
-    [
-        'out/gatev45/results/set_1-020.pkl',
-    ]
-],
-    np.array([[
-        9,
-        7,
-        5,
-
-    ],
-        [
-            9,
-            7,
-            5,
-            3
-
-        ],
-        [
-            9,
-        ]
-    ]),
-    ['104x104',
-     '52x52',
-     '26x26'
+              ],
+              [
+                  9,
+                  7,
+                  5,
+                  3,
+                  2
+              ]
+              ]),
+    ['YoloV2-416x416',
+     'GateNet-416x416',
+     'GateNet-104x104',
+     'GateNet-52x52',
+     'GateNet-26x26'
      ]
 )
 
-performance_res.show(False)
+speed_width([
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128
+], [27.49,
+    28.45,
+    29,
+    28.36,
+    30.3,
+    31.18,
+    32.55,
+    30.88,
+    33.41,
+    34.14,
+    35.4,
+    33.85,
+    36.5,
+    37.24,
+    38.72,
+    37.66,
+    48.44,
+    71.58,
+    118.08,
+    ]
+).show(False)
+
+speed_layers([1, 2, 4, 5, 6, 7, 8, 10],
+             [36.6, 126.52, 306.48, 396.45, 486.6, 580.43, 677.7, 856.36, ]).show(False)
+
+speed_resolution([1, 2, 3, 4, 5, 6],
+                 [1.91,
+                  7.06,
+                  26.95,
+                  99.75,
+                  390.62,
+                  1559.67
+                  ])
+
 performance_lay.show(True)

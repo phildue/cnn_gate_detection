@@ -6,7 +6,8 @@ from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 class BaseMultiPlot(BasePlot):
     def __init__(self, x_data, y_data, size=(6, 5), font_size=12, title='', line_style=None, x_label='x', y_label='y',
-                 legend=None, y_lim=None, dark=False):
+                 legend=None, y_lim=None, dark=False,x_res=23):
+        self.x_res = x_res
         self.dark = dark
         if line_style is None:
             line_style = '--' * len(y_data)
@@ -26,7 +27,10 @@ class BaseMultiPlot(BasePlot):
         hs = []
         for i in range(len(self.y_data)):
             hs += plt.plot(self.x_data[i], self.y_data[i], self.line_style[i])
-        plt.xticks(fontsize=self.font_size)
+        if self.x_res is not None:
+            plt.xticks(np.arange(self.x_res), np.arange(self.x_res),fontsize=self.font_size)
+        else:
+            plt.xticks(fontsize=self.font_size)
         plt.yticks(fontsize=self.font_size)
         plt.ylim(self.y_lim)
         plt.grid(b=True, which='both', color='0.65', linestyle='-')
