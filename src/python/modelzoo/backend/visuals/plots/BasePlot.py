@@ -19,11 +19,11 @@ class BasePlot(PyPlot):
         self.create_fig()
         plt.show(block=block)
 
-    def save(self, filename: str = None):
+    def save(self, filename: str = None, transparent=False):
         filename = './' + self.title + '.png' if filename is None else filename
         plt.figure(figsize=self.size)
         self.create_fig()
-        plt.savefig(filename)
+        plt.savefig(filename, transparent=transparent)
 
     def create_fig(self):
         plt.title(self.title)

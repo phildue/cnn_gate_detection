@@ -1,0 +1,25 @@
+Speed:
+Compare performance of different elements
+depthwise seperable convolutions
+shufflenet
+wide residual networks
+find parameter dependencies
+
+Performance:
+resolution? --> seems even in the low res image is enough information to get a rough estimate of the gate
+depth?
+width?
+
+
+if effect of resolution high
+    --> cropping
+else
+    --> coarse to fine
+
+attention model that randomly samples and predicts bounding box for further investigation.
+
+region proposal model with memory to propose region for the next frame
+loss function should favor larger boxes than smaller, fix aspect ratio just predict scale,
+scale could be trigger for specialized network
+region proposal network could exploit motion blur and the like
+refine network only would have to look for corners.

@@ -1,4 +1,3 @@
-from modelzoo.backend.tensor.simple_tf import simple_tf
 from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 

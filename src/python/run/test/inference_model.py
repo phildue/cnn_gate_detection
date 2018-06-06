@@ -1,7 +1,7 @@
 from keras import Model
 
 from modelzoo.backend.tensor.gatenet.PostprocessLayer import PostprocessLayer
-from modelzoo.models.ModelBuilder import ModelBuilder
+from modelzoo.models.ModelFactory import ModelFactory
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
@@ -9,7 +9,7 @@ from utils.imageprocessing.Imageprocessing import show
 from utils.workdir import cd_work
 
 cd_work()
-model = ModelBuilder.build('gatev10', src_dir='out/gatev10_mixed/')
+model = ModelFactory.build('gatev10', src_dir='out/gatev10_mixed/')
 
 keras_model = model.net.backend
 out = keras_model.layers[-1].output

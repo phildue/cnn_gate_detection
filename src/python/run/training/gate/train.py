@@ -4,7 +4,7 @@ import pprint as pp
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.models.ModelBuilder import ModelBuilder
+from modelzoo.models.ModelFactory import ModelFactory
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -13,14 +13,24 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNetV34'
-work_dir = 'atrous_merge_test'
+model_name = 'GateNetV45'
+work_dir = 'gatev45'
 batch_size = 4
 n_samples = None
 epochs = 100
 initial_epoch = 0
 learning_rate = 0.001
+
+
+def learning_rate_schedule(epoch):
+    if epoch > 50:
+        return 0.0001
+    else:
+        return 0.001
+
+
 model_src = None
+img_res = (26, 26)
 
 cd_work()
 parser = argparse.ArgumentParser()
@@ -39,7 +49,8 @@ parser.add_argument("--initial_epoch", type=int, default=initial_epoch)
 parser.add_argument("--epochs", type=int, default=epochs)
 parser.add_argument("--learning_rate", type=float, default=learning_rate)
 parser.add_argument("--model_src", default=model_src)
-
+parser.add_argument("--img_width", default=img_res[1], type=int)
+parser.add_argument("--img_height", default=img_res[0], type=int)
 
 args = parser.parse_args()
 
@@ -54,6 +65,7 @@ epochs = args.epochs
 image_source = [args.image_source]
 test_image_source_1 = [args.test_image_source_1]
 test_image_source_2 = [args.test_image_source_2]
+img_res = args.img_height, args.img_width
 
 """
 Model
@@ -62,7 +74,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelBuilder.build(model_name, batch_size, src_dir=model_src)
+predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res)
 predictor.preprocessor.augmenter = augmenter
 
 """
@@ -123,6 +135,7 @@ training = Training(predictor, train_gen,
                     patience_lr_reduce=10,
                     log_dir=result_path,
                     stop_on_nan=True,
+                    lr_schedule=learning_rate_schedule,
                     initial_epoch=initial_epoch,
                     epochs=epochs,
                     log_csv=True,
@@ -135,5 +148,3 @@ save_file(training.summary, 'summary.txt', result_path, verbose=False)
 predictor.net.backend.summary()
 
 training.fit_generator()
-
-

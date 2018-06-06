@@ -1,7 +1,7 @@
 import argparse
 
 from modelzoo.evaluation.SpeedEvaluator import SpeedEvaluator
-from modelzoo.models.ModelBuilder import ModelBuilder
+from modelzoo.models.ModelFactory import ModelFactory
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import cd_work
@@ -35,7 +35,7 @@ n_batches = args.n_batches if args.n_batches is not None else int(generator.n_sa
 """
 Model config
 """
-model = ModelBuilder.build(args.model, args.batch_size)
+model = ModelFactory.build(args.model, args.batch_size)
 """
 Evaluator
 """
