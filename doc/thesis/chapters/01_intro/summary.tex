@@ -2,29 +2,20 @@
 \addcontentsline{toc}{chapter}{Summary}
 \setheader{Summary}
 
-Recent developments in embedded systems and artificial intelligence enable micro air vehicles (MAVs) to act more and more autonomously. In the near future autonomous air vehicles will be used in many applications such as automated warehouses, package delivery or even search and rescue scenarios.
+Object detection has been an intensively studied area within computer vision. The determination of what kind of objects we see where in an image is an everyday human task, that machines still have a hard time at solving.
 
-An important part to enable such technologies is an accurate estimation of the MAVs state and its environment. Due to its low weight, power consumption and robustness against noise (?) the most reliable sensor is often a camera. 
+In recent years deep learning based object detectors have been pushing state of the art results tremendously after a long time of almost no improvements. The reason anticipated to be responsible for the strong performance boost is partly the flexibility of the model but mostly the fact that the whole detection pipeline can be integrated into one model and trained end-to-end.
 
-However, this requires fast and accurate vision algorithms that interpret the obtained multidimensional signal. Research on such algorithms gave rise to autonomous drone races, where researchers have the opportunity to evaluate their methods in a competitive environment. The most advanced example of such races takes place at the IROS conference, where MAVs have to complete a race court consisting of several colored metal gates.
+The hereby used convolutional neural networks are designed in such a way that lower order layers look at small regions of the image and determine the presence of simple shapes like edges corners and blobs. Higher order layers look at the activations of the lower order stages and combine the responses to more complex shapes reaching from object parts to whole objects.
 
-Other methods like SLAM, Visual Odometry suffer from this this and that. A very efficient method is the method from last year. However its pretty subjective against noise.
+Hence, the power of deep learning based object detection arises from the complexity of real-world objects that can be efficiently represented by convolutional neural networks using a tremendous amount of parameters. The advances in new computer architectures and GPU technology and the availability of huge datasets due to the rise of the internet allowed the efficient training of these huge models.
 
-Learning based, in particular deep learning based methods came to success in the last years within the computer vision community[The unreasonable effectiveness of deep features]. However, their high computational requirements pose a serious limitation to mobile/embedded devices. E.g. all the published systems participating in the autonomous drone race either rely on a very simple method or use strong hardware components [SSD, method of last year]. This limits the size and weight of the drone and thus their capability of flying aggressive and fast manoeuvres. Additionally, they require large amount of annotated data to perform well.
+However, there are applications where each of the above is only available to a certain extent. For example mobile phones, robots and micro-air vehicles need to exploit their resources efficiently. Firstly because saving energy allows for a longer lifetime, secondly because these systems usually have real-time constraints that can't be met when the used algorithms are too slow.
 
-The shape of the gate poses particular problem for object detection[Wire Paper]. As it consists of relatively simple shapes and most of its area is covered by background a learning based method will easily overfit to the background if not sufficient variation of backgrounds in the training data is provided. This makes the generation of annotated samples quite expensive. Hence, the amount of publicly available data is limited. 
+Furthermore, there are objects that don't consists of complex shapes or patterns but are built from very simple geometry. Examples for these object which we refer to as "wire frame objects" are antennas, wires, fences, cages and the like. 
 
-Also the abstraction of the object that a model can learn is limited. CNNs base on the assumption that lower order features like edges and corners combine to higher level features [Paper that visualizes feature maps]. We show the limitations of deep features when used on such simple shaped objects that are largely occupied by background. <Show performance vs maximal angle of gate>.
+This thesis studies object detection in an extrem example of the aforementioned case: Gate Detection at the IROS 2018 Autonomous Drone Race. Within this race court several coloured metal gates are placed and need to be passed one after another as fast as possible. Hence, the more lightweight the algorithm can be executed, the less computational resources are required the lighter the MAV can be build and the more aggressive manoeuvres can be flown. On the other hand if the method is too inaccurate, the drone misses a gate and is likely to loose the race or even crash.
 
-We show how by exploiting the particularity of the object a deep learning model can be reduced by factor XX while maintaining accuracy. <Show comparison between yolo/ssd and gatenet>,<Show how the method does not perform well on other objects>
-
-if network runs fast enough on jevois:
-	We show how due to the simplicity of the object and the fact that its rigid a small network can learn to estimate its pose. <Predict 3d position of gate>
-else :
-	We show how with further optimization [MobileNet, ...] such a method can be used as perception network for autonomous drone racing/aggressive flight manoeuvres, even on small and lightweight drones.
-
-We show the importance of context information when training such a method. <Compare results of simulator training with random backgrounds>
-
-
+From the application on MAV's further issues arise: MAV-specific camera properties like lense distortion or blur due to motion leads to images with drone specific noise. ..
 
 
