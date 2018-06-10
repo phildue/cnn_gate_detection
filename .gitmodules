@@ -10,3 +10,6 @@
 [submodule "lib/gatenet-jevois"]
 	path = lib/gatenet-jevois
 	url = https://github.com/phildue/gatenet-jevois
+[submodule "doc/lib/darknet"]
+	path = doc/lib/darknet
+	url = https://github.com/pjreddie/darknet.git
