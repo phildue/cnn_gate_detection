@@ -15,14 +15,9 @@ import math
 
 net = {'conv1': [6, 1, 1],
        'pool1': [2, 2, 0],
-       'conv2': [12, 1, 1],
+       'conv2': [6, 1, 1],
        'pool2': [2, 2, 0],
-       'conv3': [12, 1, 1],
-       'pool3': [2, 2, 0],
-       'conv4': [12, 1, 1],
-       'pool4': [2, 2, 0],
-       'conv5': [15, 1, 1],
-       'pool5': [2, 2, 0],
+       'conv3': [6, 1, 1],
        # 'conv7': [6, 1, 1],
        # 'conv8': [3, 1, 1],
        # 'conv9': [3, 1, 1],
@@ -31,7 +26,7 @@ net = {'conv1': [6, 1, 1],
 layers = list(net.values())
 layer_names = list(net.keys())
 
-imsize = 416
+imsize = 52
 
 
 def outFromIn(conv, layerIn):

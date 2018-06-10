@@ -9,7 +9,7 @@ from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Pose import Pose
 
 LEGEND_BOX = 0
-LEGEND_CORNERS = 1
+LEGEND_CORNERS = -1
 LEGEND_TEXT = 2
 LEGEND_POSITION = 3
 
@@ -64,8 +64,9 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
             if legend >= LEGEND_CORNERS:
                 img_ann = draw_gate_corners(img_ann, obj)
             if legend >= LEGEND_POSITION:
-                img_ann = annotate_position(img_ann, obj.pose, obj.x_min, obj.y_max + 5, color)
-        if isinstance(obj, ObjectLabel):
+                if obj.pose:
+                    img_ann = annotate_position(img_ann, obj.pose, obj.x_min, obj.y_max + 5, color)
+        if isinstance(obj, ObjectLabel) and legend >= LEGEND_BOX:
             if thickness is None:
                 thickness_obj = int(np.ceil(confidence * 4))
             else:

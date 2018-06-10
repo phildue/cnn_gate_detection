@@ -77,7 +77,8 @@ class XmlParser(AbstractDatasetParser):
         top_right = tuple([int(e) for e in gate_corners_xml.find('top_right').text.split(',')])
         bottom_left = tuple([int(e) for e in gate_corners_xml.find('bottom_left').text.split(',')])
         bottom_right = tuple([int(e) for e in gate_corners_xml.find('bottom_right').text.split(',')])
-        center = tuple([int(e) for e in gate_corners_xml.find('center').text.split(',')])
+        center = (np.array(bottom_left) + np.array(top_right))/2
+
         gate_corners = GateCorners(center=center, top_left=top_left, top_right=top_right,
                                    bottom_left=bottom_left, bottom_right=bottom_right)
         return gate_corners

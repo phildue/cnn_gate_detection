@@ -45,6 +45,15 @@ class ObjectLabel:
         return np.abs(self.y_max - self.y_min)
 
     @property
+    def cx(self):
+        return self.x_min + np.abs(self.x_max-self.x_min)
+
+    @property
+    def cy(self):
+        return self.y_min + np.abs(self.y_max-self.y_min)
+
+
+    @property
     def area(self):
         return self.width * self.height
 

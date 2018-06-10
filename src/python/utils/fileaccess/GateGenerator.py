@@ -55,12 +55,12 @@ class GateGenerator(DatasetGenerator):
         return self.__n_samples
 
     def generate(self):
-        return self.__generate(self.train_files)
+        return self._generate(self.train_files)
 
     def generate_valid(self):
-        return self.__generate(self.test_files)
+        return self._generate(self.test_files)
 
-    def __generate(self, files):
+    def _generate(self, files):
         current_batch = []
         files_it = iter(files)
         if not files:

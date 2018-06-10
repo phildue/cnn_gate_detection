@@ -1,5 +1,6 @@
 from utils.fileaccess.labelparser.PklParser import PklParser
 from utils.fileaccess.labelparser.XmlParser import XmlParser
+from utils.fileaccess.labelparser.YoloParser import YoloParser
 
 
 class DatasetParser:
@@ -13,6 +14,8 @@ class DatasetParser:
             return TfRecordParser(directory, color_format, start_idx, image_format)
         elif label_format is 'pkl':
             return PklParser(directory, color_format, start_idx, image_format)
+        elif label_format is 'yolo':
+            return YoloParser(directory, color_format, start_idx, image_format)
         else:
             print("Label format not known!!")
 
@@ -25,5 +28,7 @@ class DatasetParser:
             return TfRecordParser.read_label(filepath)
         elif label_format is 'pkl':
             return PklParser.read_label(filepath)
+        elif label_format is 'yolo':
+            return YoloParser.read_label(filepath)
         else:
             print("Label format not known!!")

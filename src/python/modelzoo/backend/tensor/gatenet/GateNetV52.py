@@ -59,7 +59,7 @@ class GateNetV43(Net):
                         'decay': 0.0005}
 
         w, h = img_shape
-        # like gatev10 but on 52x52 - 4 layers
+        # like gatev10 but on 52x52 - 5 layers
         input = Input((w, h, 3))
         conv1 = Conv2D(16, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
@@ -71,16 +71,8 @@ class GateNetV43(Net):
         act2 = LeakyReLU(alpha=0.1)(norm2)
         pool2 = MaxPooling2D((2, 2))(act2)
         # 13
-        conv3 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool2)
-        norm3 = BatchNormalization()(conv3)
-        act3 = LeakyReLU(alpha=0.1)(norm3)
-
-        conv4 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(act3)
-        norm4 = BatchNormalization()(conv4)
-        act4 = LeakyReLU(alpha=0.1)(norm4)
-
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            act4)
+            pool2)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
         out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 

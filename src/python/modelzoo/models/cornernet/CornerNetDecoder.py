@@ -15,14 +15,14 @@ class CornerNetDecoder(Decoder):
         top_right = netout_dec[1]
         bottom_left = netout_dec[2]
         bottom_right = netout_dec[3]
-        center = top_right + bottom_left / 2
+        center = (bottom_left + top_right)/2
         corners = GateCorners(center=center,
                               top_left=top_left,
                               top_right=top_right,
                               bottom_left=bottom_left,
                               bottom_right=bottom_right)
 
-        return ImgLabel(GateLabel(gate_corners=corners))
+        return ImgLabel([GateLabel(gate_corners=corners)])
 
     def decode_netout_to_boxes(self, netout) -> [BoundingBox]:
         pass

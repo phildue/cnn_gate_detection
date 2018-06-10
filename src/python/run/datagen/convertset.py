@@ -8,8 +8,8 @@ reader = DatasetParser.get_parser('resource/ext/samples/industrial_new_test/',
                                   color_format='bgr',
                                   image_format='jpg'
                                   )
-writer = DatasetParser.get_parser('resource/ext/samples/industrial_new_test/',
-                                  label_format='tf_record',
+writer = DatasetParser.get_parser('resource/ext/samples/industrial_yolo/',
+                                  label_format='yolo',
                                   color_format='bgr')
-images, labels = reader.read(500)
-writer.write(images, labels, 'industrial_valid.record')
+images, labels = reader.read(100)
+writer.write(images, labels)

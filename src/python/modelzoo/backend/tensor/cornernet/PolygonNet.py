@@ -1,19 +1,18 @@
 from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Reshape, Lambda, Dense
+from keras.optimizers import Adam
 from object_detection.core.losses import Loss
 
 from modelzoo.models.Net import Net
 
 
-class CornerNet(Net):
+class PolygonNet(Net):
 
     def __init__(self, loss: Loss,
-                 anchors,
                  img_shape=(64, 64),
                  weight_file=None, n_polygon=4):
         self.loss = loss
         self.norm = img_shape
-        self.anchors = anchors
         self._params = {'optimizer': 'adam',
                         'lr': 0.001,
                         'beta_1': 0.9,

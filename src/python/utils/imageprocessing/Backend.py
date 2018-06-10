@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from PIL.Image import frombytes, FLIP_TOP_BOTTOM
 from utils.imageprocessing.Image import Image
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.utils import resize_label
@@ -203,6 +204,7 @@ COLOR_RGBA2BGR = cv2.COLOR_RGBA2BGR
 COLOR_BGR2RGB = cv2.COLOR_BGR2RGB
 COLOR_RGB2BGR = cv2.COLOR_RGB2BGR
 
+
 def convert_color(img: Image, code):
     img_array = cv2.cvtColor(img.array, code)
     if code is COLOR_BGR2GRAY:
@@ -279,11 +281,11 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
     y_max_cv, y_min_cv = img.shape[0] - min_xy[1], img.shape[0] - max_xy[1]
 
     img_crop = Image(img.array[y_min_cv:y_max_cv, x_min:x_max], img.format)
-    label_crop = copy.deepcopy(label)
+    label_crop = label.copy()
 
-    if label is not None:
+    if label_crop is not None:
         objs_crop = []
-        for obj in label.objects:
+        for obj in label_crop.objects:
             delta_x = x_min
             obj.x_min -= delta_x
             obj.x_max -= delta_x
@@ -295,6 +297,11 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             obj.x_max = min(img_crop.shape[1], obj.x_max)
             obj.y_min = max(0, obj.y_min)
             obj.y_max = min(img_crop.shape[0], obj.y_max)
+
+            if isinstance(obj, GateLabel):
+                corners = obj.gate_corners.as_mat
+                corners -= np.array([x_min, y_min])
+                obj.gate_corners = GateCorners.from_mat(corners)
 
             if obj.area >= 20:
                 objs_crop.append(obj)
