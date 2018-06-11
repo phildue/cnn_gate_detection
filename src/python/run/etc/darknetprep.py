@@ -2,8 +2,10 @@ import random
 
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
+from utils.fileaccess.labelparser.YoloParser import YoloParser
 from utils.fileaccess.utils import save_file, create_dirs
 from utils.imageprocessing.Imageprocessing import show
+from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
@@ -17,14 +19,15 @@ reader = GateGenerator(['resource/ext/samples/daylight/'], batch_size, color_for
                        img_format='jpg',
                        start_idx=0, valid_frac=0).generate()
 
-writer = DatasetParser.get_parser(out_dir,
-                                  label_format='yolo',
-                                  color_format='bgr')
-# for i in range(0, n_images, batch_size):
-#     batch = next(reader)
-#     imgs = [b[0] for b in batch]
-#     labels = [b[1] for b in batch]
-#     writer.write(imgs, labels)
+writer = YoloParser(out_dir, color_format='bgr', image_format='jpg', img_norm=(416, 416))
+
+for i in range(0, n_images, batch_size):
+    tic()
+    batch = next(reader)
+    imgs = [b[0] for b in batch]
+    labels = [b[1] for b in batch]
+    writer.write(imgs, labels)
+    toc('Batch processed in ')
 
 darknet_rel = '../../'
 indeces = [i for i in range(n_images)]

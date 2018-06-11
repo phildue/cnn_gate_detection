@@ -46,11 +46,11 @@ class ObjectLabel:
 
     @property
     def cx(self):
-        return self.x_min + np.abs(self.x_max-self.x_min)
+        return self.x_min + np.abs(self.x_max - self.x_min) / 2
 
     @property
     def cy(self):
-        return self.y_min + np.abs(self.y_max-self.y_min)
+        return self.y_min + np.abs(self.y_max - self.y_min) / 2
 
 
     @property
