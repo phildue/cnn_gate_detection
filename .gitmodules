@@ -13,3 +13,6 @@
 [submodule "doc/lib/darknet"]
 	path = doc/lib/darknet
 	url = https://github.com/pjreddie/darknet.git
+[submodule "lib/darknet"]
+	path = lib/darknet
+	url = https://github.com/pjreddie/darknet
