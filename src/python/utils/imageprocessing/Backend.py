@@ -280,7 +280,7 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
 
     y_max_cv, y_min_cv = img.shape[0] - min_xy[1], img.shape[0] - max_xy[1]
 
-    img_crop = Image(img.array[y_min_cv:y_max_cv, x_min:x_max], img.format)
+    img_crop = Image(img.array[y_min_cv:y_max_cv, x_min:x_max].copy(), img.format)
     label_crop = label.copy()
 
     if label_crop is not None:

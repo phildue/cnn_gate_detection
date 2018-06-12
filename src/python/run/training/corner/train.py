@@ -4,14 +4,10 @@ import pprint as pp
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.cornernet.CornerNet import CornerNet
+from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomShift import RandomShift
-from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
 model_name = 'GateNetV46'
@@ -78,19 +74,19 @@ predictor = CornerNet((64, 64), 4)
 Datasets
 """
 
-train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
-                          color_format='bgr', label_format='xml', n_samples=n_samples)
-test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                           label_format='xml')
-test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                           label_format='xml')
+train_gen = CropGenerator(GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+                          color_format='bgr', label_format='xml', n_samples=n_samples))
+# test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
+#                            label_format='xml')
+# test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
+#                           label_format='xml')
 
 """
 Paths
 """
 result_path = 'out/' + work_dir + '/'
-test_result_1 = result_path + 'results/set_1-'
-test_result_2 = result_path + 'results/set_2--'
+#test_result_1 = result_path + 'results/set_1-'
+#test_result_2 = result_path + 'results/set_2--'
 
 create_dirs([result_path, result_path + '/results/'])
 
@@ -105,12 +101,12 @@ params = {'optimizer': 'adam',
           'decay': 0.0005}
 
 
-def average_precision(y_true, y_pred):
-    return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-                                   norm=predictor.norm).compute(y_true, y_pred)
+#def average_precision(y_true, y_pred):
+#    return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+#                                   norm=predictor.norm).compute(y_true, y_pred)
 
 
-predictor.compile(params=params, metrics=[average_precision])
+predictor.compile(params=params)
 
 """
 Training Config

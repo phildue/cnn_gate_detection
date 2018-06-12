@@ -21,19 +21,21 @@ class CropGenerator(DatasetGenerator):
             for img, label, file in batch:
                 areas = np.array([obj.area for obj in label.objects])
                 filtered_objs = []
-                for i in range(self.top_crops):
-                    filtered_objs.append(label.objects[np.argmax(areas)])
+                if len(areas) > 0:
+                    for i in range(self.top_crops):
+                        filtered_objs.append(label.objects[np.argmax(areas)])
 
                 for obj in filtered_objs:
-                    crop_min = (obj.x_min, obj.y_min)
-                    crop_max = (obj.x_max, obj.y_max)
+                    crop_min = (obj.x_min-10, obj.y_min-10)
+                    crop_max = (obj.x_max+10, obj.y_max+10)
                     img_crop, label_crop = crop(img, crop_min, crop_max, label)
-                    batch_filtered.append((img_crop, label_crop, file))
+                    if img_crop.array.size > 0:
+                        batch_filtered.append((img_crop, label_crop, file))
 
                 if len(batch_filtered) >= self.batch_size:
                     yield batch_filtered
-                    del batch_filtered
-                    batch_filtered = []
+                    #del batch_filtered
+                    #batch_filtered = []
 
     def generate_valid(self):
         it = iter(self.gate_generator.generate_valid())

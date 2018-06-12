@@ -15,7 +15,7 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
 model_name = 'GateNetSingle'
-work_dir = 'gatevSingle'
+work_dir = 'gate_single'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -39,7 +39,7 @@ parser.add_argument("--model_name", help="model name",
                     type=str, default=model_name)
 parser.add_argument("--work_dir", help="Working directory", type=str, default=work_dir)
 parser.add_argument("--image_source", help="List of folders to be scanned for train images", type=str,
-                    default="resource/ext/samples/mixed_rooms/")
+                    default="resource/ext/samples/daylight/")
 parser.add_argument("--test_image_source_1", help="List of folders to be scanned for test images", type=str,
                     default='resource/ext/samples/industrial_new_test/')
 parser.add_argument("--test_image_source_2", help="List of folders to be scanned for test images", type=str,
@@ -72,8 +72,7 @@ img_res = args.img_height, args.img_width
 Model
 """
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                            (0.5, TransformFlip()),
-                            (0.2, RandomShift(-.3, .3))])
+                            (0.5, TransformFlip())])
 
 predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res, grid=(1, 1))
 predictor.preprocessor.augmenter = augmenter
