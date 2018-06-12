@@ -35,6 +35,7 @@ class Preprocessor:
                 img, label = self.augmenter.transform(img, label)
 
             img, label = resize(img, (self.img_height, self.img_width), label=label)
+            #
             # show(img.bgr, t=1)
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)

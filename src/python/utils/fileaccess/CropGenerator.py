@@ -34,8 +34,8 @@ class CropGenerator(DatasetGenerator):
 
                 if len(batch_filtered) >= self.batch_size:
                     yield batch_filtered
-                    #del batch_filtered
-                    #batch_filtered = []
+                    del batch_filtered
+                    batch_filtered = []
 
     def generate_valid(self):
         it = iter(self.gate_generator.generate_valid())

@@ -1,29 +1,25 @@
+from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
 from utils.labels.ImgLabel import ImgLabel
-from utils.workdir import work_dir
 from utils.fileaccess.utils import load_file
+from utils.workdir import cd_work
 import numpy as np
 
-work_dir()
+cd_work()
 
-cluster_centers = load_file('kmeans_clusters_bebop.pkl')[3].cluster_centers_
-print(cluster_centers)
+# cluster_centers = load_file('kmeans_clusters_bebop.pkl')[3].cluster_centers_
+# print(cluster_centers)
 # cluster_centers = np.array([[0.07702505, 0.18822592],
 #                             [0.35083306, 0.46027088],
 #                             [0.47501832, 0.82105769],
 #                             [0.19683103, 0.26281582],
 #                             [0.10340291, 0.42767551]])
-n_boxes = cluster_centers.shape[0]
-predictor = Yolo.tiny_yolo(norm=(160, 315),
-                           grid=(5, 9),
-                           class_names=['gate'],
-                           batch_size=1,
-                           color_format='bgr',
-                           anchors=cluster_centers)
-
+# n_boxes = cluster_centers.shape[0]
+predictor = GateNet.create('GateNetSingle', grid=(1, 1),norm=(52,52))
+n_boxes = 5
 
 # we mimick the last layer
 def sigmoid(x):
