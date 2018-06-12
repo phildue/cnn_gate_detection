@@ -2,10 +2,10 @@ from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 
 
-class ModelBuilder:
+class ModelFactory:
 
     @staticmethod
-    def build(name, batch_size=8, src_dir=None):
+    def build(name, batch_size=8, src_dir=None, img_res=(416, 416), grid=(13, 13)):
 
         if src_dir is not None:
             weight_file = src_dir + 'model.h5'
@@ -13,13 +13,13 @@ class ModelBuilder:
             weight_file = None
 
         if name == "tiny_yolo":
-            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file)
+            model = Yolo.tiny_yolo(batch_size=batch_size, weight_file=weight_file, norm=img_res)
         elif name == "yolo":
-            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file)
+            model = Yolo.yolo_v2(batch_size=batch_size, weight_file=weight_file, norm=img_res)
         elif name == "thin_yolo":
-            model = Yolo.thin_yolo(batch_size=batch_size, weight_file=weight_file)
+            model = Yolo.thin_yolo(batch_size=batch_size, weight_file=weight_file, norm=img_res)
         elif 'Gate' in name:
-            model = GateNet.create(name, batch_size=batch_size, weight_file=weight_file)
+            model = GateNet.create(name, batch_size=batch_size, weight_file=weight_file, norm=img_res, grid=grid)
         elif name == 'test':
             model = simple_tf()
         else:
