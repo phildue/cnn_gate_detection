@@ -1,35 +1,37 @@
 \section{Learning with Limited Data}
 \label{sec:bg:training}
 
-As illustrated in the introduction the amount of training data is limited. This is critical for the performance of machine learning methods as they heavily depend on the available training data.
+%As illustrated in the introduction the amount of training data is limited. This is critical for the performance of machine learning methods as they heavily depend on the available training data.
 
-Limited data can happen in multiple ways:
-\begin{enumerate}
-	\item The amount of data is too small thus the parameters can not be tuned effectively. Subsequently the model underfits or overfits the training data.
-	
-	\item The captured variety in the data set is limited. If the labeled examples do not sufficiently represent the objects in the real world, the model will fail in the wild.
-	
-	\item There is a domain shift between the training data and the test data.
-\end{enumerate}
+\todo{Explain relation between training data and test data. Why do we use synthetic data? Explain domain shift.}
 
+%Limited data can happen in multiple ways:
+%\begin{enumerate}
+%	\item The amount of data is too small thus the parameters can not be tuned effectively. Subsequently the model underfits or overfits the training data.
+%	
+%	\item The captured variety in the data set is limited. If the labeled examples do not sufficiently represent the objects in the real world, the model will fail in the wild.
+%	
+%	\item There is a domain shift between the training data and the test data.
+%\end{enumerate}
 
-\section{Summaries}
-\subsection{Modeling Camera Effects to Improve Deep Vision for Real and Synthetic Data\cite{Carlson2018}}
-\begin{itemize}
-	\item heaps of references in how camera properties influence object detectors
-	\item introduces image augmentation pipeline based on physical model: chromatic aberration, blur, exposure, noise and color shift
-	\item input parameters are modelled by hand, then randomly selected within "realistic" range
-	\item no lense distortion
-	\item method seem to benefit for small objects and when oversaturation applies due to camera effects
-\end{itemize}
-\subsection{Domain Randomization\cite{Tremblay2018a}}
-\begin{itemize}
-	\item uses ue4 engine with custom plugin
-	\item model is supposed to learn independent of domain
-	\item textures are randomly applied
-	\item object models are randomly selected
-	\item approach cant capture patterns like how cars are parked (similar could happend when randomly placing the gates)
-	\item Tuning lower layers on simulated data fine tuning on real data
-	\item Effects of DR-parameters: light augmentation 0.1\%, light placement 10, \% texture 4\%, data augmentation 1.6\%, flying distractors 1.1 \%
-	\item pretraining on imagenet helps a lot, freezing weights when training on synthetic data does not help
-\end{itemize}
+%
+%\section{Summaries}
+%\subsection{Modeling Camera Effects to Improve Deep Vision for Real and Synthetic Data\cite{Carlson2018}}
+%\begin{itemize}
+%	\item heaps of references in how camera properties influence object detectors
+%	\item introduces image augmentation pipeline based on physical model: chromatic aberration, blur, exposure, noise and color shift
+%	\item input parameters are modelled by hand, then randomly selected within "realistic" range
+%	\item no lense distortion
+%	\item method seem to benefit for small objects and when oversaturation applies due to camera effects
+%\end{itemize}
+%\subsection{Domain Randomization\cite{Tremblay2018a}}
+%\begin{itemize}
+%	\item uses ue4 engine with custom plugin
+%	\item model is supposed to learn independent of domain
+%	\item textures are randomly applied
+%	\item object models are randomly selected
+%	\item approach cant capture patterns like how cars are parked (similar could happend when randomly placing the gates)
+%	\item Tuning lower layers on simulated data fine tuning on real data
+%	\item Effects of DR-parameters: light augmentation 0.1\%, light placement 10, \% texture 4\%, data augmentation 1.6\%, flying distractors 1.1 \%
+%	\item pretraining on imagenet helps a lot, freezing weights when training on synthetic data does not help
+%\end{itemize}

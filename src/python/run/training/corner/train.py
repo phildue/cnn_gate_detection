@@ -5,6 +5,7 @@ from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelFactory import ModelFactory
+from modelzoo.models.cornernet.CornerNet import CornerNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -70,12 +71,8 @@ img_res = args.img_height, args.img_width
 """
 Model
 """
-augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                            (0.5, TransformFlip()),
-                            (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res)
-predictor.preprocessor.augmenter = augmenter
+predictor = CornerNet((64, 64), 4)
 
 """
 Datasets

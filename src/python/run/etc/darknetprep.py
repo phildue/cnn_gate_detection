@@ -27,7 +27,7 @@ for i in range(0, n_images, batch_size):
     imgs = [b[0] for b in batch]
     labels = [b[1] for b in batch]
     writer.write(imgs, labels)
-    toc('Batch processed in ')
+    toc('Batch ' + str(i) + ' processed in ')
 
 darknet_rel = '../../'
 indeces = [i for i in range(n_images)]

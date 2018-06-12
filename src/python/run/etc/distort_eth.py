@@ -9,7 +9,7 @@ from utils.workdir import cd_work
 image_source = ['resource/samples/video/eth']
 cd_work()
 generator = GateGenerator(directories=image_source, batch_size=150, img_format='jpg',
-                          shuffle=False, color_format='bgr', label_format='pkl',start_idx=0)
+                          shuffle=False, color_format='bgr', label_format='pkl', start_idx=0)
 
 
 batch = next(iter(generator.generate()))
