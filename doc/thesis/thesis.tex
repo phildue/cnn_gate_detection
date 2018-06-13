@@ -10,8 +10,9 @@
 \usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{amsmath} % Required for some math elements 
 \usepackage{hyperref}
-
+\usepackage{parskip}
 \usepackage{todonotes}
+\linespread{1.15}
 \newcommand{\todoref}[1]{\todo[backgroundcolor=blue!20!white]{#1}}
 \begin{document}
 \setlength{\marginparwidth}{2cm}
@@ -19,29 +20,31 @@
 %% contents.
 \frontmatter
 
-\title[Detection of Featureless Objects]{Efficient Gate Detection for Autonomous Drone Racing}
+\title[]{Efficient Detection of Wire Frame Objects on Micro-Air Vehicles}
 \author{P.\ Duernay}
 \affiliation{Delft University of Technology}
 %\coverimage{cover.jpg}
 %\makecover
 
 %% Include an optional title page.
-\input{chapters/01_intro/title}
+\input{chapters/title}
 
-\input{chapters/01_intro/preface}
+\input{chapters/preface}
 
 \tableofcontents
 
 %% Use Arabic numerals for the page numbers of the chapters.
 \mainmatter
 
-\input{chapters/01_intro/summary}
-\input{chapters/01_intro/glossary}
-\input{chapters/01_intro/intro}
-\input{chapters/02_background/00_background}
-\input{chapters/03_method/00_method}
-\input{chapters/04_evaluation/00_evaluation}
-\input{chapters/05_discussion/00_discussion}
+\input{chapters/summary}
+\input{chapters/glossary}
+\input{chapters/intro}
+\input{chapters/evaluation}
+\input{chapters/training}
+\input{chapters/object_detection}
+\input{chapters/optimization}
+\input{chapters/method}
+\input{chapters/discussion}
 %% Use letters for the chapter numbers of the appendices.
 \appendix
 

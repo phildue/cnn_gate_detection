@@ -1,17 +1,25 @@
-	\section{Object Detection}
-	\label{sec:bg:object_detection}
+	\chapter{Object Detection}
+	\label{sec:object_detection}
+	
+	\begin{center}
+		\textbf{ How can a detection model represent wire frame objects?}
+	\end{center}
+
+	
+	\section{Background}
+	
 	Object Detection is a well studied topic since the very beginning of computer vision. It can be separated in two individual problems which are Classification: Which object does the image/ a patch of the image contain? and Localization: Where in the image is the object?.
 	
 	\todo{Illustrate high level description of object detection: feature extraction + localization/ classification}
 	Existing methods can broadly be grouped in three categories. These are described in the following:
 
-	\subsubsection{Shallow Methods}
+	\subsection{Shallow Methods}
 	
 	Usually filters are handcrafted or learned separately. Their response is fed into a classifier. The detector pipeline is applied on the image in sliding window fashion. The results are filtered by a final non-maximum suppression stage. 
 
 	Popular features are haar-features \cite{Viola2004} and the Histogram of Gradients\cite{Forsyth}. These methods give good results as long as the object is fully visible and the position in the test set does not change too much. This issue gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs \cite{Viola2004}.
 		\todo{elaborate}
-	\subsubsection{Deep Methods}
+	\subsection{Deep Methods}
 	\todo{Explain CNNs}
 	\paragraph{Two Stage Detectors}
 	\todo{R-CNN, Fast R-CNN, Faster R-CNN and the like}
@@ -107,5 +115,28 @@
 %		
 %		\end{table}
 
+
+
 Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
+
+
+\todo{What do we define as wire frame object?}
+
 \todo{Elaborate, It should become clear why we use deep learning}
+
+
+
+\todoref{Wire detection}
+\todoref{Method from last year, Other papers on drone racing}
+
+\section{Hypothesis}
+
+A small network should be able to learn the task.
+\newpage
+\section{Experiments}
+
+\todo{Show how current methods perform on wire frame objects - performance over angle}
+\todo{Reduce number of parameters and compare to big model}
+\todo{What do the individual layers learn, where does it fail}
+
+\section{Conclusion}

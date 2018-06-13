@@ -1,0 +1,45 @@
+\chapter{Introduction}
+\label{sec:intro}
+
+Object detection has been an intensively studied area within computer vision. The determination of what kind of objects we see where in an image is an everyday human task, that machines still have a hard time at solving.
+
+\todo{paragraph about how learning based methods usually perform better than manually crafted models}
+
+In recent years deep learning based object detectors have been pushing state of the art results tremendously after a long time of almost no improvements\todoref{alexnet ..}. The reason anticipated to be responsible for the performance boost is the flexibility of deep neural networks and the fact that a whole detection pipeline from feature extraction to classification and localization can be integrated into one model and trained directly on the task.\todoref{cite}
+
+The hereby used \acp{CNN} are designed in such a way that the first stages of the model look at small regions of the input image and determine the presence of simple shapes like edges corners and blobs. The output of these first stages gets combined to more complex shapes reaching from object parts like noses or eyes to whole objects like cats or dogs.\todoref{first convnet paper, visualizing cnns?}
+
+One main drawback of these \acp{CNN} is the immense amount of data and computational resources required to train all their parameters. Only when faster processing technologies evolved and the internet simplified collecting and annotating large amounts of training examples, the potential of \acp{CNN} could be exploited \todoref{sth from gartner?} and led to the tremendous performance boost. 
+
+Hence, the power of state-of-the art object detection arises from the complexity of real-world objects that can be efficiently represented by \acp{CNN} when trained with large amounts of annotated examples.
+
+However, there are applications where each of the above is only available to a certain extent. For example mobile phones, robots and micro-air vehicles need to exploit their resources efficiently. Not only since saving energy allows for a longer lifetime but also because these systems usually need to meet real-time constraints.
+
+Furthermore, there are objects that don't consists of complex shapes or patterns but are built from very simple geometry. Examples for these object which we refer to as "wire frame objects" are antennas, wires, fences, cages and the like. \todo{elaborate} 
+
+This thesis studies object detection in an extrem example of the aforementioned case: Gate Detection at the IROS 2018 Autonomous Drone Race. Within this race court several coloured metal gates are placed and need to be passed one after another as fast as possible. Hence, the more lightweight the algorithm can be executed, the less computational resources are required the lighter the \ac{MAV} can be build and the more aggressive manoeuvres can be flown. On the other hand if the method is too inaccurate, the drone misses a gate and is likely to loose the race or even crash.
+
+From the application on MAV's further issues arise: Optical effects like lense distortion or motion blur influence the image and need to be taken into account when developing algorithms for such applications.\todo{elaborate} 
+
+\subsection*{Research Question}
+
+The research question of this work is formulated as follows:
+\begin{center}
+	\textbf{How can we efficiently detect wire frame objects on a micro-air vehicle?}
+\end{center}
+
+
+This question is split into multiple questions that address individual parts of the topic:
+
+\begin{itemize}
+	\item How can a detection model be learned with a limited amount of annotated examples?
+	\item How can a detection model represent wire frame objects?
+	\item What are the trade-off's between detection accuracy and inference time when such a detection model is applied on a micro-air vehicle?
+	\item Can the gained insights be used to build a lightweight and robust detection model for wire frame objects to be applied in autonomous drone racing?
+\end{itemize}
+
+The remaining parts of this thesis are structures as follows: \autoref{sec:evaluation} describes the metrics and systems used for evaluation.\\
+ \autoref{sec:training}, \autoref{sec:object_detection} and \autoref{sec:tradeoff} address the individual research questions. Each chapter contains an introduction to the topic and experiments that have been carried out. \autoref{sec:training} describes methods to learn with limited availability of training data. It concludes with the datasets used for the remaining parts of this thesis.  \autoref{sec:object_detection} describes object detection and evaluates current methods in the application for wire frame objects.
+\autoref{sec:tradeoff} illustrates and evaluates measures to reduce computations.
+\autoref{sec:method} describes the method proposed in this work.\\
+\autoref{sec:disc} discusses the overall results and formulates a conclusion.
