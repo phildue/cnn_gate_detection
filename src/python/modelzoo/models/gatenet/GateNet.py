@@ -1,6 +1,7 @@
 import numpy as np
 
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
+from modelzoo.backend.tensor.gatenet.GateNet3x3 import GateNet3x3
 from modelzoo.backend.tensor.gatenet.GateNetSingle import GateNetSingle
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
@@ -115,7 +116,8 @@ class GateNet(Predictor):
         'GateNetV49': GateNetV49,
         'GateNetV50': GateNetV50,
         'GateNetV51': GateNetV51,
-        'GateNetSingle': GateNetSingle
+        'GateNetSingle': GateNetSingle,
+        'GateNet3x3': GateNet3x3
     }
 
     @property

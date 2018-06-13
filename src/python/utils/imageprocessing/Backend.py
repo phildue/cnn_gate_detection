@@ -7,6 +7,7 @@ from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
+from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.utils import resize_label
 
 
@@ -280,30 +281,35 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
 
     y_max_cv, y_min_cv = img.shape[0] - min_xy[1], img.shape[0] - max_xy[1]
 
-    img_crop = Image(img.array[y_min_cv:y_max_cv, x_min:x_max].copy(), img.format)
+    img_crop = Image(img.array[int(y_min_cv):int(y_max_cv), int(x_min):int(x_max)].copy(), img.format)
     label_crop = label.copy()
 
     if label_crop is not None:
         objs_crop = []
         for obj in label_crop.objects:
             delta_x = x_min
-            obj.x_min -= delta_x
-            obj.x_max -= delta_x
             delta_y = y_min
-            obj.y_min -= delta_y
-            obj.y_max -= delta_y
+
+            if isinstance(obj, GateLabel):
+                corners = obj.gate_corners.as_mat
+                corners -= np.array([x_min, y_min])
+                obj.gate_corners = GateCorners.from_mat(corners)
+                obj.gate_corners.center[0] = max(0, min(obj.gate_corners.center[0], img_crop.shape[1]))
+                obj.gate_corners.center[1] = max(0, min(obj.gate_corners.center[1], img_crop.shape[0]))
+            elif isinstance(obj, ObjectLabel):
+                obj.x_min -= delta_x
+                obj.x_max -= delta_x
+                obj.y_min -= delta_y
+                obj.y_max -= delta_y
+            else:
+                raise ValueError('Unknown Type')
 
             obj.x_min = max(0, obj.x_min)
             obj.x_max = min(img_crop.shape[1], obj.x_max)
             obj.y_min = max(0, obj.y_min)
             obj.y_max = min(img_crop.shape[0], obj.y_max)
 
-            if isinstance(obj, GateLabel):
-                corners = obj.gate_corners.as_mat
-                corners -= np.array([x_min, y_min])
-                obj.gate_corners = GateCorners.from_mat(corners)
-
-            if obj.area >= 20:
+            if obj.area >= 20 and (0.33 < obj.width / obj.height < 3):
                 objs_crop.append(obj)
         label_crop = ImgLabel(objs_crop)
 

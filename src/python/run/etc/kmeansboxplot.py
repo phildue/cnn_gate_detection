@@ -44,14 +44,16 @@ def plot_iou_vs_center(box_dims, range_anchors):
     iou_c_plot = BasePlot(x_data=n_anchors, y_data=1 - mean_dists,
                           y_label='Average IOU', x_label='Number of Anchors',
                           line_style='x--')
-    iou_c_plot.save('kmeans_anchors_bebop.png')
-    save_file(clusters, 'kmeans_clusters_bebop.pkl')
+    # iou_c_plot.save('kmeans_anchors_bebop.png')
+    # save_file(clusters, 'kmeans_clusters_bebop.pkl')
 
     return iou_c_plot
 
 
 cd_work()
-path = 'resource/ext/samples/bebop20k/'
-set_analyzer = SetAnalyzer((180, 315), path)
-
-plot_iou_vs_center(set_analyzer.get_box_dims(), 15).show()
+path = 'resource/ext/samples/crop20k/'
+set_analyzer = SetAnalyzer((52, 52), path)
+scatter, kmeans = set_analyzer.kmeans_anchors(5)
+print(kmeans.cluster_centers_)
+scatter.show()
+#plot_iou_vs_center(set_analyzer.get_box_dims(), 15).show()

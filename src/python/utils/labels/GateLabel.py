@@ -10,16 +10,7 @@ class GateLabel(ObjectLabel):
 
     def __init__(self, pose: Pose = None, gate_corners: GateCorners = None, confidence=1.0, class_name='gate'):
         self.gate_corners = gate_corners
-        x_min = min([self.gate_corners.top_left[0], self.gate_corners.top_right[0], self.gate_corners.bottom_left[0],
-                     self.gate_corners.bottom_right[0], self.gate_corners.center[0]])
-        y_min = min([self.gate_corners.top_left[1], self.gate_corners.top_right[1], self.gate_corners.bottom_left[1],
-                     self.gate_corners.bottom_right[1], self.gate_corners.center[1]])
-        x_max = max([self.gate_corners.top_left[0], self.gate_corners.top_right[0], self.gate_corners.bottom_left[0],
-                     self.gate_corners.bottom_right[0], self.gate_corners.center[0]])
-        y_max = max([self.gate_corners.top_left[1], self.gate_corners.top_right[1], self.gate_corners.bottom_left[1],
-                     self.gate_corners.bottom_right[1], self.gate_corners.center[1]])
-        box = np.array([[x_min, y_min], [x_max, y_max]])
-        super().__init__(class_name, box, confidence)
+        super().__init__(class_name, None, confidence)
         self.pose = pose
 
     @property
@@ -38,3 +29,43 @@ class GateLabel(ObjectLabel):
                     self.gate_corners.bottom_right[1],
                     self.gate_corners.bottom_left[0],
                     self.gate_corners.bottom_left[1])
+
+    @property
+    def x_min(self):
+        return min(self.gate_corners.as_mat[:, 0])
+
+    @x_min.setter
+    def x_min(self, x):
+        corners_as_mat = self.gate_corners.as_mat
+        corners_as_mat[np.argmin(corners_as_mat[:, 0])] = x
+        self.gate_corners = GateCorners.from_mat(corners_as_mat)
+
+    @property
+    def y_min(self):
+        return min(self.gate_corners.as_mat[:, 1])
+
+    @y_min.setter
+    def y_min(self, y):
+        corners_as_mat = self.gate_corners.as_mat
+        corners_as_mat[np.argmin(corners_as_mat[:, 1])] = y
+        self.gate_corners = GateCorners.from_mat(corners_as_mat)
+
+    @property
+    def x_max(self):
+        return max(self.gate_corners.as_mat[:, 0])
+
+    @x_max.setter
+    def x_max(self, x):
+        corners_as_mat = self.gate_corners.as_mat
+        corners_as_mat[np.argmax(corners_as_mat[:, 0])] = x
+        self.gate_corners = GateCorners.from_mat(corners_as_mat)
+
+    @property
+    def y_max(self):
+        return max(self.gate_corners.as_mat[:, 1])
+
+    @y_max.setter
+    def y_max(self, y):
+        corners_as_mat = self.gate_corners.as_mat
+        corners_as_mat[np.argmax(corners_as_mat[:, 1])] = y
+        self.gate_corners = GateCorners.from_mat(corners_as_mat)

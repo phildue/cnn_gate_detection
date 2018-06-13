@@ -1,10 +1,11 @@
 import argparse
 import pprint as pp
-
+import numpy as np
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelFactory import ModelFactory
+from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -14,8 +15,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNetSingle'
-work_dir = 'gate_single'
+model_name = 'GateNet3x3'
+work_dir = 'gate_crop6x6'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -31,7 +32,7 @@ def learning_rate_schedule(epoch):
 
 
 model_src = None
-img_res = (52, 52)
+img_res = (104, 104)
 
 cd_work()
 parser = argparse.ArgumentParser()
@@ -74,7 +75,12 @@ Model
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip())])
 
-predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res, grid=(1, 1))
+predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=(6, 6),
+                           anchors=np.array([[1.68473955, 2.37206587],
+                                             [3.20117521, 5.0159188],
+                                             [0.99090763, 1.45475654],
+                                             [4.90625, 7.18339932],
+                                             [2.53021299, 3.40006656]]))
 predictor.preprocessor.augmenter = augmenter
 
 """

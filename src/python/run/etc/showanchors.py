@@ -18,7 +18,11 @@ cd_work()
 #                             [0.19683103, 0.26281582],
 #                             [0.10340291, 0.42767551]])
 # n_boxes = cluster_centers.shape[0]
-predictor = GateNet.create('GateNetSingle', grid=(1, 1),norm=(52,52))
+predictor = GateNet.create('GateNet3x3', grid=(3, 3), norm=(52, 52), anchors=np.array([[0.2, 0.3],
+                                                                                       [0.3, 0.2],
+                                                                                       [0.5, 0.5],
+                                                                                       [0.8, 0.6],
+                                                                                       [0.6, 0.8]]))
 n_boxes = 5
 
 # we mimick the last layer

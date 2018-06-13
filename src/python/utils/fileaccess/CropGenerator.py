@@ -26,8 +26,8 @@ class CropGenerator(DatasetGenerator):
                         filtered_objs.append(label.objects[np.argmax(areas)])
 
                 for obj in filtered_objs:
-                    crop_min = (obj.x_min-10, obj.y_min-10)
-                    crop_max = (obj.x_max+10, obj.y_max+10)
+                    crop_min = (max(0, obj.x_min - 10), max(obj.y_min - 10, 0))
+                    crop_max = (min(obj.x_max + 10, img.shape[1]), min(obj.y_max + 10, img.shape[0]))
                     img_crop, label_crop = crop(img, crop_min, crop_max, label)
                     if img_crop.array.size > 0:
                         batch_filtered.append((img_crop, label_crop, file))

@@ -44,7 +44,7 @@ class GateNetEncoder(Encoder):
 
             grid_x = np.maximum(np.minimum(grid_x, self.grid[1] - 1), 0)
             grid_y = np.maximum(np.minimum(grid_y, self.grid[0] - 1), 0)
-
+            # print('Assigned cell: ',(grid_x,grid_y))
             w /= (float(self.norm[1]) / self.grid[1])
             h /= (float(self.norm[0]) / self.grid[0])
             cx = center_x - grid_x

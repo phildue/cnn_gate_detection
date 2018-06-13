@@ -7,7 +7,7 @@ from modelzoo.backend.tensor.metrics import Loss
 from modelzoo.models.Net import Net
 
 
-class GateNetSingle(Net):
+class GateNet3x3(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
@@ -41,7 +41,7 @@ class GateNetSingle(Net):
     def __init__(self, loss: Loss,
                  anchors,
                  img_shape=(52, 52),
-                 grid=(1, 1),
+                 grid=(3, 3),
                  n_boxes=5,
                  weight_file=None, n_polygon=4):
 
@@ -75,19 +75,14 @@ class GateNetSingle(Net):
         norm3 = BatchNormalization()(conv3)
         act3 = LeakyReLU(alpha=0.1)(norm3)
         pool3 = MaxPooling2D((2, 2))(act3)
-        # 7
+        # 6
         conv3 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool3)
         norm3 = BatchNormalization()(conv3)
         act3 = LeakyReLU(alpha=0.1)(norm3)
         pool3 = MaxPooling2D((2, 2))(act3)
         # 3
-        conv4 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool3)
-        norm4 = BatchNormalization()(conv4)
-        act4 = LeakyReLU(alpha=0.1)(norm4)
-        pool4 = MaxPooling2D((2, 2))(act4)
-        # 1
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            pool4)
+            pool3)
         reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
         out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
 

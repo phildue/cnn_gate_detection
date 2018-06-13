@@ -11,8 +11,8 @@ from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        self.label_reader = DatasetParser.get_parser(path, 'xml')
-        self.labels = self.label_reader.read()
+        self.label_reader = DatasetParser.get_parser(path, 'xml', color_format='bgr')
+        _, self.labels = self.label_reader.read()
 
     def get_label_map(self):
 
@@ -61,7 +61,7 @@ class SetAnalyzer:
         centers = kmeans.cluster_centers_
         scatter = BaseMultiPlot(x_data=[box_dims[:, 0], centers[:, 0]], y_data=[box_dims[:, 1], centers[:, 1]],
                                 line_style=['bx', 'ro'],
-                                x_label='width', y_label='height', y_lim=(0, 1.2))
+                                x_label='width', y_label='height', y_lim=(0, 10))
         return scatter, kmeans
 
     def show_summary(self):
