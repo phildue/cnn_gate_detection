@@ -2,6 +2,7 @@ import copy
 
 import numpy as np
 
+from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
@@ -11,10 +12,13 @@ def resize_label(label: ImgLabel, img_shape=None, shape: tuple = None, scale_x=1
     label_resized = copy.deepcopy(label)
     for i, obj in enumerate(label_resized.objects):
         if obj is None: continue
-        obj_resized = resize_label_bb(obj, img_shape, shape, scale_x, scale_y)
 
-        if isinstance(obj_resized, GateLabel):
-            obj_resized = resize_label_gate(obj_resized, img_shape, shape, scale_x, scale_y)
+        if isinstance(obj, GateLabel):
+            obj_resized = resize_label_gate(obj, img_shape, shape, scale_x, scale_y)
+        elif isinstance(obj,ObjectLabel):
+            obj_resized = resize_label_bb(obj, img_shape, shape, scale_x, scale_y)
+        else:
+            raise ValueError('Unknown Type')
 
         label_resized.objects[i] = obj_resized
     return label_resized
@@ -44,12 +48,10 @@ def resize_label_gate(obj: GateLabel, img_shape, shape: tuple = None, scale_x=1.
 
     scale = np.array([scale_x, scale_y])
 
-    obj_resized.gate_corners.center = np.round(np.multiply(obj_resized.gate_corners.center, scale)).astype(int)
-    obj_resized.gate_corners.top_right = np.round(np.multiply(obj_resized.gate_corners.top_right, scale)).astype(int)
-    obj_resized.gate_corners.top_left = np.round(np.multiply(obj_resized.gate_corners.top_left, scale)).astype(int)
-    obj_resized.gate_corners.bottom_right = np.round(np.multiply(obj_resized.gate_corners.bottom_right, scale)).astype(
-        int)
-    obj_resized.gate_corners.bottom_left = np.round(np.multiply(obj_resized.gate_corners.bottom_left, scale)).astype(
-        int)
+    mat = obj_resized.gate_corners.as_mat
+
+    mat *= scale
+
+    obj_resized.gate_corners = GateCorners.from_mat(mat)
 
     return obj_resized

@@ -291,23 +291,22 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             delta_y = y_min
 
             if isinstance(obj, GateLabel):
-                corners = obj.gate_corners.as_mat
-                corners -= np.array([x_min, y_min])
-                obj.gate_corners = GateCorners.from_mat(corners)
-                obj.gate_corners.center[0] = max(0, min(obj.gate_corners.center[0], img_crop.shape[1]))
-                obj.gate_corners.center[1] = max(0, min(obj.gate_corners.center[1], img_crop.shape[0]))
+                points = obj.gate_corners.as_mat
             elif isinstance(obj, ObjectLabel):
-                obj.x_min -= delta_x
-                obj.x_max -= delta_x
-                obj.y_min -= delta_y
-                obj.y_max -= delta_y
+                points = np.array([[obj.x_min, obj.y_min],
+                                   [obj.x_max, obj.y_max]])
             else:
                 raise ValueError('Unknown Type')
 
-            obj.x_min = max(0, obj.x_min)
-            obj.x_max = min(img_crop.shape[1], obj.x_max)
-            obj.y_min = max(0, obj.y_min)
-            obj.y_max = min(img_crop.shape[0], obj.y_max)
+            points -= np.array([delta_x, delta_y])
+
+            points[:, 0] = np.maximum(0, np.minimum(points[:, 0], img_crop.shape[1]))
+            points[:, 1] = np.maximum(0, np.minimum(points[:, 1], img_crop.shape[0]))
+
+            if isinstance(obj, GateLabel):
+                obj.gate_corners = GateCorners.from_mat(points)
+            elif isinstance(obj, ObjectLabel):
+                obj = ObjectLabel(obj.class_name, points, obj.confidence)
 
             if obj.area >= 20 and (0.33 < obj.width / obj.height < 3):
                 objs_crop.append(obj)

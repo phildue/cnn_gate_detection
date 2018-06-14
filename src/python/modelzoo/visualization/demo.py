@@ -3,12 +3,13 @@ import numpy as np
 from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
+from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labeled
 from utils.labels.utils import resize_label
 
 
 def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None,
-                   n_samples=None):
+                   n_samples=None, size=None):
     if n_samples is None:
         n_samples = generator.n_samples
     iterator = iter(generator.generate_valid())
@@ -20,7 +21,12 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             img = batch[i][0]
             label = batch[i][1]
             label_pred = model.predict(img)
-            label_pred = resize_label(label_pred, model.input_shape, img.shape[:2])
+            if size is None:
+                label_pred = resize_label(label_pred, model.input_shape, img.shape[:2])
+            else:
+                img, label = resize(img, size, label=label)
+                label_pred = resize_label(label_pred, model.input_shape, size)
+
             boxes_pred = BoundingBox.from_label(label_pred)
             boxes_true = BoundingBox.from_label(label)
 
