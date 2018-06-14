@@ -7,7 +7,7 @@ from utils.workdir import cd_work
 
 cd_work()
 batch_size = 16
-n_samples = 10000
+n_samples = 9000
 out_path = 'resource/ext/samples/crop20k'
 create_dirs([out_path])
 image_source = ['resource/ext/samples/daylight', 'resource/ext/samples/industrial_new']

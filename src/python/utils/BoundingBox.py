@@ -220,3 +220,7 @@ class BoundingBox:
     @y_min.setter
     def y_min(self, y):
         self.cy = y + self.h / 2
+
+    def __repr__(self):
+        return '[({0:.2f},{1:.2f}) --> ({2:.2f},{3:.2f}): ({4:.2f})]'.format(self.x_min, self.y_min, self.x_max,
+                                                                             self.y_max, self.class_conf)

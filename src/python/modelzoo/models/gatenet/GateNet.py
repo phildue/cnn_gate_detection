@@ -206,10 +206,10 @@ class GateNet(Predictor):
         self.norm = norm
         self.conf_thresh = conf_thresh
         self.n_boxes = anchors.shape[0]
-        self._output_shape = grid[0] * grid[1], self.n_boxes * (n_polygon + 1)
+        self._output_shape = grid[0][0] * grid[0][1], self.n_boxes * (n_polygon + 1)
 
         encoder = GateNetEncoder(img_norm=norm,
-                                 grid=grid,
+                                 grids=grid,
                                  n_boxes=self.n_boxes,
                                  n_polygon=n_polygon)
         preprocessor = Preprocessor(augmenter=augmenter,
