@@ -120,7 +120,7 @@ def average_precision(y_true, y_pred):
                                    norm=predictor.norm).compute(y_true, y_pred)
 
 
-predictor.compile(params=params, metrics=[average_precision])
+predictor.compile(params=params)
 
 """
 Training Config

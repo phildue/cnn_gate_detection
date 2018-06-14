@@ -38,7 +38,7 @@ class GateNetEncoder(Encoder):
 
     @staticmethod
     def generate_anchor_layer(norm, grid, anchor_dims, n_polygon):
-        n_boxes = int(np.ceil(len(anchor_dims) / 2))
+        n_boxes = len(anchor_dims)
         anchor_t = np.zeros((grid[0], grid[1], n_boxes, n_polygon)) * np.nan
 
         cell_height = norm[0] / grid[0]
@@ -105,4 +105,5 @@ class GateNetEncoder(Encoder):
         confidences, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
         coords = self._encode_coords(coords, anchors)
         label_t = np.hstack((confidences, coords, anchors))
+        label_t = np.reshape(label_t, (-1, 1 + self.n_polygon + 4))
         return label_t

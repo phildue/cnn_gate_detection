@@ -151,15 +151,15 @@ class GateNet(Predictor):
                                 [9.42, 5.11],
                                 [16.62, 10.52]])
 
-        n_boxes = anchors.shape[0]
+        n_boxes = int(np.ceil(anchors.size / 2))
         loss = GateDetectionLoss(
             grid=grid,
-                                 n_boxes=n_boxes,
-                                 n_polygon=4,
-                                 weight_loc=scale_coor,
-                                 weight_conf=scale_conf,
-                                 weight_prob=scale_prob,
-                                 weight_noobj=scale_noob)
+            n_boxes=n_boxes,
+            n_polygon=4,
+            weight_loc=scale_coor,
+            weight_conf=scale_conf,
+            weight_prob=scale_prob,
+            weight_noobj=scale_noob)
         net = GateNet.architectures[model_name](loss=loss,
                                                 anchors=anchors,
                                                 img_shape=norm,

@@ -99,9 +99,8 @@ class GateNet3x3(Net):
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        netout = K.reshape(netout, (-1, self.grid[0][0] * self.grid[0][1], self.n_boxes, self.n_polygon + 1))
-        pred_xy = K.sigmoid(netout[:, :, :, :2])
-        pred_wh = K.exp(netout[:, :, :, 2:self.n_polygon])
-        pred_c = K.sigmoid(netout[:, :, :, -1])
+        pred_xy = K.sigmoid(netout[:, :, :2])
+        pred_wh = K.exp(netout[:, :, 2:self.n_polygon])
+        pred_c = K.sigmoid(netout[:, :, :1])
 
-        return K.concatenate([pred_xy, pred_wh, K.expand_dims(pred_c, -1)], 3)
+        return K.concatenate([pred_xy, pred_wh, pred_c], -1)
