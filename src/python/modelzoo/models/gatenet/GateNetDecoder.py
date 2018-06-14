@@ -19,9 +19,8 @@ class GateNetDecoder(Decoder):
         :param label_t: y as fed for learning
         :return: boxes
         """
-        label_t = np.reshape(label_t, [self.grid[0], self.grid[1], -1, 1 + self.n_polygon])
-        coord_t = label_t[:, :, :, :self.n_polygon]
-        class_t = label_t[:, :, :, self.n_polygon:]
+        coord_t = label_t[:, 1:]
+        class_t = label_t[:, :1]
         coord_t_dec = self.decode_coord(coord_t)
         coord_t_dec = np.reshape(coord_t_dec, (-1, self.n_polygon))
         class_t = np.reshape(class_t, (-1, 1))
@@ -36,22 +35,16 @@ class GateNetDecoder(Decoder):
         :return: label tensor in absolute coordinates
         """
         coord_t_dec = coord_t.copy()
-        offset_y, offset_x = np.mgrid[:self.grid[0], :self.grid[1]]
 
-        offset_x = np.expand_dims(offset_x, -1)
+        coord_t_dec[:, 0] *= coord_t_dec[:, -2]
+        coord_t_dec[:, 2] *= coord_t_dec[:, -2]
+        coord_t_dec[:, 1] *= coord_t_dec[:, -1]
+        coord_t_dec[:, 3] *= coord_t_dec[:, -1]
 
-        offset_y = np.expand_dims(offset_y, -1)
+        coord_t_dec[:, 0] += coord_t_dec[:, -4]
+        coord_t_dec[:, 1] += coord_t_dec[:, -3]
 
-        coord_t_dec[:, :, :, 0] += offset_x
-        coord_t_dec[:, :, :, 1] += offset_y
-        coord_t_dec[:, :, :, 0] *= (self.norm[1] / self.grid[1])
-        coord_t_dec[:, :, :, 2] *= (self.norm[1] / self.grid[1])
-        coord_t_dec[:, :, :, 1] *= (self.norm[0] / self.grid[0])
-        coord_t_dec[:, :, :, 3] *= (self.norm[0] / self.grid[0])
-
-        coord_t_dec[:, :, :, 1] = self.norm[0] - coord_t_dec[:, :, :, 1]
-
-        return coord_t_dec
+        return coord_t_dec[:, :self.n_polygon]
 
     def decode_netout_to_label(self, label_t):
         """

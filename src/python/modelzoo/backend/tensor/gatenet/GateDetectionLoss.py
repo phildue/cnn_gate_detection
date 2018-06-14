@@ -85,8 +85,8 @@ class GateDetectionLoss(Loss):
         return loc_loss + conf_loss
 
     def localization_loss(self, y_true, y_pred):
-        y_true = K.reshape(y_true, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_polygon + 1])
-        y_pred = K.reshape(y_pred, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_polygon + 1])
+        y_true = K.reshape(y_true, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, self.n_polygon + 1])
+        y_pred = K.reshape(y_pred, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, self.n_polygon + 1])
 
         y_true_assigned = self._assign_anchors(y_true, y_pred)
 
@@ -104,13 +104,13 @@ class GateDetectionLoss(Loss):
 
         loc_loss = K.concatenate([xy_loss, wh_loss], 4) * weight
 
-        loc_loss_sum = .5 * K.sum(K.reshape(loc_loss, (-1, self.grid[0] * self.grid[1] * self.n_boxes * 4)), -1)
+        loc_loss_sum = .5 * K.sum(K.reshape(loc_loss, (-1, self.grid[0][0] * self.grid[0][1] * self.n_boxes * 4)), -1)
 
         return loc_loss_sum
 
     def confidence_loss(self, y_true, y_pred):
-        y_true = K.reshape(y_true, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_polygon + 1])
-        y_pred = K.reshape(y_pred, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_polygon + 1])
+        y_true = K.reshape(y_true, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, self.n_polygon + 1])
+        y_pred = K.reshape(y_pred, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, self.n_polygon + 1])
 
         y_true_assigned = self._assign_anchors(y_true, y_pred)
 
@@ -124,7 +124,7 @@ class GateDetectionLoss(Loss):
 
         conf_loss = K.pow(conf_pred - conf_true, 2) * weight
 
-        conf_loss_total = .5 * K.sum(K.reshape(conf_loss, (-1, self.grid[0] * self.grid[1] * self.n_boxes)), -1)
+        conf_loss_total = .5 * K.sum(K.reshape(conf_loss, (-1, self.grid[0][0] * self.grid[0][1] * self.n_boxes)), -1)
 
         return conf_loss_total
 

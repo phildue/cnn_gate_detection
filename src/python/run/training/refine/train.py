@@ -74,12 +74,14 @@ Model
 augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip())])
 
-predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=(3, 3),
-                           anchors=np.array([[1.68473955, 2.37206587],
-                                             [3.20117521, 5.0159188],
-                                             [0.99090763, 1.45475654],
-                                             [4.90625, 7.18339932],
-                                             [2.53021299, 3.40006656]]))
+predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=[(3, 3)],
+                           anchors=np.array([[[1, 1],
+                                              [0.3, 0.3],
+                                              [0.5, 1],
+                                              [1, 0.5],
+                                              [0.7, 0.7]
+                                              ]]
+                                            ))
 predictor.preprocessor.augmenter = augmenter
 
 """
