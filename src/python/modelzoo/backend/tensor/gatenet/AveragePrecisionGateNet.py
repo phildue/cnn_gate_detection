@@ -14,12 +14,11 @@ class AveragePrecisionGateNet(MetricGateNet):
 
         :return: average precision
         """
-        y_true = K.reshape(y_true, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, 5])
-        y_pred = K.reshape(y_pred, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, 5])
+        anchors_t = y_true[:, :, 5:]
 
         coord_true_t, class_true_t = self._postprocess_truth(y_true)
 
-        coord_pred_t, class_pred_t = self._postprocess_pred(y_pred)
+        coord_pred_t, class_pred_t = self._postprocess_pred(y_pred,anchors_t)
 
         average_precision = self.map_adapter.average_precision(coord_true_t, coord_pred_t, class_true_t, class_pred_t)
 

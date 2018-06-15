@@ -14,7 +14,7 @@ class GateCorners:
         self.top_left = top_left
 
     @property
-    def as_mat(self) -> np.array:
+    def mat(self) -> np.array:
         return np.array([
             self.center,
             self.top_left,

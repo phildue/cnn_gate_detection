@@ -85,7 +85,7 @@ class PointProjector:
 
     @staticmethod
     def __to3dcoords(corners: GateCorners, position: Pose):
-        corners_mat = corners.as_mat
+        corners_mat = corners.mat
         corners_mat = np.hstack([corners_mat, np.ones(shape=(corners_mat.shape[0], 1))])
         transmat = position.transfmat
         transmat[2] = -transmat[

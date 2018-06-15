@@ -11,11 +11,12 @@ from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
 model_name = 'GateNet3x3'
-work_dir = 'gate_crop3x3'
+work_dir = 'gate_crop3x3_locloss'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -38,8 +39,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--model_name", help="model name",
                     type=str, default=model_name)
 parser.add_argument("--work_dir", help="Working directory", type=str, default=work_dir)
-parser.add_argument("--image_source", help="List of folders to be scanned for train images", type=str,
-                    default="resource/ext/samples/daylight/")
+parser.add_argument("--image_source", help="List of folders to be scanned for train images",
+                    default=["resource/ext/samples/daylight/","resource/ext/samples/industrial_new/"])
 parser.add_argument("--test_image_source_1", help="List of folders to be scanned for test images", type=str,
                     default='resource/ext/samples/industrial_new_test/')
 parser.add_argument("--test_image_source_2", help="List of folders to be scanned for test images", type=str,
@@ -63,7 +64,7 @@ initial_epoch = args.initial_epoch
 learning_rate = args.learning_rate
 model_src = args.model_src
 epochs = args.epochs
-image_source = [args.image_source]
+image_source = args.image_source
 test_image_source_1 = [args.test_image_source_1]
 test_image_source_2 = [args.test_image_source_2]
 img_res = args.img_height, args.img_width
@@ -71,10 +72,11 @@ img_res = args.img_height, args.img_width
 """
 Model
 """
-augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                            (0.5, TransformFlip())])
+augmenter = None#RandomEnsemble([(1.0, RandomBrightness(0.8, 1.2)),
+                 #           (0.5, TransformFlip()),
+                  #          (0.2, RandomShift(-0.2,0.2))])
 
-predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=[(3, 3)],
+predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=[(3, 3)], scale_coor=10.0,
                            anchors=np.array([[[1, 1],
                                               [0.3, 0.3],
                                               [0.5, 1],
@@ -120,7 +122,7 @@ def average_precision(y_true, y_pred):
                                    norm=predictor.norm).compute(y_true, y_pred)
 
 
-predictor.compile(params=params)
+predictor.compile(params=params,metrics=[average_precision])
 
 """
 Training Config

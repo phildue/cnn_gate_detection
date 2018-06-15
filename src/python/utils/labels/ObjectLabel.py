@@ -30,6 +30,14 @@ class ObjectLabel:
                                               (self.y_max, self.x_max))
 
     @property
+    def mat(self):
+        return self.__bounding_box
+
+    @mat.setter
+    def mat(self, mat):
+        self.__bounding_box = mat
+
+    @property
     def x_min(self):
         return np.min(self.__bounding_box[:, 0])
 
@@ -60,8 +68,6 @@ class ObjectLabel:
     @y_max.setter
     def y_max(self, y):
         self.__bounding_box[np.argmax(self.__bounding_box[:, 1])] = y
-
-
 
     @property
     def class_id(self):

@@ -1,3 +1,5 @@
+from random import randint, random
+
 import numpy as np
 
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
@@ -26,10 +28,25 @@ class CropGenerator(DatasetGenerator):
                         filtered_objs.append(label.objects[np.argmax(areas)])
 
                 for obj in filtered_objs:
-                    crop_min = (max(0, obj.x_min - 10), max(obj.y_min - 10, 0))
-                    crop_max = (min(obj.x_max + 10, img.shape[1]), min(obj.y_max + 10, img.shape[0]))
+
+                    crop_min = (max(0, obj.x_min - randint(10, 30)), max(obj.y_min - randint(10, 30), 0))
+                    crop_max = (
+                        min(obj.x_max + randint(10, 30), img.shape[1]), min(obj.y_max + randint(10, 30), img.shape[0]))
+
+                    w = crop_max[0] - crop_min[0]
+                    h = crop_max[1] - crop_min[1]
+                    dw = 0
+                    dh = 0
+                    if w > h:
+                        dw = h - w
+                    elif h > w:
+                        dh = w - h
+
+                    crop_max = crop_max[0] + dw / 2, crop_max[1] + dw / 2,
+                    crop_min = crop_min[0] - dh / 2, crop_min[1] - dh / 2
+
                     img_crop, label_crop = crop(img, crop_min, crop_max, label)
-                    if img_crop.array.size > 0:
+                    if img_crop.array.size > 0 and len(label_crop.objects) == 1:
                         batch_filtered.append((img_crop, label_crop, file))
 
                 if len(batch_filtered) >= self.batch_size:

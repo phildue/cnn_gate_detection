@@ -50,23 +50,23 @@ class GateDetectionLoss(Loss):
 
         loc_loss = K.concatenate([xy_loss, wh_loss], -1) * w_pos
 
-        loc_loss_sum = .5 * K.sum(K.sum(loc_loss, -1), -1)
+        loc_loss_sum = .5 * K.sum(K.sum(loc_loss, -1),-1)
 
         # loc_loss_sum = K.print_tensor(loc_loss_sum,'Loc Loss=')
 
         return loc_loss_sum
 
     def confidence_loss(self, y_true, y_pred):
-        positives = y_true[:, :, 0]
+        positives = y_true[:, :, 0:1]
 
         weight = self.scale_noob * (1. - positives) + self.scale_obj * positives
 
-        conf_pred = y_pred[:, :, 0]
-        conf_true = y_true[:, :, 0]
+        conf_pred = y_pred[:, :, 0:1]
+        conf_true = y_true[:, :, 0:1]
 
-        conf_loss = K.pow(conf_pred - conf_true, 2)
+        conf_loss = K.pow(conf_pred - conf_true, 2)*weight
 
-        conf_loss_total = .5 * K.sum(conf_loss, -1)
+        conf_loss_total = .5 * K.sum(K.sum(conf_loss, -1),-1)
 
         #conf_loss_total = K.print_tensor(conf_loss_total,'Conf Loss=')
 

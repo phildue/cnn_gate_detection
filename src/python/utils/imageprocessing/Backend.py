@@ -42,7 +42,7 @@ def replace_background(img: Image, background: Image, background_color=(0, 0, 0)
 
 def draw_gate_corners(img: Image, label: GateLabel) -> Image:
     annotated_img = img.array.copy()
-    corners = label.gate_corners.as_mat
+    corners = label.gate_corners.mat
 
     corners[:, 1] = img.shape[0] - corners[:, 1]
 
@@ -291,7 +291,7 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             delta_y = y_min
 
             if isinstance(obj, GateLabel):
-                points = obj.gate_corners.as_mat
+                points = obj.gate_corners.mat
             elif isinstance(obj, ObjectLabel):
                 points = np.array([[obj.x_min, obj.y_min],
                                    [obj.x_max, obj.y_max]])

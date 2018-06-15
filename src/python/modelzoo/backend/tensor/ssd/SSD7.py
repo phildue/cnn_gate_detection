@@ -3,7 +3,7 @@ from keras import Model, Input
 from keras.layers import BatchNormalization, Conv2D, MaxPooling2D, ELU, Concatenate, Reshape, Lambda
 
 from modelzoo.backend.tensor.metrics.Loss import Loss
-from modelzoo.backend.tensor.ssd.ConcatMeta import ConcatMeta
+from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
 from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
 
 

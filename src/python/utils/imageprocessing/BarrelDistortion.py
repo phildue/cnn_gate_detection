@@ -97,7 +97,7 @@ class BarrelDistortion(DistortionModel):
             obj.y_min = h - np.min([y_min_d, y_max_d])
             obj.y_max = h - np.max([y_min_d, y_max_d])
             if isinstance(obj, GateLabel):
-                corners = obj.gate_corners.as_mat
+                corners = obj.gate_corners.mat
                 corners_dist = np.zeros_like(corners)
                 for i in range(corners.shape[0]):
                     corners_dist[i] = mapping[int(corners[i, 1]), int(corners[i, 0])]

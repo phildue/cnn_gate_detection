@@ -31,10 +31,11 @@ def resize_label_bb(obj: ObjectLabel, img_shape, shape: tuple = None, scale_x=1.
         scale_y = (shape[0] / img_shape[0])
         scale_x = (shape[1] / img_shape[1])
 
-    obj_resized.y_min *= scale_y
-    obj_resized.y_max *= scale_y
-    obj_resized.x_min *= scale_x
-    obj_resized.x_max *= scale_x
+    mat = obj_resized.mat
+    scale = np.array([scale_x, scale_y],dtype=mat.dtype)
+    mat *= scale
+
+    obj_resized.mat = mat
 
     return obj_resized
 
@@ -48,9 +49,9 @@ def resize_label_gate(obj: GateLabel, img_shape, shape: tuple = None, scale_x=1.
 
     scale = np.array([scale_x, scale_y])
 
-    mat = obj_resized.gate_corners.as_mat
-
+    mat = obj_resized.gate_corners.mat
     mat *= scale
+
 
     obj_resized.gate_corners = GateCorners.from_mat(mat)
 

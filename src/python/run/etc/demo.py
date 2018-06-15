@@ -22,11 +22,13 @@ generator = CropGenerator(GateGenerator(directories=['resource/ext/samples/dayli
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-model = GateNet.create('GateNet3x3', weight_file='out/gate_crop3x3/model.h5', batch_size=8, norm=(52, 52), grid=(3, 3),
-                       anchors=np.array([[1.68473955, 2.37206587],
-                                         [3.20117521, 5.0159188],
-                                         [0.99090763, 1.45475654],
-                                         [4.90625, 7.18339932],
-                                         [2.53021299, 3.40006656]]))
+model = GateNet.create('GateNet3x3', weight_file='out/gate_crop3x3/model.h5', batch_size=8, norm=(52, 52), grid=[(3, 3)],
+                       anchors=np.array([[[1, 1],
+                                              [0.3, 0.3],
+                                              [0.5, 1],
+                                              [1, 0.5],
+                                              [0.7, 0.7]
+                                              ]]
+                                            ))
 
-demo_generator(model, generator, t_show=0, n_samples=150, size=(52, 52))
+demo_generator(model, generator, t_show=0, n_samples=150,size=(104,104))

@@ -3,8 +3,10 @@ from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
 from keras.optimizers import Adam
 
+from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
 from modelzoo.backend.tensor.metrics import Loss
 from modelzoo.models.Net import Net
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 
 
 class GateNet3x3(Net):
@@ -84,8 +86,12 @@ class GateNet3x3(Net):
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
             pool3)
         reshape = Reshape((-1, n_polygon + 1))(final)
-        out = Lambda(self.net2y, (-1, n_polygon + 1))(reshape)
+        predictions = Lambda(self.net2y, (-1, n_polygon + 1))(reshape)
 
+        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
+                            K.tf.float32)
+
+        out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
         model = Model(input, out)
 
         if weight_file is not None:
