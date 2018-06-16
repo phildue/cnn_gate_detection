@@ -2,6 +2,7 @@ import numpy as np
 
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNet3x3 import GateNet3x3
+from modelzoo.backend.tensor.gatenet.GateNetFC import GateNetFC
 from modelzoo.backend.tensor.gatenet.GateNetSingle import GateNetSingle
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
 from modelzoo.backend.tensor.gatenet.GateNetV1 import GateNetV1
@@ -117,7 +118,8 @@ class GateNet(Predictor):
         'GateNetV50': GateNetV50,
         'GateNetV51': GateNetV51,
         'GateNetSingle': GateNetSingle,
-        'GateNet3x3': GateNet3x3
+        'GateNet3x3': GateNet3x3,
+        'GateNetFC': GateNetFC
     }
 
     @property
@@ -145,11 +147,11 @@ class GateNet(Predictor):
                n_polygon=4):
 
         if anchors is None:
-            anchors = np.array([[1.08, 1.19],
-                                [3.42, 4.41],
-                                [6.63, 11.38],
-                                [9.42, 5.11],
-                                [16.62, 10.52]])
+            anchors = np.array([[[1.08, 1.19],
+                                 [3.42, 4.41],
+                                 [6.63, 11.38],
+                                 [9.42, 5.11],
+                                 [16.62, 10.52]]])
 
         n_boxes = int(np.ceil(anchors.size / 2))
         loss = GateDetectionLoss(
@@ -192,11 +194,11 @@ class GateNet(Predictor):
 
         self.color_format = color_format
         if anchors is None:
-            anchors = np.array([[1.3221, 1.73145],
-                                [3.19275, 4.00944],
-                                [5.05587, 8.09892],
-                                [9.47112, 4.84053],
-                                [11.2364, 10.0071]])
+            anchors = np.array([[[1.3221, 1.73145],
+                                 [3.19275, 4.00944],
+                                 [5.05587, 8.09892],
+                                 [9.47112, 4.84053],
+                                 [11.2364, 10.0071]]])
 
         ObjectLabel.classes = ['gate']
 

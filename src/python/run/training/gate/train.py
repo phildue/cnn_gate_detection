@@ -13,8 +13,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNetV46'
-work_dir = 'gatev46'
+model_name = 'GateNetV44'
+work_dir = 'gatev44_crop'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -30,7 +30,7 @@ def learning_rate_schedule(epoch):
 
 
 model_src = None
-img_res = (104, 104)
+img_res = (52, 52)
 
 cd_work()
 parser = argparse.ArgumentParser()
@@ -74,7 +74,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res)
+predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res, grid=[(13, 13)])
 predictor.preprocessor.augmenter = augmenter
 
 """
@@ -140,7 +140,8 @@ training = Training(predictor, train_gen,
                     epochs=epochs,
                     log_csv=True,
                     lr_reduce=0.1,
-                    callbacks=[test_metric_1, test_metric_2])
+                    # callbacks=[test_metric_1, test_metric_2]
+                    )
 
 pp.pprint(training.summary)
 

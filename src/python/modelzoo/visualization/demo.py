@@ -21,6 +21,7 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             img = batch[i][0]
             label = batch[i][1]
             label_pred = model.predict(img)
+            print(BoundingBox.from_label(label_pred))
             if size is None:
                 label_pred = resize_label(label_pred, model.input_shape, img.shape[:2])
             else:

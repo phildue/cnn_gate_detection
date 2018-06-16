@@ -104,14 +104,15 @@ class GateNetSingle(Net):
 
         self._model = model
 
+
     def net2y(self, netout):
         """
         Adapt raw network output. (Softmax, exp, sigmoid, anchors)
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        pred_xy = K.sigmoid(netout[:, :, :2])
-        pred_wh = K.exp(netout[:, :, 2:self.n_polygon])
+        pred_xy = K.sigmoid(netout[:, :, 1:3])
+        pred_wh = K.exp(netout[:, :, 3:self.n_polygon])
         pred_c = K.sigmoid(netout[:, :, :1])
 
         return K.concatenate([pred_xy, pred_wh, pred_c], -1)

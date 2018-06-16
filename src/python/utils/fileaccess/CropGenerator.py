@@ -46,7 +46,7 @@ class CropGenerator(DatasetGenerator):
                     crop_min = crop_min[0] - dh / 2, crop_min[1] - dh / 2
 
                     img_crop, label_crop = crop(img, crop_min, crop_max, label)
-                    if img_crop.array.size > 0 and len(label_crop.objects) == 1:
+                    if img_crop.array.size > 0:
                         batch_filtered.append((img_crop, label_crop, file))
 
                 if len(batch_filtered) >= self.batch_size:

@@ -1,6 +1,6 @@
 import keras.backend as K
 from keras import Input, Model
-from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
+from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda, Dense, Flatten
 from keras.optimizers import Adam
 
 from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
@@ -9,7 +9,7 @@ from modelzoo.models.Net import Net
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 
 
-class GateNetV43(Net):
+class GateNetFC(Net):
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
@@ -43,7 +43,7 @@ class GateNetV43(Net):
     def __init__(self, loss: Loss,
                  anchors,
                  img_shape=(52, 52),
-                 grid=(13, 13),
+                 grid=(3, 3),
                  n_boxes=5,
                  weight_file=None, n_polygon=4):
 
@@ -61,35 +61,28 @@ class GateNetV43(Net):
                         'decay': 0.0005}
 
         w, h = img_shape
-        # like gatev10 but on 52x52 - 4 layers
+        # only predict one set of boxes
         input = Input((w, h, 3))
-        conv1 = Conv2D(16, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(input)
+        conv1 = Conv2D(16, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(input)
         norm1 = BatchNormalization()(conv1)
         act1 = LeakyReLU(alpha=0.1)(norm1)
         pool1 = MaxPooling2D((2, 2))(act1)
         # 26
-        conv2 = Conv2D(32, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool1)
+        conv2 = Conv2D(32, kernel_size=(3, 3), strides=(1, 1), padding='same', use_bias=False)(pool1)
         norm2 = BatchNormalization()(conv2)
         act2 = LeakyReLU(alpha=0.1)(norm2)
         pool2 = MaxPooling2D((2, 2))(act2)
         # 13
-        conv3 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(pool2)
-        norm3 = BatchNormalization()(conv3)
-        act3 = LeakyReLU(alpha=0.1)(norm3)
-
-        conv4 = Conv2D(64, kernel_size=(6, 6), strides=(1, 1), padding='same', use_bias=False)(act3)
-        norm4 = BatchNormalization()(conv4)
-        act4 = LeakyReLU(alpha=0.1)(norm4)
-
-        final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            act4)
+        flat = Flatten()(pool2)
+        final = Dense(grid[0][0] * grid[0][1] * n_boxes * (n_polygon + 1))(
+            flat)
         reshape = Reshape((-1, n_polygon + 1))(final)
         predictions = Lambda(self.net2y, (-1, n_polygon + 1))(reshape)
+
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
         out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
-
         model = Model(input, out)
 
         if weight_file is not None:
@@ -97,15 +90,14 @@ class GateNetV43(Net):
 
         self._model = model
 
-
     def net2y(self, netout):
         """
         Adapt raw network output. (Softmax, exp, sigmoid, anchors)
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        pred_xy = K.sigmoid(netout[:, :, :2])
-        pred_wh = K.exp(netout[:, :, 2:self.n_polygon])
-        pred_c = K.sigmoid(netout[:, :, -1:])
+        pred_xy = K.sigmoid(netout[:, :, 1:3])
+        pred_wh = K.exp(netout[:, :, 3:self.n_polygon])
+        pred_c = K.sigmoid(netout[:, :, :1])
 
-        return K.concatenate([pred_c, pred_xy, pred_wh], -1)
+        return K.concatenate([pred_xy, pred_wh, pred_c], -1)

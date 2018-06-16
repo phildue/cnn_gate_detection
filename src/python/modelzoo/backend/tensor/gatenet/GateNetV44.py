@@ -3,8 +3,11 @@ from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
 from keras.optimizers import Adam
 
+from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
+from modelzoo.backend.tensor.gatenet.Netout import Netout
 from modelzoo.backend.tensor.metrics import Loss
 from modelzoo.models.Net import Net
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 
 
 class GateNetV44(Net):
@@ -77,8 +80,13 @@ class GateNetV44(Net):
 
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
             act3)
-        reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
-        out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
+        reshape = Reshape((-1, n_polygon + 1))(final)
+        predictions = Netout(K.shape(reshape))(reshape)
+
+        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
+                            K.tf.float32)
+
+        out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
 
         model = Model(input, out)
 
@@ -87,15 +95,4 @@ class GateNetV44(Net):
 
         self._model = model
 
-    def net2y(self, netout):
-        """
-        Adapt raw network output. (Softmax, exp, sigmoid, anchors)
-        :param netout: Raw network output
-        :return: y as fed for learning
-        """
-        netout = K.reshape(netout, (-1, self.grid[0] * self.grid[1], self.n_boxes, self.n_polygon + 1))
-        pred_xy = K.sigmoid(netout[:, :, :, :2])
-        pred_wh = K.exp(netout[:, :, :, 2:self.n_polygon]) 
-        pred_c = K.sigmoid(netout[:, :, :, -1])
 
-        return K.concatenate([pred_xy, pred_wh, K.expand_dims(pred_c, -1)], 3)

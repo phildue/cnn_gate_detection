@@ -8,11 +8,11 @@ import numpy as np
 
 cd_work()
 
-generator = CropGenerator(GateGenerator(directories=['resource/ext/samples/daylight'],
-                                        batch_size=8, color_format='bgr',
-                                        shuffle=False, start_idx=0, valid_frac=1.0,
-                                        label_format='xml',
-                                        ))
+generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
+                          batch_size=8, color_format='bgr',
+                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          label_format='xml',
+                          )
 #
 # generator = VocGenerator(batch_size=8)
 #
@@ -22,13 +22,15 @@ generator = CropGenerator(GateGenerator(directories=['resource/ext/samples/dayli
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-model = GateNet.create('GateNet3x3', weight_file='out/gate_crop3x3/model.h5', batch_size=8, norm=(52, 52), grid=[(3, 3)],
-                       anchors=np.array([[[1, 1],
-                                              [0.3, 0.3],
-                                              [0.5, 1],
-                                              [1, 0.5],
-                                              [0.7, 0.7]
-                                              ]]
-                                            ))
+model = GateNet.create('GateNetV44', weight_file='out/gatev44/model.h5', batch_size=8, norm=(52, 52),
+                       grid=[(13, 13)],
+                       # anchors=np.array([[[1, 1],
+                       #                    [0.3, 0.3],
+                       #                    [0.5, 1],
+                       #                    [1, 0.5],
+                       #                    [0.7, 0.7]
+                       #                    ]]
+                       #                                        )
+                       )
 
-demo_generator(model, generator, t_show=0, n_samples=150,size=(104,104))
+demo_generator(model, generator, t_show=0, n_samples=150)
