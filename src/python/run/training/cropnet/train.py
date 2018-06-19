@@ -1,10 +1,13 @@
 import argparse
 import pprint as pp
 
+from modelzoo.backend.tensor.CropLoss import CropLoss
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
+from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelFactory import ModelFactory
+from modelzoo.models.cropnet.CropNet import CropNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -13,8 +16,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNetV43'
-work_dir = 'gatev43_crop'
+model_name = 'CropNet3L'
+work_dir = 'cropnet3l'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -74,8 +77,7 @@ augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.5, TransformFlip()),
                             (0.2, RandomShift(-.3, .3))])
 
-predictor = ModelFactory.build(model_name, batch_size, src_dir=model_src, img_res=img_res, grid=[(13, 13)])
-predictor.preprocessor.augmenter = augmenter
+predictor = CropNet(net=CropNet2L(input_shape=(52, 52), loss=CropLoss()), augmenter=augmenter)
 
 """
 Datasets
@@ -107,27 +109,11 @@ params = {'optimizer': 'adam',
           'epsilon': 1e-08,
           'decay': 0.0005}
 
-
-def average_precision(y_true, y_pred):
-    return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-                                   norm=predictor.norm).compute(y_true, y_pred)
-
-
-predictor.compile(params=params, metrics=[average_precision])
+predictor.compile(params=params, metrics=None)
 
 """
 Training Config
 """
-
-test_metric_1 = MeanAveragePrecision(predictor=predictor,
-                                     test_set=test_gen_1,
-                                     out_file=test_result_1,
-                                     period=5)
-
-test_metric_2 = MeanAveragePrecision(predictor=predictor,
-                                     test_set=test_gen_2,
-                                     out_file=test_result_2,
-                                     period=5)
 
 training = Training(predictor, train_gen,
                     out_file='model.h5',

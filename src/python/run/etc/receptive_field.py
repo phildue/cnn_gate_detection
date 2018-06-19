@@ -13,11 +13,12 @@
 # - start_i: position of the first feature's receptive field in layer i (idx start from 0, negative means the center fall into padding)
 import math
 
-net = {'conv1': [6, 1, 1],
+net = {'conv1': [3, 1, 1],
        'pool1': [2, 2, 0],
-       'conv2': [6, 1, 1],
+       'conv2': [3, 1, 1],
        'pool2': [2, 2, 0],
-       'conv3': [6, 1, 1],
+       'conv3': [3, 1, 1],
+       'conv4': [3, 1, 1],
        # 'conv7': [6, 1, 1],
        # 'conv8': [3, 1, 1],
        # 'conv9': [3, 1, 1],

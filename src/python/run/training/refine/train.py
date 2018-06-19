@@ -15,8 +15,8 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-model_name = 'GateNet3x3'
-work_dir = 'gate_crop3x3_more_gates'
+model_name = 'GateNet3x3V3'
+work_dir = 'gate_3x3V3'
 batch_size = 4
 n_samples = None
 epochs = 100
@@ -24,6 +24,9 @@ initial_epoch = 0
 learning_rate = 0.001
 
 
+# Why do we need such a big network? Because we have to deal with overlaps and scales
+# If we look at a smaller crop there will be less possible combinations, hence we can make that network much simpler
+# 52x52 crop over layer/width
 def learning_rate_schedule(epoch):
     if epoch > 50:
         return 0.0001
@@ -76,7 +79,7 @@ augmenter = None#RandomEnsemble([(1.0, RandomBrightness(0.8, 1.2)),
                  #           (0.5, TransformFlip()),
                   #          (0.2, RandomShift(-0.2,0.2))])
 
-predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=[(3, 3)], scale_coor=5.0,
+predictor = GateNet.create(model_name, batch_size=batch_size, norm=img_res, grid=[(6, 6)], scale_coor=5.0,
                            anchors=np.array([[[1, 1],
                                               [0.3, 0.3],
                                               [2, 1],
