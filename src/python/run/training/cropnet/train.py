@@ -13,7 +13,11 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-ARCHITECTURE = None
+ARCHITECTURE = [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+            {'name': 'max_pool', 'size': (2, 2)},
+            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+            {'name': 'max_pool', 'size': (2, 2)},
+            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1}]
 EPOCHS = 100
 INITIAL_EPOCH = 0
 WORK_DIR = 'test'
@@ -92,10 +96,11 @@ def train(architecture=ARCHITECTURE,
                         log_csv=True,
                         lr_reduce=0.1,
                         )
-
-    pp.pprint(training.summary)
-
-    save_file(training.summary, 'summary.txt', result_path, verbose=False)
+    summary = training.summary
+    summary['architecture'] = architecture
+    pp.pprint(summary)
+    save_file(summary, 'summary.txt', result_path, verbose=False)
+    save_file(summary, 'summary.pkl', result_path, verbose=False)
     predictor.net.backend.summary()
 
     training.fit_generator()
