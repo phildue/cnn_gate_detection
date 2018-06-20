@@ -45,6 +45,7 @@ class MetricDetection(Metric):
         fp = len(self._boxes_pred) - tp
 
         self._result = DetectionResult(tp, fp, fn)
+        return self._result
 
     def update(self, label_true: ImgLabel, label_pred: ImgLabel):
 

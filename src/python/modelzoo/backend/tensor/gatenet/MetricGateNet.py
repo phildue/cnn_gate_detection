@@ -54,9 +54,10 @@ class MetricGateNet(Metric):
 
         return coord_true_dec_t, conf_true_t
 
-    def _postprocess_pred(self, y_pred, anchors_t):
+    def _postprocess_pred(self, y_pred):
         coord_pred_t = y_pred[:, :, 1:5]
         conf_pred_t = y_pred[:, :, :1]
+        anchors_t = y_pred[:, :, 5:]
 
         coord_pred_dec_t = self._decode_coord(coord_pred_t, anchors_t)
 

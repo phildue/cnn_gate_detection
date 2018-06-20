@@ -92,7 +92,7 @@ if __name__ == '__main__':
     n_layers = 1
     input_layer = tf.placeholder(tf.float32, [1, input_res[0], input_res[1], 3], name='Image')
     quantize = False
-    out_name = 'lib/gatenet-jevois/gatenet/share/gatenet/{}xconv_w{}_3x3-norm-{}x{}'.format(n_layers, n_filter,
+    out_name = 'lib/refine-jevois/refine/share/refine/{}xconv_w{}_3x3-norm-{}x{}'.format(n_layers, n_filter,
                                                                                                     input_res[0],
                                                                                                     input_res[1])
     layer0 = input_layer

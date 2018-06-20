@@ -14,8 +14,8 @@ class DetectionCountGateNet(MetricGateNet):
 
         :return: true positives, false positives, false negatives
         """
-        y_true = K.reshape(y_true, [-1, self.grid[0], self.grid[1], self.n_boxes, 5])
-        y_pred = K.reshape(y_pred, [-1, self.grid[0], self.grid[1], self.n_boxes, 5])
+        y_true = K.reshape(y_true, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, 5])
+        y_pred = K.reshape(y_pred, [-1, self.grid[0][0], self.grid[0][1], self.n_boxes, 5])
 
         coord_true_t, class_true_t = self._postprocess_truth(y_true)
 
