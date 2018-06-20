@@ -1,6 +1,6 @@
 import numpy as np
 
-from modelzoo.backend.tensor.CropLoss import CropLoss
+from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
 from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
 from modelzoo.models.cropnet.CropNet import CropNet
 from utils.fileaccess.CropGenerator import CropGenerator
@@ -13,7 +13,7 @@ from utils.workdir import cd_work
 cd_work()
 batch_size = 10
 
-predictor = CropNet(net=CropNet2L(input_shape=(52, 52), loss=CropLoss()), augmenter=None)
+predictor = CropNet(net=CropNet2L(input_shape=(52, 52), loss=CropGridLoss()), augmenter=None)
 
 dataset = GateGenerator(["resource/ext/samples/industrial_new/"], batch_size=batch_size,
                         color_format='bgr', label_format='xml', n_samples=99).generate()

@@ -1,7 +1,7 @@
 import argparse
 import pprint as pp
 
-from modelzoo.backend.tensor.CropLoss import CropLoss
+from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
 from modelzoo.models.cropnet.CropNet import CropNet
@@ -14,10 +14,10 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
 ARCHITECTURE = [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-            {'name': 'max_pool', 'size': (2, 2)},
-            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-            {'name': 'max_pool', 'size': (2, 2)},
-            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1}]
+                {'name': 'max_pool', 'size': (2, 2)},
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+                {'name': 'max_pool', 'size': (2, 2)},
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 2, 'strides': (1, 1), 'alpha': 0.1}]
 EPOCHS = 100
 INITIAL_EPOCH = 0
 WORK_DIR = 'test'
@@ -25,10 +25,12 @@ N_SAMPLES = None
 LEARNING_RATE = 0.001
 BATCH_SIZE = 4
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
+LOSS = CropGridLoss()
 
 
 def train(architecture=ARCHITECTURE,
           work_dir=WORK_DIR,
+          loss=LOSS,
           batch_size=BATCH_SIZE,
           n_samples=N_SAMPLES,
           epochs=EPOCHS,
@@ -51,7 +53,7 @@ def train(architecture=ARCHITECTURE,
                                 (0.5, TransformFlip()),
                                 (0.2, RandomShift(-.3, .3))])
 
-    predictor = CropNet(net=CropNet2L(architecture=architecture, input_shape=(52, 52), loss=CropLoss()),
+    predictor = CropNet(net=CropNet2L(architecture=architecture, input_shape=(52, 52), loss=loss),
                         augmenter=augmenter)
 
     """

@@ -1,4 +1,4 @@
-from modelzoo.backend.tensor.CropLoss import CropLoss
+from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
 from modelzoo.models.Net import Net
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
@@ -25,4 +25,4 @@ class CropNet(Predictor):
         decoder = CropNetDecoder(output_shape, input_shape)
         preprocessor = Preprocessor(augmenter, encoder, 1, input_shape, color_format)
         postprocessor = Postprocessor(decoder)
-        super().__init__(preprocessor, postprocessor, net, CropLoss(), encoder, decoder)
+        super().__init__(preprocessor, postprocessor, net, CropGridLoss(), encoder, decoder)

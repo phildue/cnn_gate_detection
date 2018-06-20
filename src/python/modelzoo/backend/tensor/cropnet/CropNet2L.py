@@ -2,14 +2,14 @@ from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Dense, Flatten, Reshape
 from keras.optimizers import Adam
 
-from modelzoo.backend.tensor.CropLoss import CropLoss
+from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
 from modelzoo.backend.tensor.layers import create_layer
 from modelzoo.models.Net import Net
 
 
 class CropNet2L(Net):
 
-    def __init__(self, architecture, loss=CropLoss(), input_shape=(52, 52)):
+    def __init__(self, architecture, loss=CropGridLoss(), input_shape=(52, 52)):
         self.loss = loss
         self.grid_shape = int(input_shape[0] / 2 ** 2), int(input_shape[1] / 2 ** 2)
         self._params = {'optimizer': 'adam',
@@ -30,8 +30,8 @@ class CropNet2L(Net):
         for config in architecture:
             net = create_layer(net, config)
 
-        reshape = Flatten()(net)
-        dense = Dense(self.grid_shape[0] * self.grid_shape[1])(reshape)
+        flat = Flatten()(net)
+        dense = Dense(self.grid_shape[0] * self.grid_shape[1])(flat)
         netout = Reshape(self.grid_shape)(dense)
 
         self._model = Model(netin, netout)
