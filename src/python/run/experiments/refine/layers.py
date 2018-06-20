@@ -10,7 +10,7 @@ def run(baseline, name, start_layers, n_layers):
             architecture.append(
                 {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1})
 
-        train(architecture=architecture, work_dir='{}+{}layers'.format(name, start_layers + i), img_res=(52, 52))
+        train(architecture=architecture, work_dir='{}+{}layers'.format(name, start_layers + i), img_res=(52, 52),epochs=50)
 
 
 baseline13x13 = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
