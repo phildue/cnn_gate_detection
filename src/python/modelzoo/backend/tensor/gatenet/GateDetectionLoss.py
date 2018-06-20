@@ -12,7 +12,6 @@ class GateDetectionLoss(Loss):
         self.scale_coor = weight_loc
         self.n_polygon = n_polygon
         self.n_boxes = n_boxes
-        self.grid = grid
 
     def loss(self, y_true, y_pred):
         y_true_k = K.constant(y_true, name="y_true")

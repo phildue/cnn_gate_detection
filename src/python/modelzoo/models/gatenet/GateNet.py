@@ -4,6 +4,7 @@ from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.backend.tensor.gatenet.GateNet3x3 import GateNet3x3
 from modelzoo.backend.tensor.gatenet.GateNet3x3V2 import GateNet3x3V2
 from modelzoo.backend.tensor.gatenet.GateNet3x3V3 import GateNet3x3V3
+from modelzoo.backend.tensor.gatenet.GateNetBase import GateNetBase
 from modelzoo.backend.tensor.gatenet.GateNetFC import GateNetFC
 from modelzoo.backend.tensor.gatenet.GateNetSingle import GateNetSingle
 from modelzoo.backend.tensor.gatenet.GateNetV0 import GateNetV0
@@ -133,6 +134,54 @@ class GateNet(Predictor):
     @property
     def input_shape(self):
         return self.norm[0], self.norm[1], 3
+
+    @staticmethod
+    def create_by_arch(architecture,
+                       norm=(416, 416),
+                       anchors=None,
+                       batch_size=8,
+                       scale_noob=1.0,
+                       scale_conf=5.0,
+                       scale_coor=1.0,
+                       scale_prob=1.0,
+                       conf_thresh=0.3,
+                       weight_file=None,
+                       color_format='yuv',
+                       augmenter: ImgTransform = None,
+                       n_polygon=4
+                       ):
+        if anchors is None:
+            anchors = np.array([[[1.08, 1.19],
+                                 [3.42, 4.41],
+                                 [6.63, 11.38],
+                                 [9.42, 5.11],
+                                 [16.62, 10.52]]])
+
+        n_boxes = int(np.ceil(anchors.size / 2))
+        loss = GateDetectionLoss(
+            n_boxes=n_boxes,
+            n_polygon=4,
+            weight_loc=scale_coor,
+            weight_conf=scale_conf,
+            weight_prob=scale_prob,
+            weight_noobj=scale_noob)
+        net = GateNetBase(architecture=architecture,
+                          loss=loss,
+                          anchors=anchors,
+                          img_shape=norm,
+                          weight_file=weight_file,
+                          n_boxes=n_boxes,
+                          n_polygon=n_polygon)
+
+        return GateNet(net,
+                       anchors=anchors,
+                       batch_size=batch_size,
+                       grid=net.grid,
+                       norm=norm,
+                       conf_thresh=conf_thresh,
+                       color_format=color_format,
+                       augmenter=augmenter,
+                       n_polygon=n_polygon)
 
     @staticmethod
     def create(model_name,
