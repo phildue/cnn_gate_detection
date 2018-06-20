@@ -34,9 +34,9 @@ class Training:
                                        verbose=1)
             self.callbacks.append(early_stop)
         if out_file is not None:
-            checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_average_precision', verbose=2,
+            checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_loss', verbose=2,
                                          save_best_only=True,
-                                         mode='max', save_weights_only=False,
+                                         mode='min', save_weights_only=False,
                                          period=1)
             self.callbacks.append(checkpoint)
         if log_dir is not None:
