@@ -80,7 +80,7 @@ def train(architecture=ARCHITECTURE,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    predictor.compile(params=params, metrics=None)
+    predictor.compile(params=params, metrics=['accuracy'])
 
     """
     Training Config

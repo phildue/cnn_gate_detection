@@ -13,7 +13,7 @@ from utils.workdir import cd_work
 cd_work()
 batch_size = 10
 
-predictor = CropNet(net=CropNet2L(input_shape=(52, 52), loss=CropGridLoss()), augmenter=None)
+predictor = CropNet(net=CropNet2L(architecture=None,input_shape=(52, 52), loss=CropGridLoss()), augmenter=None)
 
 dataset = GateGenerator(["resource/ext/samples/industrial_new/"], batch_size=batch_size,
                         color_format='bgr', label_format='xml', n_samples=99).generate()
@@ -27,10 +27,10 @@ for i in range(batch_size):
     print("Objects: {}".format(len(label_true.objects)))
     print(np.round(labels1_enc[i], 2))
     print('_____________________________')
-    img, label_true = resize(img, predictor.input_shape, label=label_true)
+    img, label_true = resize(img, (104,104), label=label_true)
     label_dec = predictor.postprocessor.decoder.decode_netout_to_label(labels1_enc[i])
     label_img = Image(label_dec * 255, 'bgr')
-    label_img = resize(label_img, (52, 52))
+    label_img = resize(label_img, (104, 104))
     print(label_dec)
     show(img, labels=[label_true], colors=[COLOR_GREEN], name='True', t=1)
     show(label_img, name='Decoded')
