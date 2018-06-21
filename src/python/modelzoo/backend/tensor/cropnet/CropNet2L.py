@@ -1,5 +1,5 @@
 from keras import Input, Model
-from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Dense, Flatten, Reshape
+from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Dense, Flatten, Reshape, Activation
 from keras.optimizers import Adam
 
 from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
@@ -32,7 +32,8 @@ class CropNet2L(Net):
 
         flat = Flatten()(net)
         dense = Dense(self.grid_shape[0] * self.grid_shape[1])(flat)
-        netout = Reshape(self.grid_shape)(dense)
+        act = Activation('softmax')(dense)
+        netout = Reshape(self.grid_shape)(act)
 
         self._model = Model(netin, netout)
 
