@@ -100,8 +100,8 @@ class GateNetV10(Net):
 
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
             act8)
-        reshape = Reshape((self.grid[0] * self.grid[1] * self.n_boxes, n_polygon + 1))(final)
-        out = Lambda(self.net2y, (grid[0] * grid[1] * n_boxes, n_polygon + 1))(reshape)
+        reshape = Reshape((self.grid[0][0] * self.grid[0][1] * self.n_boxes, n_polygon + 1))(final)
+        out = Lambda(self.net2y, (grid[0][0] * grid[0][1] * n_boxes, n_polygon + 1))(reshape)
 
         model = Model(input, out)
 
@@ -116,7 +116,7 @@ class GateNetV10(Net):
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        netout = K.reshape(netout, (-1, self.grid[0] * self.grid[1], self.n_boxes, self.n_polygon + 1))
+        netout = K.reshape(netout, (-1, self.grid[0][0] * self.grid[0][1], self.n_boxes, self.n_polygon + 1))
         pred_xy = K.sigmoid(netout[:, :, :, :2])
         pred_wh = K.exp(netout[:, :, :, 2:self.n_polygon]) * K.reshape(K.constant(self.anchors),
                                                                        [1, 1, self.n_boxes, self.n_polygon - 2])
