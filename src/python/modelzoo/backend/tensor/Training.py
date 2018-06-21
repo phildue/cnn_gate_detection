@@ -31,10 +31,10 @@ class Training:
         self.callbacks = []
         if patience_early_stop > -1:
             early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience_early_stop, mode='min',
-                                       verbose=1)
+                                       verbose=0)
             self.callbacks.append(early_stop)
         if out_file is not None:
-            checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_loss', verbose=2,
+            checkpoint = ModelCheckpoint(log_dir + out_file, monitor='val_loss', verbose=0,
                                          save_best_only=True,
                                          mode='min', save_weights_only=False,
                                          period=1)

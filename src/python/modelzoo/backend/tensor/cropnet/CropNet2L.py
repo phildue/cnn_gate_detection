@@ -11,7 +11,6 @@ class CropNet2L(Net):
 
     def __init__(self, architecture, loss=CropGridLoss(), input_shape=(52, 52)):
         self.loss = loss
-        self.grid_shape = int(input_shape[0] / 2 ** 2), int(input_shape[1] / 2 ** 2)
         self._params = {'optimizer': 'adam',
                         'lr': 0.001,
                         'beta_1': 0.9,
@@ -27,13 +26,18 @@ class CropNet2L(Net):
             {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
         netin = Input((h, w, 3))
         net = netin
+        grid = h,w
         for config in architecture:
             net = create_layer(net, config)
+            if 'pool' in config['name']:
+                size = config['size']
+                grid = int(grid[0] / size[0]), int(grid[1] / size[1])
 
+        self.grid = grid
         flat = Flatten()(net)
-        dense = Dense(self.grid_shape[0] * self.grid_shape[1])(flat)
+        dense = Dense(self.grid[0] * self.grid[1])(flat)
         act = Activation('softmax')(dense)
-        netout = Reshape(self.grid_shape)(act)
+        netout = Reshape(self.grid)(act)
 
         self._model = Model(netin, netout)
 

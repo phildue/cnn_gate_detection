@@ -26,6 +26,7 @@ LEARNING_RATE = 0.001
 BATCH_SIZE = 4
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
 LOSS = CropGridLoss()
+IMAGE_RES = (52, 52)
 
 
 def train(architecture=ARCHITECTURE,
@@ -37,7 +38,7 @@ def train(architecture=ARCHITECTURE,
           initial_epoch=INITIAL_EPOCH,
           learning_rate=LEARNING_RATE,
           image_source=IMAGE_SOURCE,
-          ):
+          img_res=IMAGE_RES):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -53,8 +54,8 @@ def train(architecture=ARCHITECTURE,
                                 (0.5, TransformFlip()),
                                 (0.2, RandomShift(-.3, .3))])
 
-    predictor = CropNet(net=CropNet2L(architecture=architecture, input_shape=(52, 52), loss=loss),
-                        augmenter=augmenter)
+    predictor = CropNet(net=CropNet2L(architecture=architecture, input_shape=img_res, loss=loss),
+                        augmenter=augmenter, input_shape=img_res)
 
     """
     Datasets
