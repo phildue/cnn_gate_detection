@@ -2,7 +2,7 @@
 
 #SBATCH --partition=general
 #SBATCH --qos=long
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=12000
@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/cropnet_layers.py --w 52 --h 52 --x_filter_start 2 --x_filter_end 3
+srun python3 dronevision/src/python/run/experiments/cropnet_layers.py --w 52 --h 52 --x_filter_start 2 --x_filter_end 4
