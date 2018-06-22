@@ -1,25 +1,86 @@
 	\chapter{Object Detection}
+	
 	\label{sec:object_detection}
 	
 	\begin{center}
 		\textbf{ How can a detection model represent wire frame objects?}
 	\end{center}
-
 	
-	\section{Background}
 	
-	Object Detection is a well studied topic since the very beginning of computer vision. It can be separated in two individual problems which are Classification: Which object does the image/ a patch of the image contain? and Localization: Where in the image is the object?.
+	Object detection has been an intensively studied area within computer vision. Reaching back to \todoref{first object detection}, the machine based determination of what kind of objects we see where in the image has always been in the interest of academia and industry.
 	
-	\todo{Illustrate high level description of object detection: feature extraction + localization/ classification}
-	Existing methods can broadly be grouped in three categories. These are described in the following:
-
-	\subsection{Shallow Methods}
+	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label:
 	
-	Usually filters are handcrafted or learned separately. Their response is fed into a classifier. The detector pipeline is applied on the image in sliding window fashion. The results are filtered by a final non-maximum suppression stage. 
-
-	Popular features are haar-features \cite{Viola2004} and the Histogram of Gradients\cite{Forsyth}. These methods give good results as long as the object is fully visible and the position in the test set does not change too much. This issue gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs \cite{Viola2004}.
+	$$
+	\begin{matrix}
+	A_1, C_1\\
+	..
+	\end{matrix} = f(I)
+	$$
+	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
+	
+	%Pipeline
+	Images are high dimensional signals and therefore difficult when fed directly to classifiers. Hence, the usual object detection pipeline consists of two stages. The feature extraction stage extracts task specific knowledge from an image and infers a lower dimensional representation of the image, where important features are highlighted. The classification/localization stage works on this lower representation and produces the final output.\todo{Image of pipeline}
+	
+	
+	
+	\section{Feature Extraction}
+	
+	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Current methods can roughly be grouped in hand engineered feature extractors and learned feature extractors.
+	
+	\subsection{Engineered Feature Extractors}
+	
+	Feature extractors reach from simple color intensities or pixel counts like haar-features \cite{Viola2004} to more complex methods like Histogram of Gradients\cite{Forsyth}. These features are usually manually engineered with the task at hand or estimated from a given dataset.
+	
+	\subsection{Learned Feature Extractors}
+	
+	The most popular feature extractor in modern computer vision are \acp{CNN}. In contrast to manually designed extractors \acp{CNN} are learned task specific via back-propagation. The convolution operation can be expressed as follows:
+	\todo{MATH}
+	
+	On top of the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
+	
+	\todo{Comparison Learned feature extractor vs hand engineered}
+	It is anticipated that learning a feature extractor from data leads to better representations and therefore to an improve in detection performance. \acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined to learn even more efficient representations. Multiple studies suggest that going deeper with convolutions increases the strength of the representation yielding even better results in classification and object detection. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
+	
+	\section{Sampling}
+	
+	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite while usually a large proportion of the image does not contain any object. Hence, which areas to process within an image is a critical parameter regarding performance in accuracy and inference time.
+	
+	Commonly the areas to classify are limited bounding boxes that surround the object. However also other have been proposed..	
+	
+	Another issue that arises when evaluating several regions in the image is that multiple boxes are predicted for the same object. To circumvent this problem results are often filtered by a final non-maximum suppression stage. 
+	
+	\subsection{Sliding window}
+	
+	Sliding window-based techniques crop regions of different sizes and aspect ratios across the image and run the detection on those regions. The regions to crop are predefined and fixed. 
+	
+	\subsection{Attention Models}
+	
+	Attention based techniques are inspired by the human vision process \todoref{arg1}. The algorithm shall focus on the important parts of the image and not spend computations on less important parts. Multiple approaches exist to model the attention process.
+	
+	Viola and Jones stop further processing samples that are classified as background.
+	
+	Guido proposes a neural network to learn an attention model.
+	
+	X propose a recurrent neural network architecture to model the attention process.
+	
+	Fast-RCNN and Faster-RCNN use a \acp{CNN} to model the attention process and propose regions that get classified in a second stage.
+	
+	\subsection{Regression Models}
+	
+	Regression models frame the object detection task as regression problem. Predictions are made for a predefined set of regions. The process is usually modeled with deep neural networks.
+	
+	YoloV1 defines a 7x7 grid and classifies each grid cell while predicting 5 possible bounding box regions for the object in the cell.
+	
+	YoloV2,SSD define a pre-parameterized set of bounding boxes. For each box class probabilities and coordinate offsets are predicted. 
+	
+	Several variations of the above approaches exist ..
+	
+	\section{Object Model}
+	
+	 These methods give good results as long as the object is fully visible and the position in the test set does not change too much. This issue gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs \cite{Viola2004}.
 		\todo{elaborate}
-	\subsection{Deep Methods}
+
 	\todo{Explain CNNs}
 	\paragraph{Two Stage Detectors}
 	\todo{R-CNN, Fast R-CNN, Faster R-CNN and the like}
