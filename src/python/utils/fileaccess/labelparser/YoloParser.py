@@ -28,6 +28,14 @@ class YoloParser(AbstractDatasetParser):
         for i, l in enumerate(labels):
             filename = '{}/{:05d}'.format(self.directory, self.idx)
             img, label = resize(images[i], self.img_norm, label=l)
-            self.write_img(img, filename + '.' + self.image_format)
+            for obj in label.objects:
+                obj.y_min = self.img_norm[0] - obj.y_min
+                obj.y_max = self.img_norm[0] - obj.y_max
+            if self.color_format is 'yuv':
+                self.write_img(img.yuv, filename + '.' + self.image_format)
+            elif self.color_format is 'bgr':
+                self.write_img(img.bgr, filename + '.' + self.image_format)
+            else:
+                raise ValueError('Unknown color format')
             self.write_label(label, filename)
             self.idx += 1
