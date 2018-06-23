@@ -18,7 +18,6 @@ class DetectionCountGateNet(MetricGateNet):
         coord_true_t, class_true_t = self._postprocess_truth(y_true)
 
         coord_pred_t, class_pred_t = self._postprocess_pred(y_pred)
-
         n_tp, n_fp, n_fn = self.map_adapter.detections(coord_true_t, coord_pred_t,
                                                        class_true_t, class_pred_t,
                                                        self.confidence_levels)

@@ -118,7 +118,7 @@ class AveragePrecision(Metric):
         :param w_true: tensor(#true boxes,1) containing 1 if true box actually contains object
         :return: number of true positives, false positives and false negatives
         """
-        w_positive = K.cast(K.greater_equal(K.max(class_pred, -1, keepdims=True), conf_thresh), K.floatx())
+        w_positive = K.cast(K.greater(K.max(class_pred, -1, keepdims=True), conf_thresh), K.floatx())
         w_positive_transposed = K.permute_dimensions(w_positive, (0, 2, 1))
 
         n_true = K.sum(w_true, -1)
@@ -156,12 +156,12 @@ class AveragePrecision(Metric):
         min_idx = K.argmin(conf_true, axis=-1)
         max_min_idx = K.cast(K.max(min_idx), K.tf.int32)
 
-        coord_sorted = coord_sorted[:, :max_min_idx + 1]
-        class_sorted = class_sorted[:, :max_min_idx + 1]
+        coord_sorted = coord_sorted[:, :max_min_idx+1]
+        class_sorted = class_sorted[:, :max_min_idx+1]
 
         return coord_sorted, class_sorted
 
-    def detections(self, coord_true, coord_pred, class_true, class_pred, conf_thresh=K.np.linspace(0, 1.0, 11)):
+    def detections(self, coord_true, coord_pred, class_true, class_pred, conf_thresh=K.np.linspace(0.0, 1.0, 11)):
         """
         Determines number of true positives, false positives, false negatives.
         (1) boxes are sorted and boxes that don't contain positives are removed,
@@ -208,7 +208,7 @@ class AveragePrecision(Metric):
 
         return n_tp, n_fp, n_fn
 
-    def precision_recall(self, coord_true, coord_pred, class_true, class_pred, conf_thresh=K.np.linspace(0, 1.0, 11)):
+    def precision_recall(self, coord_true, coord_pred, class_true, class_pred, conf_thresh=K.np.linspace(0.0, 1.0, 11)):
         """
         Calculates the precision-recall for one confidence level
         :param coord_true: tensor(#boxes,4) true bounding box coordinates in minmax-format

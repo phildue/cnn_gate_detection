@@ -76,9 +76,16 @@
 	
 	Several variations of the above approaches exist ..
 	
-	\section{Object Model}
+	\section{Classification}
 	
-	 These methods give good results as long as the object is fully visible and the position in the test set does not change too much. This issue gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs \cite{Viola2004}.
+	In the classification stage the features extracted at the sampled locations in the image get assigned a class label.
+	
+	Traditional approaches learned the object representation with classification models like support vector machine or ..
+	
+	However, these methods prove to be sensitive towards part occlusions or large variations between training and test set. This gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs 
+	
+	Recent methods mostly use (convolutional )neural networks for the classification task. \todoref{cnn are dpm} argues that \acp{CNN} work the same way as DPMs.
+	\cite{Viola2004}.
 		\todo{elaborate}
 
 	\todo{Explain CNNs}

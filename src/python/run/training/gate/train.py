@@ -42,7 +42,7 @@ AUGMENTER = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.2, RandomShift(-.3, .3))])
 
 
-def train(model_name=MODEL_NAME,
+def train(architecture=MODEL_NAME,
           work_dir=WORK_DIR,
           batch_size=BATCH_SIZE,
           n_samples=N_SAMPLES,
@@ -50,8 +50,6 @@ def train(model_name=MODEL_NAME,
           learning_rate=LEARNING_RATE,
           epochs=EPOCHS,
           image_source=IMAGE_SOURCE,
-          test_image_source_1=TEST_IMAGE_SOURCE_1,
-          test_image_source_2=TEST_IMAGE_SOURCE_2,
           img_res=(IMG_HEIGHT, IMG_WIDTH),
           anchors=ANCHORS,
           augmenter=AUGMENTER
@@ -68,10 +66,10 @@ def train(model_name=MODEL_NAME,
     Model
     """
 
-    if isinstance(model_name, str):
-        predictor = ModelFactory.build(model_name, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
+    if isinstance(architecture, str):
+        predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
     else:
-        predictor = GateNet.create_by_arch(model_name, anchors=anchors, batch_size=batch_size, augmenter=augmenter)
+        predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter)
 
     """
     Datasets
@@ -79,17 +77,11 @@ def train(model_name=MODEL_NAME,
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
                               color_format='bgr', label_format='xml', n_samples=n_samples)
-    test_gen_1 = GateGenerator(test_image_source_1, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                               label_format='xml')
-    test_gen_2 = GateGenerator(test_image_source_2, batch_size=batch_size, valid_frac=0, color_format='bgr',
-                               label_format='xml')
 
     """
     Paths
     """
     result_path = 'out/' + work_dir + '/'
-    test_result_1 = result_path + 'results/set_1-'
-    test_result_2 = result_path + 'results/set_2--'
 
     create_dirs([result_path, result_path + '/results/'])
 
@@ -112,17 +104,6 @@ def train(model_name=MODEL_NAME,
     """
     Training Config
     """
-
-    test_metric_1 = MeanAveragePrecision(predictor=predictor,
-                                         test_set=test_gen_1,
-                                         out_file=test_result_1,
-                                         period=5)
-
-    test_metric_2 = MeanAveragePrecision(predictor=predictor,
-                                         test_set=test_gen_2,
-                                         out_file=test_result_2,
-                                         period=5)
-
     training = Training(predictor, train_gen,
                         out_file='model.h5',
                         patience_early_stop=20,
@@ -134,11 +115,13 @@ def train(model_name=MODEL_NAME,
                         epochs=epochs,
                         log_csv=True,
                         lr_reduce=0.1,
-                        # callbacks=[test_metric_1, test_metric_2]
                         )
 
-    pp.pprint(training.summary)
-
+    summary = training.summary
+    summary['architecture'] = architecture
+    pp.pprint(summary)
+    save_file(summary, 'summary.txt', result_path, verbose=False)
+    save_file(summary, 'summary.pkl', result_path, verbose=False)
     save_file(training.summary, 'summary.txt', result_path, verbose=False)
     predictor.net.backend.summary()
 
@@ -167,7 +150,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     train(
-        model_name=args.model_name,
+        architecture=args.model_name,
         work_dir=args.work_dir,
         batch_size=args.batch_size,
         n_samples=args.n_samples,
@@ -175,7 +158,5 @@ if __name__ == '__main__':
         learning_rate=args.learning_rate,
         epochs=args.epochs,
         image_source=args.image_source,
-        test_image_source_1=args.test_image_source_1,
-        test_image_source_2=args.test_image_source_2,
         img_res=(args.img_height, args.img_width)
     )
