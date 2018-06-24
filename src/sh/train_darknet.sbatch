@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun lib/darknet detector train ../../resource/ext/samples/gates-mixed-yolo20k/gates-mixed-yolo20k.txt cfg/yolov2-gatenet10.cfg
+srun lib/darknet detector train $HOME/dronevision/resource/ext/samples/gates-mixed-yolo20k/gates-mixed-yolo20k.txt $HOME/dronevision/lib/darknet/cfg/yolov2-gatenet10.cfg
