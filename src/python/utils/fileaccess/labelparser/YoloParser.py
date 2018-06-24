@@ -21,16 +21,16 @@ class YoloParser(AbstractDatasetParser):
         # [category number] [object center in X] [object center in Y] [object width in X] [object width in Y]
         with open(path + '.txt', "w+") as f:
             for obj in label.objects:
+                obj.y_min = self.img_norm[0] - obj.y_min
+                obj.y_max = self.img_norm[0] - obj.y_max
                 f.write('{} {} {} {} {}\n'.format(obj.class_id, obj.cx / self.img_norm[1], obj.cy / self.img_norm[0],
                                                   obj.width / self.img_norm[1], obj.height / self.img_norm[0]))
 
     def write(self, images: [Image], labels: [ImgLabel]):
         for i, l in enumerate(labels):
-            filename = '{}/{:05d}'.format(self.directory, self.idx)
+            filename = '{0:s}/{1:05d}'.format(self.directory, self.idx)
             img, label = resize(images[i], self.img_norm, label=l)
-            for obj in label.objects:
-                obj.y_min = self.img_norm[0] - obj.y_min
-                obj.y_max = self.img_norm[0] - obj.y_max
+
             if self.color_format is 'yuv':
                 self.write_img(img.yuv, filename + '.' + self.image_format)
             elif self.color_format is 'bgr':

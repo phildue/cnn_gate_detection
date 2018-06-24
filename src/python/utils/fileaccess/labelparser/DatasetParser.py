@@ -15,7 +15,7 @@ class DatasetParser:
         elif label_format is 'pkl':
             return PklParser(directory, color_format, start_idx, image_format)
         elif label_format is 'yolo':
-            return YoloParser(directory, color_format, start_idx, image_format)
+            return YoloParser(directory=directory, color_format=color_format, start_idx=start_idx, image_format=image_format)
         else:
             print("Label format not known!!")
 

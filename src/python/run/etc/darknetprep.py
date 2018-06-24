@@ -7,12 +7,13 @@ from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
-set_name = 'gates-daylight-yolo'
+set_name = 'gates-mixed-yolo20k'
 out_dir = 'resource/ext/samples/' + set_name
 create_dirs([out_dir])
 batch_size = 8
-n_images = 10000
-reader = GateGenerator(['resource/ext/samples/daylight/'], batch_size, color_format='bgr', shuffle=False,
+n_images = 20000
+reader = GateGenerator(['resource/ext/samples/daylight/', 'resource/ext/samples/industrial_new/'], batch_size,
+                       color_format='bgr', shuffle=False,
                        label_format='xml',
                        img_format='jpg',
                        start_idx=0, valid_frac=0).generate()
@@ -33,8 +34,8 @@ random.shuffle(indeces)
 valid_set = indeces[:int(0.1 * len(indeces))]
 train_set = indeces[int(0.1 * len(indeces)):]
 
-train_set_path = out_dir + '/gates-daylight.train.txt'
-valid_set_path = out_dir + '/gates-daylight.valid.txt'
+train_set_path = out_dir + '/gates-mixed.train.txt'
+valid_set_path = out_dir + '/gates-mixed.valid.txt'
 
 with open(valid_set_path, 'w') as f:
     for i in valid_set:
