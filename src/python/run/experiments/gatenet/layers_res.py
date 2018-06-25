@@ -1,6 +1,10 @@
 # How does performance compare over resolution, width, depth
 from run.training.gate.train import train
 import numpy as np
+
+from utils.workdir import cd_work
+
+cd_work()
 img_ress = [(416, 416), (104, 104), (52, 52)]
 for i, img_res in enumerate(img_ress):
     for width in [64, 32, 16]:

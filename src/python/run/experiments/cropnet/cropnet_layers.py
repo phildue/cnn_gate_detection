@@ -3,7 +3,9 @@
 import numpy as np
 
 from run.training.cropnet.train import train
+from utils.workdir import cd_work
 
+cd_work()
 for img_res in [(416, 416), (104, 104)]:
     for i, grid in enumerate([[(3, 3)], [(6, 6)], [(13, 13)]]):
         for width in [64, 32, 16]:

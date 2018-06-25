@@ -3,7 +3,9 @@
 import numpy as np
 
 from run.training.refine.train import train
+from utils.workdir import cd_work
 
+cd_work()
 img_res = 52, 52
 grids = [[(3, 3)], [(6, 6)], [(13, 13)]]
 
