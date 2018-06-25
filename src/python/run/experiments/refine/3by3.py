@@ -26,11 +26,7 @@ parser.add_argument("--x_filter_end", help="16*x_filter per layer end",
 args = parser.parse_args()
 for x in range(args.x_filter_start, args.x_filter_end):
     width = 16 * x
-    baseline13x13 = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
-                     {'name': 'max_pool', 'size': (2, 2)},
-                     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
-                     {'name': 'max_pool', 'size': (2, 2)}
-                     ]
+
     baseline6x6 = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
                    {'name': 'max_pool', 'size': (2, 2)},
                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
@@ -48,6 +44,4 @@ for x in range(args.x_filter_start, args.x_filter_end):
                    {'name': 'max_pool', 'size': (2, 2)}
                    ]
 
-    run(baseline13x13, 'refnet52x52-13x13', 2, 7, width)
-    run(baseline6x6, 'refnet52x52-6x6', 3, 6, width)
     run(baseline3x3, 'refnet52x52-3x3', 4, 5, width)
