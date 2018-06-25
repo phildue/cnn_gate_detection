@@ -23,7 +23,7 @@ MODEL_NAME = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'stri
                     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
 WORK_DIR = 'test'
 BATCH_SIZE = 4
-N_SAMPLES = 500
+N_SAMPLES = None
 EPOCHS = 100
 INITIAL_EPOCH = 0
 LEARNING_RATE = 0.001
@@ -68,7 +68,12 @@ def train(architecture=MODEL_NAME,
     if isinstance(architecture, str):
         predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
     else:
-        predictor = GateNet.create_by_arch(norm=img_res,architecture=architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter)
+        predictor = GateNet.create_by_arch(norm=img_res,
+                                           architecture=architecture,
+                                           anchors=anchors,
+                                           batch_size=batch_size,
+                                           augmenter=augmenter,
+                                           scale_coor=8.0)
 
     """
     Datasets
