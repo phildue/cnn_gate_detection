@@ -17,6 +17,6 @@ for i, img_res in enumerate(img_ress):
                     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1})
 
             train(architecture=architecture,
-                  work_dir='gatenet{}x{}+{}layers+{}filters'.format(img_res[0], img_res[1], 2 + n_layers, width),
+                  work_dir='gatenet{}x{}+{}layers+{}filters'.format(img_res[0], img_res[1], len(architecture)-int(len(baseline)/2) + n_layers, width),
                   img_res=img_res,
                   epochs=50)

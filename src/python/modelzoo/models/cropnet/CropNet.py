@@ -18,11 +18,11 @@ class CropNet(Predictor):
     def output_shape(self):
         return self._output_shape
 
-    def __init__(self, net: CropNet2L, augmenter: ImgTransform,
+    def __init__(self, net: CropNet2L, augmenter: ImgTransform = None,
                  input_shape=(52, 52), output_shape=(13, 13), color_format='yuv'):
         self._input_shape = input_shape
         self._output_shape = output_shape
-        encoder = CropNetEncoder(net.grid, input_shape)
+        encoder = CropNetEncoder(net.grid, input_shape, encoding='grid')
         decoder = CropNetDecoder(net.grid, input_shape)
         preprocessor = Preprocessor(augmenter, encoder, 1, input_shape, color_format)
         postprocessor = Postprocessor(decoder)

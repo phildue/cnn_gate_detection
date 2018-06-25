@@ -56,7 +56,7 @@ class CropNet2L(Net):
         )
 
     def predict(self, sample):
-        pass
+        return self.backend.predict(sample)
 
     @property
     def backend(self):

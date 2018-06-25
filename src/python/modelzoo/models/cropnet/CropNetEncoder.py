@@ -23,6 +23,7 @@ class CropNetEncoder(Encoder):
 
     def _encode_anchor(self, label: ImgLabel) -> np.array:
         #TODO
+        pass
     def _encode_grid(self, label: ImgLabel) -> np.array:
         label_t = np.zeros(self.input_shape)
 

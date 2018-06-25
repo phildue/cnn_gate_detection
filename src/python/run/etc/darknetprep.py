@@ -26,7 +26,7 @@ for i in range(0, n_images, batch_size):
     imgs = [b[0] for b in batch]
     labels = [b[1] for b in batch]
     writer.write(imgs, labels)
-    toc('Batch ' + str(i) + ' processed in ')
+    toc(str(i) + '/' + str(n_images) + ' samples processed in ')
 
 darknet_rel = '../../'
 indeces = [i for i in range(n_images)]
@@ -34,8 +34,8 @@ random.shuffle(indeces)
 valid_set = indeces[:int(0.1 * len(indeces))]
 train_set = indeces[int(0.1 * len(indeces)):]
 
-train_set_path = out_dir + '/gates-mixed.train.txt'
-valid_set_path = out_dir + '/gates-mixed.valid.txt'
+train_set_path = out_dir + '/train.txt'
+valid_set_path = out_dir + '/valid.txt'
 
 with open(valid_set_path, 'w') as f:
     for i in valid_set:

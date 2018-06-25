@@ -2,7 +2,7 @@
 
 #SBATCH --partition=general
 #SBATCH --qos=long
-#SBATCH --time=72:00:00
+#SBATCH --time=32:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=12000
@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/refine/layers.py --x_filter_start 2 --x_filter_end 3
+srun python3 dronevision/src/python/run/experiments/refine/layers.py --x_filter_start 4 --x_filter_end 5
