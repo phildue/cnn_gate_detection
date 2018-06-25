@@ -38,9 +38,9 @@ class CropGenerator(DatasetGenerator):
                     dw = 0
                     dh = 0
                     if w > h:
-                        dw = h - w
+                        dw = w - h
                     elif h > w:
-                        dh = w - h
+                        dh = h - w
 
                     crop_max = crop_max[0] + dw / 2, crop_max[1] + dw / 2,
                     crop_min = crop_min[0] - dh / 2, crop_min[1] - dh / 2

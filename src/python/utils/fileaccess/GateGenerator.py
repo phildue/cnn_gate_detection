@@ -52,7 +52,11 @@ class GateGenerator(DatasetGenerator):
 
     @property
     def n_samples(self):
+        print('Depreciated use len() instead')
         return self.__n_samples
+
+    def __len__(self):
+        return self.n_samples
 
     def generate(self):
         return self._generate(self.train_files)

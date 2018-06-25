@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--x_filter_start", help="16*x_filter per layer start",
                     type=int, default=1)
 parser.add_argument("--x_filter_end", help="16*x_filter per layer end",
-                    type=int, default=1)
+                    type=int, default=5)
 
 args = parser.parse_args()
 for x in range(args.x_filter_start, args.x_filter_end):

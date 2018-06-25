@@ -21,6 +21,33 @@ class Preprocessor:
         for batch in batches:
             yield self.preprocess_train(batch)
 
+    def preproces_test_generator(self, batches: [[(Image, ImgLabel)]]):
+        for batch in batches:
+            yield self.preprocess_test(batch)
+
+    def preprocess_test(self, dataset: [(Image, ImgLabel)]) -> (np.array, np.array):
+        y_batch = []
+        x_batch = []
+        for img, label, _ in dataset:
+
+            if self.color_format is 'yuv':
+                img = img.yuv
+            else:
+                img = img.bgr
+
+            img, label = resize(img, (self.img_height, self.img_width), label=label)
+            #
+            # show(img.bgr, t=1)
+            img_enc = self.encoder.encode_img(img)
+            label_enc = self.encoder.encode_label(label)
+            label_enc = np.expand_dims(label_enc, 0)
+            x_batch.append(img_enc)
+            y_batch.append(label_enc)
+
+        y_batch = np.concatenate(y_batch, 0)
+        x_batch = np.concatenate(x_batch, 0)
+        return x_batch, y_batch
+
     def preprocess_train(self, dataset: [(Image, ImgLabel)]) -> (np.array, np.array):
         y_batch = []
         x_batch = []

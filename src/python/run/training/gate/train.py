@@ -122,7 +122,6 @@ def train(architecture=MODEL_NAME,
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)
-    save_file(training.summary, 'summary.txt', result_path, verbose=False)
     predictor.net.backend.summary()
 
     training.fit_generator()
