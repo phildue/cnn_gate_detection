@@ -1,37 +1,37 @@
-# How many layers do we need to label the grid accurately?
-import argparse
+# How many filters/layers do we need for a 52x52 crop?
+
+import numpy as np
 
 from run.training.cropnet.train import train
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--w", help="Image Width",
-                    type=int, default=52)
-parser.add_argument("--h", help="Image Height",
-                    type=int, default=52)
-parser.add_argument("--x_filter_start", help="16*x_filter per layer start",
-                    type=int, default=1)
-parser.add_argument("--x_filter_end", help="16*x_filter per layer end",
-                    type=int, default=1)
+for img_res in [(416, 416), (104, 104)]:
+    for i, grid in enumerate([[(3, 3)], [(6, 6)], [(13, 13)]]):
+        for width in [64, 32, 16]:
+            pool_size = 8
+            pooling_layers = np.log(img_res[0] / grid[0][0]) / np.log(pool_size)
 
-args = parser.parse_args()
-h, w = args.h, args.h
-for x in range(args.x_filter_start, args.x_filter_end):
-    baseline = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16 * x, 'strides': (1, 1), 'alpha': 0.1},
-                {'name': 'max_pool', 'size': (2, 2)}]
+            baseline = int(np.floor(pooling_layers)) * [
+                {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
+                {'name': 'max_pool', 'size': (pool_size, pool_size)}]
 
-    for i in range(1, 8):
-        architecture = baseline.copy()
+            if pooling_layers % 1:
+                baseline.extend([
+                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'max_pool', 'size': (2, 2)}
+                ])
 
-        for j in range(i - 1):
-            architecture.append(
-                {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16 * x, 'strides': (1, 1), 'alpha': 0.1})
-            if len(architecture) == 3:
-                architecture.append({'name': 'max_pool', 'size': (2, 2)})
+            for n_layers in range(8 - int(len(baseline) / 2)):
+                architecture = baseline.copy()
 
-        if len(architecture) == 2:
-            architecture.append({'name': 'max_pool', 'size': (2, 2)})
+                for j in range(n_layers):
+                    architecture.append(
+                        {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1),
+                         'alpha': 0.1})
 
-        architecture.append(
-            {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1})
-        train(architecture=architecture, work_dir='cropnet{}x{}-{}layers-{}filters'.format(h, w, i + 1, 16 * x),
-              epochs=50, img_res=(h, w))
+                train(architecture=architecture,
+                      work_dir='cropnet{}x{}->{}x{}+{}layers+{}filters'.format(img_res[0], img_res[1], grid[0][0],
+                                                                               grid[0][1], len(architecture) - int(
+                              len(baseline) / 2) + n_layers, width),
+                      img_res=img_res,
+                      epochs=50,
+                      n_samples=None)
