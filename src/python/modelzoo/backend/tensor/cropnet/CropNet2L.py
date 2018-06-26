@@ -9,7 +9,7 @@ from modelzoo.models.Net import Net
 
 class CropNet2L(Net):
 
-    def __init__(self, architecture, loss=CropGridLoss(), input_shape=(52, 52)):
+    def __init__(self, architecture, loss=CropGridLoss(), input_shape=(52, 52), weight_file=None):
         self.loss = loss
         self._params = {'optimizer': 'adam',
                         'lr': 0.001,
@@ -40,6 +40,9 @@ class CropNet2L(Net):
         netout = Reshape(self.grid)(act)
 
         self._model = Model(netin, netout)
+
+        if weight_file is not None:
+            self._model.load_weights(weight_file)
 
     def compile(self, params=None, metrics=None):
         # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
