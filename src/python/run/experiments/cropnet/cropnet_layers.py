@@ -30,6 +30,9 @@ for img_res in [(52, 52)]:
                     architecture.append(
                         {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1),
                          'alpha': 0.1})
+                architecture.append(
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1),
+                     'alpha': 0.1})
 
                 train(architecture=architecture,
                       work_dir='cropnet{}x{}->{}x{}+{}layers+{}filters'.format(img_res[0], img_res[1], grid[0][0],

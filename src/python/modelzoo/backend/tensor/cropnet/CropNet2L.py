@@ -19,14 +19,15 @@ class CropNet2L(Net):
                         'decay': 0.0005}
         h, w = input_shape
         if architecture is None:
-            architecture = [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-            {'name': 'max_pool', 'size': (2, 2)},
-            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-            {'name': 'max_pool', 'size': (2, 2)},
-            {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
+            architecture = [
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+                {'name': 'max_pool', 'size': (2, 2)},
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+                {'name': 'max_pool', 'size': (2, 2)},
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
         netin = Input((h, w, 3))
         net = netin
-        grid = h,w
+        grid = h, w
         for config in architecture:
             net = create_layer(net, config)
             if 'pool' in config['name']:
