@@ -14,6 +14,7 @@ def average_precision_recall(detection_results):
                     result.results[c].true_positives < 0 or
                     result.results[c].false_negatives < 0):
                 skip = True
+                print('Warning weird numbers')
         if skip: continue
         precision[i], recall[i] = interpolate(result)
 
