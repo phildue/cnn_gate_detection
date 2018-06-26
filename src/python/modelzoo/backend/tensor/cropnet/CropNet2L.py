@@ -36,7 +36,7 @@ class CropNet2L(Net):
         self.grid = grid
         flat = Flatten()(net)
         dense = Dense(self.grid[0] * self.grid[1])(flat)
-        act = Activation('softmax')(dense)
+        act = Activation('sigmoid')(dense)
         netout = Reshape(self.grid)(act)
 
         self._model = Model(netin, netout)

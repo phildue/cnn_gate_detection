@@ -32,7 +32,7 @@ class CropNetEncoder(Encoder):
             int(np.ceil(obj.x_min)): int(np.ceil(obj.x_max))] = 1.0
 
         label_t = resize(Image(label_t, 'bgr'), self.grid_shape).array
-
+        label_t[label_t > 0.5] = 1.0
         return label_t
 
     def encode_img(self, image: Image) -> np.array:

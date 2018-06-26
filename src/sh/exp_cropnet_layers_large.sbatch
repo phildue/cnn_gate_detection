@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/cropnet_layers.py --w 104 --h 104
+srun python3 dronevision/src/python/run/experiments/cropnet/cropnet_layers_large.py
