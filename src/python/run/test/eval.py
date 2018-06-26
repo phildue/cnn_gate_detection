@@ -22,16 +22,17 @@ image_source = ['resource/ext/samples/industrial_new_test/']
 color_format = 'bgr'
 
 # Model
-model_src = 'out/refnet52x52-6x6+4layers+48filters/'
+model_src = 'out/refnet52x52->3x3+4layers+32filters/'
 summary = load_file(model_src + 'summary.pkl')
 architecture = summary['architecture']
 img_res = 52, 52
+grid = 3, 3
 predictor = GateNet.create_by_arch(norm=img_res, architecture=architecture,
                                    anchors=np.array([[[1, 1],
-                                                      [0.3, 0.3],
-                                                      [2, 1],
-                                                      [1, 0.5],
-                                                      [0.7, 0.7]
+                                                      [1 / grid[0], 1 / grid[1]],  # img_h/img_w
+                                                      [2 / grid[0], 2 / grid[1]],  # 0.5 img_h/ 0.5 img_w
+                                                      [1 / grid[0], 3 / grid[0]],  # img_h / 0.33 img_w
+                                                      [1 / grid[0], 2 / grid[0]]  # img_h / 0.5 img_w
                                                       ]]),
                                    batch_size=batch_size,
                                    color_format='yuv',
@@ -77,7 +78,9 @@ with K.get_session() as sess:
         for j in range(batch_size):
             img, label_true, _ = batch[j]
             label_pred = predictor.predict(img)
-            label_pred = resize_label(label_pred, predictor.input_shape, img.shape)
+            img,label_true = resize(img,label=label_true,shape=predictor.input_shape)
+
+            #label_pred = resize_label(label_pred, predictor.input_shape, img.shape)
             show(img, labels=[label_true, label_pred], colors=[COLOR_GREEN, COLOR_BLUE], t=1)
         # print(precision)
         # print(recall)
