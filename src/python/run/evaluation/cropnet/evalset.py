@@ -1,6 +1,6 @@
 import numpy as np
 
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
+from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
 from modelzoo.evaluation.DetectionResult import DetectionResult
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.models.cropnet.CropNet import CropNet
@@ -31,10 +31,10 @@ def evalset(
     architecture = summary['architecture']
     model = CropNet(input_shape=img_res, output_shape=grid,
                     color_format='yuv',
-                    net=CropNet2L(architecture=architecture,
-                                  input_shape=img_res,
-                                  weight_file=model_src + '/model.h5'
-                                  ))
+                    net=CropNetBase(architecture=architecture,
+                                    input_shape=img_res,
+                                    weight_file=model_src + '/model.h5'
+                                    ))
 
     # Evaluator
 

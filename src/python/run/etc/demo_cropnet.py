@@ -1,4 +1,4 @@
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
+from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
 from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.cropnet.CropNet import CropNet
 from modelzoo.models.gatenet.GateNet import GateNet
@@ -21,7 +21,7 @@ generator = iter(GateGenerator(directories=['resource/ext/samples/daylight_fligh
                                ).generate())
 
 summary = load_file('out/cropnet52x52-8layers-48filters/summary.pkl')
-model = CropNet(net=CropNet2L(architecture=summary['architecture']))
+model = CropNet(net=CropNetBase(architecture=summary['architecture']))
 
 batch = next(generator)
 img_org = batch[0][0]

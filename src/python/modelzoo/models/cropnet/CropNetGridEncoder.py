@@ -7,24 +7,12 @@ import numpy as np
 from utils.labels.utils import resize_label
 
 
-class CropNetEncoder(Encoder):
-    def __init__(self, grid_shape, input_shape, encoding):
-        self.encoding = encoding
+class CropNetGridEncoder(Encoder):
+    def __init__(self, grid_shape, input_shape):
         self.input_shape = input_shape
         self.grid_shape = grid_shape
 
     def encode_label(self, label: ImgLabel) -> np.array:
-        if self.encoding is 'grid':
-            return self._encode_grid(label)
-        elif self.encoding is 'anchor':
-            return self._encode_anchor(label)
-        else:
-            raise ValueError('Unknown Encoding')
-
-    def _encode_anchor(self, label: ImgLabel) -> np.array:
-        #TODO
-        pass
-    def _encode_grid(self, label: ImgLabel) -> np.array:
         label_t = np.zeros(self.input_shape)
 
         for obj in label.objects:

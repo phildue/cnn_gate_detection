@@ -1,9 +1,11 @@
 import argparse
 import pprint as pp
 
-from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
+from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
+
+from modelzoo.backend.tensor.cropnet.CropAnchorLoss import CropAnchorLoss
+from modelzoo.backend.tensor.cropnet.CropNetBase import CropNetBase
 from modelzoo.models.cropnet.CropNet import CropNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -12,33 +14,34 @@ from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
+import numpy as np
 
 ARCHITECTURE = [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
                 {'name': 'max_pool', 'size': (2, 2)},
                 {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
                 {'name': 'max_pool', 'size': (2, 2)},
-                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 2, 'strides': (1, 1), 'alpha': 0.1}]
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
 EPOCHS = 100
 INITIAL_EPOCH = 0
 WORK_DIR = 'test'
-N_SAMPLES = None
+N_SAMPLES = 50
 LEARNING_RATE = 0.001
 BATCH_SIZE = 4
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
-LOSS = CropGridLoss()
 IMAGE_RES = (52, 52)
+ANCHOR_SCALE = [np.array([0.5, 1.0, 2.0])]
 
 
 def train(architecture=ARCHITECTURE,
           work_dir=WORK_DIR,
-          loss=LOSS,
           batch_size=BATCH_SIZE,
           n_samples=N_SAMPLES,
           epochs=EPOCHS,
           initial_epoch=INITIAL_EPOCH,
           learning_rate=LEARNING_RATE,
           image_source=IMAGE_SOURCE,
-          img_res=IMAGE_RES):
+          img_res=IMAGE_RES,
+          encoding='anchor', anchor_scale=ANCHOR_SCALE):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -50,12 +53,16 @@ def train(architecture=ARCHITECTURE,
     """
     Model
     """
+
+    loss = CropGridLoss() if encoding == 'grid' else CropAnchorLoss()
+
     augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                                 (0.5, TransformFlip()),
                                 (0.2, RandomShift(-.3, .3))])
 
-    predictor = CropNet(net=CropNet2L(architecture=architecture, input_shape=img_res, loss=loss),
-                        augmenter=augmenter, input_shape=img_res)
+    predictor = CropNet(net=CropNetBase(architecture=architecture, input_shape=img_res, loss=loss, encoding=encoding,
+                                        anchors=anchor_scale),
+                        augmenter=augmenter, input_shape=img_res, encoding=encoding, anchor_scale=anchor_scale)
 
     """
     Datasets
