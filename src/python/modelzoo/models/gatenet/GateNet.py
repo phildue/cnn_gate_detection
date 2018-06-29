@@ -150,14 +150,8 @@ class GateNet(Predictor):
                        augmenter: ImgTransform = None,
                        n_polygon=4
                        ):
-        if anchors is None:
-            anchors = np.array([[[1.08, 1.19],
-                                 [3.42, 4.41],
-                                 [6.63, 11.38],
-                                 [9.42, 5.11],
-                                 [16.62, 10.52]]])
 
-        n_boxes = int(np.ceil(anchors.size / 2))
+        n_boxes = 5
         loss = GateDetectionLoss(
             n_boxes=n_boxes,
             n_polygon=4,

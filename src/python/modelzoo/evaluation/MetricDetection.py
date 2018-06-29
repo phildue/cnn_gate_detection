@@ -34,7 +34,7 @@ class MetricDetection(Metric):
             match = False
             for b_pred in self._boxes_pred:
                 if b_true.iou(b_pred) >= self.iou_thresh and \
-                                np.argmax(b_true.probs) == np.argmax(b_pred.probs):
+                        np.argmax(b_true.probs) == np.argmax(b_pred.probs):
                     tp += 1
                     self._boxes_correct.append(b_pred)
                     match = True
@@ -58,9 +58,13 @@ class MetricDetection(Metric):
         label_pred = BoundingBox.to_label(self._boxes_pred)
         label_true = BoundingBox.to_label(self._boxes_true)
         print(self._result)
+        if self._result.true_positives < 0 or self._result.false_positives < 0 or self._result.false_negatives < 0:
+            t = 0
+        else:
+            t = 1
         show(img.bgr, 'result', labels=[label_true, label_pred, label_correct],
              colors=[COLOR_GREEN, COLOR_RED, (255, 255, 255)],
-             legend=LEGEND_BOX)
+             legend=LEGEND_BOX, t=t)
 
     @property
     def result(self):

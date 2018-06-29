@@ -121,7 +121,7 @@ def train(architecture=MODEL_NAME,
     summary = training.summary
     summary['architecture'] = architecture
     summary['anchors'] = anchors
-
+    summary['img_res'] = img_res
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)
