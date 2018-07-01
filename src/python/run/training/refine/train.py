@@ -36,9 +36,7 @@ ANCHORS = np.array([[[1, 1],
                      [1, 0.5],
                      [0.7, 0.7]
                      ]])
-AUGMENTER = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                            (0.5, TransformFlip()),
-                            (0.2, RandomShift(-.3, .3))])
+AUGMENTER = None
 
 
 def train(architecture=MODEL_NAME,

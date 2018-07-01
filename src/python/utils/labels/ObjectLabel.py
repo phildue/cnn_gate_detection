@@ -26,8 +26,8 @@ class ObjectLabel:
         self.__bounding_box = bounding_box
 
     def __repr__(self):
-        return '{0:s}: \t{1!s}->{2!s}'.format(self.class_name, (self.y_min, self.x_min),
-                                              (self.y_max, self.x_max))
+        return '{0:s}: \t{1!s}->{2!s}'.format(self.class_name, (self.x_min, self.y_min),
+                                              (self.x_max, self.y_max))
 
     @property
     def mat(self):
