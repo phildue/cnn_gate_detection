@@ -26,8 +26,8 @@ class GateDetectionLoss(Loss):
         :param y_pred: raw network output
         :return: loss
         """
-        y_pred = K.print_tensor(y_pred, "Y_Pred")
-        y_true = K.print_tensor(y_true, "Y_True")
+        # y_pred = K.print_tensor(y_pred, "Y_Pred")
+        # y_true = K.print_tensor(y_true, "Y_True")
         loc_loss = self.localization_loss(y_true, y_pred)
 
         conf_loss = self.confidence_loss(y_true, y_pred)
