@@ -15,12 +15,13 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 import numpy as np
 
-MODEL_NAME = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
-WORK_DIR = 'test'
+MODEL_NAME = 'GateNetV10'
+# [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+# {'name': 'max_pool', 'size': (2, 2)},
+# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+# {'name': 'max_pool', 'size': (2, 2)},
+# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
+WORK_DIR = 'v10_revisited'
 BATCH_SIZE = 4
 N_SAMPLES = None
 EPOCHS = 100
