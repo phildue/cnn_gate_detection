@@ -11,13 +11,14 @@ import numpy as np
 cd_work()
 batch_size = 1
 anchors = np.array([[[1, 1],
-                     [0.3, 0.3],
+                     # [0.3, 0.3],
                      ]])
 predictor = RefNet.create_by_arch(
     architecture=[{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
                   {'name': 'max_pool', 'size': (2, 2)},
                   {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}],
     anchors=anchors,
+    crop_size=(52, 52),
     n_rois=2)
 
 dataset = GateGenerator(["resource/ext/samples/industrial_new/"], batch_size=batch_size,

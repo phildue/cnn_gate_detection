@@ -7,20 +7,20 @@ from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.refnet.RefNet import RefNet
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomShift import RandomShift
-from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 
-MODEL_NAME = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
+MODEL_NAME = [{'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+              {'name': 'time_dist_max_pool', 'size': (2, 2)},
+              {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+              # {'name': 'time_dist_max_pool', 'size': (2, 2)},
+              {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+              {'name': 'time_dist_max_pool', 'size': (2, 2)},
+              {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+              ]
 WORK_DIR = 'test'
 BATCH_SIZE = 4
 N_SAMPLES = None
@@ -49,8 +49,9 @@ def train(architecture=MODEL_NAME,
           image_source=IMAGE_SOURCE,
           img_res=(IMG_HEIGHT, IMG_WIDTH),
           anchors=ANCHORS,
-          augmenter=AUGMENTER
-          ):
+          augmenter=AUGMENTER,
+          crop_size=(13, 13),
+          n_rois=5):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -63,22 +64,21 @@ def train(architecture=MODEL_NAME,
     Model
     """
 
-    if isinstance(architecture, str):
-        predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
-    else:
-        predictor = GateNet.create_by_arch(norm=img_res,
-                                           architecture=architecture,
-                                           anchors=anchors,
-                                           batch_size=batch_size,
-                                           augmenter=augmenter,
-                                           scale_coor=8.0)
+    predictor = RefNet.create_by_arch(norm=img_res,
+                                      crop_size=crop_size,
+                                      n_rois=n_rois,
+                                      architecture=architecture,
+                                      anchors=anchors,
+                                      batch_size=batch_size,
+                                      augmenter=augmenter,
+                                      scale_coor=8.0)
 
     """
     Datasets
     """
 
-    train_gen = CropGenerator(GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
-                              color_format='bgr', label_format='xml', n_samples=n_samples))
+    train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+                              color_format='bgr', label_format='xml', n_samples=n_samples)
 
     """
     Paths
@@ -101,7 +101,7 @@ def train(architecture=MODEL_NAME,
         return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
                                        norm=predictor.norm).compute(y_true, y_pred)
 
-    predictor.compile(params=params, metrics=[average_precision])
+    predictor.compile(params=params)
 
     """
     Training Config

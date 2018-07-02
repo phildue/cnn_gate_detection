@@ -8,6 +8,7 @@ from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
 from modelzoo.models.refnet.RefNetDecoder import RefNetDecoder
 from modelzoo.models.refnet.RefNetEncoder import RefNetEncoder
+from modelzoo.models.refnet.RefNetPreprocessor import RefNetPreprocessor
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ObjectLabel import ObjectLabel
 
@@ -35,8 +36,9 @@ class RefNet(Predictor):
                        weight_file=None,
                        color_format='yuv',
                        augmenter: ImgTransform = None,
-                       n_polygon=4
-                       , n_rois=5):
+                       n_polygon=4,
+                       n_rois=5,
+                       crop_size=(52, 52)):
         n_boxes = anchors.shape[1]
         loss = GateDetectionLoss(
             n_boxes=n_boxes,
@@ -46,6 +48,7 @@ class RefNet(Predictor):
             weight_prob=scale_prob,
             weight_noobj=scale_noob)
         net = RefNetBase(architecture=architecture,
+                         crop_size=crop_size[0],
                          n_rois=n_rois,
                          loss=loss,
                          anchors=anchors,
@@ -62,7 +65,8 @@ class RefNet(Predictor):
                       conf_thresh=conf_thresh,
                       color_format=color_format,
                       augmenter=augmenter,
-                      n_polygon=n_polygon)
+                      n_polygon=n_polygon,
+                      crop_size=crop_size)
 
     def __init__(self,
                  net,
@@ -74,7 +78,7 @@ class RefNet(Predictor):
                  color_format='yuv',
                  iou_thresh=0.4,
                  augmenter: ImgTransform = None,
-                 n_polygon=4):
+                 n_polygon=4, crop_size=(52, 52)):
         self.color_format = color_format
         if anchors is None:
             anchors = np.array([[[1.3221, 1.73145],
@@ -97,12 +101,13 @@ class RefNet(Predictor):
                                 anchor_dims=anchors,
                                 grids=grid,
                                 n_boxes=self.n_boxes,
-                                n_polygon=n_polygon)
-        preprocessor = Preprocessor(augmenter=augmenter,
-                                    encoder=encoder,
-                                    img_shape=self.norm,
-                                    n_classes=1,
-                                    color_format=color_format)
+                                n_polygon=n_polygon,
+                                crop_size=crop_size)
+        preprocessor = RefNetPreprocessor(augmenter=augmenter,
+                                          encoder=encoder,
+                                          img_shape=self.norm,
+                                          n_classes=1,
+                                          color_format=color_format)
 
         decoder = RefNetDecoder(norm=norm,
                                 grid=grid,

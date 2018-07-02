@@ -9,11 +9,12 @@ from utils.imageprocessing.Backend import normalize, crop
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
+from utils.labels.utils import resize_label
 
 
 class RefNetEncoder(Encoder):
     def __init__(self, anchor_dims=None, img_norm=(416, 416), grids=None, n_boxes=5, n_polygon=4,
-                 color_format='yuv', n_regions=5):
+                 color_format='yuv', n_regions=5, crop_size=(52, 52)):
         self.n_regions = n_regions
         if anchor_dims is None:
             anchor_dims = [np.array([[1.08, 1.19],
@@ -24,13 +25,10 @@ class RefNetEncoder(Encoder):
         if grids is None:
             grids = [(13, 13)]
 
-        self.anchor_dims = anchor_dims
+        self.crop_size = crop_size
         self.n_polygon = n_polygon
-        self.color_format = color_format
-        self.n_boxes = n_boxes
-        self.grids = grids
         self.norm = img_norm
-        self.encoder = GateNetEncoder(anchor_dims, (52, 52), grids, n_boxes, n_polygon, color_format)
+        self.encoder = GateNetEncoder(anchor_dims, crop_size, grids, n_boxes, n_polygon, color_format)
 
     def _extract_roi(self, img: Image, label: ImgLabel):
         rois = np.zeros((self.n_regions, 4))
@@ -53,14 +51,12 @@ class RefNetEncoder(Encoder):
 
             crop_min = (max(0, obj.cx - w / 2)), max(obj.cy - h / 2, 0),
             crop_max = min(obj.cx + w / 2, self.norm[1]), min(obj.cy + h / 2, self.norm[0])
-            print(obj)
+            # print(obj)
             img_crop, label_crop = crop(img, crop_min, crop_max, label)
-            print("Crop Min", crop_min)
-            print("Crop Max", crop_max)
-            print(label_crop)
-            show(img_crop, labels=label_crop, t=1, name='crop')
+            # show(img_crop, labels=label_crop, t=1, name='crop')
             if img_crop.array.size > 0:
                 rois[i] = crop_min[0], crop_min[1], img_crop.shape[1], img_crop.shape[0]
+                label_crop = resize_label(label_crop, img_crop.shape, self.crop_size)
                 label_rois.append(label_crop)
 
         return rois, label_rois
@@ -101,8 +97,12 @@ class RefNetEncoder(Encoder):
 
     def encode_img_batch(self, images: [Image], labels: [ImgLabel] = None) -> np.array:
         imgs_enc = []
+        rois_enc = []
         for i, img in enumerate(images):
-            img_t = self.encode_img(img, labels[i])
+            img_t, rois = self.encode_img(img, labels[i])
             imgs_enc.append(img_t)
+            rois = np.expand_dims(rois, 0)
+            rois_enc.append(rois)
         img_t = np.concatenate(imgs_enc, 0)
-        return img_t
+        roi_t = np.concatenate(rois_enc, 0)
+        return img_t, roi_t

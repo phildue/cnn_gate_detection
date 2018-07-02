@@ -18,6 +18,7 @@ class RefNetPreprocessor(Preprocessor):
     def preprocess_test(self, dataset: [(Image, ImgLabel)]) -> (np.array, np.array):
         y_batch = []
         x_batch = []
+        roi_batch = []
         for img, label, _ in dataset:
 
             if self.color_format is 'yuv':
@@ -28,15 +29,18 @@ class RefNetPreprocessor(Preprocessor):
             img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
             # show(img.bgr, t=1)
-            img_enc = self.encoder.encode_img(img, label)
+            img_enc, roi_enc = self.encoder.encode_img(img, label)
             label_enc = self.encoder.encode_label(label, img)
             label_enc = np.expand_dims(label_enc, 0)
+            roi_enc = np.expand_dims(roi_enc, 0)
             x_batch.append(img_enc)
+            roi_batch.append(roi_enc)
             y_batch.append(label_enc)
 
         y_batch = np.concatenate(y_batch, 0)
         x_batch = np.concatenate(x_batch, 0)
-        return x_batch, y_batch
+        roi_batch = np.concatenate(roi_batch, 0)
+        return [x_batch, roi_batch], y_batch
 
     def preprocess(self, img: Image, label: ImgLabel = None):
         if self.color_format is 'yuv':

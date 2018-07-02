@@ -9,12 +9,13 @@ class RefNetDecoder(Decoder):
     def __init__(self,
                  norm=(416, 416),
                  grid=(13, 13),
-                 n_polygon=4, n_roi=5):
+                 n_polygon=4, n_roi=5,
+                 crop_size=(52, 52)):
         self.n_roi = n_roi
         self.n_polygon = n_polygon
-        self.grid = grid
+        self.crop_size = crop_size
         self.norm = norm
-        self.decoder = GateNetDecoder(norm=(52, 52), grid=grid, n_polygon=n_polygon)
+        self.decoder = GateNetDecoder(norm=crop_size, grid=grid, n_polygon=n_polygon)
 
     def decode_netout_to_boxes(self, label_t):
         """
@@ -40,7 +41,13 @@ class RefNetDecoder(Decoder):
         roi_t = coord_t[:, -4:]
         coord_t = np.reshape(coord_t, (self.n_roi, -1, self.n_polygon + 4 + 4))
         coord_t_dec = np.vstack([self.decoder.decode_coord(coord_t[i, :, :-4]) for i in range(self.n_roi)])
+
         coord_t_dec = np.reshape(coord_t_dec, (-1, self.n_polygon))
+        coord_t_dec[:, 0] *= roi_t[:, 2] / self.crop_size[1]
+        coord_t_dec[:, 1] *= roi_t[:, 3] / self.crop_size[0]
+        coord_t_dec[:, 2] *= roi_t[:, 2] / self.crop_size[1]
+        coord_t_dec[:, 3] *= roi_t[:, 3] / self.crop_size[0]
+
         coord_t_dec[:, 0] += roi_t[:, 0]
         coord_t_dec[:, 1] += roi_t[:, 1]
         # coord_t_dec[:, 1] = self.norm[0] - coord_t_dec[:, 1]
