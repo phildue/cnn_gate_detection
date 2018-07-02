@@ -4,7 +4,7 @@ from modelzoo.backend.tensor.metrics.Loss import Loss
 
 
 class GateDetectionLoss(Loss):
-    def __init__(self, grid=(13, 13), n_boxes=5, n_polygon=4, weight_loc=5.0, weight_noobj=0.5,
+    def __init__(self, n_boxes=5, n_polygon=4, weight_loc=5.0, weight_noobj=0.5,
                  weight_conf=5.0, weight_prob=1.0):
         self.scale_prob = weight_prob
         self.scale_noob = weight_noobj
@@ -26,6 +26,8 @@ class GateDetectionLoss(Loss):
         :param y_pred: raw network output
         :return: loss
         """
+        y_pred = K.print_tensor(y_pred, "Y_Pred")
+        y_true = K.print_tensor(y_true, "Y_True")
         loc_loss = self.localization_loss(y_true, y_pred)
 
         conf_loss = self.confidence_loss(y_true, y_pred)

@@ -33,7 +33,7 @@ class CropAnchorLoss(Loss):
     def localization_loss(self, y_true, y_pred):
         positives = y_true[:, :, 0]
 
-        w_pos = self.scale_coor * K.stack(4 * [positives], -1)
+        w_pos = self.scale_coor * K.stack(2 * [positives], -1)
         coord_true = y_true[:, :, 1:3]
         coord_pred = y_pred[:, :, 1:3]
 

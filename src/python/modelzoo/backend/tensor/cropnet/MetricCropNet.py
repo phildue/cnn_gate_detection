@@ -6,7 +6,7 @@ from modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
 from modelzoo.backend.tensor.metrics.Metric import Metric
 
 
-class MetricGateNet(Metric):
+class MetricCropNet(Metric):
     @abstractmethod
     def compute(self, y_true, y_pred):
         pass
@@ -24,8 +24,8 @@ class MetricGateNet(Metric):
     def _decode_coord(self, coord_t, anchors_t):
         coord_t_cx = coord_t[:, :, 0] * anchors_t[:, :, 2]
         coord_t_w = coord_t[:, :, 2] * anchors_t[:, :, 2]
-        coord_t_cy = coord_t[:, :, 1] * anchors_t[:, :, 3]
-        coord_t_h = coord_t[:, :, 3] * anchors_t[:, :, 3]
+        coord_t_cy = coord_t[:, :, 1] * anchors_t[:, :, 2]
+        coord_t_h = coord_t[:, :, 2] * anchors_t[:, :, 2]
 
         coord_t_cx = coord_t_cx + anchors_t[:, :, 0]
         coord_t_cy = coord_t_cy + anchors_t[:, :, 1]
@@ -46,18 +46,18 @@ class MetricGateNet(Metric):
         return coord_dec_t
 
     def _postprocess_truth(self, y_true):
-        coord_true_t = y_true[:, :, 1:5]
+        coord_true_t = y_true[:, :, 1:4]
         conf_true_t = y_true[:, :, :1]
-        anchors_t = y_true[:, :, 5:]
+        anchors_t = y_true[:, :, 4:]
 
         coord_true_dec_t = self._decode_coord(coord_true_t, anchors_t)
 
         return coord_true_dec_t, conf_true_t
 
     def _postprocess_pred(self, y_pred):
-        coord_pred_t = y_pred[:, :, 1:5]
+        coord_pred_t = y_pred[:, :, 1:4]
         conf_pred_t = y_pred[:, :, :1]
-        anchors_t = y_pred[:, :, 5:]
+        anchors_t = y_pred[:, :, 4:]
 
         coord_pred_dec_t = self._decode_coord(coord_pred_t, anchors_t)
 

@@ -5,10 +5,7 @@ import numpy as np
 
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.models.ModelFactory import ModelFactory
-from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.refnet.RefNet import RefNet
-from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.workdir import cd_work
@@ -16,25 +13,25 @@ from utils.workdir import cd_work
 MODEL_NAME = [{'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
               {'name': 'time_dist_max_pool', 'size': (2, 2)},
               {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-              # {'name': 'time_dist_max_pool', 'size': (2, 2)},
-              {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
               {'name': 'time_dist_max_pool', 'size': (2, 2)},
+              {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+              # {'name': 'time_dist_max_pool', 'size': (2, 2)},
               {'name': 'time_dist_conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
               ]
 WORK_DIR = 'test'
-BATCH_SIZE = 4
-N_SAMPLES = None
+BATCH_SIZE = 1
+N_SAMPLES = 50
 EPOCHS = 100
 INITIAL_EPOCH = 0
 LEARNING_RATE = 0.001
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
-IMG_HEIGHT = 52
-IMG_WIDTH = 52
+IMG_HEIGHT = 416
+IMG_WIDTH = 416
 ANCHORS = np.array([[[1, 1],
-                     [0.3, 0.3],
-                     [2, 1],
-                     [1, 0.5],
-                     [0.7, 0.7]
+                     # [0.3, 0.3],
+                     # [2, 1],
+                     # [1, 0.5],
+                     # [0.7, 0.7]
                      ]])
 AUGMENTER = None
 
@@ -51,7 +48,7 @@ def train(architecture=MODEL_NAME,
           anchors=ANCHORS,
           augmenter=AUGMENTER,
           crop_size=(13, 13),
-          n_rois=5):
+          n_rois=1):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -77,7 +74,7 @@ def train(architecture=MODEL_NAME,
     Datasets
     """
 
-    train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+    train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.0,
                               color_format='bgr', label_format='xml', n_samples=n_samples)
 
     """
@@ -101,7 +98,7 @@ def train(architecture=MODEL_NAME,
         return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
                                        norm=predictor.norm).compute(y_true, y_pred)
 
-    predictor.compile(params=params)
+    predictor.compile(params=params, metrics=[predictor.loss.confidence_loss, predictor.loss.localization_loss])
 
     """
     Training Config
@@ -112,7 +109,7 @@ def train(architecture=MODEL_NAME,
                         patience_early_stop=5,
                         patience_lr_reduce=3,
                         log_dir=result_path,
-                        stop_on_nan=True,
+                        stop_on_nan=False,
                         lr_schedule=learning_rate_schedule,
                         initial_epoch=initial_epoch,
                         epochs=epochs,

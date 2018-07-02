@@ -66,7 +66,8 @@ class RefNet(Predictor):
                       color_format=color_format,
                       augmenter=augmenter,
                       n_polygon=n_polygon,
-                      crop_size=crop_size)
+                      crop_size=crop_size,
+                      n_roi=n_rois)
 
     def __init__(self,
                  net,
@@ -78,7 +79,9 @@ class RefNet(Predictor):
                  color_format='yuv',
                  iou_thresh=0.4,
                  augmenter: ImgTransform = None,
-                 n_polygon=4, crop_size=(52, 52)):
+                 n_polygon=4,
+                 crop_size=(52, 52),
+                 n_roi=5):
         self.color_format = color_format
         if anchors is None:
             anchors = np.array([[[1.3221, 1.73145],
@@ -99,6 +102,7 @@ class RefNet(Predictor):
 
         encoder = RefNetEncoder(img_norm=norm,
                                 anchor_dims=anchors,
+                                n_regions=n_roi,
                                 grids=grid,
                                 n_boxes=self.n_boxes,
                                 n_polygon=n_polygon,

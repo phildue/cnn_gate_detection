@@ -1,6 +1,6 @@
 from keras import Input, Model
 from keras.layers import Conv2D, Reshape, Lambda, TimeDistributed
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from spp.RoiPoolingConv import RoiPoolingConv
 import keras.backend as K
 from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
@@ -15,12 +15,12 @@ import numpy as np
 class RefNetBase(Net):
 
     def compile(self, params=None, metrics=None):
-        # default_sgd = SGD(lr=0.001, decay=0.0005, momentum=0.9)
         if params is not None:
             self._params = params
 
-        optimizer = Adam(self._params['lr'], self._params['beta_1'], self._params['beta_2'], self._params['epsilon'],
-                         self._params['decay'])
+        #        optimizer = Adam(self._params['lr'], self._params['beta_1'], self._params['beta_2'], self._params['epsilon'],
+        #                         self._params['decay'])
+        optimizer = SGD(lr=0.001, decay=0.0005, momentum=0.9)
 
         self._model.compile(
             loss=self.loss.compute,

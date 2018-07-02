@@ -21,8 +21,10 @@ class CropNet(Predictor):
                  input_shape=(52, 52), output_shape=(13, 13), color_format='yuv', encoding='anchor', anchor_scale=None):
         self._input_shape = input_shape
         self._output_shape = output_shape
+        self.n_boxes = anchor_scale[0].shape[0]
         encoder = CropNetEncoder([net.grid], input_shape, encoding=encoding, anchor_scale=anchor_scale)
         decoder = CropNetDecoder([net.grid], input_shape, encoding=encoding)
+        self.grid = [net.grid]
         preprocessor = Preprocessor(augmenter, encoder, 1, input_shape, color_format)
         postprocessor = Postprocessor(decoder)
         super().__init__(preprocessor, postprocessor, net, CropGridLoss(), encoder, decoder)

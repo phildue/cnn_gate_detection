@@ -11,15 +11,15 @@ class CropNetAnchorEncoder(Encoder):
     def __init__(self, anchor_scale=None, img_norm=(416, 416), grids=None,
                  color_format='yuv'):
         if anchor_scale is None:
-            anchor_scale = [np.array([0.5,
+            anchor_scale = np.array([[0.5,
                                       1,
-                                      2])]
+                                      2]])
         if grids is None:
             grids = [(13, 13)]
 
         self.anchor_scale = anchor_scale
         self.color_format = color_format
-        self.n_boxes = [a.shape for a in anchor_scale]
+        self.n_boxes = anchor_scale[0].shape[0]
         self.grids = grids
         self.norm = img_norm
 

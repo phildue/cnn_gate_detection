@@ -1,6 +1,7 @@
 import argparse
 import pprint as pp
 
+from modelzoo.backend.tensor.cropnet.AveragePrecisionCropNet import AveragePrecisionCropNet
 from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
 from modelzoo.backend.tensor.Training import Training
 
@@ -88,7 +89,16 @@ def train(architecture=ARCHITECTURE,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    predictor.compile(params=params, metrics=['accuracy'])
+    if encoding == 'grid':
+        metrics = ['accuracy']
+    elif encoding == 'anchor':
+        def average_precision(y_true, y_pred):
+            return AveragePrecisionCropNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+                                           norm=img_res).compute(y_true, y_pred)
+
+        metrics = [average_precision]
+
+    predictor.compile(params=params, metrics=metrics)
 
     """
     Training Config

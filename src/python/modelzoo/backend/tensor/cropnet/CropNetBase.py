@@ -47,7 +47,7 @@ class CropNetBase(Net):
             act = Activation('sigmoid')(dense)
             netout = Reshape(self.grid)(act)
         else:
-            final = Conv2D(len(anchors) * (3 + 1), kernel_size=(1, 1), strides=(1, 1))(
+            final = Conv2D(anchors[0].shape[0] * (3 + 1), kernel_size=(1, 1), strides=(1, 1))(
                 net)
             reshape = Reshape((-1, 3 + 1))(final)
             predictions = Netout(K.shape(reshape))(reshape)
