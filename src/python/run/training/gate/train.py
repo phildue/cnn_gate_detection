@@ -15,13 +15,13 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 import numpy as np
 
-MODEL_NAME = 'GateNetV10'
+MODEL_NAME = 'GateNetV39'
 # [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
 # {'name': 'max_pool', 'size': (2, 2)},
 # {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
 # {'name': 'max_pool', 'size': (2, 2)},
 # {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
-WORK_DIR = 'v10_revisited'
+WORK_DIR = 'test'
 BATCH_SIZE = 4
 N_SAMPLES = None
 EPOCHS = 100
@@ -30,8 +30,8 @@ LEARNING_RATE = 0.001
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
 TEST_IMAGE_SOURCE_1 = ['resource/ext/samples/industrial_new_test/']
 TEST_IMAGE_SOURCE_2 = ['resource/ext/samples/daylight_test/']
-IMG_HEIGHT = 416
-IMG_WIDTH = 416
+IMG_HEIGHT = 52
+IMG_WIDTH = 52
 ANCHORS = np.array([[[1, 1],
                      [0.3, 0.3],
                      [2, 1],
