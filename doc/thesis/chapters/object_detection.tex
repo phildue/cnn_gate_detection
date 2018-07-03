@@ -18,33 +18,38 @@
 	\end{matrix} = f(I)
 	$$
 	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
-	
+	\todo{Image of pipeline}
 	%Pipeline
-	Images are high dimensional signals and therefore difficult when fed directly to classifiers. Hence, the usual object detection pipeline consists of two stages. The feature extraction stage extracts task specific knowledge from an image and infers a lower dimensional representation of the image, where important features are highlighted. The classification/localization stage works on this lower representation and produces the final output.\todo{Image of pipeline}
-	
-	
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. Feeding these signals directly to a classifier/regressor makes the problem unnecessarily hard to solve. That is why, the usual object detection pipeline consists of two stages. The feature extraction stage extracts task relevant information from the image and infers an internal representation. The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
 	
 	\section{Feature Extraction}
 	
-	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Current methods can roughly be grouped in hand engineered feature extractors and learned feature extractors.
+	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Over the time different feature extractors also called filters evolved.
 	
-	\subsection{Engineered Feature Extractors}
+	\cite{Viola2004} use simple filters inspired by Haar-basis functions for human face detection. \cite{Dalal} and \cite{Lowe2004} compute a local (normalized) histogram of gradients for object detection. These approaches can be summarized as engineered feature extractors, as the filters are manually designed by incorporating task and domain specific knowledge. \todo{describe some pipelines}
 	
-	Feature extractors reach from simple color intensities or pixel counts like haar-features \cite{Viola2004} to more complex methods like Histogram of Gradients\cite{Forsyth}. These features are usually manually engineered with the task at hand or estimated from a given dataset.
+	In recent years \acp{CNN} emerged from deep learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches at various locations. In contrast to manually designed methods, \acp{CNN} can be learned task specific via back-propagation.
 	
-	\subsection{Learned Feature Extractors}
+	With $i,j$ as location, $y$ as output, $f$ as activation function, $W$ as filter weights, $X$ as input and $b$ as bias, the convolution operation can be expressed as follows:
 	
-	The most popular feature extractor in modern computer vision are \acp{CNN}. In contrast to manually designed extractors \acp{CNN} are learned task specific via back-propagation. The convolution operation can be expressed as follows:
-	\todo{MATH}
+	$$Y_{ij} = f(WX_{ij} + b)$$
+	
+	where the size of $W$ depends on the kernel size $k$ and the locations are usually chosen in sliding window fashion with a certain step size $s$ also called strides.
 	
 	On top of the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
 	
-	\todo{Comparison Learned feature extractor vs hand engineered}
-	It is anticipated that learning a feature extractor from data leads to better representations and therefore to an improve in detection performance. \acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined to learn even more efficient representations. Multiple studies suggest that going deeper with convolutions increases the strength of the representation yielding even better results in classification and object detection. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
+	Different activation functions have emerged. $Tanh$ and sigmoid-activations produce naturally an output at a small range which simplifies the optimization. However, when the initial output of the filter falls unfavourably, the gradient with respect to this filter is almost zero leading to much longer training times. This issue gave rise to the family of rectified linear activation units (RELU) which have been generalized in \todoref{..} to:
+	$$$$
+	
+	\todo{Batch Norm}
+	
+	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only due to the fact that \acp{CNN}-features are learned on a specific task, but that \acp{CNN}-features can learn a quite general representation that can be used in other tasks and methods as well.
+	
+	\acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined to learn highly non-linear representations. Multiple studies suggest that going deeper with convolutions increases representation strength yielding even better results. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
 	
 	\section{Sampling}
 	
-	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite while usually a large proportion of the image does not contain any object. Hence, which areas to process within an image is a critical parameter regarding performance in accuracy and inference time.
+	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite, while usually a large proportion of the image does not contain any object. Hence, which areas to process within an image is a critical parameter regarding performance in accuracy and inference time.
 	
 	Commonly the areas to classify are limited bounding boxes that surround the object. However also other have been proposed..	
 	

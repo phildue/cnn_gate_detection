@@ -14,8 +14,8 @@ class ConcatMeta(Layer):
 
     def call(self, x):
         meta_t = K.expand_dims(self.meta_t, 0)
-        meta_t = K.tile(meta_t, (self.output_dim[0], 1, 1))
+        meta_t = K.tile(meta_t, (K.shape(x)[0], 1, 1))
         return K.concatenate([x, meta_t])
 
     def compute_output_shape(self, input_shape):
-        return input_shape[0], input_shape[1], input_shape[2] + 9
+        return input_shape[0], input_shape[1], input_shape[2] + 4

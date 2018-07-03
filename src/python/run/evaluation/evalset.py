@@ -9,16 +9,16 @@ import numpy as np
 
 
 def evalset(
-        name='industrial',
+        name='',
         batch_size=8,
-        model_src='out/refnet52x52->3x3+4layers+32filters/',
+        model_src='out/2606/refnet52x52-3x3+4layers+32filters/',
         img_res=(52, 52),
         grid=(3, 3),
         image_source=['resource/ext/samples/industrial_new_test/'],
         iou_thresh=0.4,
         n_samples=None
 
-    ):
+):
     cd_work()
 
     # Image Source
@@ -58,7 +58,7 @@ def evalset(
     evaluate_generator(model, generator, verbose=True, out_file_labels=result_path + result_file)
 
     evaluate_file(model, result_path + result_file + '.pkl',
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=False)],
+                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=True)],
                   verbose=True,
                   out_file_metric=result_path + result_file + '.pkl')
 
@@ -71,3 +71,7 @@ def evalset(
                   'n_samples': generator.n_samples}
 
     save_file(exp_params, exp_param_file, result_path)
+
+
+if __name__ == '__main__':
+    evalset()

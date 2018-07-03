@@ -8,8 +8,8 @@ from utils.workdir import cd_work
 cd_work()
 
 for img_res in [(52, 52)]:
-    for i, grid in enumerate([[(3, 3)], [(6, 6)], [(13, 13)]]):
-        for width in [64, 32, 16]:
+    for i, grid in enumerate([[(13, 13)], [(6, 6), [(3, 3)]]]):
+        for width in [16, 32, 64]:
             pool_size = 2
             pooling_layers = np.log(img_res[0] / grid[0][0]) / np.log(pool_size)
 
@@ -30,6 +30,9 @@ for img_res in [(52, 52)]:
                     architecture.append(
                         {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': width, 'strides': (1, 1),
                          'alpha': 0.1})
+                architecture.append(
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1),
+                     'alpha': 0.1})
 
                 train(architecture=architecture,
                       work_dir='cropnet{}x{}->{}x{}+{}layers+{}filters'.format(img_res[0], img_res[1], grid[0][0],
@@ -38,4 +41,3 @@ for img_res in [(52, 52)]:
                       img_res=img_res,
                       epochs=50,
                       n_samples=None)
-

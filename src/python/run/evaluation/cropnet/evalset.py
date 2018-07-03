@@ -1,11 +1,12 @@
 import numpy as np
 
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
+from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
 from modelzoo.evaluation.DetectionResult import DetectionResult
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.models.cropnet.CropNet import CropNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file, load_file
+from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show
 from utils.workdir import cd_work
@@ -30,10 +31,10 @@ def evalset(
     architecture = summary['architecture']
     model = CropNet(input_shape=img_res, output_shape=grid,
                     color_format='yuv',
-                    net=CropNet2L(architecture=architecture,
-                                  input_shape=img_res,
-                                  weight_file=model_src + '/model.h5'
-                                  ))
+                    net=CropNetBase(architecture=architecture,
+                                    input_shape=img_res,
+                                    weight_file=model_src + '/model.h5'
+                                    ))
 
     # Evaluator
 
@@ -66,15 +67,14 @@ def evalset(
                                                       false_negatives=fn,
                                                       false_positives=fp,
                                                       true_negatives=tn)
+                print('Y True', y_true)
+                print('Y Pred', y_pred)
+                img = Image(x[0], 'bgr')
+                img = resize(img, (104, 104))
+                print(result)
+                show(img, name='img')
+
             results.append(ResultByConfidence(result))
-            # label_true = Image(y_true[0], 'bgr')
-            # label_pred = Image(y_pred[0], 'bgr')
-            # img = Image(x[0], 'bgr')
-            # print(precision[i+j])
-            # print(recall[i+j])
-    #            show(label_true, name='true', t=1)
-    #            show(label_pred, name='pred', t=1)
-    #            show(img, name='img')
 
     exp_params = {'name': name,
                   'model': model.net.__class__.__name__,

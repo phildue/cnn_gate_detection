@@ -15,11 +15,12 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.workdir import cd_work
 import numpy as np
 
-MODEL_NAME = [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
+MODEL_NAME = 'GateNetV39'
+# [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+# {'name': 'max_pool', 'size': (2, 2)},
+# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+# {'name': 'max_pool', 'size': (2, 2)},
+# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
 WORK_DIR = 'test'
 BATCH_SIZE = 4
 N_SAMPLES = None
@@ -29,8 +30,8 @@ LEARNING_RATE = 0.001
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
 TEST_IMAGE_SOURCE_1 = ['resource/ext/samples/industrial_new_test/']
 TEST_IMAGE_SOURCE_2 = ['resource/ext/samples/daylight_test/']
-IMG_HEIGHT = 416
-IMG_WIDTH = 416
+IMG_HEIGHT = 52
+IMG_WIDTH = 52
 ANCHORS = np.array([[[1, 1],
                      [0.3, 0.3],
                      [2, 1],
@@ -69,7 +70,8 @@ def train(architecture=MODEL_NAME,
     if isinstance(architecture, str):
         predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
     else:
-        predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter)
+        predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
+                                           norm=img_res)
 
     """
     Datasets
@@ -120,7 +122,7 @@ def train(architecture=MODEL_NAME,
     summary = training.summary
     summary['architecture'] = architecture
     summary['anchors'] = anchors
-
+    summary['img_res'] = img_res
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)

@@ -11,10 +11,10 @@ batch_size = 1
 
 predictor = GateNet.create('GateNet3x3', batch_size=batch_size, norm=(52, 52), grid=[(3, 3)],
                            anchors=np.array([[[1, 1],
-                                              [0.3, 0.3],
-                                              [0.5, 1],
-                                              [1, 0.5],
-                                              [0.7, 0.7]
+                                              #               [0.3, 0.3],
+                                              #               [0.5, 1],
+                                              #               [1, 0.5],
+                                              #               [0.7, 0.7]
                                               ]]
                                             ))
 

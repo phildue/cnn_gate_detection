@@ -1,7 +1,6 @@
 import numpy as np
 
-from modelzoo.evaluation import ResultsByConfidence
-
+from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 
 
 def average_precision_recall(detection_results):
@@ -9,6 +8,8 @@ def average_precision_recall(detection_results):
     recall = np.zeros((len(detection_results), 11))
     for i, result in enumerate(detection_results):
         skip = False
+        if not isinstance(result, ResultByConfidence):
+            result = ResultByConfidence(result)
         for c in result.results.keys():
             if (result.results[c].false_positives < 0 or
                     result.results[c].true_positives < 0 or
@@ -23,7 +24,7 @@ def average_precision_recall(detection_results):
     return mean_pr, mean_rec
 
 
-def interpolate(results: ResultsByConfidence, recall_levels=None):
+def interpolate(results: ResultByConfidence, recall_levels=None):
     if recall_levels is None:
         recall_levels = np.array([0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
 

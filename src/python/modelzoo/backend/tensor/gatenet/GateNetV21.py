@@ -3,7 +3,6 @@ from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
 from keras.optimizers import Adam
 
-from modelzoo.backend.tensor.FusedBatchNormalization import FusedBatchNormalization
 from modelzoo.backend.tensor.metrics import Loss
 from modelzoo.models.Net import Net
 

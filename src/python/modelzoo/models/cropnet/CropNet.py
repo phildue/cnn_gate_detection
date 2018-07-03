@@ -1,6 +1,5 @@
-from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
-from modelzoo.models.Net import Net
+from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
+from modelzoo.backend.tensor.cropnet.CropNetBase import CropNetBase
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
@@ -18,12 +17,14 @@ class CropNet(Predictor):
     def output_shape(self):
         return self._output_shape
 
-    def __init__(self, net: CropNet2L, augmenter: ImgTransform = None,
-                 input_shape=(52, 52), output_shape=(13, 13), color_format='yuv'):
+    def __init__(self, net: CropNetBase, augmenter: ImgTransform = None,
+                 input_shape=(52, 52), output_shape=(13, 13), color_format='yuv', encoding='anchor', anchor_scale=None):
         self._input_shape = input_shape
         self._output_shape = output_shape
-        encoder = CropNetEncoder(net.grid, input_shape, encoding='grid')
-        decoder = CropNetDecoder(net.grid, input_shape)
+        self.n_boxes = anchor_scale[0].shape[0]
+        encoder = CropNetEncoder([net.grid], input_shape, encoding=encoding, anchor_scale=anchor_scale)
+        decoder = CropNetDecoder([net.grid], input_shape, encoding=encoding)
+        self.grid = [net.grid]
         preprocessor = Preprocessor(augmenter, encoder, 1, input_shape, color_format)
         postprocessor = Postprocessor(decoder)
         super().__init__(preprocessor, postprocessor, net, CropGridLoss(), encoder, decoder)

@@ -1,19 +1,18 @@
 import numpy as np
 
-from modelzoo.backend.tensor.CropGridLoss import CropGridLoss
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNet2L
+from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
+from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
 from modelzoo.models.cropnet.CropNet import CropNet
-from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
+from utils.imageprocessing.Imageprocessing import COLOR_GREEN, show
 from utils.workdir import cd_work
 
 cd_work()
 batch_size = 10
 
-predictor = CropNet(net=CropNet2L(architecture=None,input_shape=(52, 52), loss=CropGridLoss()), augmenter=None)
+predictor = CropNet(net=CropNetBase(architecture=None, input_shape=(52, 52), loss=CropGridLoss()), augmenter=None)
 
 dataset = GateGenerator(["resource/ext/samples/industrial_new/"], batch_size=batch_size,
                         color_format='bgr', label_format='xml', n_samples=99).generate()

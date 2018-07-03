@@ -61,7 +61,7 @@ class MetricGateNet(Metric):
 
         coord_pred_dec_t = self._decode_coord(coord_pred_t, anchors_t)
 
-        class_pred_nms_batch = self.map_adapter.non_max_suppression_batch(coord_pred_t,
+        class_pred_nms_batch = self.map_adapter.non_max_suppression_batch(coord_pred_dec_t,
                                                                           conf_pred_t,
                                                                           self.batch_size,
                                                                           self.n_boxes * self.grid[0][0] * self.grid[0][
