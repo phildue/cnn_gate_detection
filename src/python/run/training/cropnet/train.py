@@ -19,18 +19,19 @@ import numpy as np
 
 ARCHITECTURE = [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
                 {'name': 'max_pool', 'size': (2, 2)},
-                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
                 {'name': 'max_pool', 'size': (2, 2)},
-                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1}]
+                {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1}]
 EPOCHS = 100
 INITIAL_EPOCH = 0
-WORK_DIR = 'test'
+WORK_DIR = 'cropnet_grid_pyramid3'
 N_SAMPLES = 50
 LEARNING_RATE = 0.001
 BATCH_SIZE = 4
 IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
 IMAGE_RES = (52, 52)
 ANCHOR_SCALE = [np.array([0.5, 1.0, 2.0])]
+ENCODING = 'grid'
 
 
 def train(architecture=ARCHITECTURE,
@@ -42,7 +43,7 @@ def train(architecture=ARCHITECTURE,
           learning_rate=LEARNING_RATE,
           image_source=IMAGE_SOURCE,
           img_res=IMAGE_RES,
-          encoding='anchor', anchor_scale=ANCHOR_SCALE):
+          encoding=ENCODING, anchor_scale=ANCHOR_SCALE):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001

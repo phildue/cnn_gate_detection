@@ -6,7 +6,7 @@ from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 class BaseMultiPlot(BasePlot):
     def __init__(self, x_data, y_data, size=(6, 5), font_size=12, title='', line_style=None, x_label='x', y_label='y',
-                 legend=None, y_lim=None, dark=False,x_res=23):
+                 legend=None, y_lim=None, dark=False,x_res=None):
         self.x_res = x_res
         self.dark = dark
         if line_style is None:

@@ -58,9 +58,9 @@ def evalset(
     evaluate_generator(model, generator, verbose=True, out_file_labels=result_path + result_file)
 
     evaluate_file(model, result_path + result_file + '.pkl',
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=True)],
-                  verbose=True,
-                  out_file_metric=result_path + result_file + '.pkl')
+                 metrics=[MetricDetection(iou_thresh=iou_thresh, show_=False)],
+                 verbose=True,
+                 out_file_metric=result_path + result_file + '.pkl')
 
     exp_params = {'name': name,
                   'model': model.net.__class__.__name__,

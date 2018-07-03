@@ -1,11 +1,13 @@
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from modelzoo.backend.visuals.plots.BasePlot import BasePlot
+from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 import numpy as np
 
 
-def load_mean_pr(netname, img_res, grid, layers, filters, old=True):
+def load_result(netname, img_res, grid, layers, filters, old=True, filename='result_0.4.pkl'):
     if old:
         if filters == 16:
             folder_name = '{}{}x{}-{}layers'.format(netname, img_res[0], img_res[1], layers)
@@ -15,49 +17,121 @@ def load_mean_pr(netname, img_res, grid, layers, filters, old=True):
         folder_name = '{}{}x{}-{}x{}+{}layers+{}filters'.format(netname, img_res[0], img_res[1], grid[0],
                                                                 grid[1], layers, filters)
 
-    content = load_file('out/2606/' + folder_name + '/results/result_0.4.pkl')
-    mean_pr, mean_rec = average_precision_recall(content['results']['MetricDetection'])
+    return load_file('out/2606/' + folder_name + '/results/' + filename)
+
+
+def avg_pr_per_image_file(src_file):
+    results = load_file(src_file)
+    detection_result = results['results']['MetricDetection']
+    detection_result = [ResultByConfidence(d) for d in detection_result]
+    mean_pr, mean_rec = average_precision_recall(detection_result)
     return mean_pr, mean_rec
 
 
-cd_work()
-# layers = np.array([l for l in range(2, 9)])
-# cropnet5216 = np.array([load_mean_pr('cropnet', (52, 52), (13, 13), l, 16) for l in layers])
-# cropnet5232 = np.array([load_val_acc('cropnet', (52, 52), (13, 13), l, 32) for l in layers])
-# cropnet5248 = np.array([load_val_acc('cropnet', (52, 52), (13, 13), l, 48) for l in layers])
-# cropnet10416 = np.array([load_val_acc('cropnet', (104, 104), (13, 13), l, 16) for l in layers])
-# cropnet416643 = np.array([load_val_acc('cropnet', (416, 416), (3, 3), l, 64, False) for l in [3, 5, 7, 9, 11]])
-#
-# crpnetplot = BaseMultiPlot(
-#     y_data=[cropnet5216, cropnet5232, cropnet5248, cropnet10416, cropnet416643], y_label='Validation Accuracy',
-#     x_data=[layers, layers, layers, layers, np.array([3, 5, 7, 9, 11])], x_label='Layers',
-#     legend=['52x52->13x13-16filters', '52x52->13x13-32filters', '52x52->13x13-48filters',
-#             '104x104->13x13-16filters',
-#             '416x416->3x3-16filters'],
-#     line_style=['--x', '--x', '--x', '--*', '--o', '--o'],
-#     y_lim=(0, 0.6)
+def pr_plot(files, legend, title, line_style=None, y_range=(0, 1.0)):
+    recalls = []
+    precisions = []
+    for f in files:
+        mean_p, mean_r = avg_pr_per_image_file(f)
+        recalls.append(mean_r)
+        precisions.append(mean_p)
 
-# )
-# crpnetplot.show(False)
+    return BaseMultiPlot(x_data=recalls,
+                         y_data=precisions,
+                         y_label='Precision',
+                         x_label='Recall',
+                         y_lim=y_range,
+                         legend=legend,
+                         title=title,
+                         line_style=line_style,
+                         x_res=None)
+
+
+def mean_detections(result_by_conf):
+    true_positives = np.zeros((len(result_by_conf), 11))
+    false_positives = np.zeros((len(result_by_conf), 11))
+    false_negatives = np.zeros((len(result_by_conf), 11))
+    n_predictions = np.zeros((len(result_by_conf), 11))
+    n_objs = np.zeros((len(result_by_conf), 11))
+
+    for i, result in enumerate(result_by_conf):
+        for j, c in enumerate(sorted(result.results.keys())):
+            true_positives[i, j] = result.results[c].true_positives
+            false_positives[i, j] = result.results[c].false_positives
+            false_negatives[i, j] = result.results[c].false_negatives
+            n_predictions[i, j] = result.results[c].true_positives + result.results[c].false_positives
+            n_objs[i, j] = result.results[c].true_positives + result.results[c].false_negatives
+
+    mean_tp = np.mean(true_positives, 0)
+    mean_fp = np.mean(false_positives, 0)
+    mean_fn = np.mean(false_negatives, 0)
+    mean_pred = np.mean(n_predictions, 0)
+    mean_objs = np.mean(n_objs, 0)
+    return mean_tp, mean_fp, mean_fn, mean_pred, mean_objs, sorted(result_by_conf[0].results.keys())
+
+def detection_plot(src_file, title):
+    results = load_file(src_file)
+    detection_result = results['results']['MetricDetection']
+    detection_result = [ResultByConfidence(d) for d in detection_result]
+    mean_tp, mean_fp, mean_fn, mean_pred, mean_objs, confidence = mean_detections(detection_result)
+    return BaseMultiPlot(x_data=[confidence] * 5, y_data=[mean_tp, mean_pred, mean_objs],
+                         legend=['True Positives', 'Predictions', 'True Objects'],
+                         x_label='Confidence',
+                         y_label='Predictions',
+                         line_style=['.-', '.-', ':'],
+                         title=title)
+
+
+cd_work()
 
 """
 Refnet
 
 """
-# refnet416 = load_mean_pr('refnet', (52, 52), (3, 3), 4, 16, False)
-refnet432 = load_mean_pr('refnet', (52, 52), (3, 3), 4, 32, False)
-# refnet464 = load_mean_pr('refnet', (52, 52), (3, 3), 4, 64, False)
+# for f in [32]:
+#     precisions = []
+#     recalls = []
+#     for iou in [0.4, 0.6, 0.8]:
+#         content = load_result('refnet', (52, 52), (3, 3), 4, 16, False, 'result_' + str(iou) + '.pkl')
+#         results = content['results']['MetricDetection']
+#         results = [ResultByConfidence(d) for d in results]
 #
-# refnet616 = load_mean_pr('refnet', (52, 52), (3, 3), 6, 16, False)
-# refnet632 = load_mean_pr('refnet', (52, 52), (3, 3), 6, 32, False)
-# refnet664 = load_mean_pr('refnet', (52, 52), (3, 3), 6, 64, False)
+#         results_sum = results[0]
+#         for r in results[1:]:
+#             results_sum += r
+#         precision = []
+#         recall = []
+#         for c in results_sum.confidences:
+#             print(results_sum.results[c])
+#             precision.append(results_sum.results[c].precision)
+#             recall.append(results_sum.results[c].recall)
+#         precisions.append(precision)
+#         recalls.append(recall)
+#     BaseMultiPlot(
+#         x_data=recalls,
+#         y_data=precisions,
+#         x_res=None
+#     ).show()
+
+# content = load_file('out/gatev49/results/set_1-040.pkl')
+# results = content['results']['MetricDetection']
+# results = [ResultByConfidence(d) for d in results]
 #
-# refnetplot = BaseMultiPlot(
-#     y_data=[refnet416[0], refnet432[0], refnet464[0], refnet616[0], refnet632[0], refnet664[0]], y_label='Precision',
-#     x_data=[refnet416[1], refnet432[1], refnet464[1], refnet616[1], refnet632[1], refnet664[1]], x_label='Recall',
-#     legend=['4 l 16f', '4 l 32f', '4 l 64f', '6 l 16f', '6 l 32f', '6 l 64f'],
-#     line_style=['--x', '--x', '--x', '--o', '--o', '--o'],
-#     y_lim=(0, 1.0)
-#
-# )
-# refnetplot.show()
+# results_sum = results[0]
+# for r in results[1:]:
+#     results_sum += r
+# precision = []
+# recall = []
+# for c in results_sum.confidences:
+#     print(results_sum.results[c])
+#     precision.append(results_sum.results[c].precision)
+#     recall.append(results_sum.results[c].recall)
+# BasePlot(
+#     x_data=recall,
+#     y_data=precision,
+# ).show()
+
+pr_plot(['out/gatev49/results/set_1-040.pkl'],
+        ['5'], 'CropNet').show(False)
+
+detection_plot('out/gatev49/results/set_1-040.pkl','CropNet').show()
