@@ -26,7 +26,7 @@
 	
 	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Over the time different feature extractors also called filters evolved.
 	
-	\cite{Viola2004} use simple filters inspired by Haar-basis functions for human face detection. \cite{Dalal} and \cite{Lowe2004} compute a local (normalized) histogram of gradients for object detection. These approaches can be summarized as engineered feature extractors, as the filters are manually designed by incorporating task and domain specific knowledge. \todo{describe some pipelines}
+	\cite{Viola2004} use simple filters inspired by Haar-basis functions for human face detection. \cite{Dalal} and \cite{Lowe2004} compute a local (normalized) histogram of gradients for object detection. These approaches can be summarized as engineered feature extractors, as the filters are manually designed by incorporating task and domain specific knowledge. \todo{describe some pipelines and advantages}
 	
 	In recent years \acp{CNN} emerged from deep learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches at various locations. In contrast to manually designed methods, \acp{CNN} can be learned task specific via back-propagation.
 	
@@ -36,31 +36,42 @@
 	
 	where the size of $W$ depends on the kernel size $k$ and the locations are usually chosen in sliding window manner with a certain step size $s$, also called strides.
 	
-	Additionally to the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
-	
-	Different activation functions have emerged. $Tanh$ and sigmoid-activations produce naturally an output at a small range which simplifies the optimization. However, when the initial output of the filter falls unfavourably, the gradient with respect to this filter is almost zero leading to much longer training times. This issue gave rise to the family of rectified linear activation units (RELU) which have been generalized in \todoref{..} to:
-	$$$$
-	
-	\todo{Batch Norm}
-	
-	Using a convolutional layer followed by batch normalization and non-linear activation evolved to a standard in classification and object detection pipelines. It can be summarized in:
-	
-	\acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined in several layers to learn highly non-linear representations.
+	\acp{CNN} offer the advantage that they can be stacked on top of each other and therefore be combined in several layers to learn highly non-linear representations.
 	\todoref{arg1} demonstrate a very efficient architecture in which only 3x3 kernels are used. That way early layers focus on fine grain details and basic features like edges and corners, while higher order layers combine these features to more complex shapes. 
-			
+	
 	Various studies suggest that going deeper with convolutions increases representation strength yielding even better results. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
 	
-	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only due to the fact that \acp{CNN}-features are learned on a specific task, but that \acp{CNN}-features can learn a quite general representation that can be used in other tasks and methods as well.
+	Next to the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
+	
+	Different activation functions have emerged. $Tanh$ and sigmoid-activations produce naturally an output at a small range which simplifies the optimization. However, when the filter output falls unfavourably, the gradient with respect to the activation is almost zero leading to much longer training times. This issue gave rise to the family of rectified linear units (ReLU) which have been generalized in \todoref{..} to parametrized linear units (PReLU):
+	
+	$$
+		f(x) = \begin{cases}
+			x \quad \text{for } x \geq 0 \\
+			\alpha x \quad \text{for } x < 0
+		\end{cases}
+	$$
+	
+	The issue of network initialization and "saturating" activations is also addressed in \cite{Ioffe2015}. With batch normalization the authors introduce a layer that normalises the data batch-wise and is fully differentiable. \todoref{arg1} show how using batch normalization cancels out the bias term.
+		
+	Using a convolutional layer followed by batch normalization and non-linear activation evolved to a standard in classification and object detection pipelines. It can be summarized in:
+	
+	\todo{doublecheck}
+	$$
+	Y_{ij} = f(\frac{WX_{ij}}{\sigma}+c)
+	$$
 	
 
+	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only due to the fact that \acp{CNN}-features are learned on a specific task, but that \acp{CNN}-features can learn a quite general representation that can be used in other vision tasks and methods as well.
 	
+
 	\section{Sampling}
 	
-	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite, while usually a large proportion of the image does not contain any object. Hence, which areas to process within an image is a critical parameter regarding performance in accuracy and inference time.
+	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite, while usually a large proportion of the image does not contain any object. Hence, which areas to sample within an image is a critical parameter regarding performance in accuracy and inference time.
 	
 	Commonly the areas to classify are limited bounding boxes that surround the object. However also other have been proposed..	
 	
-	Another issue that arises when evaluating several regions in the image is that multiple boxes are predicted for the same object. To circumvent this problem results are often filtered by a final non-maximum suppression stage. 
+	
 	
 	\subsection{Sliding window}
 	
@@ -80,7 +91,7 @@
 	
 	\subsection{Regression Models}
 	
-	Regression models frame the object detection task as regression problem. Predictions are made for a predefined set of regions. The process is usually modeled with deep neural networks.
+	Regression models frame the object detection task as regression problem. Predictions are made for a predefined set of regions. The process is usually modelled with deep neural networks.
 	
 	YoloV1 defines a 7x7 grid and classifies each grid cell while predicting 5 possible bounding box regions for the object in the cell.
 	
@@ -200,7 +211,7 @@
 Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
 
 
-\todo{What do we define as wire frame object?}
+
 
 \todo{Elaborate, It should become clear why we use deep learning}
 
@@ -218,5 +229,6 @@ A small network should be able to learn the task.
 \todo{Show how current methods perform on wire frame objects - performance over angle}
 \todo{Reduce number of parameters and compare to big model}
 \todo{What do the individual layers learn, where does it fail}
+\todo{sensitivity analysis what triggers the network?}
 
 \section{Conclusion}
