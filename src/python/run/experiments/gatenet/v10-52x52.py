@@ -20,11 +20,11 @@ baseline = [
 
 ]
 
-for n_layers in range(6, 0, -1):
+for n_layers in range(6):
     architecture = baseline.copy()
 
     architecture.extend(
-        n_layers * [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1}])
+        n_layers * [{'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1}])
 
     train(architecture=architecture,
           work_dir='gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],

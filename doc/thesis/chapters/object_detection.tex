@@ -34,20 +34,25 @@
 	
 	$$Y_{ij} = f(WX_{ij} + b)$$
 	
-	where the size of $W$ depends on the kernel size $k$ and the locations are usually chosen in sliding window fashion with a certain step size $s$ also called strides.
+	where the size of $W$ depends on the kernel size $k$ and the locations are usually chosen in sliding window manner with a certain step size $s$, also called strides.
 	
-	On top of the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
+	Additionally to the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
 	
 	Different activation functions have emerged. $Tanh$ and sigmoid-activations produce naturally an output at a small range which simplifies the optimization. However, when the initial output of the filter falls unfavourably, the gradient with respect to this filter is almost zero leading to much longer training times. This issue gave rise to the family of rectified linear activation units (RELU) which have been generalized in \todoref{..} to:
 	$$$$
 	
 	\todo{Batch Norm}
 	
+	Using a convolutional layer followed by batch normalization and non-linear activation evolved to a standard in classification and object detection pipelines. It can be summarized in:
+	
+	\acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined in several layers to learn highly non-linear representations.
+	\todoref{arg1} demonstrate a very efficient architecture in which only 3x3 kernels are used. That way early layers focus on fine grain details and basic features like edges and corners, while higher order layers combine these features to more complex shapes. 
+			
+	Various studies suggest that going deeper with convolutions increases representation strength yielding even better results. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
+	
 	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only due to the fact that \acp{CNN}-features are learned on a specific task, but that \acp{CNN}-features can learn a quite general representation that can be used in other tasks and methods as well.
 	
-	\acp{CNN} offer an additional advantage as they can be stacked on top of each other and therefore be combined in several layers to learn highly non-linear representations.\todo{describe a cnn architecture}
-	
-	Multiple studies suggest that going deeper with convolutions increases representation strength yielding even better results. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
+
 	
 	\section{Sampling}
 	
