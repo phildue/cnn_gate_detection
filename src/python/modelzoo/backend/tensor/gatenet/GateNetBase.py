@@ -63,21 +63,25 @@ class GateNetBase(Net):
                         'epsilon': 1e-08,
                         'decay': 0.0005}
 
-        w, h = img_shape
-        netin = Input((w, h, 3))
+        h, w = img_shape
+        netin = Input((h, w, 3))
 
         net = netin
-        grid = w, h
+        grid = h, w
         for i, config in enumerate(architecture):
-            with K.name_scope('layer' + str(i)):
+            if 'pool' in config['name']:
                 net = create_layer(net, config)
-                if 'pool' in config['name']:
-                    size = config['size']
-                    grid = int(grid[0] / size[0]), int(grid[1] / size[1])
+                size = config['size']
+                grid = int(grid[0] / size[0]), int(grid[1] / size[1])
+            else:
+                with K.name_scope('layer' + str(i)):
+                    net = create_layer(net, config)
+
         self.grid = [grid]
-        final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-            net)
-        reshape = Reshape((-1, n_polygon + 1))(final)
+        with K.name_scope('final'):
+            final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
+                net)
+            reshape = Reshape((-1, n_polygon + 1))(final)
         predictions = Netout(n_polygon)(reshape)
 
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),

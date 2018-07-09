@@ -43,6 +43,7 @@ def train(architecture=ARCHITECTURE,
           learning_rate=LEARNING_RATE,
           image_source=IMAGE_SOURCE,
           img_res=IMAGE_RES,
+          augmenter=None,
           encoding=ENCODING, anchor_scale=ANCHOR_SCALE):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -57,10 +58,6 @@ def train(architecture=ARCHITECTURE,
     """
 
     loss = CropGridLoss() if encoding == 'grid' else CropAnchorLoss()
-
-    augmenter = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                                (0.5, TransformFlip()),
-                                (0.2, RandomShift(-.3, .3))])
 
     predictor = CropNet(net=CropNetBase(architecture=architecture, input_shape=img_res, loss=loss, encoding=encoding,
                                         anchors=anchor_scale),

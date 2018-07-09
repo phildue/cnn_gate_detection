@@ -70,6 +70,7 @@ def train(architecture=MODEL_NAME,
     if isinstance(architecture, str):
         predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)],
                                        anchors=anchors)
+        predictor.preprocessor.augmenter = augmenter
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
                                            norm=img_res)

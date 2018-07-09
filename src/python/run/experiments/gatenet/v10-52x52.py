@@ -1,6 +1,9 @@
 import numpy as np
 
 from run.training.gate.train import train
+from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.TransformFlip import TransformFlip
 
 grid = [(13, 13)]
 img_res = 52, 52
@@ -30,6 +33,9 @@ for n_layers in range(6):
           work_dir='gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
                                                                 grid[0][1], n_layers + 3),
           img_res=img_res,
+          augmenter=RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
+                                    (0.5, TransformFlip()),
+                                    ]),
           anchors=anchors,
           epochs=50,
           n_samples=None)
