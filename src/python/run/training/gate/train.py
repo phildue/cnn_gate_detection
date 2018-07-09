@@ -21,7 +21,7 @@ MODEL_NAME = 'GateNetV39'
 # {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
 # {'name': 'max_pool', 'size': (2, 2)},
 # {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
-WORK_DIR = 'test'
+WORK_DIR = 'v39_rev'
 BATCH_SIZE = 4
 N_SAMPLES = None
 EPOCHS = 100
@@ -68,7 +68,8 @@ def train(architecture=MODEL_NAME,
     """
 
     if isinstance(architecture, str):
-        predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)])
+        predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)],
+                                       anchors=anchors)
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
                                            norm=img_res)

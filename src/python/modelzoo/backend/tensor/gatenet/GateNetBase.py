@@ -68,21 +68,22 @@ class GateNetBase(Net):
 
         net = netin
         grid = w, h
-        for config in architecture:
-            net = create_layer(net, config)
-            if 'pool' in config['name']:
-                size = config['size']
-                grid = int(grid[0] / size[0]), int(grid[1] / size[1])
+        for i, config in enumerate(architecture):
+            with K.name_scope('layer' + str(i)):
+                net = create_layer(net, config)
+                if 'pool' in config['name']:
+                    size = config['size']
+                    grid = int(grid[0] / size[0]), int(grid[1] / size[1])
         self.grid = [grid]
         final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
             net)
         reshape = Reshape((-1, n_polygon + 1))(final)
-        predictions = Netout(K.shape(reshape))(reshape)
+        predictions = Netout(n_polygon)(reshape)
 
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
-        netout = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
+        netout = ConcatMeta(meta_t)(predictions)
         model = Model(netin, netout)
 
         if weight_file is not None:

@@ -88,7 +88,7 @@ class GateNetV43(Net):
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
-        out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
+        out = ConcatMeta(meta_t)(predictions)
 
         model = Model(input, out)
 

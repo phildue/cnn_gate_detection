@@ -150,11 +150,11 @@ class GateNet(Predictor):
                        augmenter: ImgTransform = None,
                        n_polygon=4
                        ):
+        n_boxes = int(np.ceil(anchors.size / 2))
 
-        n_boxes = 5
         loss = GateDetectionLoss(
             n_boxes=n_boxes,
-            n_polygon=4,
+            n_polygon=n_polygon,
             weight_loc=scale_coor,
             weight_conf=scale_conf,
             weight_prob=scale_prob,
@@ -203,7 +203,7 @@ class GateNet(Predictor):
         n_boxes = int(np.ceil(anchors.size / 2))
         loss = GateDetectionLoss(
             n_boxes=n_boxes,
-            n_polygon=4,
+            n_polygon=n_polygon,
             weight_loc=scale_coor,
             weight_conf=scale_conf,
             weight_prob=scale_prob,
@@ -239,12 +239,6 @@ class GateNet(Predictor):
                  n_polygon=4):
 
         self.color_format = color_format
-        if anchors is None:
-            anchors = np.array([[[1.3221, 1.73145],
-                                 [3.19275, 4.00944],
-                                 [5.05587, 8.09892],
-                                 [9.47112, 4.84053],
-                                 [11.2364, 10.0071]]])
 
         ObjectLabel.classes = ['gate']
 

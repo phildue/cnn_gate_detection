@@ -3,8 +3,8 @@ import keras.backend as K
 
 
 class Netout(Layer):
-    def __init__(self, output_dim, **kwargs):
-        self.output_dim = output_dim
+    def __init__(self, polygon, **kwargs):
+        self.polygon = polygon
         super(Netout, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -18,7 +18,7 @@ class Netout(Layer):
         :return: y as fed for learning
         """
         pred_xy = K.sigmoid(x[:, :, :2])
-        pred_wh = K.exp(x[:, :, 2:4])
+        pred_wh = K.exp(x[:, :, 2:self.polygon])
         pred_c = K.sigmoid(x[:, :, -1:])
 
         return K.concatenate([pred_c, pred_xy, pred_wh], -1)

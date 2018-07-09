@@ -3,9 +3,8 @@ import keras.backend as K
 
 
 class ConcatMeta(Layer):
-    def __init__(self, output_dim, meta_t, **kwargs):
+    def __init__(self, meta_t, **kwargs):
         self.meta_t = meta_t
-        self.output_dim = output_dim
         super(ConcatMeta, self).__init__(**kwargs)
 
     def build(self, input_shape):

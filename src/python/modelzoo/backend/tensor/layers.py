@@ -1,4 +1,5 @@
-from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, SeparableConv2D
+from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, SeparableConv2D, \
+    DepthwiseConv2D
 
 
 def create_layer(netin, config):
@@ -49,10 +50,13 @@ def sep_conv_leaky_creator(netin, config):
 
 
 def sep_conv_leaky(netin, filters, kernel_size, strides, alpha):
-    conv = SeparableConv2D(filters, kernel_size=kernel_size, strides=strides, padding='same', use_bias=False)(netin)
-    norm = BatchNormalization()(conv)
-    act = LeakyReLU(alpha=alpha)(norm)
-    return act
+    conv1 = DepthwiseConv2D(filters, kernel_size=kernel_size, strides=strides, padding='same', use_bias=False)(netin)
+    norm1 = BatchNormalization()(conv1)
+    act1 = LeakyReLU(alpha=alpha)(norm1)
+    conv2 = Conv2D(filters, (1, 1), strides=strides, padding='same', use_bias=False)(act1)
+    norm2 = BatchNormalization()(conv2)
+    act2 = LeakyReLU(alpha=alpha)(norm2)
+    return act2
 
 
 layers = {'conv_leaky': conv_leaky_creator,
