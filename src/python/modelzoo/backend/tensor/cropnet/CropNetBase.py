@@ -55,7 +55,7 @@ class CropNetBase(Net):
             meta_t = K.constant(CropNetAnchorEncoder.generate_anchors(input_shape, [self.grid], anchors),
                                 K.tf.float32)
 
-            netout = ConcatMeta((K.shape(predictions)), meta_t)(predictions)
+            netout = ConcatMeta(meta_t)(predictions)
         self._model = Model(netin, netout)
 
         if weight_file is not None:
