@@ -1,5 +1,6 @@
-from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, SeparableConv2D, \
-    DepthwiseConv2D
+from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed
+
+from modelzoo.backend.tensor.DepthwiseConv2D import DepthwiseConv2D
 
 
 def create_layer(netin, config):
