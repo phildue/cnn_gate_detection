@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/gatenet/mobilenet.py
+srun python3 dronevision/src/python/run/experiments/gatenet/mobilenet208.py
