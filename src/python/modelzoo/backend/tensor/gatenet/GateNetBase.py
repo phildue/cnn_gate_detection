@@ -80,6 +80,7 @@ class GateNetBase(Net):
                 with K.name_scope('layer' + str(i)):
                     net = create_layer(net, config)
 
+        grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
         self.grid = [grid]
         with K.name_scope('final'):
             final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(

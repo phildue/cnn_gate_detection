@@ -78,12 +78,14 @@ def wr_basic_conv_leaky(netin, filters, kernel_size, strides, alpha):
 
 
 def wr_bottleneck_conv_leaky_creator(netin, config):
-    return wr_bottleneck_conv_leaky(netin, config['filters'], config['compression'], config['kernel_size'], config['strides'],
+    return wr_bottleneck_conv_leaky(netin, config['filters'], config['compression'], config['kernel_size'],
+                                    config['strides'],
                                     config['alpha'])
 
 
 def wr_bottleneck_conv_leaky(netin, filters, compression_factor, kernel_size, strides, alpha):
-    conv1 = Conv2D(int(filters * compression_factor), kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(
+    conv1 = Conv2D(int((K.int_shape(netin))[-1] * compression_factor), kernel_size=(1, 1), strides=strides,
+                   padding='same', use_bias=False)(
         netin)
     norm1 = BatchNormalization()(conv1)
     act1 = LeakyReLU(alpha=alpha)(norm1)
@@ -100,12 +102,14 @@ def wr_bottleneck_conv_leaky(netin, filters, compression_factor, kernel_size, st
 
 
 def wr_inception_conv_leaky_creator(netin, config):
-    return wr_inception_conv_leaky(netin, config['filters'], config['compression'], config['kernel_size'], config['strides'],
+    return wr_inception_conv_leaky(netin, config['filters'], config['compression'], config['kernel_size'],
+                                   config['strides'],
                                    config['alpha'])
 
 
-def wr_inception_conv_leaky(netin, filters,compression, kernel_size, strides, alpha):
-    conv_squeeze = Conv2D(int(filters * compression), kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(netin)
+def wr_inception_conv_leaky(netin, filters, compression, kernel_size, strides, alpha):
+    conv_squeeze = Conv2D(int((K.int_shape(netin))[-1] * compression), kernel_size=(1, 1), strides=strides,
+                          padding='same', use_bias=False)(netin)
     norm_squeeze = BatchNormalization()(conv_squeeze)
     act_squeeze = LeakyReLU(alpha=alpha)(norm_squeeze)
 
@@ -125,7 +129,8 @@ def wr_inception_conv_leaky(netin, filters,compression, kernel_size, strides, al
 
     concat = Concatenate()([act12, act21])
 
-    conv_expand = Conv2D(K.int_shape(netin)[-1], kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(concat)
+    conv_expand = Conv2D(K.int_shape(netin)[-1], kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(
+        concat)
     norm_expand = BatchNormalization()(conv_expand)
     act_expand = LeakyReLU(alpha=alpha)(norm_expand)
 

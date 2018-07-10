@@ -4,6 +4,7 @@ from run.training.gate.train import train
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
+from utils.imageprocessing.transform.TransfromGray import TransformGray
 
 grid = [(13, 13)]
 img_res = 416, 416
@@ -18,32 +19,25 @@ architecture = [
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
-     'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
 ]
 
 train(architecture=architecture,
-      work_dir='wr_bottleneck_gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
-                                                                          grid[0][1], 9),
+      work_dir='gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
+                                                            grid[0][1], 9),
       img_res=img_res,
       augmenter=RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                                 (0.5, TransformFlip()),
                                 ]),
       anchors=anchors,
       epochs=50,
-      n_samples=None)
+      n_samples=None,
+      input_channels=3)
