@@ -53,7 +53,8 @@ def train(architecture=MODEL_NAME,
           image_source=IMAGE_SOURCE,
           img_res=(IMG_HEIGHT, IMG_WIDTH),
           anchors=ANCHORS,
-          augmenter=AUGMENTER
+          augmenter=AUGMENTER,
+          input_channels=3,
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -73,7 +74,7 @@ def train(architecture=MODEL_NAME,
         predictor.preprocessor.augmenter = augmenter
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
-                                           norm=img_res)
+                                           norm=img_res, input_channels=input_channels)
 
     """
     Datasets
@@ -108,6 +109,7 @@ def train(architecture=MODEL_NAME,
     """
     Training Config
     """
+
     training = Training(predictor, train_gen,
                         out_file='model.h5',
                         patience_early_stop=20,

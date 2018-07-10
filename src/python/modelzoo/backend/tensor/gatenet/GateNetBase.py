@@ -49,7 +49,10 @@ class GateNetBase(Net):
                  loss,
                  img_shape=(52, 52),
                  n_boxes=5,
-                 weight_file=None, n_polygon=4):
+                 weight_file=None,
+                 n_polygon=4,
+                 input_channels=3,
+                 ):
 
         self.loss = loss
         self.norm = img_shape
@@ -64,7 +67,7 @@ class GateNetBase(Net):
                         'decay': 0.0005}
 
         h, w = img_shape
-        netin = Input((h, w, 3))
+        netin = Input((h, w, input_channels))
 
         net = netin
         grid = h, w

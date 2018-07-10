@@ -30,8 +30,8 @@ architecture = [
 ]
 
 train(architecture=architecture,
-      work_dir='mobilgatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
-                                                                 grid[0][1], 9),
+      work_dir='mobilegatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
+                                                                  grid[0][1], 9),
       img_res=img_res,
       augmenter=RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                                 (0.5, TransformFlip()),

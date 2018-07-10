@@ -138,6 +138,7 @@ class GateNet(Predictor):
     @staticmethod
     def create_by_arch(architecture,
                        norm=(416, 416),
+                       input_channels=3,
                        anchors=None,
                        batch_size=8,
                        scale_noob=1.0,
@@ -165,7 +166,9 @@ class GateNet(Predictor):
                           img_shape=norm,
                           weight_file=weight_file,
                           n_boxes=n_boxes,
-                          n_polygon=n_polygon)
+                          n_polygon=n_polygon,
+                          input_channels=input_channels,
+                          )
 
         return GateNet(net,
                        anchors=anchors,
