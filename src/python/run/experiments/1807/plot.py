@@ -17,7 +17,7 @@ for model in [
     'out/1807/gatenet416x416-13x13+9layers+pyramid',
     'out/1807/graygatenet416x416-13x13+9layers+pyramid',
     'out/1807/mobilegatenet416x416-13x13+9layers+pyramid',
-    'out/1807/wr_basic_gatenet416x416-13x13+10layers+pyramid',
+    # 'out/1807/wr_basic_gatenet416x416-13x13+10layers+pyramid',
     # 'out/1807/wr_inception_gatenet416x416-13x13+10layers+pyramid'
 ]:
     results = load_file(model + '/test/test_result_metric.pkl')
@@ -28,8 +28,8 @@ for model in [
     legends.append(model)
     mean_recalls.append(mean_recall)
     mean_precisions.append(mean_pr)
-    total_recall.append(total_results.recalls)
-    total_precision.append(total_results.precisions)
+    total_recall.append(total_results.recalls[1:])
+    total_precision.append(total_results.precisions[1:])
 
 pr_img = BaseMultiPlot(x_data=mean_recalls,
                        y_data=mean_precisions,

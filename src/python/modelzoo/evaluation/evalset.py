@@ -10,10 +10,10 @@ def evalset(
         model_src,
         img_res=None,
         image_source=['resource/ext/samples/industrial_new_test/'],
-        iou_thresh=0.4,
         n_samples=None,
-        color_format=None,
-        preprocessing=None):
+        color_format_dataset='bgr',
+        preprocessing=None,
+        color_format=None):
 
     # Model
     conf_thresh = 0
@@ -46,14 +46,13 @@ def evalset(
 
     create_dirs([result_path])
     generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format='jpg', n_samples=n_samples,
-                              shuffle=False, color_format=color_format, label_format='xml', start_idx=0)
+                              shuffle=False, color_format=color_format_dataset, label_format='xml', start_idx=0)
 
     exp_params = {'name': name,
                   'model': model_src,
                   'conf_thresh': conf_thresh,
-                  'iou_thresh': iou_thresh,
                   'image_source': image_source,
-                  'color_format': color_format,
+                  'color_format': color_format_dataset,
                   'n_samples': generator.n_samples,
                   'result_file': result_file,
                   'preprocessing': preprocessing}

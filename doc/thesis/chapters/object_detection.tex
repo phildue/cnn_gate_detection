@@ -20,7 +20,7 @@
 	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
 	\todo{Image of pipeline}
 	%Pipeline
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. Feeding these signals directly to a classifier/regressor makes the problem unnecessarily hard to solve. That is why, the usual object detection pipeline consists of two stages. The feature extraction stage extracts task relevant information from the image and infers an internal representation. The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. Feeding these signals directly to a machine learning model leads to the curse of dimensionality and makes the problem unnecessarily hard to solve. That is why, the usual computer vision pipeline consists of two stages. The feature extraction stage extracts task relevant information from the image and infers an internal representation. The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
 	
 	\section{Feature Extraction}
 	
@@ -202,14 +202,17 @@ The properties of wireframe object can be summarized in:
 	\item The bounding box around the object is largely occupied by background
 \end{enumerate}
 
-
-
 \todoref{Wire detection}
 \todoref{Method from last year, Other papers on drone racing}
 
 \section{Hypothesis}
 
-A small network should be able to learn the task.
+Several hypothesis are formulated and will be examined experimentally:
+\begin{enumerate}
+	\item \textbf{A \acp{CNN} should be able to learn the object detection task.}
+	\item \textbf{For wireframe objects the deeper layers don't learn anything as the object consist of relatively simple shapes.}
+	\item \textbf{The detection of fine grain structures is important.}
+\end{enumerate}
 \newpage
 \section{Experiments}
 

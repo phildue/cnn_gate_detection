@@ -12,7 +12,7 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
+generator = GateGenerator(directories=['resource/ext/samples/daylight_test'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',

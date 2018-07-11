@@ -9,9 +9,10 @@ def evalmetric(
         batch_size,
         model_src,
         label_file,
-        img_res=(52, 52),
+        img_res=None,
         iou_thresh=0.4,
-        color_format=None):
+        color_format=None,
+        show=False):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -51,6 +52,6 @@ def evalmetric(
     save_file(exp_params, exp_param_file + '.pkl', result_path)
 
     evaluate_file(model, label_file,
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=False)],
+                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show)],
                   verbose=True,
                   out_file_metric=result_path + result_file)

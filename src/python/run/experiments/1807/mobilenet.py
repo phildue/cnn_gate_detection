@@ -24,9 +24,9 @@ architecture = [
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'sep_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'sep_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'sep_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'sep_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'sep_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'sep_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'sep_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
 ]
 
 train(architecture=architecture,
