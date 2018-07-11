@@ -1,7 +1,6 @@
 from modelzoo.evaluation import evaluate_file
 from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.models.gatenet.GateNet import GateNet
-from run.evaluation.evalset import evalset
 from utils.fileaccess.utils import load_file
 import numpy as np
 

@@ -94,11 +94,8 @@ def wr_bottleneck_conv_leaky(netin, filters, compression_factor, kernel_size, st
     norm2 = BatchNormalization()(conv2)
     act2 = LeakyReLU(alpha=alpha)(norm2)
 
-    conv3 = Conv2D((K.int_shape(netin))[-1], kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(act2)
-    norm3 = BatchNormalization()(conv3)
-    act3 = LeakyReLU(alpha=alpha)(norm3)
-
-    return Add()([netin, act3])
+    join = Add()([netin, act2])
+    return join
 
 
 def wr_inception_conv_leaky_creator(netin, config):
@@ -128,13 +125,8 @@ def wr_inception_conv_leaky(netin, filters, compression, kernel_size, strides, a
     act21 = LeakyReLU(alpha=alpha)(norm21)
 
     concat = Concatenate()([act12, act21])
-
-    conv_expand = Conv2D(K.int_shape(netin)[-1], kernel_size=(1, 1), strides=strides, padding='same', use_bias=False)(
-        concat)
-    norm_expand = BatchNormalization()(conv_expand)
-    act_expand = LeakyReLU(alpha=alpha)(norm_expand)
-
-    return Add()([netin, act_expand])
+    join = Add()([netin, concat])
+    return join
 
 
 layers = {'conv_leaky': conv_leaky_creator,

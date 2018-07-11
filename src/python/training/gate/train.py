@@ -55,6 +55,7 @@ def train(architecture=MODEL_NAME,
           anchors=ANCHORS,
           augmenter=AUGMENTER,
           input_channels=3,
+          weight_file=None
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -63,6 +64,9 @@ def train(architecture=MODEL_NAME,
             return 0.001
 
     cd_work()
+
+    if weight_file is None and initial_epoch > 0:
+        weight_file = 'out/' + work_dir + '/model.h5'
 
     """
     Model
@@ -74,7 +78,7 @@ def train(architecture=MODEL_NAME,
         predictor.preprocessor.augmenter = augmenter
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
-                                           norm=img_res, input_channels=input_channels)
+                                           norm=img_res, input_channels=input_channels, weight_file=weight_file)
 
     """
     Datasets
@@ -127,6 +131,7 @@ def train(architecture=MODEL_NAME,
     summary['architecture'] = architecture
     summary['anchors'] = anchors
     summary['img_res'] = img_res
+    summary['grid'] = predictor.grid
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)

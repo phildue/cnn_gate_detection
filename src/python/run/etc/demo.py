@@ -6,6 +6,7 @@ from modelzoo.visualization.demo import demo_generator
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
+from utils.imageprocessing.transform.TransfromGray import TransformGray
 from utils.workdir import cd_work
 import numpy as np
 
@@ -25,14 +26,16 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/2606/gatenet104x104+5layers+64filters/'
+src_dir = 'out/1807/gatenet-strided416x416-13x13+9layers+pyramid/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 grid = [(13, 13)]
 model = GateNet.create_by_arch(architecture=summary['architecture'],
-                               weight_file=src_dir + 'model.h5', batch_size=8, norm=(104, 104),
+                               weight_file=src_dir + 'model.h5', batch_size=8, norm=(416, 416),
                                anchors=summary['anchors'],
-                               color_format='yuv'
+                               color_format='yuv',
+                               # preprocessor=TransformGray(),
+                               conf_thresh=0.3
                                )
 
-demo_generator(model, generator, t_show=0, n_samples=150)
+demo_generator(model, generator, t_show=1, n_samples=150, size=(416, 416))

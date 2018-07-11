@@ -16,6 +16,51 @@ class ResultByConfidence:
         return list(reversed(sorted(self.results.keys())))
 
     @property
+    def precisions(self):
+        mat = np.zeros((len(self.results.keys(), )))
+
+        for i, c in enumerate(list(reversed(sorted(self.results.keys())))):
+            mat[i] = self.results[c].precision
+
+        return mat
+
+    @property
+    def recalls(self):
+        mat = np.zeros((len(self.results.keys(), )))
+
+        for i, c in enumerate(list(reversed(sorted(self.results.keys())))):
+            mat[i] = self.results[c].recall
+
+        return mat
+
+    @property
+    def true_positives(self):
+        mat = np.zeros((len(self.results.keys(), )))
+
+        for i, c in enumerate(list(reversed(sorted(self.results.keys())))):
+            mat[i] = self.results[c].true_positives
+
+        return mat
+
+    @property
+    def false_positives(self):
+        mat = np.zeros((len(self.results.keys(), )))
+
+        for i, c in enumerate(list(reversed(sorted(self.results.keys())))):
+            mat[i] = self.results[c].false_positives
+
+        return mat
+
+    @property
+    def false_negatives(self):
+        mat = np.zeros((len(self.results.keys(), )))
+
+        for i, c in enumerate(list(reversed(sorted(self.results.keys())))):
+            mat[i] = self.results[c].false_negatives
+
+        return mat
+
+    @property
     def average_precision(self):
         avg_precision = 0
         for v in self.values:
@@ -30,5 +75,3 @@ class ResultByConfidence:
             total[c] = self.results[c] + other.results[c]
 
         return ResultByConfidence(total)
-
-

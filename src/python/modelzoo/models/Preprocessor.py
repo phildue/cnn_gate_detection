@@ -10,7 +10,9 @@ from utils.labels.ImgLabel import ImgLabel
 
 
 class Preprocessor:
-    def __init__(self, augmenter: ImgTransform, encoder: Encoder, n_classes, img_shape, color_format):
+    def __init__(self, augmenter: ImgTransform, encoder: Encoder, n_classes, img_shape, color_format,
+                 preprocess_transformer: ImgTransform = None):
+        self.preprocess_transformer = preprocess_transformer
         self.color_format = color_format
         self.img_height, self.img_width = img_shape[:2]
         self.n_classes = n_classes
@@ -61,10 +63,15 @@ class Preprocessor:
         return self.preprocess_test(dataset_augmented)
 
     def preprocess(self, img: Image):
+
+        if self.preprocess_transformer is not None:
+            img, _ = self.preprocess_transformer.transform(img, ImgLabel([]))
+
         if self.color_format is 'yuv':
             img = img.yuv
         else:
             img = img.bgr
+
         img = resize(img, (self.img_height, self.img_width))
         return self.encoder.encode_img(img)
 

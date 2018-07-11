@@ -1,6 +1,6 @@
 import numpy as np
 
-from run.training.gate.train import train
+from training.gate.train import train
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
@@ -30,14 +30,18 @@ architecture = [
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
 ]
 
+model_name = 'gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
+                                                          grid[0][1], 9)
+
 train(architecture=architecture,
-      work_dir='gatenet{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
-                                                            grid[0][1], 9),
+      work_dir=model_name,
       img_res=img_res,
       augmenter=RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                                 (0.5, TransformFlip()),
                                 ]),
       anchors=anchors,
-      epochs=50,
+      epochs=100,
       n_samples=None,
-      input_channels=3)
+      input_channels=3,
+      initial_epoch=50,
+      weight_file='out/1807/' + model_name + '/model.h5')
