@@ -26,7 +26,7 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_test'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/1807/gatenet-strided416x416-13x13+9layers+pyramid/'
+src_dir = 'out/1807/gatenet-strided2416x416-13x13+9layers+pyramid/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 grid = [(13, 13)]
@@ -38,4 +38,4 @@ model = GateNet.create_by_arch(architecture=summary['architecture'],
                                conf_thresh=0.3
                                )
 
-demo_generator(model, generator, t_show=1, n_samples=150, size=(416, 416))
+demo_generator(model, generator, t_show=0, n_samples=150, size=(416, 416))

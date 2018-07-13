@@ -2,8 +2,13 @@ import numpy as np
 
 from run.training.gate.train import train
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
+from utils.imageprocessing.transform.RandomColorShift import RandomColorShift
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.RandomGrayNoise import RandomGrayNoise
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
+from utils.imageprocessing.transform.TransformHistEq import TransformHistEq
+from utils.imageprocessing.transform.TransformerBlur import TransformerBlur
+from utils.imageprocessing.transform.TransfromGray import TransformGray
 
 grid = [(13, 13)]
 img_res = 416, 416
@@ -25,12 +30,17 @@ architecture = [
 ]
 
 train(architecture=architecture,
-      work_dir='gatenet-strided{}x{}-{}x{}+{}layers+pyramid'.format(img_res[0], img_res[1], grid[0][0],
-                                                                    grid[0][1], 9),
+      work_dir='gatenet-strided{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
+                                                            grid[0][1], 9),
       img_res=img_res,
-      augmenter=RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                                (0.5, TransformFlip()),
-                                ]),
+      augmenter=RandomEnsemble([
+          (1.0, RandomBrightness(0.5, 1.5)),
+          (0.5, TransformFlip()),
+          (0.1, TransformGray()),
+          (0.25, TransformHistEq()),
+          (1.0, RandomGrayNoise()),
+          (0.1, TransformerBlur(iterations=10)),
+      ]),
       anchors=anchors,
       epochs=50,
       n_samples=None)

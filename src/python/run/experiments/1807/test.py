@@ -1,3 +1,5 @@
+import os
+
 from modelzoo.evaluation.evalmetric import evalmetric
 from modelzoo.evaluation.evalset import evalset
 from utils.imageprocessing.transform.TransfromGray import TransformGray
@@ -5,14 +7,7 @@ from utils.workdir import cd_work
 
 cd_work()
 #
-for model in [
-    'out/1807/gatenet-strided416x416-13x13+9layers+pyramid',
-    'out/1807/gatenet416x416-13x13+9layers+pyramid',
-    'out/1807/graygatenet416x416-13x13+9layers+pyramid',
-    'out/1807/mobilegatenet416x416-13x13+9layers+pyramid',
-    # 'out/1807/wr_basic_gatenet416x416-13x13+10layers+pyramid',
-    # 'out/1807/wr_inception_gatenet416x416-13x13+10layers+pyramid'
-]:
+for model in [name for name in os.listdir('out/1807/') if os.path.isdir(name)]:
     preprocessing = None if 'gray' not in model else TransformGray()
     evalset(name='test',
             batch_size=24,
@@ -21,14 +16,7 @@ for model in [
             color_format='yuv',
             image_source=['resource/ext/samples/industrial_new_test/', 'resource/ext/samples/daylight_test/'])
 
-for model in [
-    'out/1807/gatenet-strided416x416-13x13+9layers+pyramid',
-    'out/1807/gatenet416x416-13x13+9layers+pyramid',
-    'out/1807/graygatenet416x416-13x13+9layers+pyramid',
-    'out/1807/mobilegatenet416x416-13x13+9layers+pyramid',
-    # 'out/1807/wr_basic_gatenet416x416-13x13+10layers+pyramid',
-    # 'out/1807/wr_inception_gatenet416x416-13x13+10layers+pyramid'
-]:
+for model in [name for name in os.listdir('out/1807/') if os.path.isdir(name)]:
     evalmetric(name='test',
                batch_size=24,
                model_src=model,

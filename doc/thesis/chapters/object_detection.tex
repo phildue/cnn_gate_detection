@@ -20,8 +20,12 @@
 	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
 	\todo{Image of pipeline}
 	%Pipeline
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. Feeding these signals directly to a machine learning model leads to the curse of dimensionality and makes the problem unnecessarily hard to solve. That is why, the usual computer vision pipeline consists of two stages. The feature extraction stage extracts task relevant information from the image and infers an internal representation. The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
-	
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines consists of two stages:
+	\begin{enumerate}
+		\item The feature extraction stage extracts task relevant information from the image and infers an internal, lower dimensional representation.
+		\item The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
+	\end{enumerate}  
+
 	\section{Feature Extraction}
 	
 	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Over the time different feature extractors also called filters evolved.
@@ -102,13 +106,13 @@
 	
 	Attention based techniques are inspired by the human vision process \todoref{arg1}. The algorithm focusses on the important parts of the image and doesn't spend computations on less important parts. Multiple approaches exist to model the attention process.
 	
-	Viola and Jones stop further processing samples that are classified as background.
+	\citeauthor{Viola2004} use a cascaded of classifier that are evaluated in iterative fashion. Is a certain patch classified as background, its not further processed.
 	
 	Guido proposes a neural network to learn an attention model.
 	
 	X propose a recurrent neural network architecture to model the attention process.
 	
-	Fast-RCNN and Faster-RCNN use a \acp{CNN} to model the attention process and propose regions that get classified in a second stage.
+	Fast-RCNN \cite{Ren} and Faster-RCNN \cite{Ren2015} formulate the attention process as regression problem and model it with a \acp{CNN} that proposes regions which possibly contain an object. The proposed regions are classified in a second step. 
 	
 
 	%			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
@@ -128,14 +132,6 @@
 	%				\item[-] One shot(50\%), +2scales (75\%)
 	%				\item[-] OverFeat/ Selective Search are faster but much more expensive
 	%			\end{itemize}
-	
-	
-	%	Methods consist usually of two stages.An example is R-CNN\cite{Ren}. 
-	%%	\begin{itemize}
-	%		\item Object Proposal: A convolutional net proposes regions that contain an object. This is either done in sliding window fashion or in one pass.
-	%		\item Classification: All proposed regions are fed into a classifier. This can either be a "traditional" one or another CNN.
-	%	\end{itemize}
-	
 	
 	\section{Object Model}
 	
