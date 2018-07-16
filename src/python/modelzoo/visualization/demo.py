@@ -50,7 +50,7 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             label_tp = BoundingBox.to_label(true_positives)
             label_fp = BoundingBox.to_label(false_positives)
             label_fn = BoundingBox.to_label(false_negatives)
-            show(img.bgr, 'demo', labels=[label_tp, label_fp],
+            show(img.bgr, 'demo', labels=[label_tp, label_fp, label],
                  colors=[(0, 0, 255), (0, 0, 255), (255, 0, 0)],
                  legend=LEGEND_TEXT, t=t_show)
 

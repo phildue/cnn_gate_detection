@@ -12,7 +12,7 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/daylight_test'],
+generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
@@ -26,7 +26,7 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_test'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/bottlenecknet_revisited416x416-13x13+9layers/'
+src_dir = 'out/gatenet_narrow416x416-13x13+9layers/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 grid = [(13, 13)]
