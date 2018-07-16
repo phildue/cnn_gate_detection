@@ -48,7 +48,7 @@ architecture = [
      'compression': 0.5},
 ]
 
-model_name = 'baseline{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
+model_name = 'combined{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
                                                    grid[0][1], 13)
 
 train(architecture=architecture,
