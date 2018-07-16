@@ -19,25 +19,23 @@ anchors = np.array([[[1.08, 1.19],
                      [16.62, 10.52]]])
 
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-
-    {'name': 'bottleneck_dconv', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1, 'expansion': 1},
-
-    {'name': 'bottleneck_dconv', 'kernel_size': (3, 3), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1, 'expansion': 6},
-    {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'bottleneck_dconv', 'kernel_size': (6, 6), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1, 'expansion': 6},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'bottleneck_dconv', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1, 'expansion': 6},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'bottleneck_dconv', 'kernel_size': (6, 6), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1, 'expansion': 6},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'bottleneck_dconv', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1, 'expansion': 6},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
      'expansion': 6},
-
-    {'name': 'bottleneck_dconv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1, 'expansion': 6},
+    {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
+     'expansion': 6},
     {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
      'expansion': 6},
 
-    {'name': 'bottleneck_dconv', 'kernel_size': (3, 3), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1, 'expansion': 6},
-    {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'expansion': 6},
-
-    {'name': 'bottleneck_dconv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1, 'expansion': 6},
-    {'name': 'bottleneck_dconv_residual', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
-     'expansion': 6},
 ]
 
 train(architecture=architecture,

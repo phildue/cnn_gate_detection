@@ -1,6 +1,6 @@
 import numpy as np
 
-from run.training.gate.train import train
+from training.gate.train import train
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomColorShift import RandomColorShift
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
