@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
-from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Backend import resize, crop
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform

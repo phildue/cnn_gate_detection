@@ -37,16 +37,16 @@ architecture = [
 ]
 
 train(architecture=architecture,
-      work_dir='gatenet-strided2{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
-                                                             grid[0][1], 9),
+      work_dir='1807/strides2{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
+                                                          grid[0][1], 9),
       img_res=img_res,
       augmenter=RandomEnsemble([
           (1.0, RandomBrightness(0.5, 1.5)),
           (0.5, TransformFlip()),
           (0.1, TransformGray()),
           (0.25, TransformHistEq()),
-          (1.0, RandomGrayNoise()),
-          (0.1, TransformerBlur(iterations=10)),
+          #          (1.0, RandomGrayNoise()),
+          #          (0.1, TransformerBlur(iterations=10)),
       ]),
       anchors=anchors,
       epochs=100,
