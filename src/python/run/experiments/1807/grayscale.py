@@ -40,7 +40,7 @@ train(architecture=architecture,
       augmenter=RandomEnsemble([
           (1.0, RandomBrightness(0.5, 1.5)),
           (0.5, TransformFlip()),
-          (0.1, TransformGray()),
+          (1.0, TransformGray()),
           (0.25, TransformHistEq()),
           #          (1.0, RandomGrayNoise()),
           #          (0.1, TransformerBlur(iterations=10)),
