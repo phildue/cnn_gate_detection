@@ -24,7 +24,7 @@ from utils.imageprocessing.Backend import resize
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/bebop20k/'],
+generator = GateGenerator(directories=['resource/ext/samples/daylight_test/'],
                           batch_size=100, color_format='bgr',
                           shuffle=True, start_idx=0, valid_frac=0,
                           label_format='xml', img_format='jpg')
@@ -33,13 +33,17 @@ idx = random.randint(0, 80)
 img = batch[idx][0]
 label = batch[idx][1]
 ssd_augmenter = SSDAugmenter()
-augmenters = [RandomColorShift((.5, 1.0), (0, 0), (0, 0)), RandomMerge(), RandomRotate(10, 30),
-              TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
-              RandomBrightness(b_max=0.9), TransformFlip(), TransformGray(),
+augmenters = [RandomColorShift((-0.2, 0.2), (-0.2, 0.2), (-0.2, 0.2)),  # RandomMerge(), RandomRotate(10, 30),
+              # TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
+              RandomBrightness(0.5, 2.0), TransformFlip(), TransformGray(),
               TransformHistEq(), TransformSubsample(), RandomGrayNoise(), TransformerBlur(iterations=10),
               RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
 
-augmenters = [TransformMotionBlur('left')]
+augmenters = [RandomColorShift((-0.1, 0.1), (-0.1, 0.1), (-0.1, 0.1)),
+              RandomBrightness(0.5, 1.5), TransformFlip(), TransformGray(),
+              TransformHistEq(), RandomGrayNoise(), TransformerBlur(iterations=10),
+              TransformNormalize()]
+
 
 for img, label, _ in batch:
     img, label = resize(img, (180, 315), label=label)
@@ -47,4 +51,4 @@ for img, label, _ in batch:
 
     for augmenter in augmenters:
         img_aug, label_aug = augmenter.transform(img, label)
-        show(img_aug, name=augmenter.__class__.__name__)
+        show(img_aug, name=augmenter.__class__.__name__, labels=label_aug)

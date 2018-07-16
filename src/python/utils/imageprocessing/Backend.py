@@ -111,10 +111,9 @@ def flip(img: Image, label: ImgLabel = None, flip_code=1) -> (Image, ImgLabel):
     if label is not None:
         label_flipped = copy.deepcopy(label)
         for obj in label_flipped.objects:
-            xmin_new = img.array.shape[1] - obj.x_max
-            xmax_new = img.array.shape[1] - obj.x_min
-            obj.x_min = xmin_new
-            obj.x_max = xmax_new
+            mat = obj.gate_corners.mat
+            mat[:, 0] = img.array.shape[1] - mat[:, 0]
+            obj.gate_corners = GateCorners.from_mat(mat)
     else:
         label_flipped = None
 
@@ -134,18 +133,19 @@ def translate(img: Image, shift_x, shift_y, label: ImgLabel) -> (Image, ImgLabel
     if label is not None:
         label_translated = copy.deepcopy(label)
         for obj in label_translated.objects:
-            obj.x_min = obj.x_min - shift_x
-            obj.x_max = obj.x_max - shift_x
+            mat = obj.gate_corners.mat
+            mat[:, 0] -= shift_x
+            obj.gate_corners = GateCorners.from_mat(mat)
     else:
         label_translated = None
     return Image(content, img.format), label_translated
 
 
 def color_shift(img, t, label=None) -> (Image, ImgLabel):
-    content = img.array
-    content = content * (1 + t)
-    content = content / (255. * 2.)
-    return Image(content, img.format), copy.deepcopy(label)
+    content = img.array.astype(np.float64)
+    content *= (1. + t)
+    # content /= (255. * 2.)
+    return Image(content.astype(np.uint8), img.format), copy.deepcopy(label)
 
 
 def normalize(img: Image, min_range: float = 0.0, max_range: float = 1.0):

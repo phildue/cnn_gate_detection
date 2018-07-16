@@ -32,8 +32,8 @@ def resize_label_bb(obj: ObjectLabel, img_shape, shape: tuple = None, scale_x=1.
         scale_x = (shape[1] / img_shape[1])
 
     mat = obj_resized.mat
-    scale = np.array([scale_x, scale_y],dtype=mat.dtype)
-    mat *= scale
+    scale = np.array([scale_x, scale_y])
+    mat = mat.astype(scale.dtype) * scale
 
     obj_resized.mat = mat
 

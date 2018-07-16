@@ -16,7 +16,7 @@ anchors = np.array([[[1.08, 1.19],
 architecture = [
     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 32, 'compression': 0.5, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
      'alpha': 0.1},
@@ -29,11 +29,11 @@ architecture = [
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
      'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
+    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
      'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
+    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
      'alpha': 0.1},
-    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
+    {'name': 'wr_bottleneck_conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'compression': 0.5, 'strides': (1, 1),
      'alpha': 0.1},
 ]
 

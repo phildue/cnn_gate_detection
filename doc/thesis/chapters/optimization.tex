@@ -1,19 +1,33 @@
 \chapter{Speed Optimization}
 \label{sec:tradeoff}
+
 \begin{center}
 	\textbf{What are the trade-off's between detection accuracy and inference time when such a detection model is applied on a micro-air vehicle?}
 \end{center}
-\todo{Different ways to address optimization: Architectural level, Conceptual Level, Operational Level}
 
-Operational Level - Quantization:
-\cite{TripathiSanDiego}, 
+A major drawback of \acp{CNN}-based object detectors is their vast resource requirements. In recent years a lot of research has been conducted to reduce the inference time of \acp{CNN}. The publications address different levels for optimization:
+\begin{enumerate}
+	\item \textbf{Conceptual Level}
+	\item \textbf{Architectural Level}
+	\item \textbf{Operational Level}
+\end{enumerate}
+
+\section{Conceptual Level}
+ On a conceptual level effort has been carried out to incorporate more steps of the object detection pipeline into one model while sharing computational load. This has led from Overfeat\todoref{overfeat} which ran a \acp{CNN} in sliding window manner across the image over Faster-RCNN\todoref{faster rcnn} where the features are extracted only once and reused to Yolo and SSD that combine the whole pipeline in one model.
+ Using Time domain:
+ \cite{Chen2018}
+ 
+\section{Architectural Level}
 
 Architectural Level/Number of Computations:
 \cite{Howard2017}, \cite{Zhang2017a}, \cite{Ghosh2017}, 
 \todo{Knowledge Distillation}
 
-Conceptual Level - Using Time domain:
-\cite{Chen2018}
+\section{Operational Level}
+Operational Level - Quantization:
+\cite{TripathiSanDiego}, 
+
+
 
 \todo{We choose one/two of the above because trying everything is a bit too much. So which one and why?}
 

@@ -138,6 +138,7 @@ class GateNet(Predictor):
     @staticmethod
     def create_by_arch(architecture,
                        norm=(416, 416),
+                       input_channels=3,
                        anchors=None,
                        batch_size=8,
                        scale_noob=1.0,
@@ -148,7 +149,8 @@ class GateNet(Predictor):
                        weight_file=None,
                        color_format='yuv',
                        augmenter: ImgTransform = None,
-                       n_polygon=4
+                       n_polygon=4,
+                       preprocessor=None,
                        ):
         n_boxes = int(np.ceil(anchors.size / 2))
 
@@ -165,7 +167,9 @@ class GateNet(Predictor):
                           img_shape=norm,
                           weight_file=weight_file,
                           n_boxes=n_boxes,
-                          n_polygon=n_polygon)
+                          n_polygon=n_polygon,
+                          input_channels=input_channels,
+                          )
 
         return GateNet(net,
                        anchors=anchors,
@@ -175,7 +179,8 @@ class GateNet(Predictor):
                        conf_thresh=conf_thresh,
                        color_format=color_format,
                        augmenter=augmenter,
-                       n_polygon=n_polygon)
+                       n_polygon=n_polygon,
+                       preprocessing=preprocessor)
 
     @staticmethod
     def create(model_name,
@@ -192,7 +197,6 @@ class GateNet(Predictor):
                color_format='yuv',
                augmenter: ImgTransform = None,
                n_polygon=4):
-
         if anchors is None:
             anchors = np.array([[[1.08, 1.19],
                                  [3.42, 4.41],
@@ -236,8 +240,9 @@ class GateNet(Predictor):
                  color_format='yuv',
                  iou_thresh=0.4,
                  augmenter: ImgTransform = None,
-                 n_polygon=4):
-
+                 n_polygon=4,
+                 preprocessing=None
+                 ):
         self.color_format = color_format
 
         ObjectLabel.classes = ['gate']
@@ -259,7 +264,8 @@ class GateNet(Predictor):
                                     encoder=encoder,
                                     img_shape=self.norm,
                                     n_classes=1,
-                                    color_format=color_format)
+                                    color_format=color_format,
+                                    preprocess_transformer=preprocessing)
 
         decoder = GateNetDecoder(norm=norm,
                                  grid=grid,

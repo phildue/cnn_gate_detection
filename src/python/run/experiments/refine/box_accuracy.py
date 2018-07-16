@@ -1,4 +1,4 @@
-from run.evaluation.evalset import evalset
+from modelzoo.evaluation.evalset import evalset
 
 models = ['refnet52x52-3x3+4layers+64filters',
           'refnet52x52-3x3+6layers+16filters',

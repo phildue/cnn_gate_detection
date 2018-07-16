@@ -20,8 +20,12 @@
 	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
 	\todo{Image of pipeline}
 	%Pipeline
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. Feeding these signals directly to a classifier/regressor makes the problem unnecessarily hard to solve. That is why, the usual object detection pipeline consists of two stages. The feature extraction stage extracts task relevant information from the image and infers an internal representation. The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
-	
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines consists of two stages:
+	\begin{enumerate}
+		\item The feature extraction stage extracts task relevant information from the image and infers an internal, lower dimensional representation.
+		\item The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
+	\end{enumerate}  
+
 	\section{Feature Extraction}
 	
 	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Over the time different feature extractors also called filters evolved.
@@ -52,7 +56,7 @@
 		\end{cases}
 	$$
 	
-	The issue of network initialization and "saturating" activations is also addressed in \cite{Ioffe2015}. With batch normalization the authors introduce a layer that normalises the data batch-wise and is fully differentiable. \todoref{arg1} show how using batch normalization cancels out the bias term.
+	The issue of network initialization and "saturating" activations is also addressed in \cite{Ioffe2015}. With batch normalization the authors introduce a layer that normalises the data batch-wise and is fully differentiable. Including batch normalization after a convolutional layer leads to more stable and faster convergence. \todoref{arg1} show how using batch normalization cancels out the bias term.
 		
 	Using a convolutional layer followed by batch normalization and non-linear activation evolved to a standard in classification and object detection pipelines. It can be summarized in:
 	
@@ -62,7 +66,24 @@
 	$$
 	
 
-	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only due to the fact that \acp{CNN}-features are learned on a specific task, but that \acp{CNN}-features can learn a quite general representation that can be used in other vision tasks and methods as well.
+	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only because \acp{CNN}-features are trained on a specific task, but that  the learned representation is quite general and can be used in other vision tasks and methods.
+	
+	This has led to common practice to train feature extractors with a classification task on the Imagenet dataset with \todo{number} images and to use these weights to initialize networks for other tasks like object detection or segmentation. Popular feature extractors are summarized in \autoref{tab:cnn-extractors}.
+	
+	\begin{table}[htbp]
+		\centering
+		\caption{Popular Feature Extractors}
+		\begin{tabular}{l|l|l|l}
+			Name & Layers & Number of Weights &  \\ \hline
+			VGGNet &  &  &  \\ \hline
+			ResNet &  &  &  \\ \hline
+			GoogLeNet &  &  &  \\ \hline
+			MobilenetV2 &  &  &
+		\end{tabular}
+		\label{tab:cnn-extractors}
+	\end{table}
+	
+	
 	
 
 	\section{Sampling}
@@ -75,140 +96,90 @@
 	
 	\subsection{Sliding window}
 	
-	Sliding window-based techniques crop regions of different sizes and aspect ratios across the image and run the detection on those regions. The regions to crop are predefined and fixed. 
+	Sliding window based techniques sample the image by cropping regions of different sizes and aspect ratios across the image. Usually, the whole image is covered by moving the window from top left to bottom right. 
+	
+	This technique is applied in \todo{put examples}
+	
+	Sliding window techniques cover the whole input space and are easy to implement. However, the methods do a lot of superflous and redundant computations e.g. when most parts of the image are empty or certain regions are covered multiple times.
 	
 	\subsection{Attention Models}
 	
-	Attention based techniques are inspired by the human vision process \todoref{arg1}. The algorithm shall focus on the important parts of the image and not spend computations on less important parts. Multiple approaches exist to model the attention process.
+	Attention based techniques are inspired by the human vision process \todoref{arg1}. The algorithm focusses on the important parts of the image and doesn't spend computations on less important parts. Multiple approaches exist to model the attention process.
 	
-	Viola and Jones stop further processing samples that are classified as background.
+	\citeauthor{Viola2004} use a cascaded of classifier that are evaluated in iterative fashion. Is a certain patch classified as background, its not further processed.
 	
 	Guido proposes a neural network to learn an attention model.
 	
 	X propose a recurrent neural network architecture to model the attention process.
 	
-	Fast-RCNN and Faster-RCNN use a \acp{CNN} to model the attention process and propose regions that get classified in a second stage.
+	Fast-RCNN \cite{Ren} and Faster-RCNN \cite{Ren2015} formulate the attention process as regression problem and model it with a \acp{CNN} that proposes regions which possibly contain an object. The proposed regions are classified in a second step. 
 	
-	\subsection{Regression Models}
+
+	%			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
+	%			\begin{itemize}
+	%				\item[-] Generates number of bounding boxes as object candidates (class agnostic) and confidences for each box
+	%				\item[-] For each Bounding Box a classifier is run e.g. DNN
+	%				\item[-] Training: If the number of boxes k is larger than the number of objects b, only b boxes are matched while the confidence of the others is minimized
+	%				\item[-] Assignment problem $$F_{match}(x,l) = \frac{1}{2}\sum_{i,j}x_{ij}||l_i - g_j||^2_2$$ where $x_ij$ is one if the ith prediction is assigned to the jth ground truth object
+	%				\item[-] Confidence: 
+	%				$$F_{conf}(x,c) = - \sum_{i,j}x_{ij}*\log(c_i)-\sum_{i}(1-\sum_{j}x_{ij})\log{1-c_j}$$
+	%				\item[-] Speed up training by clustering (kmeans) of ground truth and using it as prior (prior matching)
+	%				\item[-] Can be defined to output boxes only for a particular class by training the bounding boxes on that class
+	%				\item[-] Number of parameters grows linearly with number of classes
+	%				\item[-] Authors argue two step process (region proposal + classification) is better
+	%				\item[-] Architecture based on AlexNet
+	%				\item[-] Predicted boxes are merged using non-maxima surpression
+	%				\item[-] One shot(50\%), +2scales (75\%)
+	%				\item[-] OverFeat/ Selective Search are faster but much more expensive
+	%			\end{itemize}
 	
-	Regression models frame the object detection task as regression problem. Predictions are made for a predefined set of regions. The process is usually modelled with deep neural networks.
+	\section{Object Model}
 	
-	YoloV1 defines a 7x7 grid and classifies each grid cell while predicting 5 possible bounding box regions for the object in the cell.
+	In the last stage the extracted features are used to assign a class label to certain regions. Different approaches for this stage exist.
 	
-	YoloV2,SSD define a pre-parameterized set of bounding boxes. For each box class probabilities and coordinate offsets are predicted. 
+	The straight forward approach is to feed the features from all cropped regions into a classifier, and assign a certain class label. That way the object model is learned separated from the detection task. This concept can be found in \todo{examples} where support vector machines or neural networks are used.
 	
-	Several variations of the above approaches exist ..
+	However, these methods prove to be sensitive towards part occlusions or large deformations. This gave raise to deformable part models where parts of the object are explicitly learned and detected.  \todo{describe springs}
 	
-	\section{Classification}
+	The deep learning approaches could significantly surpass the detection accuracy of the mentioned approaches without the concept of deformable part models. However, \todoref{cnns are dpms} shows experimentally that \acp{CNN} internally learn a similar representation.
 	
-	In the classification stage the features extracted at the sampled locations in the image get assigned a class label.
-	
-	Traditional approaches learned the object representation with classification models like support vector machine or ..
-	
-	However, these methods prove to be sensitive towards part occlusions or large variations between training and test set. This gave raise to deformable part models where parts of the object are modeled individually and connected with mathematical springs 
-	
-	Recent methods mostly use (convolutional )neural networks for the classification task. \todoref{cnn are dpm} argues that \acp{CNN} work the same way as DPMs.
 	\cite{Viola2004}.
-		\todo{elaborate}
 
-	\todo{Explain CNNs}
-	\paragraph{Two Stage Detectors}
-	\todo{R-CNN, Fast R-CNN, Faster R-CNN and the like}
-%			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
-%			\begin{itemize}
-%				\item[-] Generates number of bounding boxes as object candidates (class agnostic) and confidences for each box
-%				\item[-] For each Bounding Box a classifier is run e.g. DNN
-%				\item[-] Training: If the number of boxes k is larger than the number of objects b, only b boxes are matched while the confidence of the others is minimized
-%				\item[-] Assignment problem $$F_{match}(x,l) = \frac{1}{2}\sum_{i,j}x_{ij}||l_i - g_j||^2_2$$ where $x_ij$ is one if the ith prediction is assigned to the jth ground truth object
-%				\item[-] Confidence: 
-%				$$F_{conf}(x,c) = - \sum_{i,j}x_{ij}*\log(c_i)-\sum_{i}(1-\sum_{j}x_{ij})\log{1-c_j}$$
-%				\item[-] Speed up training by clustering (kmeans) of ground truth and using it as prior (prior matching)
-%				\item[-] Can be defined to output boxes only for a particular class by training the bounding boxes on that class
-%				\item[-] Number of parameters grows linearly with number of classes
-%				\item[-] Authors argue two step process (region proposal + classification) is better
-%				\item[-] Architecture based on AlexNet
-%				\item[-] Predicted boxes are merged using non-maxima surpression
-%				\item[-] One shot(50\%), +2scales (75\%)
-%				\item[-] OverFeat/ Selective Search are faster but much more expensive
-%			\end{itemize}
-			
+	\section{Regression Models}
 	
-%	Methods consist usually of two stages.An example is R-CNN\cite{Ren}. 
-%%	\begin{itemize}
-%		\item Object Proposal: A convolutional net proposes regions that contain an object. This is either done in sliding window fashion or in one pass.
-%		\item Classification: All proposed regions are fed into a classifier. This can either be a "traditional" one or another CNN.
-%	\end{itemize}
-
-	\paragraph{One Stage Detectors}
-	
-	\begin{figure}[h]
+	\iffalse
+	\begin{figure}[hbtp]
+		
 		\centering
-		\begin{minipage}{0.4\textwidth}
-			\centering
-			\includegraphics[height=2.5cm]{fig/architecture}
-			\caption{Typical Architecture for One Stage Detectors}
-			\label{fig:architecture}
-		\end{minipage}
-		\hspace{2cm}
-		\begin{minipage}{0.4\textwidth}
-			\centering
-			\includegraphics[height=2.5cm]{fig/anchors}
-			\caption{Example of \cite{Liu}, the GT box of the cat is matched to two anchor boxes which get responsible for predicting that box. The GT box of the dog is matched to one anchor box.}
-			\label{fig:anchors}
-		\end{minipage}
+		\includegraphics[width=\linewidth]{fig/architecture}
+		\caption{Typical Architecture for One Stage Detectors}
+		\label{fig:architecture}
+		
+	\end{figure}
+	\fi
+	Regression models incorporate all stages of object detection in one model and formulate the task as regression problem. Predictions are made for a predefined set of regions. The process is usually modelled with deep neural networks.
+	
+	\citeauthor{Redmon} were the first to publish such a method in \cite{Redmon}. The task is formulated by dividing the input image in a fixed grid and defining output nodes with softmax activation to predict $C$ class probabilities for each grid cell. Additional $5*B$ output nodes predict $B$ set of bounding box coordinates and $B$ object probabilities for each cell. This leads to a total number of $S*S*B*(4 + 1 + C)$ output nodes. 
+	
+	YoloV2, SSD  formulate the task by discretizing the output as a set of preparameterized bounding boxes. For each box class probabilities and bounding box offsets are predicted. In total this leads to $S*S*B*(4 + 1 + C)$ output nodes. 
+	
+	The models are trained by assigning a certain set of output nodes the "responsibility" to predict a certain object. That means only the output for these nodes is taken into account when calculating the loss for a certain sample and when updating the weights in the backward pass. This "matching strategy" is usually based on the intersection-over-union between ground truth and anchor box. \autoref{fig:anchors} illustrates the concept in the example of SSD.  
+	
+	\begin{figure}[hbtp]
+		
+		\centering
+		\captionsetup{justification=raggedright,singlelinecheck=false}
+		\includegraphics[width=0.8\linewidth]{fig/anchors}
+		\caption{The anchor boxes are displayed as dashed lines. The ground truth label of the cat in blue is assigned to two anchor boxes. The output nodes predicting coordinate offset $\Delta(cx, cy, w,h)$ and class probabilities $c_1 .. c_p$ corresponding to these two boxes take part in the loss calculation \cite{Liu}.}
+		\label{fig:anchors}
+		
 	\end{figure}
 	
-	Most current methods rely on the same principle as Yolo/SSD: A convolutional regression layer is stacked on top of a "base network" that has been trained for image classification e.g. VGG-16. The output layer evaluates feature map(s) of the base network and predicts class confidences, and coordinate offsets for a predetermined set of bounding boxes (so called "prior boxes", "anchor boxes" or "default boxes"). The predictions are filtered in a final non-max-suppression step. During training one has to determine which anchor box is responsible for predicting a certain object. This "matching strategy" differs from method to method but is usually based on the intersection-over-union between the ground truth box and anchor box. \autoref{fig:anchors} illustrates the concept. The final loss function calculates the difference between the responsible boxes and the ground truth. 
-	\todo{Elaborate}
-	Within this framework several approaches exist that either change the base network or modify layers in between: \cite{ChengchengNing2017} propose to include an inception module in the network architecture to reduce computation while keeping/increasing performance. They also propose a more efficient non-max-suppression method. \cite{Wu} uses \textit{SqueezeNet} as base network and a mixture between the ssd and yolo loss function as training goal. \cite{Xiang} investigates the receptive fields of SSD and tries to incorporate more context, especially on lower feature maps, to increase detection rate for small objects.\cite{Linb} applies the framework for vehicle detection. They use \textit{GoogLeNet} as base network (and investigate several others).\cite{TripathiSanDiego} apply a network very similar to YoloV2 and investigate 8bit quantization of the model to make it runnable on embedded devices.
+	Within this framework several approaches exist that either change the base network or modify layers in between: \cite{ChengchengNing2017} propose propose a more efficient non-max-suppression method as well as to include an inception module in the network architecture to reduce computation while keeping/increasing performance. \cite{Wu} uses \textit{SqueezeNet} as base network and a mixture between the ssd and yolo loss function as training goal. \cite{Xiang} investigates the receptive fields of SSD and tries to incorporate more context, especially on lower feature maps, to increase detection rate for small objects.\cite{Linb} applies the framework for vehicle detection. They use \textit{GoogLeNet} as base network (and investigate several others).\cite{TripathiSanDiego} apply a network very similar to YoloV2 and investigate 8bit quantization of the model to make it runnable on embedded devices.
 	
 	A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
 	
-
-	
-%	\subsection{\cite{Linb}}
-%	
-%	\begin{itemize}
-%		\item Uses GoogLeNet as base network
-%		\item investigates image augmentation and hard negative mining
-%		\item Uses confidence score plus class probability although only one object shall be detected
-%	\end{itemize}
-%		
-%	\subsubsection{YoloV3 \cite{Redmona}}
-%	\begin{itemize}
-%		\item binary cross entropy loss for class predictions
-%		\item 3 boxes at each scale (3 scales)
-%		\item merge lower level features with higher level features and predict another tensor
-%		\item new network with several residual layers, in between 1x1 convolutions, fully connected layer at the end (53 layers)
-%		\item runs at 22-51ms depending on resolution
-%	\end{itemize}
-%
-%\begin{table}[]
-%	
-%	\caption{Object Detection}
-%	\label{my-label}
-%	\begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
-%		\hline
-%		& \multicolumn{3}{l|}{Traditional} & \multicolumn{4}{l|}{Deep}   \\ \hline
-%		& Viola\&Jones    				   & HoG    & DPM   		   & R-CNN    & YOLO         & SSD & OverFeat \\ \hline
-%		Feature Detector & Haar					   & HoG    & Multiple Hogs and virtual springs   & Learned by CNN     &  Learned by CNN            & & \\ \hline
-%		Detection & \multicolumn{3}{l|}{Sliding Window, high filter responses indicate there is an object} & NN in sliding window detects regions for possible objects, For each proposed region a classification is run & Image is split in Grid each Grid spawns Bounding boxes and gives class probabilities & & \\
-%		\hline
-%		Accuracy (voc) &  & & & 73.2 mAP & 63.4 mAP & 74.3 mAP & \\ 
-%		\hline
-%		Speed & & & & 7 FPS (Faster-RCNN) & 45 FPS & 59 FPS & \\
-%		\hline
-%		Strengths & & & & & &  &\\
-%		\hline
-%		Weaknesses & & & & & &  &\\
-%		\hline
-%		\end{tabular}
-%		
-%		\end{table}
-
-
-
-Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
+	Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
 
 
 
@@ -216,13 +187,28 @@ Each of the described group of methods has strengths and weaknesses. While shall
 \todo{Elaborate, It should become clear why we use deep learning}
 
 
+\section{Wire-frame objects}
+
+\todo{Definition of a wireframe object}
+
+The properties of wireframe object can be summarized in:
+\begin{enumerate}
+	\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
+	\item The object parts themselves are thin structures
+	\item The object parts are sparse. The bounding box around the object is largely occupied by background
+\end{enumerate}
 
 \todoref{Wire detection}
 \todoref{Method from last year, Other papers on drone racing}
 
 \section{Hypothesis}
 
-A small network should be able to learn the task.
+Several hypothesis are formulated and will be examined experimentally:
+\begin{enumerate}
+	\item \textbf{A \acp{CNN} should be able to learn the object detection task.}
+	\item \textbf{For wireframe objects the deeper layers don't learn anything as the object consist of relatively simple shapes.}
+	\item \textbf{The detection of fine grain structures is important.}
+\end{enumerate}
 \newpage
 \section{Experiments}
 

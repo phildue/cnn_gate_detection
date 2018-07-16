@@ -27,6 +27,9 @@ class ModelEvaluator:
             tic()
             predictions = self.model.predict(images)
             labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
+            # for j in range(len(batch)):
+            #     show(batch[j][0], labels=[predictions[j], labels[j]])
+
             labels_true.extend(labels)
             labels_pred.extend(predictions)
             image_files.extend(image_files_batch)
