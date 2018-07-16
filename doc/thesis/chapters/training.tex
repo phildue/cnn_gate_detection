@@ -7,6 +7,18 @@
 
 \todo{Explain relation between training data and test data. Explain domain shift.  Why do we use synthetic data? }
 
+The task of any machine learning approach is to generalize a concept obtained from training examples to new unseen data.
+The bias-variance dilemma \todoref{bias-variance} relates model complexity and available training data: More complex models introduce a lower bias but larger variance. Lowering the bias can only be done by either reducing model complexity or increasing the amount of training data. This also means the more data is available the more complex models can be used. Thus one can say the available data is never enough, as more data would allow more complex and thus potentially better performing models.
+
+A way to avoid the overfitting of a model to the training set is regularization. That is to limit the training parameters of a model while training.
+
+For the given task only a very limited set of training examples is available. In addition the annotated examples stem from a single room. This not only limits the design space to simple models it also introduces the problem of domain shift: As only a very limited amount of possible backgrounds and light conditions is present, a machine learning model is likely to overfit to the domain and can not be generalized to unseen examples from other domains. \todo{describe this more formally, proof that a domain shift/covariate shift scenario is reasonable to assume}
+
+A common method in computer vision/ object detection is the artificial augmentation of images while training. For example by converting some images of the training set to grayscale images one can force the model to learn a more color independent representation.
+
+Another way to increase training data is to artificially create training examples. Modern graphic engines allow the generation of almost photorealistic images. However, even then one has to take the domain shift into account.
+
+
 
 \section{Background}
 Few shot learning:
