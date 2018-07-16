@@ -10,6 +10,7 @@ def evalmetric(
         model_src,
         label_file,
         img_res=None,
+        min_box_area=0,
         iou_thresh=0.4,
         color_format=None,
         show=False):
@@ -46,12 +47,13 @@ def evalmetric(
                   'model': model_src,
                   'conf_thresh': conf_thresh,
                   'iou_thresh': iou_thresh,
-                  'label_src': label_file}
+                  'label_src': label_file,
+                  'min_box_area': min_box_area}
 
     save_file(exp_params, exp_param_file + '.txt', result_path)
     save_file(exp_params, exp_param_file + '.pkl', result_path)
 
     evaluate_file(model, label_file,
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show)],
+                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show,min_box_area=min_box_area*img_res[0]*img_res[1])],
                   verbose=True,
                   out_file_metric=result_path + result_file)

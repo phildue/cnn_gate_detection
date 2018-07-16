@@ -28,11 +28,12 @@ class DetectionResultBox:
         return " _____________________\n" \
                "|Tp: {0:d} | Fp: {1:d}|\n" \
                "|Fn: {2:d} | Tn: {3:d}|\n" \
-               " ---------------------".format(self.true_positives, self.false_positives, self.false_negatives,
-                                               self.true_negatives)
+               " ---------------------".format(self._result.true_positives, self._result.false_positives,
+                                               self._result.false_negatives,
+                                               self._result.true_negatives)
 
     def __add__(self, other):
-        return DetectionResult(self.true_positives + other.true_positives,
-                               self.false_positives + other.false_positives,
-                               self.false_negatives + other.false_negatives,
-                               self.true_negatives + other.true_negatives)
+        return DetectionResultBox(self.true_positives + other.true_positives,
+                                  self.false_positives + other.false_positives,
+                                  self.false_negatives + other.false_negatives,
+                                  self.true_negatives + other.true_negatives)

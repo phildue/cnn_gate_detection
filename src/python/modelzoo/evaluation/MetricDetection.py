@@ -13,7 +13,8 @@ class MetricDetection(Metric):
     def show(self):
         return self._show
 
-    def __init__(self, show_=False, iou_thresh=0.4, store=False):
+    def __init__(self, show_=False, iou_thresh=0.4, min_box_area=None, store=False):
+        self.box_area = min_box_area
         self._store = store
         self._show = show_
         self.iou_thresh = iou_thresh
@@ -32,6 +33,7 @@ class MetricDetection(Metric):
 
         for b_true in self._boxes_true:
             match = False
+            if b_true.area < self.box_area: continue
             for b_pred in self._boxes_pred:
                 if b_true.iou(b_pred) >= self.iou_thresh and \
                         np.argmax(b_true.probs) == np.argmax(b_pred.probs):
