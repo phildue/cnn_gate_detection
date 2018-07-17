@@ -24,11 +24,11 @@ architecture = [
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
 ]
 
