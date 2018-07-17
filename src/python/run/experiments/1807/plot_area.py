@@ -5,13 +5,12 @@ from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
+import numpy as np
 
 cd_work()
 
 legends = []
-mean_recalls = []
 mean_precisions = []
-total_recall = []
 total_precision = []
 linestyle = ['-.', '-*', '-x', '-o', '--']
 for model in [
@@ -31,34 +30,36 @@ for model in [
     'strides2416x416-13x13+9layers',
     # 'strides416x416-13x13+9layers'
 ]:
-    results = load_file('out/1807/' + model + '/test/test_iou0.8-area0.001_result_metric.pkl')
-    detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
-    mean_pr, mean_recall = average_precision_recall(detections)
-    total_results = sum_results(detections)
+    for iou_thresh in [0.4]:
+        for min_box_area in [0.001, 0.025, 0.05, 0.1, 0.25]:
+            results = load_file(
+                'out/1807/' + model + '/test/test_iou{}-area{}_result_metric.pkl'.format(iou_thresh, min_box_area))
+            detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
+            mean_pr, mean_recall = average_precision_recall(detections)
+            total_results = sum_results(detections)
 
-    legends.append(model)
-    mean_recalls.append(mean_recall)
-    mean_precisions.append(mean_pr)
-    total_recall.append(total_results.recalls[1:])
-    total_precision.append(total_results.precisions[1:])
+            meanAP = np.mean(mean_pr)
+            meanAPtotal = np.mean(total_results.precisions[1:])
+            mean_precisions.append(meanAP)
+            total_precision.append(meanAPtotal)
 
-pr_img = BaseMultiPlot(x_data=mean_recalls,
-                       y_data=mean_precisions,
-                       y_label='Precision',
-                       x_label='Recall',
+pr_img = BaseMultiPlot(x_data=[[0.001, 0.025, 0.05, 0.1, 0.25]],
+                       y_data=[mean_precisions],
+                       y_label='Average Precision',
+                       x_label='Min Box Area',
                        y_lim=(0, 1.0),
-                       legend=legends,
-                       title='Precision Recall Per Image',
+                       legend=['strides2416x416-13x13+9layers', ],
+                       title='Per Image',
                        # line_style=linestyle,
                        x_res=None)
 
-pr_total = BaseMultiPlot(x_data=total_recall,
-                         y_data=total_precision,
-                         y_label='Precision',
-                         x_label='Recall',
+pr_total = BaseMultiPlot(x_data=[[0.001, 0.025, 0.05, 0.1, 0.25]],
+                         y_data=[total_precision],
+                         y_label='Average Precision',
+                         x_label='Min Box Area',
                          y_lim=(0, 1.0),
-                         legend=legends,
-                         title='Precision Recall Total',
+                         legend=['strides2416x416-13x13+9layers'],
+                         title='Total',
                          #  line_style=linestyle,
                          x_res=None)
 

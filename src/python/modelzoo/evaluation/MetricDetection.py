@@ -30,21 +30,25 @@ class MetricDetection(Metric):
         self._boxes_correct = []
         tp = 0
         fn = 0
+        n_too_small = 0
 
         for b_true in self._boxes_true:
             match = False
-            if b_true.area < self.box_area: continue
+
             for b_pred in self._boxes_pred:
                 if b_true.iou(b_pred) >= self.iou_thresh and \
                         np.argmax(b_true.probs) == np.argmax(b_pred.probs):
-                    tp += 1
-                    self._boxes_correct.append(b_pred)
-                    match = True
+                    if b_true.area < self.box_area:
+                        n_too_small += 1
+                    else:
+                        tp += 1
+                        self._boxes_correct.append(b_pred)
+                        match = True
                     break
-            if not match:
+            if not match and b_true.area > self.box_area:
                 fn += 1
 
-        fp = len(self._boxes_pred) - tp
+        fp = len(self._boxes_pred) - n_too_small - tp
 
         self._result = DetectionResult(tp, fp, fn)
         return self._result
