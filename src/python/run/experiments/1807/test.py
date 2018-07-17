@@ -25,22 +25,22 @@ models = ['baseline104x104-13x13+9layers',
 models = [name for name in os.listdir('out/1807/')]
 for model in models:
     preprocessing = None if 'gray' not in model else TransformGray()
-    evalset(name='test',
+    evalset(name='test_flight',
             batch_size=24,
             # n_samples=48,
             model_src='out/1807/' + model,
             preprocessing=None,
             color_format='yuv',
-            image_source=['resource/ext/samples/industrial_new_test/', 'resource/ext/samples/daylight_test/'])
+            image_source=['resource/ext/samples/daylight_flight/'])
 
 for model in models:
     for iou_thresh in [0.4, 0.6, 0.8]:
         for min_box_area in [0.001, 0.025, 0.05, 0.1, 0.25]:
-            evalmetric(name='test_iou{}-area{}'.format(iou_thresh, min_box_area),
+            evalmetric(name='test_flight_iou{}-area{}'.format(iou_thresh, min_box_area),
                        min_box_area=min_box_area,
                        iou_thresh=iou_thresh,
                        batch_size=24,
                        model_src='out/1807/' + model,
                        color_format='yuv',
-                       label_file='out/1807/' + model + '/test/test_results.pkl',
+                       label_file='out/1807/' + model + '/test/test_flight_results.pkl',
                        show=False)

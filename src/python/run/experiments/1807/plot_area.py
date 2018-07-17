@@ -13,23 +13,23 @@ legends = []
 mean_precisions = []
 total_precision = []
 linestyle = ['-.', '-*', '-x', '-o', '--']
-for model in [
-    # 'baseline104x104-13x13+9layers',
-    #       'baseline208x208-13x13+9layers',
-    #       'baseline416x416-13x13+9layers',
-    #       'baseline52x52-13x13+9layers',
-    #       'bottleneck416x416-13x13+9layers',
-    #       'bottleneck_narrow416x416-13x13+9layers',
-    # 'bottleneck_narrow_strides416x416-13x13+9layers',
-    # 'combined208x208-13x13+13layers',
-    # 'grayscale416x416-13x13+9layers',
-    # 'mobilenetV1416x416-13x13+9layers',
+models = [
+    'baseline104x104-13x13+9layers',
+    'baseline208x208-13x13+9layers',
+    'baseline416x416-13x13+9layers',
+    'baseline52x52-13x13+9layers',
+    'bottleneck416x416-13x13+9layers',
+    'bottleneck_narrow416x416-13x13+9layers',
+    'bottleneck_narrow_strides416x416-13x13+9layers',
+    'combined208x208-13x13+13layers',
+    'grayscale416x416-13x13+9layers',
+    'mobilenetV1416x416-13x13+9layers',
     # 'narrow416x416-13x13+9layers',
     # 'narrow_strides416x416-13x13+9layers',
     # 'narrow_strides_late_bottleneck416x416-13x13+9layers',
-    'strides2416x416-13x13+9layers',
-    # 'strides416x416-13x13+9layers'
-]:
+    #    'strides2416x416-13x13+9layers',
+]
+for model in models:
     for iou_thresh in [0.4]:
         for min_box_area in [0.001, 0.025, 0.05, 0.1, 0.25]:
             results = load_file(
@@ -48,7 +48,7 @@ pr_img = BaseMultiPlot(x_data=[[0.001, 0.025, 0.05, 0.1, 0.25]],
                        y_label='Average Precision',
                        x_label='Min Box Area',
                        y_lim=(0, 1.0),
-                       legend=['strides2416x416-13x13+9layers', ],
+                       legend=models,
                        title='Per Image',
                        # line_style=linestyle,
                        x_res=None)
@@ -58,7 +58,7 @@ pr_total = BaseMultiPlot(x_data=[[0.001, 0.025, 0.05, 0.1, 0.25]],
                          y_label='Average Precision',
                          x_label='Min Box Area',
                          y_lim=(0, 1.0),
-                         legend=['strides2416x416-13x13+9layers'],
+                         legend=models,
                          title='Total',
                          #  line_style=linestyle,
                          x_res=None)

@@ -15,21 +15,20 @@ total_recall = []
 total_precision = []
 linestyle = ['-.', '-*', '-x', '-o', '--']
 for model in [
-    # 'baseline104x104-13x13+9layers',
-    #       'baseline208x208-13x13+9layers',
-    #       'baseline416x416-13x13+9layers',
-    #       'baseline52x52-13x13+9layers',
-    #       'bottleneck416x416-13x13+9layers',
-    #       'bottleneck_narrow416x416-13x13+9layers',
-    # 'bottleneck_narrow_strides416x416-13x13+9layers',
-    # 'combined208x208-13x13+13layers',
-    # 'grayscale416x416-13x13+9layers',
-    # 'mobilenetV1416x416-13x13+9layers',
+    'baseline104x104-13x13+9layers',
+    'baseline208x208-13x13+9layers',
+    'baseline416x416-13x13+9layers',
+    'baseline52x52-13x13+9layers',
+    'bottleneck416x416-13x13+9layers',
+    'bottleneck_narrow416x416-13x13+9layers',
+    'bottleneck_narrow_strides416x416-13x13+9layers',
+    'combined208x208-13x13+13layers',
+    'grayscale416x416-13x13+9layers',
+    'mobilenetV1416x416-13x13+9layers',
     # 'narrow416x416-13x13+9layers',
     # 'narrow_strides416x416-13x13+9layers',
     # 'narrow_strides_late_bottleneck416x416-13x13+9layers',
-    'strides2416x416-13x13+9layers',
-    # 'strides416x416-13x13+9layers'
+    #    'strides2416x416-13x13+9layers',
 ]:
     results = load_file('out/1807/' + model + '/test/test_iou0.8-area0.001_result_metric.pkl')
     detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
