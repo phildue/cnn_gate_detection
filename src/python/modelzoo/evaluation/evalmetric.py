@@ -11,6 +11,7 @@ def evalmetric(
         label_file,
         img_res=None,
         min_box_area=0,
+        max_box_area=1.0,
         iou_thresh=0.4,
         color_format=None,
         show=False):
@@ -54,6 +55,8 @@ def evalmetric(
     save_file(exp_params, exp_param_file + '.pkl', result_path)
 
     evaluate_file(model, label_file,
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show,min_box_area=min_box_area*img_res[0]*img_res[1])],
+                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show,
+                                           min_box_area=min_box_area * img_res[0] * img_res[1],
+                                           max_box_area=max_box_area * img_res[0] * img_res[1])],
                   verbose=True,
                   out_file_metric=result_path + result_file)

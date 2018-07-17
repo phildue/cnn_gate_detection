@@ -13,8 +13,9 @@ class MetricDetection(Metric):
     def show(self):
         return self._show
 
-    def __init__(self, show_=False, iou_thresh=0.4, min_box_area=None, store=False):
-        self.box_area = min_box_area
+    def __init__(self, show_=False, iou_thresh=0.4, min_box_area=None, max_box_area=None, store=False):
+        self.max_box_area = max_box_area
+        self.min_box_area = min_box_area
         self._store = store
         self._show = show_
         self.iou_thresh = iou_thresh
@@ -30,7 +31,7 @@ class MetricDetection(Metric):
         self._boxes_correct = []
         tp = 0
         fn = 0
-        n_too_small = 0
+        n_invalid = 0
 
         for b_true in self._boxes_true:
             match = False
@@ -38,17 +39,17 @@ class MetricDetection(Metric):
             for b_pred in self._boxes_pred:
                 if b_true.iou(b_pred) >= self.iou_thresh and \
                         np.argmax(b_true.probs) == np.argmax(b_pred.probs):
-                    if b_true.area < self.box_area:
-                        n_too_small += 1
+                    if self.max_box_area < b_true.area or b_true.area < self.min_box_area:
+                        n_invalid += 1
                     else:
                         tp += 1
                         self._boxes_correct.append(b_pred)
                         match = True
                     break
-            if not match and b_true.area > self.box_area:
+            if not match and self.max_box_area > b_true.area > self.min_box_area:
                 fn += 1
 
-        fp = len(self._boxes_pred) - n_too_small - tp
+        fp = len(self._boxes_pred) - n_invalid - tp
 
         self._result = DetectionResult(tp, fp, fn)
         return self._result
