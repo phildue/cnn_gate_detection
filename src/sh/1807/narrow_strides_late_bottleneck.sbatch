@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/1807/grayscale.py
+srun python3 dronevision/src/python/run/experiments/1807/narrow_strides_late_bottleneck.py
