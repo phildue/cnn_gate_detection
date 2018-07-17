@@ -39,12 +39,12 @@ box_range = [0.001, 0.025, 0.05, 0.1, 0.15, 0.25, 1.0]
 for model in models:
     for iou_thresh in [0.4, 0.6, 0.8]:
         for i in range(len(box_range) - 1):
-            evalmetric(name='test_boxrangeflight_iou{}-area{}'.format(iou_thresh, box_range[i]),
+            evalmetric(name='range_iou{}-area{}'.format(iou_thresh, box_range[i]),
                        min_box_area=box_range[i],
                        max_box_area=box_range[i + 1],
                        iou_thresh=iou_thresh,
                        batch_size=24,
                        model_src='out/1807/' + model,
                        color_format='yuv',
-                       label_file='out/1807/' + model + '/test/test_flight_results.pkl',
+                       label_file='out/1807/' + model + '/test/test_results.pkl',
                        show=False)
