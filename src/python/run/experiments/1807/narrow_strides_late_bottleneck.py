@@ -32,8 +32,9 @@ architecture = [
      'compression': 0.5},
 ]
 
-model_name = '1807/narrow_strides_late_bottleneck{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
-                                                                              grid[0][1], 9)
+model_name = '1807/narrow_strides_late_bottleneck{}x{}-{}x{}+{}layers+lr0.0005'.format(img_res[0], img_res[1],
+                                                                                       grid[0][0],
+                                                                                       grid[0][1], 9)
 
 train(architecture=architecture,
       work_dir=model_name,
@@ -50,4 +51,5 @@ train(architecture=architecture,
       epochs=100,
       n_samples=None,
       input_channels=3,
-      initial_epoch=0)
+      initial_epoch=0,
+      learning_rate=0.0005)

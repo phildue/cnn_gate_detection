@@ -55,7 +55,7 @@ def train(architecture=MODEL_NAME,
           anchors=ANCHORS,
           augmenter=AUGMENTER,
           input_channels=3,
-          weight_file=None
+          weight_file=None,
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:

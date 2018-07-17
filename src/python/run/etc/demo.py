@@ -26,7 +26,7 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/1807/baseline208x208-13x13+9layers/'
+src_dir = 'out/1807/combined208x208-13x13+13layers/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 grid = [(13, 13)]

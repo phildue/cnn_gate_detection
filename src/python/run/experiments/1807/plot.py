@@ -1,3 +1,5 @@
+import os
+
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
@@ -12,15 +14,8 @@ mean_precisions = []
 total_recall = []
 total_precision = []
 linestyle = ['-.', '-*', '-x', '-o', '--']
-for model in [
-    'out/1807/gatenet-strided416x416-13x13+9layers+pyramid',
-    'out/1807/gatenet416x416-13x13+9layers+pyramid',
-    'out/1807/graygatenet416x416-13x13+9layers+pyramid',
-    'out/1807/mobilegatenet416x416-13x13+9layers+pyramid',
-    # 'out/1807/wr_basic_gatenet416x416-13x13+10layers+pyramid',
-    # 'out/1807/wr_inception_gatenet416x416-13x13+10layers+pyramid'
-]:
-    results = load_file(model + '/test/test_result_metric.pkl')
+for model in [name for name in os.listdir('out/1807/')]:
+    results = load_file('out/1807/' + model + '/test/test_iou0.8_area0.05_evalmetric.pkl')
     detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
     mean_pr, mean_recall = average_precision_recall(detections)
     total_results = sum_results(detections)
@@ -38,7 +33,7 @@ pr_img = BaseMultiPlot(x_data=mean_recalls,
                        y_lim=(0, 1.0),
                        legend=legends,
                        title='Precision Recall Per Image',
-                       line_style=linestyle,
+                       # line_style=linestyle,
                        x_res=None)
 
 pr_total = BaseMultiPlot(x_data=total_recall,
@@ -48,7 +43,7 @@ pr_total = BaseMultiPlot(x_data=total_recall,
                          y_lim=(0, 1.0),
                          legend=legends,
                          title='Precision Recall Total',
-                         line_style=linestyle,
+                         #  line_style=linestyle,
                          x_res=None)
 
 pr_img.show(False)

@@ -137,6 +137,10 @@ class BoundingBox:
                 return min(x2, x4) - x3
 
     @property
+    def area(self):
+        return self.w * self.h
+
+    @property
     def coords_minmax(self):
         return np.array([self.x_min, self.y_min, self.x_max, self.y_max])
 
