@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
 from modelzoo.backend.visuals.plots.BasePlot import BasePlot
 
 
@@ -20,12 +20,12 @@ class BaseBarPlot(BasePlot):
         h = []
         if isinstance(self.y_data, list):
             for i in range(len(self.y_data)):
-                h += plt.bar(self.x_data[i], self.y_data[i], color=None, align='center', alpha=0.5,
+                h += plt.bar(np.array(self.x_data[i])+i*self.width, self.y_data[i], color=None, align='center', alpha=0.5,
                              width=self.width)
         else:
             h += plt.bar(self.x_data, self.y_data, color=self.colors, align='center', alpha=0.5, width=self.width)
-        plt.xticks(self.x_data, self.names, fontsize=self.font_size)
-        plt.yticks(fontsize=self.font_size)
+        #plt.xticks(self.x_data, self.names, fontsize=self.font_size)
+        #plt.yticks(fontsize=self.font_size)
 
         if self.legend is not None:
             plt.legend(h, self.legend)

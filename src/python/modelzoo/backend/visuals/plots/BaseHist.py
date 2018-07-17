@@ -13,6 +13,6 @@ class BaseHist(BasePlot):
         plt.title(self.title)
         plt.xlabel(self.x_label, fontsize=self.font_size)
         plt.ylabel(self.y_label, fontsize=self.font_size)
-        plt.hist(self.y_data, self.bin_width, normed=1, facecolor='green', alpha=0.75)
+        plt.hist(self.y_data, self.bin_width, facecolor='green', alpha=0.75)
         plt.xticks(fontsize=self.font_size)
         plt.yticks(fontsize=self.font_size)

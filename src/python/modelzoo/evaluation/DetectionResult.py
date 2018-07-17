@@ -1,5 +1,7 @@
 class DetectionResult:
     def __init__(self, true_positives: int, false_positives: int, false_negatives: int, true_negatives: int = 0):
+        if true_positives < 0 or false_positives < 0 or false_negatives < 0:
+            print('Warning')
         self.false_negatives = false_negatives
         self.false_positives = false_positives
         self.true_positives = true_positives

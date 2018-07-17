@@ -72,6 +72,13 @@ class ResultByConfidence:
 
         total = {}
         for c in confidences:
-            total[c] = self.results[c] + other.results[c]
+            if (other.results[c].false_positives < 0 or
+                    other.results[c].true_positives < 0 or
+                    other.results[c].false_negatives < 0):
+
+                print('Warning weird numbers')
+                return self
+            else:
+                total[c] = self.results[c] + other.results[c]
 
         return ResultByConfidence(total)

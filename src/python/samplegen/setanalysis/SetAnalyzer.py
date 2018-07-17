@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
+from modelzoo.backend.visuals.plots.BaseHist import BaseHist
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.backend.visuals.plots.BoxPlot import BoxPlot
 from modelzoo.backend.visuals.plots.Heatmap import Heatmap
@@ -11,8 +12,14 @@ from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        self.label_reader = DatasetParser.get_parser(path, 'xml', color_format='bgr')
-        _, self.labels = self.label_reader.read()
+        if isinstance(path,list):
+            self.labels = []
+            for p in path:
+                self.label_reader = DatasetParser.get_parser(p, 'xml', color_format='bgr')
+                self.labels.extend(self.label_reader.read()[1])
+        else:
+            self.label_reader = DatasetParser.get_parser(path, 'xml', color_format='bgr')
+            _, self.labels = self.label_reader.read()
 
     def get_label_map(self):
 
@@ -40,6 +47,12 @@ class SetAnalyzer:
         box_dims = self.get_box_dims()
         area = box_dims[:, 0] * box_dims[:, 1]
         boxplot = BoxPlot(x_data=area, y_label='area', x_label='', title='Distribution of Bounding Box Areas')
+        return boxplot
+
+    def area_distribution_hist(self):
+        box_dims = self.get_box_dims()
+        area = box_dims[:, 0] * box_dims[:, 1]
+        boxplot = BaseHist(y_data=area, x_label='area', y_label='', title='Histogram of Bounding Box Areas',n_bins=10)
         return boxplot
 
     def get_box_dims(self):

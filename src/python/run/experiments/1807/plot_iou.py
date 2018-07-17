@@ -10,58 +10,54 @@ import numpy as np
 cd_work()
 
 legends = []
-mean_precisions = []
-total_precision = []
+total_precisions = []
 linestyle = ['-.', '-*', '-x', '-o', '--']
-for model in [
-    # 'baseline104x104-13x13+9layers',
-    #       'baseline208x208-13x13+9layers',
-    #       'baseline416x416-13x13+9layers',
-    #       'baseline52x52-13x13+9layers',
-    #       'bottleneck416x416-13x13+9layers',
-    #       'bottleneck_narrow416x416-13x13+9layers',
+models = [
+    'baseline104x104-13x13+9layers',
+    # 'baseline208x208-13x13+9layers',
+    'baseline416x416-13x13+9layers',
+    # 'baseline52x52-13x13+9layers',
+    'bottleneck416x416-13x13+9layers',
+    # 'bottleneck_narrow416x416-13x13+9layers',
     # 'bottleneck_narrow_strides416x416-13x13+9layers',
     # 'combined208x208-13x13+13layers',
-    # 'grayscale416x416-13x13+9layers',
-    # 'mobilenetV1416x416-13x13+9layers',
+    'grayscale416x416-13x13+9layers',
     # 'narrow416x416-13x13+9layers',
     # 'narrow_strides416x416-13x13+9layers',
-    # 'narrow_strides_late_bottleneck416x416-13x13+9layers',
-    'strides2416x416-13x13+9layers',
-    # 'strides416x416-13x13+9layers'
-]:
+    'narrow_strides_late_bottleneck416x416-13x13+9layers',
+    #    'strides2416x416-13x13+9layers',
+]
+
+names = [
+    'baseline104x104',
+    'baseline416x416',
+    'bottleneck416x416',
+    'grayscale416x416',
+    'bottleneck_large_strides416x416',
+]
+for model in models:
+    total_average_precision = []
     for iou_thresh in [0.4, 0.6, 0.8]:
-        for min_box_area in [0.001]:
+        for min_box_area in [0.0]:
             results = load_file(
-                'out/1807/' + model + '/test/test_iou{}-area{}_result_metric.pkl'.format(iou_thresh, min_box_area))
+                'out/1807/' + model + '/test/total_iou{}-area{}_result_metric.pkl'.format(iou_thresh,
+                                                                                          min_box_area))
             detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
-            mean_pr, mean_recall = average_precision_recall(detections)
             total_results = sum_results(detections)
-
-            meanAP = np.mean(mean_pr)
             meanAPtotal = np.mean(total_results.precisions[1:])
-            mean_precisions.append(meanAP)
-            total_precision.append(meanAPtotal)
+            total_average_precision.append(meanAPtotal)
+            print('Min Box Area: {} --> {}'.format(min_box_area, total_results.values))
 
-pr_img = BaseMultiPlot(x_data=[[0.4, 0.6, 0.8]],
-                       y_data=[mean_precisions],
-                       y_label='Average Precision',
-                       x_label='Iou',
-                       y_lim=(0, 1.0),
-                       legend=['strides2416x416-13x13+9layers', ],
-                       title='Per Image',
-                       # line_style=linestyle,
-                       x_res=None)
+    total_precisions.append(total_average_precision)
 
-pr_total = BaseMultiPlot(x_data=[[0.4, 0.6, 0.8]],
-                         y_data=[total_precision],
+pr_total = BaseMultiPlot(x_data=[[0.4, 0.6, 0.8]] * len(total_precisions),
+                         y_data=total_precisions,
                          y_label='Average Precision',
-                         x_label='Iou',
+                         x_label='Intersection Over Union Threshold',
                          y_lim=(0, 1.0),
-                         legend=['strides2416x416-13x13+9layers'],
+                         legend=names,
                          title='Total',
-                         #  line_style=linestyle,
+                         line_style=['--x'] * len(total_precisions),
                          x_res=None)
 
-pr_img.show(False)
 pr_total.show()

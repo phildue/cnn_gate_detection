@@ -50,7 +50,6 @@ class MetricDetection(Metric):
                 fn += 1
 
         fp = len(self._boxes_pred) - n_invalid - tp
-
         self._result = DetectionResult(tp, fp, fn)
         return self._result
 
