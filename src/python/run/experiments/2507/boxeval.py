@@ -19,7 +19,8 @@ models = [
 
 box_range = [0.01, 0.05, 0.1, 0.15, 0.25, 1.0]
 iou_threshs = 0.4, 0.6
-for model in models:
+for model in ['baseline52x52-13x13+9layers',
+              ]:
     for iou_thresh in iou_threshs:
         for i in range(len(box_range) - 1):
             evalmetric(name='iou{}-area{}'.format(iou_thresh, box_range[i]),

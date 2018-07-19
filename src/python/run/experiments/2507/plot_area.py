@@ -23,11 +23,13 @@ linestyle = ['-.', '-*', '-x', '-o', '--']
 #     'narrow_strides416x416-13x13+9layers',
 #     'narrow_strides_late_bottleneck416x416-13x13+9layers',
 #     'strides416x416-13x13+9layers'
+# 'baseline52x52-13x13+9layers'
 # ]
 
 models = [
+    'baseline52x52-13x13+9layers',
     'baseline416x416-13x13+9layers',
-    'baseline104x104-13x13+9layers',
+    # 'baseline104x104-13x13+9layers',
     'narrow416x416-13x13+9layers']
 
 names = models
@@ -51,7 +53,7 @@ pr_total = BaseBarPlot(x_data=[areas] * len(total_precisions),
                        y_data=total_precisions,
                        y_label='Average Precision',
                        x_label='Box Area',
-                       colors=['blue', 'red', 'green'],
+                       colors=['blue', 'red', 'green', 'yellow'],
                        legend=names,
                        title='',
                        line_style=['-x'] * len(total_precisions),
