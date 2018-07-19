@@ -8,11 +8,18 @@
 \todo{Explain relation between training data and test data. Explain domain shift.  Why do we use synthetic data? }
 
 The task of any machine learning approach is to generalize a concept obtained from training examples to new unseen data.
-The bias-variance dilemma \todoref{bias-variance} relates model complexity and available training data: More complex models introduce a lower bias but larger variance. Lowering the bias can only be done by either reducing model complexity or increasing the amount of training data. This also means the more data is available the more complex models can be used. Thus one can say the available data is never enough, as more data would allow more complex and thus potentially better performing models.
+
+The bias-variance dilemma \todoref{bias-variance} relates model complexity and available training data: More complex models introduce a lower bias but larger variance. Lowering the bias can only be done by either reducing model complexity or increasing the amount of training data. 
+
+This also means the available training data limits the model design space. However, research has been conducted in learning models in domains that share properties to the target domain and subsequently transferring them to the target domain. In Computer Vision the source domain can be synthetically created images. A lot of research is done in using
+
+
+When only little data is available, as it is the case for this work 
+As infinite data is not an option the subset of data used for training needs to sufficiently represent the data during test time.
 
 A way to avoid the overfitting of a model to the training set is regularization. That is to limit the training parameters of a model while training.
 
-For the given task only a very limited set of training examples is available. In addition the annotated examples stem from a single room. This not only limits the design space to simple models it also introduces the problem of domain shift: As only a very limited amount of possible backgrounds and light conditions is present, a machine learning model is likely to overfit to the domain and can not be generalized to unseen examples from other domains. \todo{describe this more formally, proof that a domain shift/covariate shift scenario is reasonable to assume}
+ In addition the annotated examples stem from a single room. This not only limits the design space to simple models it also introduces the problem of domain shift: As only a very limited amount of possible backgrounds and light conditions is present, a machine learning model is likely to overfit to the domain and can not be generalized to unseen examples from other domains. \todo{describe this more formally, proof that a domain shift/covariate shift scenario is reasonable to assume}
 
 A common method in computer vision/ object detection is the artificial augmentation of images while training. For example by converting some images of the training set to grayscale images one can force the model to learn a more color independent representation.
 
@@ -38,11 +45,12 @@ Image Augmentation
 \section{Hypothesis}
 
 \todo{It should be possible to learn a model from synthetic data, incorporating background and camera effects should improve performance}
+
  
 \section{Experiments}
-
+\todo{Mesaure similarity between generated set and real set: label distribution (h,w, location, angles), domain(?)}
 \todo{Compare performance from synthetic to real data}
-\todo{How important is context?}
+\todo{How important is context in the training data?}
 \todo{How much is the influence of camera effects?}
 
 \section{Conclusion}

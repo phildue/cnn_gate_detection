@@ -25,8 +25,10 @@ class MetricDetection(Metric):
         self._boxes_true = None
 
     def evaluate(self, label_true: ImgLabel, label_pred: ImgLabel):
-        self._boxes_pred = BoundingBox.from_label(label_pred)
-        self._boxes_true = BoundingBox.from_label(label_true)
+        self._boxes_pred = [b for b in BoundingBox.from_label(label_pred) if
+                            self.min_box_area < b.area < self.max_box_area]
+        self._boxes_true = [b for b in BoundingBox.from_label(label_true) if
+                            self.min_box_area < b.area < self.max_box_area]
 
         self._boxes_correct = []
         tp = 0
@@ -39,14 +41,11 @@ class MetricDetection(Metric):
             for b_pred in self._boxes_pred:
                 if b_true.iou(b_pred) >= self.iou_thresh and \
                         np.argmax(b_true.probs) == np.argmax(b_pred.probs):
-                    if self.max_box_area < b_true.area or b_true.area < self.min_box_area:
-                        n_invalid += 1
-                    else:
-                        tp += 1
-                        self._boxes_correct.append(b_pred)
-                        match = True
+                    tp += 1
+                    self._boxes_correct.append(b_pred)
+                    match = True
                     break
-            if not match and self.max_box_area > b_true.area > self.min_box_area:
+            if not match:
                 fn += 1
 
         fp = len(self._boxes_pred) - n_invalid - tp

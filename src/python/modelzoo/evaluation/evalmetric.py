@@ -14,7 +14,8 @@ def evalmetric(
         max_box_area=1.0,
         iou_thresh=0.4,
         color_format=None,
-        show=False):
+        show=False,
+        result_path=None):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -38,7 +39,9 @@ def evalmetric(
                                    )
 
     # Result Paths
-    result_path = model_src + '/test/'
+    if result_path is None:
+        result_path = model_src + '/test/'
+
     result_file = name + '_result_metric.pkl'
     exp_param_file = name + '_evalmetric'
 
@@ -49,7 +52,8 @@ def evalmetric(
                   'conf_thresh': conf_thresh,
                   'iou_thresh': iou_thresh,
                   'label_src': label_file,
-                  'min_box_area': min_box_area}
+                  'min_box_area': min_box_area,
+                  'max_box_area': max_box_area}
 
     save_file(exp_params, exp_param_file + '.txt', result_path)
     save_file(exp_params, exp_param_file + '.pkl', result_path)

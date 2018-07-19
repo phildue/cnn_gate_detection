@@ -5,14 +5,14 @@ from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.visualization.demo import demo_generator
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import load_file
+from utils.fileaccess.utils import load_file, create_dirs
 from utils.imageprocessing.transform.TransfromGray import TransformGray
 from utils.workdir import cd_work
 import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
+generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
@@ -26,7 +26,7 @@ generator = GateGenerator(directories=['resource/ext/samples/daylight_flight'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/1807/combined208x208-13x13+13layers/'
+src_dir = 'out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 grid = [(13, 13)]
@@ -37,5 +37,6 @@ model = GateNet.create_by_arch(architecture=summary['architecture'],
                                # preprocessor=TransformGray(),
                                conf_thresh=0.6
                                )
-
-demo_generator(model, generator, t_show=0, n_samples=150)
+create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
+demo_generator(model, generator, t_show=0, n_samples=150,
+               out_file='out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/', iou_thresh=0.4)

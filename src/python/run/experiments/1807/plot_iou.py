@@ -38,9 +38,9 @@ names = [
 for model in models:
     total_average_precision = []
     for iou_thresh in [0.4, 0.6, 0.8]:
-        for min_box_area in [0.0]:
+        for min_box_area in [0.001]:
             results = load_file(
-                'out/1807/' + model + '/test/total_iou{}-area{}_result_metric.pkl'.format(iou_thresh,
+                'out/1807/' + model + '/test/range_iou{}-area{}_result_metric.pkl'.format(iou_thresh,
                                                                                           min_box_area))
             detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
             total_results = sum_results(detections)

@@ -51,11 +51,11 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             label_fp = BoundingBox.to_label(false_positives)
             label_fn = BoundingBox.to_label(false_negatives)
             show(img.bgr, 'demo', labels=[label_tp, label_fp, label],
-                 colors=[(0, 0, 255), (0, 0, 255), (255, 0, 0)],
+                 colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
                  legend=LEGEND_TEXT, t=t_show)
 
             if out_file is not None:
-                save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_tp, label_fp, label_fn],
+                save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_tp, label_fp, label],
                              colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
                              legend=LEGEND_TEXT)
                 idx += 1

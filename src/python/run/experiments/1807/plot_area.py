@@ -44,7 +44,7 @@ for model in models:
                                                                                                         min_box_area))
             detections = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
             total_results = sum_results(detections)
-            meanAPtotal = np.mean(total_results.precisions[1:])
+            meanAPtotal = np.mean(total_results.precisions)
             total_average_precision.append(meanAPtotal)
             print('Min Box Area: {} --> {}'.format(min_box_area, total_results.values))
 

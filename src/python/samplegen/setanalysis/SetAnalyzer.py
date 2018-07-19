@@ -51,6 +51,7 @@ class SetAnalyzer:
 
     def area_distribution_hist(self):
         box_dims = self.get_box_dims()
+        print(len(box_dims))
         area = box_dims[:, 0] * box_dims[:, 1]
         boxplot = BaseHist(y_data=area, x_label='area', y_label='', title='Histogram of Bounding Box Areas',n_bins=10)
         return boxplot
