@@ -13,7 +13,9 @@ def evalset(
         n_samples=None,
         color_format_dataset='bgr',
         preprocessing=None,
-        color_format=None):
+        color_format=None,
+        result_path=None,
+        result_file=None):
 
     # Model
     conf_thresh = 0
@@ -40,8 +42,11 @@ def evalset(
     # Evaluator
 
     # Result Paths
-    result_path = model_src + '/test/'
-    result_file = name + '_results.pkl'
+    if result_path is None:
+        result_path = model_src + '/test/'
+    if result_file is None:
+        result_file = name + '_results.pkl'
+
     exp_param_file = name + '_evalset'
 
     create_dirs([result_path])

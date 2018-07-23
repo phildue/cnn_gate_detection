@@ -9,28 +9,49 @@
 	
 	Object detection has been an intensively studied area within computer vision. Reaching back to \todoref{first object detection}, the machine based determination of what kind of objects we see where in the image has always been in the interest of academia and industry.
 	
-	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label:
+	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. 
 	
-	$$
-	\begin{matrix}
-	A_1, C_1\\
-	..
-	\end{matrix} = f(I)
-	$$
-	where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f(..)$ object detection.
-	\todo{Image of pipeline}
-	%Pipeline
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines consists of two stages:
-	\begin{enumerate}
-		\item The feature extraction stage extracts task relevant information from the image and infers an internal, lower dimensional representation.
-		\item The classification/localization stage receives this representation and produces the final output, which can be class probabilities and bounding box coordinates.
-	\end{enumerate}  
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization and non-maximum suppression. An overview is displayed in \autoref{fig:obj_pipeline}.
+	
+	\begin{figure}[hbtp]
+	
+	\centering
+	\includegraphics[width=\linewidth]{fig/ObjectDetection}
+	\caption{Object Detection Pipeline.where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
+	\label{fig:obj_pipeline}
+	
+	\end{figure}
 
-	\section{Feature Extraction}
+	\begin{enumerate}
+	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation. For example a good feature extractor leads to the same result no matter at what size or rotation the object is displayed. These properties are also referred to as scale-/rotational invariant.
 	
-	In the first stage task/domain relevant properties of the input image are extracted to simplify the detection problem for later stages. Over the time different feature extractors also called filters evolved.
+	\item The classification/localization stage produces the final output based on this representation. In a simple example a classification model is inferred on a fixed set of image patches. Thus for each patch a class probability is assigned.
 	
-	\cite{Viola2004} use simple filters inspired by Haar-basis functions for human face detection. \cite{Dalal} and \cite{Lowe2004} compute a local (normalized) histogram of gradients for object detection. These approaches can be summarized as engineered feature extractors, as the filters are manually designed by incorporating task and domain specific knowledge. \todo{describe some pipelines and advantages}
+	\item In the final stage local outputs of the previous stages are fused into a final prediction. E.g. the class probabilities for the previously classified image patches would be merged if two neighbouring patches have the same class label.
+\end{enumerate}  
+	
+	Commonly the areas $A$ are chosen as square bounding boxes. However also other have been proposed..	
+	
+	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed in the following chapters.
+
+	The existing methods can broadly be grouped in three groups. Those are more traditional approaches without \acp{CNN}-based feature extraction, two-stage detectors and one-stage detectors.
+	
+	\section{Traditional Methods}
+	
+	"Traditional" is not a very precise term but has also been used in other publications to  group methods that don't use the recently very popular \acp{CNN}-feature extractor. Therefore the term is similarly used in this work.
+	
+	One of the first object detection methods was \cite{Viola2004} that used simple filters inspired by Haar-basis functions as a feature extractor for human face detection. The image was processed in a cascade of classifiers that assigned the label "face" or "background" to image patches. The output of the first stages were further classified when going deeper in the cascade. To employ an attention process, the processing of one image patch stopped, when a classifier assigned the label "background".
+	
+	Although being very fast the Haar-based feature extraction was not very robust towards rotation-, scale- or shape-variations \todo{quote}. A more robust feature extractor was proposed by \cite{Dalal} and \cite{Lowe2004} for pedestrian detection. A local (normalized) histogram of gradients is computed for a fixed window size. 
+
+	However, these methods prove to be sensitive towards part occlusions or large deformations. This gave raise to deformable part models where parts of the object are explicitly learned and detected.  \todo{describe springs}
+
+	
+	Guido proposes a neural network to learn an attention model.
+	
+	X propose a recurrent neural network architecture to model the attention process.
+	
+	\section{\acp{CNN}-based Detectors}
 	
 	In recent years \acp{CNN} emerged from deep learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches at various locations. In contrast to manually designed methods, \acp{CNN} can be learned task specific via back-propagation.
 	
@@ -50,14 +71,14 @@
 	Different activation functions have emerged. $Tanh$ and sigmoid-activations produce naturally an output at a small range which simplifies the optimization. However, when the filter output falls unfavourably, the gradient with respect to the activation is almost zero leading to much longer training times. This issue gave rise to the family of rectified linear units (ReLU) which have been generalized in \todoref{..} to parametrized linear units (PReLU):
 	
 	$$
-		f(x) = \begin{cases}
-			x \quad \text{for } x \geq 0 \\
-			\alpha x \quad \text{for } x < 0
-		\end{cases}
+	f(x) = \begin{cases}
+	x \quad \text{for } x \geq 0 \\
+	\alpha x \quad \text{for } x < 0
+	\end{cases}
 	$$
 	
 	The issue of network initialization and "saturating" activations is also addressed in \cite{Ioffe2015}. With batch normalization the authors introduce a layer that normalises the data batch-wise and is fully differentiable. Including batch normalization after a convolutional layer leads to more stable and faster convergence. \todoref{arg1} show how using batch normalization cancels out the bias term.
-		
+	
 	Using a convolutional layer followed by batch normalization and non-linear activation evolved to a standard in classification and object detection pipelines. It can be summarized in:
 	
 	\todo{doublecheck}
@@ -65,7 +86,12 @@
 	Y_{ij} = f(\frac{WX_{ij}}{\sigma}+c)
 	$$
 	
-
+	\todo{Residual Connections}
+	
+	
+	\todo{other architectural stuff}
+	
+	
 	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \cite{Razavian}s experiments show how that this is not only because \acp{CNN}-features are trained on a specific task, but that  the learned representation is quite general and can be used in other vision tasks and methods.
 	
 	This has led to common practice to train feature extractors with a classification task on the Imagenet dataset with \todo{number} images and to use these weights to initialize networks for other tasks like object detection or segmentation. Popular feature extractors are summarized in \autoref{tab:cnn-extractors}.
@@ -82,72 +108,20 @@
 		\end{tabular}
 		\label{tab:cnn-extractors}
 	\end{table}
-	
-	
-	
 
-	\section{Sampling}
-	
-	Without simplifying assumptions the total amount of objects in an image is not known at test time. Thus it is necessary to classify multiple regions within an image, to determine class labels and object locations. However, the amount of combinations between regions and objects that can appear in an image is infinite, while usually a large proportion of the image does not contain any object. Hence, which areas to sample within an image is a critical parameter regarding performance in accuracy and inference time.
-	
-	Commonly the areas to classify are limited bounding boxes that surround the object. However also other have been proposed..	
+	After the performance boost for image classification \acp{CNN} have also been employed for the task of object detection. The existing methods can be grouped in two apporaches.
 	
 	
+	\subsection{Two-stage Approaches}
 	
-	\subsection{Sliding window}
+	Two-stage approaches consists of a first stage that proposes regions, likely to contain an object and second stage that classifies these objects. In a way the first stage models an attention process such that the second stage can focus on the relevant parts of the image.
 	
-	Sliding window based techniques sample the image by cropping regions of different sizes and aspect ratios across the image. Usually, the whole image is covered by moving the window from top left to bottom right. 
+	The first method to employ a two stage approach was R-CNN that used the Selective Search algorithm\todoref{sel. search} for region proposal and \acp{CNN}-based classifier for the second stage. As the second stage was an expensive method that had to be run at various scales and regions of the input image, the approach was computationally intense while containing a lot of redundant operations. In the following years research was conducted to combine more steps of the approach to save computations. Fast-RCNN \cite{Ren} used a \acp{CNN} to generate the region proposals while using an SVM classifier for the second stage. Faster-RCNN \cite{Ren2015} proposes a fully \acp{CNN}-based pipeline that can be trained end-to-end on the task of object detection.
 	
-	This technique is applied in \todo{put examples}
 	
-	Sliding window techniques cover the whole input space and are easy to implement. However, the methods do a lot of superflous and redundant computations e.g. when most parts of the image are empty or certain regions are covered multiple times.
+	\subsection{One-stage Approaches}
 	
-	\subsection{Attention Models}
-	
-	Attention based techniques are inspired by the human vision process \todoref{arg1}. The algorithm focusses on the important parts of the image and doesn't spend computations on less important parts. Multiple approaches exist to model the attention process.
-	
-	\citeauthor{Viola2004} use a cascaded of classifier that are evaluated in iterative fashion. Is a certain patch classified as background, its not further processed.
-	
-	Guido proposes a neural network to learn an attention model.
-	
-	X propose a recurrent neural network architecture to model the attention process.
-	
-	Fast-RCNN \cite{Ren} and Faster-RCNN \cite{Ren2015} formulate the attention process as regression problem and model it with a \acp{CNN} that proposes regions which possibly contain an object. The proposed regions are classified in a second step. 
-	
-
-	%			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
-	%			\begin{itemize}
-	%				\item[-] Generates number of bounding boxes as object candidates (class agnostic) and confidences for each box
-	%				\item[-] For each Bounding Box a classifier is run e.g. DNN
-	%				\item[-] Training: If the number of boxes k is larger than the number of objects b, only b boxes are matched while the confidence of the others is minimized
-	%				\item[-] Assignment problem $$F_{match}(x,l) = \frac{1}{2}\sum_{i,j}x_{ij}||l_i - g_j||^2_2$$ where $x_ij$ is one if the ith prediction is assigned to the jth ground truth object
-	%				\item[-] Confidence: 
-	%				$$F_{conf}(x,c) = - \sum_{i,j}x_{ij}*\log(c_i)-\sum_{i}(1-\sum_{j}x_{ij})\log{1-c_j}$$
-	%				\item[-] Speed up training by clustering (kmeans) of ground truth and using it as prior (prior matching)
-	%				\item[-] Can be defined to output boxes only for a particular class by training the bounding boxes on that class
-	%				\item[-] Number of parameters grows linearly with number of classes
-	%				\item[-] Authors argue two step process (region proposal + classification) is better
-	%				\item[-] Architecture based on AlexNet
-	%				\item[-] Predicted boxes are merged using non-maxima surpression
-	%				\item[-] One shot(50\%), +2scales (75\%)
-	%				\item[-] OverFeat/ Selective Search are faster but much more expensive
-	%			\end{itemize}
-	
-	\section{Object Model}
-	
-	In the last stage the extracted features are used to assign a class label to certain regions. Different approaches for this stage exist.
-	
-	The straight forward approach is to feed the features from all cropped regions into a classifier, and assign a certain class label. That way the object model is learned separated from the detection task. This concept can be found in \todo{examples} where support vector machines or neural networks are used.
-	
-	However, these methods prove to be sensitive towards part occlusions or large deformations. This gave raise to deformable part models where parts of the object are explicitly learned and detected.  \todo{describe springs}
-	
-	The deep learning approaches could significantly surpass the detection accuracy of the mentioned approaches without the concept of deformable part models. However, \todoref{cnns are dpms} shows experimentally that \acp{CNN} internally learn a similar representation.
-	
-	\cite{Viola2004}.
-
-	\section{Regression Models}
-	
-	\iffalse
+		\iffalse
 	\begin{figure}[hbtp]
 		
 		\centering
@@ -182,9 +156,27 @@
 	Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
 
 
+	
 
+	%			\paragraph{Scalable Object Detection using Deep Neural Networks\cite{Erhan}}
+	%			\begin{itemize}
+	%				\item[-] Generates number of bounding boxes as object candidates (class agnostic) and confidences for each box
+	%				\item[-] For each Bounding Box a classifier is run e.g. DNN
+	%				\item[-] Training: If the number of boxes k is larger than the number of objects b, only b boxes are matched while the confidence of the others is minimized
+	%				\item[-] Assignment problem $$F_{match}(x,l) = \frac{1}{2}\sum_{i,j}x_{ij}||l_i - g_j||^2_2$$ where $x_ij$ is one if the ith prediction is assigned to the jth ground truth object
+	%				\item[-] Confidence: 
+	%				$$F_{conf}(x,c) = - \sum_{i,j}x_{ij}*\log(c_i)-\sum_{i}(1-\sum_{j}x_{ij})\log{1-c_j}$$
+	%				\item[-] Speed up training by clustering (kmeans) of ground truth and using it as prior (prior matching)
+	%				\item[-] Can be defined to output boxes only for a particular class by training the bounding boxes on that class
+	%				\item[-] Number of parameters grows linearly with number of classes
+	%				\item[-] Authors argue two step process (region proposal + classification) is better
+	%				\item[-] Architecture based on AlexNet
+	%				\item[-] Predicted boxes are merged using non-maxima surpression
+	%				\item[-] One shot(50\%), +2scales (75\%)
+	%				\item[-] OverFeat/ Selective Search are faster but much more expensive
+	%			\end{itemize}
+	
 
-\todo{Elaborate, It should become clear why we use deep learning}
 
 
 \section{Wire-frame objects}
@@ -194,12 +186,15 @@
 The properties of wireframe object can be summarized in:
 \begin{enumerate}
 	\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
-	\item The object parts themselves are thin structures
+	\item The object parts themselves are thin structures.
+	\item The object parts can be spread over large parts of the image.
 	\item The object parts are sparse. The bounding box around the object is largely occupied by background
 \end{enumerate}
 
 \todoref{Wire detection}
 \todoref{Method from last year, Other papers on drone racing}
+
+\todo{Compare the individual methods, based on the literature and previous results formulate a hypothesis}
 
 \section{Hypothesis}
 
@@ -212,9 +207,13 @@ Several hypothesis are formulated and will be examined experimentally:
 \newpage
 \section{Experiments}
 
-\todo{Show how current methods perform on wire frame objects - performance over angle}
-\todo{Reduce number of parameters and compare to big model}
-\todo{What do the individual layers learn, where does it fail}
-\todo{sensitivity analysis what triggers the network?}
+First we show that many weights in an object detector are superflous when detecting single wire frame objects:
+1. We train an object detector on a single but complex object and compare the filters to multiple objects
+2. We train an object detector on a single wireframe object and compare the filters to the other feature detectors
+3. We use the gained insights to prune the network 
+4. The pruned network should perform poorly when used on the complex object
+4. We analyse the new network in terms of sensitivity towards: occlusion, colour, distance, angle
+
+\section{Results}
 
 \section{Conclusion}

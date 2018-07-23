@@ -2,8 +2,8 @@
 # First step
 #       Group and Look at some examples
 # H1:    Receptive field is too small/ too little convolutions when all features are together:
-#       How to show? Deeper network should work better on larger boxes
-#       Possible solution making it deeper/ predictors at larger scales can have smaller grid
+#       How to show? network with larger kernels should work better on larger boxes
+#       Possible solution making it deeper/ predictors at larger scales can have smaller grid dilated convolutions at final layer to increase receptive field
 # H2:    Skewed  training distribution:
 #       How to show? Increase training set/ upweigh large gates and see performance
 #       Solution is the same

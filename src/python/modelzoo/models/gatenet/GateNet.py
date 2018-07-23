@@ -63,6 +63,7 @@ from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
 from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+from run.etc.mulitply_adds import count_operations
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ObjectLabel import ObjectLabel
 
@@ -180,7 +181,8 @@ class GateNet(Predictor):
                        color_format=color_format,
                        augmenter=augmenter,
                        n_polygon=n_polygon,
-                       preprocessing=preprocessor)
+                       preprocessing=preprocessor,
+                       architecture=architecture)
 
     @staticmethod
     def create(model_name,
@@ -241,8 +243,10 @@ class GateNet(Predictor):
                  iou_thresh=0.4,
                  augmenter: ImgTransform = None,
                  n_polygon=4,
-                 preprocessing=None
+                 preprocessing=None,
+                 architecture=None,
                  ):
+        self.architecture = architecture
         self.color_format = color_format
 
         ObjectLabel.classes = ['gate']
@@ -280,3 +284,7 @@ class GateNet(Predictor):
                          loss=net.loss,
                          encoder=encoder,
                          decoder=decoder)
+
+    @property
+    def n_multiply_adds(self):
+        return count_operations(self.architecture, self.input_shape)

@@ -15,7 +15,8 @@ def evalmetric(
         iou_thresh=0.4,
         color_format=None,
         show=False,
-        result_path=None):
+        result_path=None,
+        result_file=None):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -42,7 +43,9 @@ def evalmetric(
     if result_path is None:
         result_path = model_src + '/test/'
 
-    result_file = name + '_result_metric.pkl'
+    if result_file is None:
+        result_file = name + '.pkl'
+
     exp_param_file = name + '_evalmetric'
 
     create_dirs([result_path])
