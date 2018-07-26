@@ -8,7 +8,8 @@ def conv(volume, layer):
     input_h, input_w, input_ch = volume
     pad_y, pad_x = kernel_h - 1, kernel_w - 1
 
-    output_volume = (input_h - (kernel_h - 1) + pad_y) / sy, (input_w - (kernel_w - 1) + pad_x) / sx, filters
+    output_volume = np.ceil((input_h - (kernel_h - 1) + pad_y) / sy), np.ceil(
+        (input_w - (kernel_w - 1) + pad_x) / sx), filters
 
     multiply_adds = output_volume[0] * output_volume[1] * output_volume[2] * input_ch * kernel_h * kernel_w
 
@@ -22,7 +23,8 @@ def dconv(volume, layer):
     input_h, input_w, input_ch = volume
     pad_y, pad_x = kernel_h - 1, kernel_w - 1
 
-    output_volume = (input_h - (kernel_h - 1) + pad_y) / sy, (input_w - (kernel_w - 1) + pad_x) / sx, filters
+    output_volume = np.ceil((input_h - (kernel_h - 1) + pad_y) / sy), np.ceil(
+        (input_w - (kernel_w - 1) + pad_x) / sx), filters
 
     multiply_adds = output_volume[0] * output_volume[1] * output_volume[2] * (input_ch + kernel_h * kernel_w)
 
@@ -37,7 +39,8 @@ def bottleneck_conv(volume, layer):
     pad_y, pad_x = kernel_h - 1, kernel_w - 1
     compression = layer['compression']
 
-    output_volume = (input_h - (kernel_h - 1) + pad_y) / sy, (input_w - (kernel_w - 1) + pad_x) / sx, filters
+    output_volume = np.ceil((input_h - (kernel_h - 1) + pad_y) / sy), np.ceil(
+        (input_w - (kernel_w - 1) + pad_x) / sx), filters
 
     multiply_adds = input_h * input_w * input_ch * input_ch * compression + output_volume[0] * output_volume[1] * (
             input_ch * compression * kernel_h * kernel_w)
@@ -53,7 +56,8 @@ def bottleneck_dconv(volume, layer):
     pad_y, pad_x = kernel_h - 1, kernel_w - 1
     expand = layer['expand']
 
-    output_volume = (input_h - (kernel_h - 1) + pad_y) / sy, (input_w - (kernel_w - 1) + pad_x) / sx, filters
+    output_volume = np.ceil((input_h - (kernel_h - 1) + pad_y) / sy), np.ceil(
+        (input_w - (kernel_w - 1) + pad_x) / sx), filters
 
     ops_expand = input_h * input_w * input_ch * input_ch * expand
     ops_dconv = input_h * input_w * input_ch * expand * kernel_w * kernel_h
@@ -90,6 +94,10 @@ def max_pool(volume, layer):
     return output_volume, multiply_adds
 
 
+def predict(volume, layer):
+    return conv(volume, {'name': 'conv', 'kernel_size': (1, 1), 'filters': 5, 'strides': (1, 1), 'alpha': 0.1})
+
+
 def count_operations(architecture, volume_in, verbose=False):
     lookup = {
         'conv_leaky': conv,
@@ -98,7 +106,8 @@ def count_operations(architecture, volume_in, verbose=False):
         'bottleneck_conv': bottleneck_conv,
         'bottleneck_dconv': bottleneck_dconv,
         'bottleneck_conv_residual': bottleneck_conv_residual,
-        'bottleneck_dconv_residual': bottleneck_dconv_residual
+        'bottleneck_dconv_residual': bottleneck_dconv_residual,
+        'predict': predict,
     }
     multiply_adds_total = 0
 
@@ -110,7 +119,7 @@ def count_operations(architecture, volume_in, verbose=False):
 
         multiply_adds_total += multiply_adds
         if verbose:
-            print("{}: {} {} --> {}".format(i, layer['name'], volume_out, volume_in))
+            print("{}: {} {} --> {}".format(i, layer['name'], volume_in, volume_out))
             print("Ops Layer: {}".format(multiply_adds))
             print("Ops Total: {}".format(multiply_adds_total))
 
@@ -118,13 +127,33 @@ def count_operations(architecture, volume_in, verbose=False):
 
     return collect
 
+
 if __name__ == '__main__':
     network = [
-        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size':(2,2)},
-        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-
+        # First layer it does not see complex shapes so we apply a few large filters for efficiency
+        {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
+        # Second layers we use more but smaller filters to combine shapes in non-linear fashion
+        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 30, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'predict'},
+        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'predict'},
+        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'bottleneck_conv', 'kernel_size': (4, 4), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'predict'},
+        {'name': 'bottleneck_conv', 'kernel_size': (4, 4), 'filters': 32, 'strides': (4, 4), 'alpha': 0.1,
+         'compression': 0.5},
+        {'name': 'predict'},
     ]
-    img = (104, 104, 16)
+    img = (208, 208, 3)
 
     count_operations(network, img, True)

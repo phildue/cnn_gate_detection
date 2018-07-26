@@ -153,7 +153,7 @@ class GateNet(Predictor):
                        n_polygon=4,
                        preprocessor=None,
                        ):
-        n_boxes = int(np.ceil(anchors.size / 2))
+        n_boxes = [int(np.ceil(len(a) / 2)) for a in anchors]
 
         loss = GateDetectionLoss(
             n_boxes=n_boxes,
@@ -256,7 +256,7 @@ class GateNet(Predictor):
         self.grid = grid
         self.norm = norm
         self.conf_thresh = conf_thresh
-        self.n_boxes = anchors.shape[0]
+        self.n_boxes = [int(np.ceil(len(a) / 2)) for a in anchors]
         self._output_shape = grid[0][0] * grid[0][1], self.n_boxes * (n_polygon + 1)
 
         encoder = GateNetEncoder(img_norm=norm,

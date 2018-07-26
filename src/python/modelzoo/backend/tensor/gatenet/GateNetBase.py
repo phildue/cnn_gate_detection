@@ -3,7 +3,7 @@ from modelzoo.backend.tensor.layers import create_layer
 from modelzoo.models.Net import Net
 import keras.backend as K
 from keras import Input, Model
-from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda
+from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, LeakyReLU, Reshape, Lambda, Concatenate
 from keras.optimizers import Adam
 
 from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
@@ -48,7 +48,7 @@ class GateNetBase(Net):
                  anchors,
                  loss,
                  img_shape=(52, 52),
-                 n_boxes=5,
+                 n_boxes=[5],
                  weight_file=None,
                  n_polygon=4,
                  input_channels=3,
@@ -70,24 +70,26 @@ class GateNetBase(Net):
         netin = Input((h, w, input_channels))
 
         net = netin
-        grid = h, w
+        self.grid = []
+        prediction_layer_i = 0
+        predictions = []
         for i, config in enumerate(architecture):
-            if 'pool' in config['name']:
-                net = create_layer(net, config)
-                size = config['size']
-                grid = int(grid[0] / size[0]), int(grid[1] / size[1])
+            if 'predict' in config['name']:
+                with K.name_scope('predict{}'.format(prediction_layer_i)):
+                    inference = Conv2D(n_boxes[prediction_layer_i] * (n_polygon + 1), kernel_size=(1, 1),
+                                       strides=(1, 1))(
+                        net)
+                    prediction_layer_i += 1
+                    reshape = Reshape((-1, n_polygon + 1))(inference)
+                    prediction = Netout(n_polygon)(reshape)
+                    predictions.append(prediction)
+                    grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
+                    self.grid.append(grid)
             else:
                 with K.name_scope('layer' + str(i)):
                     net = create_layer(net, config)
 
-        grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
-        self.grid = [grid]
-        with K.name_scope('final'):
-            final = Conv2D(n_boxes * (n_polygon + 1), kernel_size=(1, 1), strides=(1, 1))(
-                net)
-            reshape = Reshape((-1, n_polygon + 1))(final)
-        predictions = Netout(n_polygon)(reshape)
-
+        predictions = Concatenate(-2)(predictions)
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
