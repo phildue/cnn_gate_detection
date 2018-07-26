@@ -7,7 +7,7 @@ cd_work()
 
 work_dir = 'out/2507/'
 
-models = ['shortnet161208x208-13x13+9layers/']
+models = ['mavnet208x208-13x13+9layers/']
 for model in models:
     preprocessing = None if 'gray' not in model else TransformGray()
     evalset(name='rf',

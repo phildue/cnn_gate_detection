@@ -120,20 +120,11 @@ def count_operations(architecture, volume_in, verbose=False):
 
 if __name__ == '__main__':
     network = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'max_pool', 'size':(2,2)},
+        {'name': 'conv_leaky', 'kernel_size': (2, 2), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
+
     ]
-    img = (416, 416, 3)
+    img = (104, 104, 16)
 
     count_operations(network, img, True)

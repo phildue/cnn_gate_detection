@@ -4,11 +4,18 @@
 # H1:    Receptive field is too small/ too little convolutions when all features are together:
 #       How to show? network with larger kernels should work better on larger boxes
 #       Possible solution making it deeper/ predictors at larger scales can have smaller grid dilated convolutions at final layer to increase receptive field
+# R1:   Until a bb size of 0.25-0.5 results confirm hypothesis, larger sizes weird behavior
+# R2:   A shorter newtork works equally well on small boxes
+# C1:   The higher layers only collect information for larger scales, still the performance is quite bad
+# ->H*1  The filters are optimized for small objects [H2]
+# ->H*2  The context player a bigger role than expected [H3]
+
 # H2:    Skewed  training distribution:
 #       How to show? Increase training set/ upweigh large gates and see performance
 #       Solution is the same
 # H3:    Context
 #        Remove pole and see performance
+
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread

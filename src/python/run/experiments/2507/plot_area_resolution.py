@@ -1,28 +1,37 @@
-import os
-
 from modelzoo.backend.visuals.plots.BaseBarPlot import BaseBarPlot
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
-from modelzoo.evaluation.utils import average_precision_recall, sum_results
+from modelzoo.evaluation.utils import sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 import numpy as np
 
 cd_work()
 
-work_dir = 'out/2507/receptive_field/'
+work_dir = 'out/1807/'
 
-models = [name for name in os.listdir(work_dir)]
-models = [models[i] for i in range(0, len(models), 2)]
+models = [
+    'baseline104x104-13x13+9layers',
+    'baseline208x208-13x13+9layers',
+    'baseline416x416-13x13+9layers',
+    'baseline52x52-13x13+9layers',
+    'bottleneck416x416-13x13+9layers',
+    # 'bottleneck_narrow416x416-13x13+9layers',
+    # 'bottleneck_narrow_strides416x416-13x13+9layers',
+    # 'combined208x208-13x13+13layers',
+    # 'grayscale416x416-13x13+9layers',
+    # 'narrow416x416-13x13+9layers',
+    # 'narrow_strides416x416-13x13+9layers',
+    # 'narrow_strides_late_bottleneck416x416-13x13+9layers',
+    #    'strides2416x416-13x13+9layers',
+]
 
 names = [
-    'rf0.38',
-    'rf0.53',
-    'rf0.68',
-    'rf0.84',
-    'rf1.0'
+    'baseline104x104',
+    'baseline208x208',
+    'baseline416x416',
+    'baseline52x52',
 ]
-areas = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
+areas = [0.001, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
 legends = []
 aps = []
 xs = []
@@ -35,8 +44,8 @@ for model in models:
         min_box_area = areas[i]
         max_box_area = areas[i + 1]
         results = load_file(
-            work_dir + model + '/test/total_iou{}_range{}-{}.pkl'.format(iou_thresh,
-                                                                         min_box_area, max_box_area))
+            work_dir + model + '/test/range_iou{}-area{}_result_metric.pkl'.format(iou_thresh,
+                                                                                   min_box_area))
         detections = sum_results([ResultByConfidence(r) for r in results['results']['MetricDetection']])
         totalAP_area = np.mean(detections.precisions)
         aps_model.append(totalAP_area)
@@ -55,7 +64,7 @@ pr_total = BaseBarPlot(x_data=xs,
                        colors=['blue', 'red', 'green', 'yellow', 'black', 'magenta', 'cyan', 'white'],
                        legend=names,
                        names=['0.01-0.05', '0.05-0.1', '0.1-0.15', '0.15-0.25', '0.25-0.5', '0.5-1.0'],
-                       title='9 layer models with increasing receptive field (kernel size) in last layer',
+                       title='9 layer models with different resolutions',
                        line_style=linestyles,
                        width=0.01)
 

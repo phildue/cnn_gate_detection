@@ -10,13 +10,16 @@ import numpy as np
 
 cd_work()
 
-work_dir = 'out/2507/receptive_field/'
+work_dir = 'out/2507/'
 
-models = [name for name in os.listdir(work_dir)]
-models = [models[i] for i in range(0, len(models), 2)]
+models = ['shortnet161208x208-13x13+9layers/',
+          'mavnet208x208-13x13+9layers/']
 
-names = models
-areas = [0.01, 0.05, 0.1, 0.15, 0.25, 1.0]
+names = [
+    '208x208->13x13+5layers/',
+    '208x208->7x7+9layers/'
+]
+areas = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
 legends = []
 aps = []
 xs = []
@@ -48,8 +51,8 @@ pr_total = BaseBarPlot(x_data=xs,
                        x_label='Box size relative to image size',
                        colors=['blue', 'red', 'green', 'yellow', 'black', 'magenta', 'cyan', 'white'],
                        legend=names,
-                       names=['0.01-0.05', '0.05-0.1', '0.1-0.15', '0.15-0.25', '0.25-1.0'],
-                       title='9 layer models with increasing receptive field (kernel size) in last layer',
+                       names=['0.01-0.05', '0.05-0.1', '0.1-0.15', '0.15-0.25', '0.25-0.5', '0.5-1.0'],
+                       title='',
                        line_style=linestyles,
                        width=0.01)
 
