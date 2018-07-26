@@ -77,7 +77,7 @@ class GateNetBase(Net):
             if 'predict' in config['name']:
                 with K.name_scope('predict{}'.format(prediction_layer_i)):
                     inference = Conv2D(n_boxes[prediction_layer_i] * (n_polygon + 1), kernel_size=(1, 1),
-                                       strides=(1, 1))(
+                                       strides=(1, 1), name='predictor{}'.format(prediction_layer_i))(
                         net)
                     prediction_layer_i += 1
                     reshape = Reshape((-1, n_polygon + 1))(inference)
