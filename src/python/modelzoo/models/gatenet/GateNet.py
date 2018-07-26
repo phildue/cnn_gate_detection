@@ -153,7 +153,7 @@ class GateNet(Predictor):
                        n_polygon=4,
                        preprocessor=None,
                        ):
-        n_boxes = [int(np.ceil(len(a) / 2)) for a in anchors]
+        n_boxes = [len(a) for a in anchors]
 
         loss = GateDetectionLoss(
             n_boxes=n_boxes,

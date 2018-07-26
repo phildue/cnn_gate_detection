@@ -4,14 +4,14 @@ import keras.backend as K
 
 from modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
 from modelzoo.backend.tensor.metrics.Metric import Metric
-
+import numpy as np
 
 class MetricGateNet(Metric):
     @abstractmethod
     def compute(self, y_true, y_pred):
         pass
 
-    def __init__(self, n_boxes=5, grid=(13, 13), iou_thresh=0.4, norm=(416, 416), iou_thresh_nms=0.4,
+    def __init__(self, n_boxes=[5], grid=[(13, 13)], iou_thresh=0.4, norm=(416, 416), iou_thresh_nms=0.4,
                  batch_size=8, confidence_levels=K.np.linspace(0, 1.0, 11)):
         self.confidence_levels = confidence_levels
         self.batch_size = batch_size
@@ -19,7 +19,8 @@ class MetricGateNet(Metric):
         self.norm = norm
         self.n_boxes = n_boxes
         self.grid = grid
-        self.map_adapter = AveragePrecision(iou_thresh, grid[0][1] * grid[0][0] * n_boxes, batch_size=batch_size)
+        total_boxes = np.sum([grid[i][0] * grid[i][1] * n_boxes[i] for i in range(len(n_boxes))])
+        self.map_adapter = AveragePrecision(iou_thresh, total_boxes, batch_size=batch_size)
 
     def _decode_coord(self, coord_t, anchors_t):
         coord_t_cx = coord_t[:, :, 0] * anchors_t[:, :, 2]
@@ -64,8 +65,7 @@ class MetricGateNet(Metric):
         class_pred_nms_batch = self.map_adapter.non_max_suppression_batch(coord_pred_dec_t,
                                                                           conf_pred_t,
                                                                           self.batch_size,
-                                                                          self.n_boxes * self.grid[0][0] * self.grid[0][
-                                                                              1],
+                                                                          K.shape(anchors_t)[0],
                                                                           self.iou_thresh)
 
         return coord_pred_dec_t, class_pred_nms_batch
