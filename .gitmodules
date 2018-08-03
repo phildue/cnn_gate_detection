@@ -19,3 +19,6 @@
 [submodule "lib/keras-spp"]
 	path = lib/keras-spp
 	url = https://github.com/yhenon/keras-spp.git
+[submodule "lib/dronerace2018"]
+	path = lib/dronerace2018
+	url = https://github.com/phildue/dronerace2018.git

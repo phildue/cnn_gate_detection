@@ -26,10 +26,9 @@ generator = GateGenerator(directories=['resource/ext/samples/industrial_new_test
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/2507/mavnet208x208-13x13+9layers/'
+src_dir = 'out/0108/multiscale208x208/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
-grid = [(13, 13)]
 model = GateNet.create_by_arch(architecture=summary['architecture'],
                                weight_file=src_dir + 'model.h5', batch_size=8, norm=summary['img_res'],
                                anchors=summary['anchors'],
