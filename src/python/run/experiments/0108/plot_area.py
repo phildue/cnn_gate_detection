@@ -9,19 +9,13 @@ from utils.workdir import cd_work
 import numpy as np
 
 cd_work()
-
-work_dir = 'out/2507/receptive_field/'
+work_dir = 'out/0108/'
 
 models = [name for name in os.listdir(work_dir)]
-models = [models[i] for i in range(0, len(models), 2)]
 
-names = [
-    'rf0.38',
-    'rf0.53',
-    'rf0.68',
-    'rf0.84',
-    'rf1.0'
-]
+
+
+names = models
 areas = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
 legends = []
 aps = []

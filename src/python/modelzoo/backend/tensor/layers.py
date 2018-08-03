@@ -193,6 +193,25 @@ def wr_inception_conv_leaky(netin, filters, compression, kernel_size, strides, a
     return join
 
 
+def conv_creator(netin, config):
+    return conv_concat(netin, config['filters'], config['compression'], config['kernel_size'],
+                       config['strides'],
+                       config['alpha'])
+
+
+def conv_concat(netin, filters, compression, kernel_size, strides, alpha):
+    conv = Conv2D(filters, kernel_size=kernel_size, strides=strides,
+                  padding='same', use_bias=False)(netin)
+    norm = BatchNormalization()(conv)
+    act = LeakyReLU(alpha=alpha)(norm)
+    concat = Concatenate()([act, netin])
+    if compression != 1.0:
+        out = Conv2D(int((K.int_shape(concat))[-1] * compression), kernel_size=(1, 1), strides=strides,
+                     padding='same', use_bias=False)(concat)
+    else:
+        out = concat
+
+    return out
 
 
 layers = {'conv_leaky': conv_leaky_creator,
@@ -206,5 +225,6 @@ layers = {'conv_leaky': conv_leaky_creator,
           'time_dist_max_pool': time_dist_max_pool_creator,
           'wr_basic_conv_leaky': wr_basic_conv_leaky_creator,
           'wr_bottleneck_conv_leaky': wr_bottleneck_conv_leaky_creator,
-          'wr_inception_conv_leaky': wr_inception_conv_leaky_creator
+          'wr_inception_conv_leaky': wr_inception_conv_leaky_creator,
+          'conv_concat': conv_creator
           }
