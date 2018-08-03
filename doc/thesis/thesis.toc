@@ -1,8 +1,8 @@
-\babel@toc {english}{}
+\select@language {english}
 \contentsline {chapter}{Summary}{1}{chapter*.4}
 \contentsline {chapter}{\numberline {1}Introduction}{5}{chapter.1}
 \contentsline {chapter}{\numberline {2}Evaluation Metrics}{7}{chapter.2}
-\contentsline {chapter}{\numberline {3}Learning with Limited Data}{9}{chapter.3}
+\contentsline {chapter}{\numberline {3}Learning from Synthetic Data}{9}{chapter.3}
 \contentsline {section}{\numberline {3.1}Background}{10}{section.3.1}
 \contentsline {section}{\numberline {3.2}Hypothesis}{10}{section.3.2}
 \contentsline {section}{\numberline {3.3}Experiments}{10}{section.3.3}
@@ -10,7 +10,7 @@
 \contentsline {chapter}{\numberline {4}Object Detection}{11}{chapter.4}
 \contentsline {section}{\numberline {4.1}Traditional Methods}{12}{section.4.1}
 \contentsline {section}{\numberline {4.2}\acp {CNN}-based Detectors}{12}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Two-stage Approaches}{14}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.1}Two-stage Approaches}{13}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}One-stage Approaches}{14}{subsection.4.2.2}
 \contentsline {section}{\numberline {4.3}Wire-frame objects}{15}{section.4.3}
 \contentsline {section}{\numberline {4.4}Hypothesis}{15}{section.4.4}
@@ -25,5 +25,5 @@
 \contentsline {section}{\numberline {5.5}Conclusion}{18}{section.5.5}
 \contentsline {chapter}{\numberline {6}Method}{19}{chapter.6}
 \contentsline {chapter}{\numberline {7}Discussion}{21}{chapter.7}
-\contentsline {chapter}{Bibliography}{23}{appendix*.52}
+\contentsline {chapter}{Bibliography}{23}{appendix*.54}
 \contentsfinish 

@@ -1,36 +1,30 @@
-\chapter{Learning with Limited Data}
+\chapter{Learning from Synthetic Data}
 \label{sec:training}
 
+Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set ${X_{s},Y_{s}}$ such that it can be applied on a target set of unknown examples $X_{t}$. Usually this is evaluated by splitting the labeled set of ${X,Y}$ in a training set ${X_{train},Y_{train}}$ and test set ${X_{test},Y_{test}}$. The concept is learned using the full information of ${X_{train},Y_{train}}$ and applied on the ${X_{test},Y_{test}}$. By evaluating the performance metric $m_A$ on ${X_{train},Y_{train}}$ information about the representation strength of $h$ can be inferred. The value of the performance metric $m$ on ${X_{test},Y_{test}}$ gives an estimate of the performance of $h$ on $X_{t}$. Comparing $\epsilon_A$ and $\epsilon$ allows to evaluate whether a suitable model and suitable training data was chosen or is available.
+			
+This basic supervised machine learning setting relies on the assumption that ${X_s},{Y_s}$ follow the same i.i.d distribution in domain $D_s$ as $X_t$. However, this can not be assumed when learning from synthetic data. As the data is artificially created it will share properties with the real data but only to the extent that they can be modeled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. When $D_s$ only shares a subset of properties with the target domain $D_t$ this is also referred to as a domain shift scenario.
+
+Learning models in such an environment is concerned by the field of Transfer Learning. The goal is to find a concept $h$ that performs best in the target domain $D_t$. Similar to $m_A$ and $m$ the performance $m_s$ in $D_s$ and the performance $m_t$ in $D_t$ can be used to evaluate whether a suitable model/dataset has been chosen/is available.
+
+The task of transfer learning can be summarized in:
+
+$$
+\text{arg}\max\limits_{h,D_s} m_t
+$$
+
+The goal is to create source domain $D_s$ and find a concept $h$ that maximizes the performance in the target domain $m_t$. The relevant question to be investigated in this chapter is the following:
+
 \begin{center}
-	\textbf{How can a detection model be learned with a limited amount of annotated examples?}
+	\item How can a detection model for wire frame objects be learned from synthetic data?
 \end{center}
 
-\todo{Explain relation between training data and test data. Explain domain shift.  Why do we use synthetic data? }
 
-The task of any machine learning approach is to generalize a concept obtained from training examples to new unseen data.
-
-The bias-variance dilemma \todoref{bias-variance} relates model complexity and available training data: More complex models introduce a lower bias but larger variance. Lowering the bias can only be done by either reducing model complexity or increasing the amount of training data. 
-
-This also means the available training data limits the model design space. However, research has been conducted in learning models in domains that share properties to the target domain and subsequently transferring them to the target domain. In Computer Vision the source domain can be synthetically created images. A lot of research is done in using
-
-
-When only little data is available, as it is the case for this work 
-As infinite data is not an option the subset of data used for training needs to sufficiently represent the data during test time.
-
-A way to avoid the overfitting of a model to the training set is regularization. That is to limit the training parameters of a model while training.
-
- In addition the annotated examples stem from a single room. This not only limits the design space to simple models it also introduces the problem of domain shift: As only a very limited amount of possible backgrounds and light conditions is present, a machine learning model is likely to overfit to the domain and can not be generalized to unseen examples from other domains. \todo{describe this more formally, proof that a domain shift/covariate shift scenario is reasonable to assume}
-
-A common method in computer vision/ object detection is the artificial augmentation of images while training. For example by converting some images of the training set to grayscale images one can force the model to learn a more color independent representation.
-
-Another way to increase training data is to artificially create training examples. Modern graphic engines allow the generation of almost photorealistic images. However, even then one has to take the domain shift into account.
 
 \todo{The argument can be that because we want a realistic dataset we remove certain angles.}
 
 
 \section{Background}
-Few shot learning:
-   \cite{Moysset2016}, \cite{Chen2018a}
 
 Domain Adaption/Synthetic Data:
  \cite{Chen2018c}, \cite{Xu2017}
