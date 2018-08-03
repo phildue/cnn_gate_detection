@@ -7,13 +7,17 @@ from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.imageprocessing.transform.TransformHistEq import TransformHistEq
 from utils.imageprocessing.transform.TransfromGray import TransformGray
 
-grid = [(13, 13)]
+grid = [(13, 13),
+        (7, 7),
+        (3, 3),
+        (1, 1)]
 img_res = 208, 208
-anchors = np.array([[[1.08, 1.19],
-                     [3.42, 4.41],
-                     [6.63, 11.38],
-                     [9.42, 5.11],
-                     [16.62, 10.52]]])
+
+anchors = [
+    [[1, 1], [1.5, 0.5], [1 / 2, 1 / 2], [0.75, 0.25]],
+    # [[1, 1], [1.5, 0.5]],
+    [[1, 1], [1.5, 0.5], [2.5, 0.25], [0.5, 0.5], [0.75, 0.25], [1.25, 0.125]]
+]
 
 architecture = [
     # First layer it does not see complex shapes so we apply a few large filters for efficiency
@@ -25,28 +29,17 @@ architecture = [
      'compression': 0.5},
     {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
      'compression': 0.5},
-
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
-    # Final layers, the shapes should be "exhausted" now its about combining spatial information
-    # That is why we increase kernel size to collect it
-    {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
-
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
-
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_concat', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
     {'name': 'predict'},
-
-    # receptive field is problematic as the final layer does not see the object
-    # if this network works well we should use dilated convolutions in the later layers
-
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 1.0},
+    {'name': 'conv_concat', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
+    {'name': 'predict'},
 ]
 
-model_name = 'mavnet{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
-                                                 grid[0][1], 9)
+model_name = 'mavnet_multiscale_dense{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,

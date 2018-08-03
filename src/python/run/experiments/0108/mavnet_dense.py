@@ -26,18 +26,18 @@ architecture = [
     {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
      'compression': 0.5},
 
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_concat', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
     # Final layers, the shapes should be "exhausted" now its about combining spatial information
     # That is why we increase kernel size to collect it
-    {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_concat', 'kernel_size': (7, 7), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
 
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_concat', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
 
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_concat', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 1.0},
     {'name': 'predict'},
 
     # receptive field is problematic as the final layer does not see the object
@@ -45,7 +45,7 @@ architecture = [
 
 ]
 
-model_name = 'mavnet{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
+model_name = 'mavnet_dense{}x{}-{}x{}+{}layers'.format(img_res[0], img_res[1], grid[0][0],
                                                  grid[0][1], 9)
 
 train(architecture=architecture,

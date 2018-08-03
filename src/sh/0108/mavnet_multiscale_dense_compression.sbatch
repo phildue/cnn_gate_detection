@@ -10,4 +10,4 @@
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
 
-srun python3 dronevision/src/python/run/experiments/0108/mavnet.py
+srun python3 dronevision/src/python/run/experiments/0108/mavnet_multiscale_dense_compression.py
