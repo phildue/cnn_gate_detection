@@ -5,9 +5,13 @@ from modelzoo.evaluation.evalset import evalset
 from utils.imageprocessing.transform.TransfromGray import TransformGray
 from utils.workdir import cd_work
 
-models = [name for name in os.listdir('out/0108/')]
-
 cd_work()
+
+# models = [name for name in os.listdir('out/0108/')]
+models = ['mavnet208x208-13x13+9layers',
+          'mavnet_dense208x208-13x13+9layers',
+          'mavnet_multiscale_dense208x208',
+          'mavnet_multiscale_dense_compression208x208']
 
 work_dir = 'out/0108/'
 

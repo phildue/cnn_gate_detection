@@ -27,7 +27,7 @@ img_res = 208, 208
 anchors = [
     [[1, 1], [1.5, 0.5], [1 / 2, 1 / 2], [0.75, 0.25]],
     # [[1, 1], [1.5, 0.5]],
-    [[1, 1], [1.5, 0.5], [2.5, 0.25], [0.5, 0.5], [0.75, 0.25], [1.25, 0.125]]
+    [[1, 1],[5, 5 ], [1.5, 0.5], [2.5, 0.25], [0.5, 0.5], [0.75, 0.25], [1.25, 0.125]]
 ]
 
 architecture = [
@@ -43,12 +43,13 @@ architecture = [
     {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
     {'name': 'predict'},
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
      'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
     {'name': 'predict'},
 ]
+
 
 predictor = GateNet.create_by_arch(architecture, norm=(208, 208), anchors=anchors)
 n_boxes = predictor.n_boxes

@@ -29,16 +29,17 @@ architecture = [
      'compression': 0.5},
     {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
      'compression': 0.5},
-    {'name': 'conv_concat', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
     {'name': 'predict'},
-    {'name': 'conv_leaky', 'kernel_size': (9, 9), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
-    {'name': 'conv_concat', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 0.5},
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
     {'name': 'predict'},
 ]
 
-model_name = 'mavnet_multiscale_dense_compression{}x{}'.format(img_res[0], img_res[1])
+model_name = 'mavnet_multiscalev2{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,

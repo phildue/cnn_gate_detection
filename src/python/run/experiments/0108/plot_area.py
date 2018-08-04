@@ -11,10 +11,16 @@ import numpy as np
 cd_work()
 work_dir = 'out/0108/'
 
-models = [name for name in os.listdir(work_dir)]
+# models = [name for name in os.listdir(work_dir)]
+models = [
+    'mavnet208x208-13x13+9layers',
+    'mavnet_dense208x208-13x13+9layers',
+    'mavnet_multiscale208x208',
+    'mavnet_multiscale_dense208x208',
+    'mavnet_multiscale_dense_compression208x208',
+    'mavnet_multiscale_nobottleneck208x208',
 
-
-
+]
 names = models
 areas = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
 legends = []
@@ -46,10 +52,12 @@ pr_total = BaseBarPlot(x_data=xs,
                        y_data=aps,
                        y_label='Average Precision at an IoU of {}'.format(iou_thresh),
                        x_label='Box size relative to image size',
-                       colors=['blue', 'red', 'green', 'yellow', 'black', 'magenta', 'cyan', 'white'],
+                       colors=[(0.5, 0.5, 0.5, 0.6),
+                               (0.5, 0, 0.5, 0.6), 'blue', 'red', 'green', 'yellow', 'black', 'magenta', 'cyan',
+                               'white'],
                        legend=names,
                        names=['0.01-0.05', '0.05-0.1', '0.1-0.15', '0.15-0.25', '0.25-0.5', '0.5-1.0'],
-                       title='9 layer models with increasing receptive field (kernel size) in last layer',
+                       title='',
                        line_style=linestyles,
                        width=0.01)
 
