@@ -1,15 +1,32 @@
 	\chapter{Object Detection}
-	
 	\label{sec:object_detection}
+	
+	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. In a probabilistic view this is expressed by the conditional joint probability:
+	
+	\begin{equation}
+		p(C,B|I)
+	\end{equation}
+	
+	where $I$ is the image, $B$ is an area and $C$ is a class probability.
+	
+	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define this more properly}
+	
+	This leads to a detection task of a very particular kind of object that is referred to as wire-frame object in this thesis. To the best of the authors knowledge there exists no previous definition of this kind of object. Therefore, several properties are defined:
+		
+	\begin{enumerate}
+		\item The \ac{OoI} does not consist of complex shapes but only basic geometric shapes like corners, lines and edges.
+		\item The \ac{OoI} parts themselves are thin structures.
+		\item The \ac{OoI} parts can be spread over large parts of the image.
+		\item The \ac{OoI} parts are sparse. The bounding box around the object is largely occupied by background.
+	\end{enumerate}
 	
 	\begin{center}
 		\textbf{ How can a detection model represent wire frame objects?}
 	\end{center}
 	
-	
+	\section{Related Work}
+	\label{sec:object_detection:related}
 	Object detection has been an intensively studied area within computer vision. Reaching back to \todoref{first object detection}, the machine based determination of what kind of objects we see where in the image has always been in the interest of academia and industry.
-	
-	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. 
 	
 	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization and non-maximum suppression. An overview is displayed in \autoref{fig:obj_pipeline}.
 	
@@ -87,7 +104,7 @@
 	$$
 	
 	\todo{Residual Connections}
-	
+	\todo{Dense Connections}
 	
 	\todo{other architectural stuff}
 	
@@ -118,6 +135,15 @@
 	
 	The first method to employ a two stage approach was R-CNN that used the Selective Search algorithm\todoref{sel. search} for region proposal and \acp{CNN}-based classifier for the second stage. As the second stage was an expensive method that had to be run at various scales and regions of the input image, the approach was computationally intense while containing a lot of redundant operations. In the following years research was conducted to combine more steps of the approach to save computations. Fast-RCNN \cite{Ren} used a \acp{CNN} to generate the region proposals while using an SVM classifier for the second stage. Faster-RCNN \cite{Ren2015} proposes a fully \acp{CNN}-based pipeline that can be trained end-to-end on the task of object detection.
 	
+	Hereby the loss function for the first stage is defined as \cite{Ren}:
+	
+	$$ 
+	L({p_i},{t_i}) = \frac{1}{N_{cls}} \sum L_{cls}(p_i,p_i*) + \lambda \frac{1}{N_{reg}} p_i* L_{reg}(t_i,t_i*) 
+	$$
+	
+	Where $i$ is an anchor, $p_i$ the predicted probability of the anchor being an object and $t_i$ a vector containing 4 bounding box offsets to the default anchor size. The ground truth label $t_i*$ contains the true coordinates, while $p_i*$ is 1 if the anchor overlaps a ground truth bounding box by some threshold. \todo{Which exact loss functions are used}
+	
+	The output of the region proposal stage is fed into a classifier unit. That is minimizing a softmax loss over the classes. The authors propose a strategy to train both stages end to end.
 	
 	\subsection{One-stage Approaches}
 	
@@ -183,13 +209,7 @@
 
 \todo{Definition of a wireframe object}
 
-The properties of wireframe object can be summarized in:
-\begin{enumerate}
-	\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
-	\item The object parts themselves are thin structures.
-	\item The object parts can be spread over large parts of the image.
-	\item The object parts are sparse. The bounding box around the object is largely occupied by background
-\end{enumerate}
+
 
 \todoref{Wire detection}
 \todoref{Method from last year, Other papers on drone racing}
