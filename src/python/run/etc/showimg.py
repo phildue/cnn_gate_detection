@@ -23,8 +23,8 @@ def show_img(path):
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
-            img, label = resize(img, (52, 52), label=label)
-            show(img, 'img', labels=label, legend=LEGEND_POSITION, thickness=1)
+            # img, label = resize(img, (52, 52), label=label)
+            show(img, 'img', labels=label, legend=LEGEND_CORNERS, thickness=1)
 
 
 def show_shot(path="samplegen/resource/shots/stream/"):
@@ -36,5 +36,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/crop20k'])
+show_img(path=["lib/dronerace2018/target/simulator/simulations/datagen/bin/Debug"])
 # show_voc()
