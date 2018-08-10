@@ -2,6 +2,7 @@ import numpy as np
 
 from modelzoo.models.Encoder import Encoder
 from utils.BoundingBox import BoundingBox
+from utils.Polygon import Quadrangle
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
@@ -52,7 +53,9 @@ class GateNetEncoder(Encoder):
         anchor_t[:, :, :, 1] = cy_grid
 
         for i in range(n_boxes):
-            anchor_t[:, :, i, 2:4] = np.array(norm) / np.array(grid) / anchor_dims[i]
+            for j in range(2, n_polygon):
+                # kind of assumes that it is parameterized width, height width height ..
+                anchor_t[:, :, i, j] = norm[j % 2] / grid[j % 2] / anchor_dims[i][j - 2]
 
         anchor_t = np.reshape(anchor_t, (grid[0] * grid[1] * n_boxes, -1))
 
@@ -61,7 +64,13 @@ class GateNetEncoder(Encoder):
     def _assign_true_boxes(self, anchors, true_boxes):
         coords = anchors.copy()
         confidences = np.zeros((anchors.shape[0], 1)) * np.nan
-        anchor_boxes = BoundingBox.from_tensor_centroid(confidences, coords)
+
+        if self.n_polygon == 4:
+            anchor_boxes = BoundingBox.from_tensor_centroid(confidences, coords)
+        elif self.n_polygon == 6:
+            anchor_boxes = Quadrangle.from_tensor_centroid(confidences, coords)
+        else:
+            raise ValueError("No class for this object shape")
 
         for b in true_boxes:
             max_iou = 0.0
@@ -74,10 +83,10 @@ class GateNetEncoder(Encoder):
                     match_idx = i
 
             if np.isnan(match_idx):
-                print("\nGateEncoder::No matching anchor box found!::{}".format(b))
+                print("\nGateEncoder::No matching anchor found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                coords[match_idx] = b.cx, b.cy, b.w, b.h
+                coords[match_idx] = b.coords_centroid
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords
@@ -102,7 +111,15 @@ class GateNetEncoder(Encoder):
 
         """
         anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, self.n_polygon)
-        confidences, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
+
+        if self.n_polygon == 4:
+            polygons = BoundingBox.from_label(label)
+        elif self.n_polygon == 6:
+            polygons = Quadrangle.from_label(label)
+        else:
+            raise ValueError("Don't know how to handle this shape")
+
+        confidences, coords = self._assign_true_boxes(anchors, polygons)
         coords = self._encode_coords(coords, anchors)
         label_t = np.hstack((confidences, coords, anchors))
         label_t = np.reshape(label_t, (-1, 1 + self.n_polygon + 4))

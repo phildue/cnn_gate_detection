@@ -56,7 +56,7 @@ def train(architecture=MODEL_NAME,
           augmenter=AUGMENTER,
           input_channels=3,
           weight_file=None,
-          ):
+          n_polygon=4):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -78,7 +78,8 @@ def train(architecture=MODEL_NAME,
         predictor.preprocessor.augmenter = augmenter
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
-                                           norm=img_res, input_channels=input_channels, weight_file=weight_file)
+                                           norm=img_res, input_channels=input_channels, weight_file=weight_file,
+                                           n_polygon=n_polygon)
 
     """
     Datasets
