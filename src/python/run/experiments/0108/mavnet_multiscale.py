@@ -39,7 +39,7 @@ architecture = [
     {'name': 'predict'},
 ]
 
-model_name = 'multiscale2{}x{}'.format(img_res[0], img_res[1])
+model_name = 'mavnet_multiscale{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,

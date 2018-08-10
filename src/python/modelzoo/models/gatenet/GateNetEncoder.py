@@ -32,9 +32,9 @@ class GateNetEncoder(Encoder):
         n_output_layers = len(grids)
         anchors = [GateNetEncoder.generate_anchor_layer(norm, grids[i], anchor_dims[i], n_polygon) for i in
                    range(n_output_layers)]
+        anchors = np.concatenate(anchors, 0)
 
-        anchors_t = np.concatenate(anchors, 0)
-        return anchors_t
+        return anchors
 
     @staticmethod
     def generate_anchor_layer(norm, grid, anchor_dims, n_polygon):

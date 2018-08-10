@@ -89,7 +89,11 @@ class GateNetBase(Net):
                 with K.name_scope('layer' + str(i)):
                     net = create_layer(net, config)
 
-        predictions = Concatenate(-2)(predictions)
+        if len(predictions) > 1:
+            predictions = Concatenate(-2)(predictions)
+        else:
+            predictions = predictions[0]
+
         meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 

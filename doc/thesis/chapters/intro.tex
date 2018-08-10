@@ -9,7 +9,7 @@ In recent years deep learning based object detectors have been pushing state of 
 
 The hereby used \acp{CNN} are designed in such a way that the first stages of the model look at small regions of the input image and determine the presence of simple shapes like edges corners and blobs. The output of these first stages gets combined to more complex shapes reaching from object parts like noses or eyes to whole objects like cats or dogs.\todoref{first convnet paper, visualizing cnns?}
 
-One main drawback of these \acp{CNN} is the immense amount of data and computational resources required to train all their parameters. Only when faster processing technologies evolved and the internet simplified collecting and annotating large amounts of training examples, the potential of \acp{CNN} could be exploited \todoref{sth from gartner?} and led to the tremendous performance boost. 
+One main drawback of these \acp{CNN} is the immense amount of data and computational resources required to train all their parameters. Only when faster processing technologies evolved and the internet simplified collecting, distributing and annotating large amounts of training examples, the potential of \acp{CNN} could be exploited \todoref{sth from gartner?} and led to the tremendous performance boost. 
 
 Hence, the power of state-of-the art object detection arises from the complexity of real-world objects that can be efficiently represented by \acp{CNN} when trained with large amounts of annotated examples.
 
@@ -17,24 +17,31 @@ However, there are applications where each of the above is only available to a c
 
 Furthermore, there are objects that don't consists of complex shapes or patterns but are built from very simple geometry. Examples for these object which we refer to as "wire frame objects" are antennas, wires, fences, cages and the like. \todo{elaborate} 
 
-This thesis studies object detection in an extrem example of the aforementioned case: Gate Detection at the IROS 2018 Autonomous Drone Race. Within this race court several coloured metal gates are placed and need to be passed one after another as fast as possible. Hence, the more lightweight the algorithm can be executed, the less computational resources are required the lighter the \ac{MAV} can be build and the more aggressive manoeuvres can be flown. On the other hand if the method is too inaccurate, the drone misses a gate and is likely to loose the race or even crash.
+This thesis studies object detection in an extreme example of the aforementioned case: Gate Detection at the IROS 2018 Autonomous Drone Race. Within this race court several coloured metal gates are placed and need to be passed one after another as fast as possible. Hence, the more lightweight the algorithm can be executed, the less computational resources are required, the lighter the \ac{MAV} can be build and the more aggressive maneuvers can be flown. On the other hand if the method is too inaccurate, the drone can miss a gate and is likely to loose the race or even crash.
 
-From the application on MAV's further issues arise: Optical effects like lense distortion or motion blur influence the image and need to be taken into account when developing algorithms for such applications.\todo{elaborate} 
+Due to these constraints previous methods for this application rely on manually engineered computer vision techniques e.g.\todoref{snake gate} as they are computationally much cheaper than state-of-the art object detection methods. However, these methods tend to be little robust to changes in illumination or object variance. That is why this thesis investigates a learning based approach for the detection of wire frame objects.
+
+\todoref{koreans} use a \acp{CNN}-based gate detection method but rely with Jetson TX1 on a fast but heavy (XXg) computational platform. This work uses a Jevois Smart Camera \todoref{jevois} as target platform. The camera weighs XX g and contains 4 CPUs as well as a GPU \todo{elaborate}.
+
+Machine learning based object detection assumes that a general concept of the object of interest can be learned from a limited set of annotated examples. However, \todo{why?} to this end there is no publicly available training set for gate detection. Instead the use of synthetic data for training object detection is studied. 
+
+As this requires to implement the concept of a real-world wire frame object into a generated data set it also allows to incorporate drone specific conditions in the training set. E.g. the lens properties of the camera or motion blur.
+
 \todo{What do we define as wire frame object?}
 \subsection*{Research Question}
 
 The research question of this work is formulated as follows:
 \begin{center}
-	\textbf{How can we efficiently detect wire frame objects on a micro-air vehicle?}
+	\textbf{How can a trained object detector efficiently detect wire frame objects on a micro-air vehicle?}
 \end{center}
 
 
 This question is split into multiple questions that address individual parts of the topic:
 
 \begin{itemize}
-	\item How can a detection model be learned with a limited amount of annotated examples?
+	\item How can a detection model be learned from synthetic data?
 	\item How can a detection model represent wire frame objects?
-	\item What are the trade-off's between detection accuracy and inference time when such a detection model is applied on a micro-air vehicle?
+	\item How can the inference time of a object detector be optimized for the application on a micro-air vehicle?
 	\item Can the gained insights be used to build a lightweight and robust detection model for wire frame objects to be applied in autonomous drone racing?
 \end{itemize}
 

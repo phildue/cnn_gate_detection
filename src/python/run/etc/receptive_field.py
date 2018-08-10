@@ -12,17 +12,19 @@
 # - r_i: receptive field of a feature in layer i
 # - start_i: position of the first feature's receptive field in layer i (idx start from 0, negative means the center fall into padding)
 import math
+from collections import OrderedDict
 
 net = {'conv1': [5, 2, 1],
        'conv2': [3, 2, 1],
        'conv3': [3, 2, 1],
        'conv4': [3, 2, 1],
-       'conv5': [5, 1, 1],  # 65 (13,13)
-       'conv6': [5, 2, 1],
-       # 'conv7': [3, 1, 1],  # 129 (7,7)
-       'conv7': [5, 2, 1],  #
+       'conv5': [7, 1, 1],  # 129 (13,13)
+       'conv6': [3, 2, 1],
+       'conv7': [9, 1, 1],  # 129 (7,7)
+       # 'conv8': [5, 1, 1]  # 129 (7,7)
+       # 'conv7': [5, 2, 1],  #
        # 'conv9': [3, 1, 1],  # 321 (3,3)
-       'conv8': [4, 2, 1],  #
+       # 'conv8': [4, 2, 1],  #
        # 'conv11': [3, 1, 1],  # 737 (1,1)
 
        # 'conv8': [9, 1, 1],
@@ -36,6 +38,7 @@ net = {'conv1': [5, 2, 1],
        # 'conv17': [3, 1, 1],
 
        }
+net = OrderedDict(sorted(net.items()))
 layers = list(net.values())
 layer_names = list(net.keys())
 
