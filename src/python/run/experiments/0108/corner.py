@@ -22,24 +22,23 @@ anchors = [
 ]
 
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
+    # First layer it does not see complex shapes so we apply a few large filters for efficiency
+    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
+    # Second layers we use more but smaller filters to combine shapes in non-linear fashion
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 0.5},
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 30, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 0.5},
+    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 0.5},
+    {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 0.5},
     {'name': 'predict'},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
+     'compression': 0.5},
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+     'compression': 0.5},
     {'name': 'predict'},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
-    {'name': 'predict'},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
-    {'name': 'predict'},
-
 ]
 
 model_name = 'corner{}x{}'.format(img_res[0], img_res[1])

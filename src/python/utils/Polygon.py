@@ -16,8 +16,8 @@ class Quadrangle:
             if isinstance(l, GateLabel):
                 wTop = abs(l.gate_corners.top_left[0] - l.gate_corners.top_right[0])
                 wBottom = abs(l.gate_corners.bottom_left[0] - l.gate_corners.bottom_right[0])
-                hLeft = abs(l.gate_corners.top_left[1] - l.gate_corners.top_right[1])
-                hRight = abs(l.gate_corners.bottom_left[1] - l.gate_corners.bottom_right[1])
+                hLeft = abs(l.gate_corners.top_left[1] - l.gate_corners.bottom_left[1])
+                hRight = abs(l.gate_corners.top_right[1] - l.gate_corners.bottom_right[1])
                 cx, cy = l.gate_corners.center
 
             elif isinstance(l, ObjectLabel):
@@ -162,17 +162,9 @@ class Quadrangle:
     def x_min(self):
         return self.cx - self.wMax / 2
 
-    @x_min.setter
-    def x_min(self, x):
-        self.cx = x + self.wMax / 2
-
     @property
     def x_max(self):
         return self.cx + self.wMax / 2
-
-    @x_max.setter
-    def x_max(self, x):
-        self.cx = x - self.wMax / 2
 
     @property
     def y_min(self):
@@ -182,13 +174,6 @@ class Quadrangle:
     def y_max(self):
         return self.cy + self.hMax / 2
 
-    @y_max.setter
-    def y_max(self, y):
-        self.cy = y - self.hMax / 2
-
-    @y_min.setter
-    def y_min(self, y):
-        self.cy = y + self.hMax / 2
 
     def __repr__(self):
         return '[({0:.2f},{1:.2f}) --> ({2:.2f},{3:.2f}): ({4:.2f})]'.format(self.x_min, self.y_min, self.x_max,

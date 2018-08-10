@@ -55,7 +55,7 @@ class GateNetEncoder(Encoder):
         for i in range(n_boxes):
             for j in range(2, n_polygon):
                 # kind of assumes that it is parameterized width, height width height ..
-                anchor_t[:, :, i, j] = norm[j % 2] / grid[j % 2] / anchor_dims[i][j - 2]
+                anchor_t[:, :, i, j] = norm[(j + 1) % 2] / grid[(j + 1) % 2] / anchor_dims[i][j - 2]
 
         anchor_t = np.reshape(anchor_t, (grid[0] * grid[1] * n_boxes, -1))
 
