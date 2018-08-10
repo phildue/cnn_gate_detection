@@ -38,7 +38,7 @@ architecture = [
      'compression': 0.5},
     {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
      'compression': 0.5},
-    {'name': 'predict'},
+    {'name': 'predict'}
 ]
 
 model_name = 'corner{}x{}'.format(img_res[0], img_res[1])

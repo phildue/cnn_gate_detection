@@ -45,8 +45,8 @@ class GateDetectionLoss(Loss):
         xy_pred = coord_pred[:, :, :2]
         xy_loss = K.pow(xy_true - xy_pred, 2)
 
-        wh_true = coord_true[:, :, 2:]
-        wh_pred = coord_pred[:, :, 2:]
+        wh_true = coord_true[:, :, 2:self.n_polygon]
+        wh_pred = coord_pred[:, :, 2:self.n_polygon]
         wh_loss = K.pow(K.sqrt(wh_true) - K.sqrt(wh_pred), 2)
 
         loc_loss = K.concatenate([xy_loss, wh_loss], -1) * w_pos

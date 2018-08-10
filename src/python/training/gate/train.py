@@ -105,11 +105,11 @@ def train(architecture=MODEL_NAME,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    def average_precision(y_true, y_pred):
-        return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-                                       norm=predictor.norm).compute(y_true, y_pred)
+    # def average_precision(y_true, y_pred):
+    #     return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+    #                                    norm=predictor.norm).compute(y_true, y_pred)
 
-    predictor.compile(params=params, metrics=[average_precision])
+    predictor.compile(params=params)
 
     """
     Training Config
