@@ -84,9 +84,13 @@ def train(architecture=MODEL_NAME,
     """
     Datasets
     """
-
+    min_distance = 4
+    max_distance = 20
+    max_angle = 30
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
-                              color_format='bgr', label_format='xml', n_samples=n_samples)
+                              color_format='bgr', label_format='xml', n_samples=n_samples,
+                              min_distance=min_distance, max_distance=max_distance, max_angle=max_angle,
+                              remove_filtered=False)
 
     """
     Paths
@@ -105,11 +109,14 @@ def train(architecture=MODEL_NAME,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    # def average_precision(y_true, y_pred):
-    #     return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-    #                                    norm=predictor.norm).compute(y_true, y_pred)
+    if n_polygon == 4:
+        def average_precision(y_true, y_pred):
+            return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+                                           norm=predictor.norm).compute(y_true, y_pred)
 
-    predictor.compile(params=params)
+        predictor.compile(params=params, metrics=[average_precision])
+    else:
+        predictor.compile(params=params)
 
     """
     Training Config
@@ -133,6 +140,9 @@ def train(architecture=MODEL_NAME,
     summary['anchors'] = anchors
     summary['img_res'] = img_res
     summary['grid'] = predictor.grid
+    summary[min_distance] = min_distance
+    summary[max_distance] = max_distance
+    summary[max_angle] = max_angle
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)

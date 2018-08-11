@@ -5,7 +5,6 @@ from modelzoo.models.Decoder import Decoder
 from modelzoo.models.Encoder import Encoder
 from modelzoo.models.Net import Net
 from utils.BoundingBox import BoundingBox
-from utils.Quadrangle import Quadrangle
 from utils.imageprocessing.Image import Image
 
 
@@ -34,11 +33,11 @@ class Predictor:
     def predict(self, sample):
         if isinstance(sample, list):
             predictions = self._predict_batch(sample)
-            labels = [b.to_label(b) for b in predictions]
+            labels = [BoundingBox.to_label(b) for b in predictions]
             return labels
         else:
             prediction = self._predict_sample(sample)
-            label = prediction.to_label(prediction)
+            label = BoundingBox.to_label(prediction)
             return label
 
     def _predict_sample(self, sample: Image):

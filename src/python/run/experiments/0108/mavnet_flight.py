@@ -10,11 +10,8 @@ from utils.imageprocessing.transform.TransfromGray import TransformGray
 img_res = 208, 208
 
 anchors = [
-    [[1, 1, 1, 1], [1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5]],
-    # [[1, 1], [1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5], [2.5, 0.25]]
+    [[1, 1, ], [1.5, 0.5]],
+    [[1, 1, ], [1.5, 0.5], [2.5, 0.25]]
 ]
 
 architecture = [

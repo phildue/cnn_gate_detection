@@ -21,7 +21,7 @@ class Postprocessor:
 
     @staticmethod
     def filter(predictions, conf_thresh):
-        return [box for box in predictions if box.class_conf >= conf_thresh]
+        return [box for box in predictions if box.c >= conf_thresh]
 
     @staticmethod
     def non_max_suppression(boxes: [BoundingBox], iou_thresh):
