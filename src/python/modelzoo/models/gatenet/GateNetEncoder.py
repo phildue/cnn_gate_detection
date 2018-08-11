@@ -2,7 +2,7 @@ import numpy as np
 
 from modelzoo.models.Encoder import Encoder
 from utils.BoundingBox import BoundingBox
-from utils.Polygon import Quadrangle
+from utils.Quadrangle import Quadrangle
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel

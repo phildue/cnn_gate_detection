@@ -66,6 +66,7 @@ class XmlParser(AbstractDatasetParser):
         for i, file in enumerate(files):
             if 0 < n < i: break
             label = XmlParser.read_label(file)
+            if label is None: continue
             image = imread(file.replace('xml', self.image_format), self.color_format)
             samples.append(image)
             labels.append(label)
@@ -98,38 +99,41 @@ class XmlParser(AbstractDatasetParser):
     @staticmethod
     def read_label(path: str) -> [ImgLabel]:
         with open(path, 'rb') as f:
-            tree = ET.parse(f)
-            objects = []
-            for element in tree.findall('object'):
-                # TODO extend this to parse gate corners/pose
-                name = element.find('name').text
+            try:
+                tree = ET.parse(f)
+                objects = []
+                for element in tree.findall('object'):
+                    # TODO extend this to parse gate corners/pose
+                    name = element.find('name').text
 
-                gate_corners_xml = element.find('gate_corners')
-                if gate_corners_xml:
+                    gate_corners_xml = element.find('gate_corners')
+                    if gate_corners_xml:
 
-                    gate_corners = XmlParser._parse_gate_corners(gate_corners_xml)
-                    try:
-                        pose_xml = element.find('pose')
-                        pose = XmlParser._parse_pose(pose_xml)
-                    except AttributeError:
-                        pose = Pose()
+                        gate_corners = XmlParser._parse_gate_corners(gate_corners_xml)
+                        try:
+                            pose_xml = element.find('pose')
+                            pose = XmlParser._parse_pose(pose_xml)
+                        except AttributeError:
+                            pose = Pose()
 
-                    objects.append(GateLabel(pose, gate_corners))
+                        objects.append(GateLabel(pose, gate_corners))
 
-                else:
-                    box = element.find('bndbox')
-                    x1 = int(np.round(float(box.find('xmin').text)))
-                    y1 = int(np.round(float(box.find('ymin').text)))
-                    x2 = int(np.round(float(box.find('xmax').text)))
-                    y2 = int(np.round(float(box.find('ymax').text)))
-                    xmin = min((x1, x2))
-                    xmax = max((x1, x2))
-                    ymin = min((y1, y2))
-                    ymax = max((y1, y2))
-                    label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
-                    label.y_min = ymin
-                    label.y_max = ymax
-                    label.x_min = xmin
-                    label.x_max = xmax
-                    objects.append(label)
-            return ImgLabel(objects)
+                    else:
+                        box = element.find('bndbox')
+                        x1 = int(np.round(float(box.find('xmin').text)))
+                        y1 = int(np.round(float(box.find('ymin').text)))
+                        x2 = int(np.round(float(box.find('xmax').text)))
+                        y2 = int(np.round(float(box.find('ymax').text)))
+                        xmin = min((x1, x2))
+                        xmax = max((x1, x2))
+                        ymin = min((y1, y2))
+                        ymax = max((y1, y2))
+                        label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
+                        label.y_min = ymin
+                        label.y_max = ymax
+                        label.x_min = xmin
+                        label.x_max = xmax
+                        objects.append(label)
+                return ImgLabel(objects)
+            except ET.ParseError:
+                print('Error parsing: ' + path)

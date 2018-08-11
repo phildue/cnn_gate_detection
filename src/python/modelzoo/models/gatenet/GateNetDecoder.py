@@ -2,7 +2,7 @@ import numpy as np
 
 from modelzoo.models.Decoder import Decoder
 from utils.BoundingBox import BoundingBox
-from utils.Polygon import Quadrangle
+from utils.Quadrangle import Quadrangle
 
 
 class GateNetDecoder(Decoder):

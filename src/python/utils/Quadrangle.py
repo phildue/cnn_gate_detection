@@ -119,6 +119,10 @@ class Quadrangle:
         return self.wMax * self.hMax
 
     @property
+    def coords_minmax(self):
+        return np.array([self.cx, self.cy, self.wMax, self.hMax])
+
+    @property
     def coords_centroid(self):
         return np.array([self.cx, self.cy, self.wTop, self.hLeft, self.wBottom, self.hRight])
 

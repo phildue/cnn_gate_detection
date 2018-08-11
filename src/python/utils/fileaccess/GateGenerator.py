@@ -26,7 +26,9 @@ class GateGenerator(DatasetGenerator):
     def __init__(self, directories: [str], batch_size: int, shuffle: bool = True, img_format: str = 'jpg',
                  color_format='yuv',
                  label_format: str = 'pkl', n_samples=None, valid_frac=0.0, start_idx=0, org_aspect_ratio=1.05,
-                 max_angle=30, max_distance=20):
+                 max_angle=30, max_distance=100, min_distance=0, remove_filtered=True):
+        self.remove_filtered = remove_filtered
+        self.min_distance = min_distance
         self.max_distance = max_distance
         self.max_angle = max_angle
         self.org_aspect_ratio = org_aspect_ratio
@@ -79,7 +81,15 @@ class GateGenerator(DatasetGenerator):
                 if self.label_format is not None:
                     label = DatasetParser.read_label(self.label_format,
                                                      file.replace(self.img_format, self.label_format))
-                    label = self._filter(label)
+
+                    if label is None:
+                        continue
+
+                    label_filtered = self._filter(label)
+                    n_filtered = len(label.objects) - len(label_filtered.objects)
+                    # print("Filtered labels: {}".format(n_filtered))
+                    if n_filtered > 0 and self.remove_filtered:
+                        continue
 
                 else:
                     label = ImgLabel([])
@@ -94,6 +104,6 @@ class GateGenerator(DatasetGenerator):
 
     def _filter(self, label: ImgLabel):
         max_aspect_ratio = self.org_aspect_ratio / (self.max_angle / 90)
-        objs_filtered = [obj for obj in label.objects if obj.pose.north < self.max_distance and \
+        objs_filtered = [obj for obj in label.objects if self.min_distance < obj.pose.north < self.max_distance and \
                          obj.height / obj.width < max_aspect_ratio]
         return ImgLabel(objs_filtered)

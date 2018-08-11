@@ -19,7 +19,7 @@ def show_voc():
 
 def show_img(path):
     gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
-                                   start_idx=0)
+                                   start_idx=0, max_distance=20, min_distance=3, remove_filtered=False)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -36,5 +36,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=["lib/dronerace2018/target/simulator/simulations/datagen/bin/Debug"])
+show_img(path=['resource/ext/samples/daylight_flight'])
 # show_voc()

@@ -10,11 +10,11 @@ from utils.imageprocessing.transform.TransfromGray import TransformGray
 img_res = 208, 208
 
 anchors = [
-    [[1, 1, 1, 1], [1.5, 0.5, 1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5, 1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5, 1.5, 0.5]],
+    [[1, 1, 1, 1], [1.5, 0.5]],
+    [[1, 1, 1, 1], [1.5, 0.5]],
+    [[1, 1, 1, 1], [1.5, 0.5]],
     # [[1, 1], [1.5, 0.5]],
-    [[1, 1, 1, 1], [1.5, 0.5, 1.5, 0.5], [2.5, 0.25, 2.5, 0.25]]
+    [[1, 1, 1, 1], [1.5, 0.5], [2.5, 0.25]]
 ]
 
 architecture = [
@@ -37,7 +37,7 @@ architecture = [
     {'name': 'predict'}
 ]
 
-model_name = 'corner_flight{}x{}'.format(img_res[0], img_res[1])
+model_name = 'mavnet_flight{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,
@@ -57,4 +57,4 @@ train(architecture=architecture,
       n_samples=None,
       input_channels=3,
       initial_epoch=0,
-      n_polygon=6)
+      n_polygon=4)
