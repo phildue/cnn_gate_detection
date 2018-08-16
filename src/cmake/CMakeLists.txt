@@ -129,3 +129,4 @@ add_executable(darknet_runner ${DARKNET_SOURCE}
                               ${PROJECT_ROOT}/src/cpp/run_darknet/main.cpp)
 
 target_link_libraries(darknet_runner ${OpenCV_LIBS})
+target_link_libraries(darknet_runner pthread)
