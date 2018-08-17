@@ -57,45 +57,20 @@
 %----------------------------------------------------------------------------------------
 
 \section{Recap}
-In the last meeting from 18.07.2018 several next steps were defined:
+In the last meeting from 25.07.2018 several next steps were defined:
 \begin{itemize}
-	\item Investigate performance with respect to bounding boxes
-	\item Investigate bounding box accuracy
+	\item Write it all down.
+	\item Add prediction layers at multiple scales
+	\item Investigate performance in terms of occlusion/angle
+	\item Remove/Reduce occlusions from the dataset and repeat experiments. We could use the drone model we created for testing the filters to simulate the flight of a real drone and record the images.
+	
 \end{itemize}
 
-\section{IoU}
+\section{Prediction Layers at multiple scales}
 
-Fig. \ref{fig:iou} shows detections at different IoU values. An IoU with 0.4 accepts detections that are quite off, 0.6 seems reasonable.
+Last experiments showed how having predicting layers at multiple scales at the end of the network improved the predictions for larger objects. So I did some experiments in the end
 
 
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0000-04.jpg}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0000-06.jpg}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0000-08.jpg}
-	\end{minipage}
-	
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0021-04.jpg}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0021-06.jpg}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.3\linewidth}
-		\includegraphics[width=\linewidth]{0021-08.jpg}
-	\end{minipage}
-	\caption{Two example images at different IoU thresholds with ground truth in blue, true positive in white, false positive in red. From left to right IoU=0.4;0.6;0.8}
-	\label{fig:iou}
-\end{figure}
 
 \section{Experiment - Receptive Field}
 

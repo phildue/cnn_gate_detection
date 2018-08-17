@@ -9,19 +9,23 @@ from utils.workdir import cd_work
 import numpy as np
 
 cd_work()
-work_dir = 'out/0108/'
+work_dir = 'out/'
 
 # models = [name for name in os.listdir(work_dir)]
 models = [
-    'mavnet208x208-13x13+9layers',
-    'mavnet_dense208x208-13x13+9layers',
-    'mavnet_multiscale208x208',
-    'mavnet_multiscale_dense208x208',
-    'mavnet_multiscale_dense_compression208x208',
-    'mavnet_multiscale_nobottleneck208x208',
+    '2507/mavnet208x208-13x13+9layers',
+    '0108/mavnet208x208-13x13+9layers',
+    '0108/multiscale2208x208',
+    '0108/multiscale208x208',
 
 ]
-names = models
+names = [
+    'Prediction at 7x7',
+    'Prediction at 13x13',
+    'Prediction at 13x13 and 7x7',
+    'Prediction at 13x13, 7x7, 3x3 and 1x1',
+
+]
 areas = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1.0]
 legends = []
 aps = []

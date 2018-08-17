@@ -4,6 +4,7 @@ from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX, LEGEND_TEXT, LEGEND_POSITION, \
     LEGEND_CORNERS
+from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
@@ -18,13 +19,28 @@ def show_voc():
 
 
 def show_img(path):
+    def filter(label):
+        max_aspect_ratio = 1.05 / (45 / 90)
+        objs_within_angle = [obj for obj in label.objects if obj.height / obj.width < max_aspect_ratio]
+
+        objs_in_view = []
+        for obj in objs_within_angle:
+            mat = obj.gate_corners.mat
+            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > 416)]) +
+                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > 416)])) > 2:
+                continue
+            objs_in_view.append(obj)
+
+        return ImgLabel(objs_in_view)
+
     gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
-                                   start_idx=0, max_distance=20, min_distance=3, remove_filtered=False)
+                                   filter=None, remove_filtered=True)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
             # img, label = resize(img, (52, 52), label=label)
-            show(img, 'img', labels=label, legend=LEGEND_CORNERS, thickness=1)
+            print(label)
+            show(img, 'img', labels=label, legend=LEGEND_POSITION, thickness=1)
 
 
 def show_shot(path="samplegen/resource/shots/stream/"):
@@ -36,5 +52,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight_flight'])
+show_img(path=['lib/dronerace2018/target/simulator/simulations/datagen/bin/Debug'])
 # show_voc()

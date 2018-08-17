@@ -88,7 +88,7 @@ class XmlParser(AbstractDatasetParser):
     def _parse_pose(pose_xml: str) -> Pose:
         north = float(pose_xml.find('north').text)
         east = float(pose_xml.find('east').text)
-        up = float(pose_xml.find('up').text)
+        up = float(pose_xml.find('down').text)
         yaw = float(pose_xml.find('yaw').text)
         pitch = float(pose_xml.find('pitch').text)
         roll = float(pose_xml.find('roll').text)

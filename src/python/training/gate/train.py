@@ -56,7 +56,11 @@ def train(architecture=MODEL_NAME,
           augmenter=AUGMENTER,
           input_channels=3,
           weight_file=None,
-          n_polygon=4):
+          n_polygon=4,
+          min_distance=-1,
+          max_distance=20,
+          max_angle=30,
+          ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -84,13 +88,10 @@ def train(architecture=MODEL_NAME,
     """
     Datasets
     """
-    min_distance = 4
-    max_distance = 20
-    max_angle = 30
+
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              min_distance=min_distance, max_distance=max_distance, max_angle=max_angle,
-                              remove_filtered=False)
+                              remove_filtered=False, remove_empty=True)
 
     """
     Paths
@@ -112,7 +113,7 @@ def train(architecture=MODEL_NAME,
     if n_polygon == 4:
         def average_precision(y_true, y_pred):
             return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-                                           norm=predictor.norm).compute(y_true, y_pred)
+                                           norm=predictor.norm, iou_thresh=0.6).compute(y_true, y_pred)
 
         predictor.compile(params=params, metrics=[average_precision])
     else:

@@ -26,11 +26,10 @@ class GateGenerator(DatasetGenerator):
     def __init__(self, directories: [str], batch_size: int, shuffle: bool = True, img_format: str = 'jpg',
                  color_format='yuv',
                  label_format: str = 'pkl', n_samples=None, valid_frac=0.0, start_idx=0, org_aspect_ratio=1.05,
-                 max_angle=30, max_distance=100, min_distance=0, remove_filtered=True):
+                 filter=None, remove_filtered=True, remove_empty=False):
+        self.remove_empty = remove_empty
+        self._filter = filter
         self.remove_filtered = remove_filtered
-        self.min_distance = min_distance
-        self.max_distance = max_distance
-        self.max_angle = max_angle
         self.org_aspect_ratio = org_aspect_ratio
         self._color_format = color_format
         self.label_format = label_format
@@ -85,15 +84,24 @@ class GateGenerator(DatasetGenerator):
                     if label is None:
                         continue
 
-                    label_filtered = self._filter(label)
+                    if self._filter is not None:
+                        label_filtered = self._filter(label)
+                    else:
+                        label_filtered = label
+
+                    if self.remove_empty and len(label_filtered.objects) == 0:
+                        continue
+
+
                     n_filtered = len(label.objects) - len(label_filtered.objects)
                     # print("Filtered labels: {}".format(n_filtered))
                     if n_filtered > 0 and self.remove_filtered:
                         continue
 
+
                 else:
-                    label = ImgLabel([])
-                current_batch.append((img, label, file))
+                    label_filtered = ImgLabel([])
+                current_batch.append((img, label_filtered, file))
                 if len(current_batch) >= self.batch_size:
                     yield current_batch
                     del current_batch
@@ -101,9 +109,3 @@ class GateGenerator(DatasetGenerator):
             except StopIteration:
                 if self.shuffle: random.shuffle(files)
                 files_it = iter(files)
-
-    def _filter(self, label: ImgLabel):
-        max_aspect_ratio = self.org_aspect_ratio / (self.max_angle / 90)
-        objs_filtered = [obj for obj in label.objects if self.min_distance < obj.pose.north < self.max_distance and \
-                         obj.height / obj.width < max_aspect_ratio]
-        return ImgLabel(objs_filtered)

@@ -34,7 +34,7 @@ architecture = [
     {'name': 'predict'}
 ]
 
-model_name = 'mavnet_flight{}x{}'.format(img_res[0], img_res[1])
+model_name = 'mavnet_daylight_new{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,
@@ -47,15 +47,12 @@ train(architecture=architecture,
           #          (1.0, RandomGrayNoise()),
           #          (0.1, TransformerBlur(iterations=10)),
       ]),
-      image_source=['resource/ext/samples/daylight_course1',
-                    'resource/ext/samples/daylight_course2',
-                    'resource/ext/samples/daylight_course3',
-                    'resource/ext/samples/mixed_rooms',
+      image_source=['resource/ext/samples/daylight15k'
                     ],
       anchors=anchors,
       epochs=100,
       n_samples=None,
       input_channels=3,
       initial_epoch=0,
-      learning_rate=0.0001,
+      learning_rate=0.001,
       n_polygon=4)
