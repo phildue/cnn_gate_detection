@@ -1,11 +1,25 @@
 \chapter{Speed Optimization}
 \label{sec:tradeoff}
 
+Speed optimization aims to reduce the inference time $t$ of a model. However, as this usually requires model simplification, the reduction in inference time comes at a cost of detection performance $m$.
+
+Hence, given a baseline performance $m_0$ the goal of speed optimization must be to reduce the inference time $t$ while keeping the performance of the faster model $m_1$ as close as possible to $m_0$. This chapter explores the optimal trade-off between $t$ and $m$.
+
+
+The research question of this chapter is stated as:
+
 \begin{center}
-	\textbf{What are the trade-off's between detection accuracy and inference time when such a detection model is applied on a micro-air vehicle?}
+	\textbf{What are the trade-off's between $m$ and $t$ when a detection model is integrated on a embedded computing platform?}
 \end{center}
 
-A major drawback of \acp{CNN}-based object detectors is their vast resource requirements. In recent years a lot of research has been conducted to reduce the inference time of \acp{CNN}. The publications address different levels for optimization:
+The question is answered on a theoretical level by using the total number of \ac{Multiply-Adds} $N_O$ as an indication for the inference time of the model. However, as also stated by \todoref{others} $N_O$ is not necessarily directly related to $t$. On a computing platform $t$ also depends on (1) whether several operations can be executed in parallel; (2) the memory usage of the operations, the kind of operation e.g. floating point or integer; (3) the particular low level implementation of the model. Hence, in addition to $N_0$ also the actual inference time of the model is measured on a particular computing platform.
+
+The chosen hardware is a Jevois Smart Camera \todoref{jevois}. The platform is developed for vision applications and provides a 4 Core CPU, as well as a small GPU \todo{more info}. That's why it is perfectly suitable for integrating in lightweight \acp{MAV} or other robotic applications.
+
+\section{Related Work}
+\label{sec:tradeoff:related_work}
+
+In recent years a lot of research has been conducted to reduce the inference time of \acp{CNN}. The publications address different levels for optimization:
 \begin{enumerate}
 	\item \textbf{Conceptual Level}
 	\item \textbf{Architectural Level}
@@ -13,15 +27,35 @@ A major drawback of \acp{CNN}-based object detectors is their vast resource requ
 \end{enumerate}
 
 \section{Conceptual Level}
- On a conceptual level effort has been carried out to incorporate more steps of the object detection pipeline into one model while sharing computational load. This has led from Overfeat\todoref{overfeat} which ran a \acp{CNN} in sliding window manner across the image over Faster-RCNN\todoref{faster rcnn} where the features are extracted only once and reused to Yolo and SSD that combine the whole pipeline in one model.
+ On a conceptual level authors aimed to incorporate more steps of the object detection pipeline into one model to share computational load and thus reduce inference time.
+ 
+ Overfeat\todoref{overfeat}, one the first \ac{CNN}-based object detectors ran a \ac{CNN} in sliding window manner across the image. As this led to redundant operations for feature extraction quickly two-stage approaches evolved. The consequent publications of R-CNN, Fast-RCNN and Faster-RCNN proposed a region proposal network that extracts features and proposes possible object locations, followed by a classification network that reuses the extracted features for classification. Thereby not only the number of regions that where classified was reduced but also the extracted features could be reused efficiently.
+ 
+ Yolo and SSD proposed to combine the whole pipeline into one model. Although, this led to a bit of loss in performance, the inference time could be reduced significantly. The aforementioned models are further described in \autoref{sec:object_detection:related}.
+ 
  Using Time domain:
  \cite{Chen2018}
  
+ \todo{put somewhere the overview of performance vs speed gained from object detection paper}
+ 
 \section{Architectural Level}
 
-On an architectural level two model properties are addressed: (1) model size (2) number of computations.
-Architectural Level/Number of Computations:
-\cite{Howard2017}, \cite{Zhang2017a}, \cite{Ghosh2017}, 
+Reducing the computational cost of \acp{CNN} has been addressed in two individual lines of research.
+
+\subsection{Architectural Blocks}
+
+\cite{YoungwanLee} and \cite{Zagoruyko2016} showed the performance of thin and deep architectures like \textit{ResNet} with more than 100 layers can equally be achieved by wider but shallower networks. At the same time the proposed \textit{Wide Residual Networks} use less parameters and can be executed more efficiently.
+
+\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. This enables feature reuse  and thus the reduction of the total amount of parameters \todo{is that really true since we need weights for much more filters}.
+
+\textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. \autoref{fig:dsc} illustrates the concept.
+
+\textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations.
+
+\cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation. 
+
+\subsection{Knowledge Distillation}
+
 \todo{Knowledge Distillation}
 
 \section{Operational Level}

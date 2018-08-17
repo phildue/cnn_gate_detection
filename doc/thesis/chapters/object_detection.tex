@@ -1,8 +1,15 @@
 	\chapter{Object Detection}
+	
 	\label{sec:object_detection}
 	
-	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. 
-	
+On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. In a probabilistic view this is expressed by the conditional joint probability:
+
+	\begin{equation}
+		p(C,B|I)
+	\end{equation}
+
+	where $I$ is the image, $B$ is an area and $C$ is a class probability.
+
 	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization. An overview is displayed in \autoref{fig:obj_pipeline}.
 	
 	\begin{figure}[hbtp]
@@ -15,25 +22,27 @@
 	\end{figure}
 
 	\begin{enumerate}
-	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation. 
-		
-	\item The classification/localization stage produces the final output based on this representation. 
-	
-	\end{enumerate}  
-	
+	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation.
+
+	\item The classification/localization stage produces the final output based on this representation.
+
+	\end{enumerate}
+
 	Commonly the areas $A$ are chosen as square bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
-	
+
 	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \autoref{sec:object_detection:related}.
-	
+
+	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define this more properly}
+
 	In this thesis it is studied how a detection model can be applied to wire frame objects. Therefore a definition of wire frame objects is given. To the best of the authors knowledge the object class has not been previously defined or explicitly addressed by the research community.
-	
+
 	\paragraph{Definition - Wire Frame Objects}	\hfill \\
 	The properties of wireframe object can be summarized in:
-	\begin{enumerate}
-		\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
-		\item The object parts themselves are thin structures.
-		\item The object parts can be spread over large parts of the image.
-		\item The object parts are sparse. The bounding box around the object is largely occupied by background
+		\begin{enumerate}
+		\item The \ac{OoI} does not consist of complex but only basic geometric shapes like corners, lines and edges.
+		\item The \ac{OoI} parts themselves are thin structures.
+		\item The \ac{OoI} parts can be spread over large parts of the image.
+		\item The \ac{OoI} parts are sparse. The bounding box around the object is largely occupied by background.
 	\end{enumerate}
 	
 	The relevant research question of this chapter is stated as follows:
@@ -43,10 +52,10 @@
 	\end{center}
 
 	The question will be answered by doing a literature study and selecting several of the most promising methods for further experiments. The respective models are applied and evaluated in terms of performance. Furthermore, the insights of the models representation are studied.
-	
+
 	The rest of the chapter is organized as follows: \autoref{sec:object_detection:related} discusses relevant related work. Based on the gained insights \autoref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:object_detection:results} describes the obtained results. \autoref{sec:object_detection:conclusion} discusses the results and answers the research question.
-	
-	
+
+
 	\section{Related Work}
 	\label{sec:object_detection:related}
 	The existing methods can broadly be grouped in three groups. Those are more traditional approaches without \acp{CNN}-based feature extraction, two-stage detectors and one-stage detectors.
@@ -133,7 +142,16 @@
 	
 	The first method to employ a two stage approach was R-CNN that used the Selective Search algorithm\todoref{sel. search} for region proposal and \acp{CNN}-based classifier for the second stage. As the second stage was an expensive method that had to be run at various scales and regions of the input image, the approach was computationally intense while containing a lot of redundant operations. In the following years research was conducted to combine more steps of the approach to save computations. Fast-RCNN \cite{Ren} used a \acp{CNN} to generate the region proposals while using an SVM classifier for the second stage. Faster-RCNN \cite{Ren2015} proposes a fully \acp{CNN}-based pipeline that can be trained end-to-end on the task of object detection.
 	
-	
+	Hereby the loss function for the first stage is defined as \cite{Ren}:
+
+	$$
+	L({p_i},{t_i}) = \frac{1}{N_{cls}} \sum L_{cls}(p_i,p_i*) + \lambda \frac{1}{N_{reg}} p_i* L_{reg}(t_i,t_i*)
+	$$
+
+	Where $i$ is an anchor, $p_i$ the predicted probability of the anchor being an object and $t_i$ a vector containing 4 bounding box offsets to the default anchor size. The ground truth label $t_i*$ contains the true coordinates, while $p_i*$ is 1 if the anchor overlaps a ground truth bounding box by some threshold. \todo{Which exact loss functions are used}
+
+	The output of the region proposal stage is fed into a classifier unit. That is minimizing a softmax loss over the classes. The authors propose a strategy to train both stages end to end.
+
 	\subsection{One-stage Approaches}
 	
 		\iffalse

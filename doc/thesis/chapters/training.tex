@@ -1,4 +1,4 @@
-\chapter{Data Generation}
+\chapter{Transfer Learning}
 \label{sec:training}
 
 Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set $D_s = \{X_{s},Y_{s}\}$ such that it can be applied on a target set of unknown examples $D_t = \{X_{t}\}$ to obtain the corresponding labels:
@@ -9,7 +9,7 @@ $$
 
 Whether $h$ is performing well, can evaluated by splitting the labelled set of $D_s$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on the $D_{test}$. By evaluating a performance metric $m_A$ on $D_{train}$ information about the representation strength of $h$ can be inferred. The performance metric $m$ on $D_{test}$ gives an estimate of the performance of $h$ on $D_t$. Comparing $m_A$ and $m$ allows to evaluate whether model and dataset are suitable for the task.
 			
-This basic supervised machine learning setting relies on the assumption that $D_s$ follows the same i.i.d distribution as $D_t$. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the IROS 2018 autonomous drone race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario. 
+This basic supervised machine learning setting relies on the assumption that $D_s$ follows the same i.i.d distribution as $D_t$. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the IROS 2018 autonomous drone race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
 
 Learning models in such an environment is concerned by the field of Transfer Learning. The goal is to find a concept $h$ that performs best in the target domain $T$. Similar to $m_A$ and $m$ the performance $m_S$ in $S$ and the performance $m_T$ in $T$ can be used to evaluate whether a suitable model/dataset has been chosen/is available.
 
@@ -31,7 +31,7 @@ The relevant question to be investigated in this chapter is the following:
 	\end{enumerate}
 \end{center}
 
-The question will be answered by choosing a state of the art method for object detection and training it with varying properties in $D_s$. By evaluating $m_s$ on synthetic data and $m_t$ on real images the influence of these properties will be measured.  
+The question will be answered by choosing a state of the art method for object detection and training it with varying properties in $D_s$. By evaluating $m_s$ on synthetic data and $m_t$ on real images the influence of these properties will be measured.
 
 The remaining parts of this chapter are structured as follows: \autoref{sec:training:related} discusses relevant related work. Based on the gained insights \autoref{sec:training:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:training:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:training:results} describes the obtained results. \autoref{sec:training:conclusion} discusses the results and answers the research question.
 
@@ -90,17 +90,17 @@ An advantage of \ac{DR} is its ease of implementation and use, no assumptions ab
 
 \subsection{Generalization versus Specialization}
 
-While a lot of approaches discussed in \autoref{sec:training:related} aim to learn a general representation that works across domains, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as domain generalization and domain specialization. 
+While a lot of approaches discussed in \autoref{sec:training:related} aim to learn a general representation that works across domains, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as domain generalization and domain specialization.
 
-The first hypothesis formulated is that there is a trade-off between these two entities. For example placing the \ac{OoI} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for wire-frame objects where a large part of the surrounding bounding box is occupied by background. 
+The first hypothesis formulated is that there is a trade-off between these two entities. For example placing the \ac{OoI} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for wire-frame objects where a large part of the surrounding bounding box is occupied by background.
 
-On the other hand, placing the \ac{OoI} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear on sky background. 
+On the other hand, placing the \ac{OoI} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear on sky background.
 
 Hence, it is expected that the training performance $m_{a}$ of a certain model $h$ improves with increasing specialization. Moreover, domain specialization should allow a more lightweight model to learn the same task equally well as a more complex model. That is with increasing specialization it should be possible to reduce the number of parameters $w$ while $m_{a}$ stays constant. Finally, if increasing specialization of a training set improves $m_{a}$ it follows that the specialization should also improve test performance $m$ as long as the specialization does not omit patterns that are present in the target domain. For example, if the model is applied in the real world it can safely be assumed that objects obey physical laws.
 
 \subsection{Domain Properties}
 
-In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following the first hypothesis it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.   
+In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following the first hypothesis it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.
 
 In the following the different domain properties are defined and their appearance in the target domain is measured. By drawing the properties of $S$ and $T$ closer it is hypothesized, $m_T$ will improve.
 
@@ -111,7 +111,7 @@ Scene properties cover environmental conditions like illumination and background
 Several methods are studied to synthetically create a scene:
 
 \begin{enumerate}
-	
+
 \item \textbf{Random (non trivial) selection of background images.}
 This method is commonly used in literature \todoref{some examples}
 
@@ -127,7 +127,7 @@ For this method a whole scene is rendered. This includes \ac{OoI}, background ob
 
 \end{enumerate}
 
-Using random backgrounds without rendering the full scene is considered as very general, since backgrounds can be anything including for example animals and human faces. However, the objects are not aligned with the scene or the light conditions of the environment. Also inherent image properties like view perspective are not followed. This creates a very specialized learning problem, as the model could also just learn to distinguish the object that does not fit to the rest of the image. Therefore the learning problem gets harder, when the scene is fully rendered and the object is embedded in the scene realistically. 
+Using random backgrounds without rendering the full scene is considered as very general, since backgrounds can be anything including for example animals and human faces. However, the objects are not aligned with the scene or the light conditions of the environment. Also inherent image properties like view perspective are not followed. This creates a very specialized learning problem, as the model could also just learn to distinguish the object that does not fit to the rest of the image. Therefore the learning problem gets harder, when the scene is fully rendered and the object is embedded in the scene realistically.
 
 These assumptions are evaluated in several experiments. Three models are trained on different datasets and the training performance is evaluated. Model I is trained on a dataset created with Method I. The training data for Model II is created by randomly placing the object in scene rendered with the simulator. Model III is trained on a dataset created by Method III. It is expected that Model II performs better than Model I, while Model III performs worst. The exact experiments are further described in \autoref{sec:training:experiments}.
 
@@ -135,8 +135,8 @@ Next to evaluating the trade-off between specialization and generalization it is
 
 Several experiments are carried out. In one the target domain properties are mimicked in the training set as close as possible. In another one the source domain properties are randomized, such that the model can learn a more general representation. Both approaches are evaluated in terms of model complexity and detection performance.The exact experiments are further described in \autoref{sec:training:experiments}.
 
-\subsubsection{Camera Placement.} 
-	
+\subsubsection{Camera Placement.}
+
 Camera placement refers to the camera's point of view. It is chosen when rendering a scene. The camera pose is determined by:
 
 $$
@@ -148,22 +148,22 @@ Multiple methods to select $r$ and $t$ are studied:
 
 \begin{enumerate}
 	\item \textbf{Random Placement within margins.}
-		  
+
 		  The value for each dimension of $r$ and $t$ are drawn from a probability distribution. The chosen distributions have to follow certain limitations, for example the gate should still be visible in most images.
-		  
+
 	\item \textbf{Placement following a motion model.}
-	
+
 		$r$ and $t$ follow a motion model. As in this thesis object detection on \acp{MAV} is studied, the motion model of a small \ac{MAV} that is used for the IROS2018 is applied. The development of this model has not been done within this thesis but is described here for completeness: \todo{put shuos model here}.
-	
+
 \end{enumerate}
-	
+
 In Method I the degree of specialization can be controlled by the distribution models. The more camera positions are considered, the more varies the object appearance. Method II has a high degree of specialization as it limits the view points to those that are expected to be seen in a real world application.
 
 Several experiments are conducted as further described in \autoref{sec:training:experiments}. It is expected that by reducing the amount of possible poses $m_a$ can be improved. The best $m$ should be obtained using Method II.
 
-\subsubsection{Camera Properties.} 
+\subsubsection{Camera Properties.}
 
-Camera properties describes the behaviour of the visual sensor. In the real world the used camera and its lense have significant influence on the image appearance. These properties can be modelled when creating synthetic data. 
+Camera properties describes the behaviour of the visual sensor. In the real world the used camera and its lense have significant influence on the image appearance. These properties can be modelled when creating synthetic data.
 
 \paragraph{Camera Model}
 
@@ -183,8 +183,8 @@ The model can be summarized in the intrinsic camera matrix $C$:
 	0&  \frac{f_y}{s_y}&cy \\
 	0& 	0&	1
 	\end{bmatrix}
-	\label{eq:pinhole1} 
-\end{equation} 
+	\label{eq:pinhole1}
+\end{equation}
 
 The model projects 3D coordinates $X$ to the image plane following:
 \begin{equation}
@@ -197,12 +197,12 @@ Where $X$ are points described in homogeneous coordinates originating from the c
 Lense distortion is modelled with Browns distortion model:
 
 \begin{equation}
-bla	
+bla
 	\label{eq:distortion}
 \end{equation}
 
 \paragraph{Sensor Noise Model}\hfill \\
-	
+
 Sensor noise is modelled by ..
 Gray/Colour noise
 \paragraph{Motion Noise Model}	\hfill \\
@@ -213,13 +213,13 @@ Several methods to incorporate the described sensor effects are studied:
 
 \begin{enumerate}
 	\item \textbf{Varying model parameters.}
-	
+
 	For each model the parameters are varied by drawing them from a uniform distribution within certain margins. That way the model can learn a general representation that is robust against sensor/lense changes.
-	
+
 	\item \textbf{Estimating the model parameters from the target domain.}
-	
+
 	The model parameters for each model can be estimated from images taken with the camera. By incorporating the parameters from the target domain a high degree of specialization can potentially be achieved.
-	
+
 	The procedure to estimate the model parameters is described in the following: \todo{Describe camera calibration}
 \end{enumerate}
 
@@ -230,10 +230,10 @@ The aforementioned hypotheses are summarized in the following:
 
 \begin{enumerate}
 	\item[$\mathcal{H}_1$] The more general a model has to be the harder the learning problem becomes. Hence $m_{train}$ drops with an increasing degree of generalization $g$.
-	
+
 	\item[$\mathcal{H}_2$] The more specialized a model is, the less parameters are necessary to achieve the same performance. Hence, $m_train$ remains constant when reducing the degree of generalization and the number of parameters $w$.
-	
-	\item[$\mathcal{H}_3$] The more properties of $T$ can be incorporated in $S$ the less complex a model has to be to achieve similar performance. That is the same $m_T$ can be achieved with a model with smaller $w$ when the properties in $S$ and $D$ are closer. 
+
+	\item[$\mathcal{H}_3$] The more properties of $T$ can be incorporated in $S$ the less complex a model has to be to achieve similar performance. That is the same $m_T$ can be achieved with a model with smaller $w$ when the properties in $S$ and $D$ are closer.
 \end{enumerate}
 
 
