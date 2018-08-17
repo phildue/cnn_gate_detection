@@ -1,17 +1,9 @@
 	\chapter{Object Detection}
-	
 	\label{sec:object_detection}
-	
-	\begin{center}
-		\textbf{ How can a detection model represent wire frame objects?}
-	\end{center}
-	
-	
-	Object detection has been an intensively studied area within computer vision. Reaching back to \todoref{first object detection}, the machine based determination of what kind of objects we see where in the image has always been in the interest of academia and industry.
 	
 	On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. 
 	
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization and non-maximum suppression. An overview is displayed in \autoref{fig:obj_pipeline}.
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization. An overview is displayed in \autoref{fig:obj_pipeline}.
 	
 	\begin{figure}[hbtp]
 	
@@ -23,17 +15,40 @@
 	\end{figure}
 
 	\begin{enumerate}
-	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation. For example a good feature extractor leads to the same result no matter at what size or rotation the object is displayed. These properties are also referred to as scale-/rotational invariant.
+	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation. 
+		
+	\item The classification/localization stage produces the final output based on this representation. 
 	
-	\item The classification/localization stage produces the final output based on this representation. In a simple example a classification model is inferred on a fixed set of image patches. Thus for each patch a class probability is assigned.
+	\end{enumerate}  
 	
-	\item In the final stage local outputs of the previous stages are fused into a final prediction. E.g. the class probabilities for the previously classified image patches would be merged if two neighbouring patches have the same class label.
-\end{enumerate}  
+	Commonly the areas $A$ are chosen as square bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
 	
-	Commonly the areas $A$ are chosen as square bounding boxes. However also other have been proposed..	
+	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \autoref{sec:object_detection:related}.
 	
-	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed in the following chapters.
+	In this thesis it is studied how a detection model can be applied to wire frame objects. Therefore a definition of wire frame objects is given. To the best of the authors knowledge the object class has not been previously defined or explicitly addressed by the research community.
+	
+	\paragraph{Definition - Wire Frame Objects}	\hfill \\
+	The properties of wireframe object can be summarized in:
+	\begin{enumerate}
+		\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
+		\item The object parts themselves are thin structures.
+		\item The object parts can be spread over large parts of the image.
+		\item The object parts are sparse. The bounding box around the object is largely occupied by background
+	\end{enumerate}
+	
+	The relevant research question of this chapter is stated as follows:
+	
+	\begin{center}
+		\textbf{ How can a detection model represent wire frame objects?}
+	\end{center}
 
+	The question will be answered by doing a literature study and selecting several of the most promising methods for further experiments. The respective models are applied and evaluated in terms of performance. Furthermore, the insights of the models representation are studied.
+	
+	The rest of the chapter is organized as follows: \autoref{sec:object_detection:related} discusses relevant related work. Based on the gained insights \autoref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:object_detection:results} describes the obtained results. \autoref{sec:object_detection:conclusion} discusses the results and answers the research question.
+	
+	
+	\section{Related Work}
+	\label{sec:object_detection:related}
 	The existing methods can broadly be grouped in three groups. Those are more traditional approaches without \acp{CNN}-based feature extraction, two-stage detectors and one-stage detectors.
 	
 	\section{Traditional Methods}
@@ -183,13 +198,6 @@
 
 \todo{Definition of a wireframe object}
 
-The properties of wireframe object can be summarized in:
-\begin{enumerate}
-	\item It does not consist of complex shapes but only basic geometric shapes like corners, edges
-	\item The object parts themselves are thin structures.
-	\item The object parts can be spread over large parts of the image.
-	\item The object parts are sparse. The bounding box around the object is largely occupied by background
-\end{enumerate}
 
 \todoref{Wire detection}
 \todoref{Method from last year, Other papers on drone racing}
