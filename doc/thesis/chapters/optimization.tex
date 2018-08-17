@@ -9,12 +9,23 @@ Hence, given a baseline performance $m_0$ the goal of speed optimization must be
 The research question of this chapter is stated as:
 
 \begin{center}
-	\textbf{What are the trade-off's between $m$ and $t$ when a detection model is integrated on a embedded computing platform?}
+	\textbf{What are the trade-off's between detection performance $m$ and inference time $t$ when a detection model is integrated on a embedded computing platform?}
 \end{center}
 
-The question is answered on a theoretical level by using the total number of \ac{Multiply-Adds} $N_O$ as an indication for the inference time of the model. However, as also stated by \todoref{others} $N_O$ is not necessarily directly related to $t$. On a computing platform $t$ also depends on (1) whether several operations can be executed in parallel; (2) the memory usage of the operations, the kind of operation e.g. floating point or integer; (3) the particular low level implementation of the model. Hence, in addition to $N_0$ also the actual inference time of the model is measured on a particular computing platform.
+The question is answered on a theoretical level by using the total number of \ac{Multiply-Adds} $N_O$ as an indication for the inference time of the model. However, as also stated by \todoref{others} $N_O$ is not necessarily directly related to $t$. On a computing platform $t$ also depends on:
+
+\begin{enumerate}
+	\item whether several operations can be executed in parallel,
+	\item the memory usage of the operations, the kind of operation e.g. floating point or integer
+	\item the particular low level implementation of the model
+\end{enumerate} 
+
+Hence, in addition to $N_0$ also the actual inference time of the model is measured on a particular computing platform.
 
 The chosen hardware is a Jevois Smart Camera \todoref{jevois}. The platform is developed for vision applications and provides a 4 Core CPU, as well as a small GPU \todo{more info}. That's why it is perfectly suitable for integrating in lightweight \acp{MAV} or other robotic applications.
+
+The rest of the chapter is organized as follows: \autoref{sec:tradeoff:related} discusses relevant related work. Based on the gained insights \autoref{sec:tradeoff:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:tradeoff:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:tradeoff:results} describes the obtained results. \autoref{sec:tradeoff:conclusion} discusses the results and answers the research question.
+
 
 \section{Related Work}
 \label{sec:tradeoff:related_work}

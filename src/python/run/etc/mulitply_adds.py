@@ -27,7 +27,7 @@ def dconv(volume, layer):
         (input_w - (kernel_w - 1) + pad_x) / sx), filters
 
     multiply_adds = output_volume[0] * output_volume[1] * (
-                output_volume[2] * input_ch + (input_ch * kernel_h * kernel_w))
+            output_volume[2] * input_ch + (input_ch * kernel_h * kernel_w))
 
     return output_volume, multiply_adds
 

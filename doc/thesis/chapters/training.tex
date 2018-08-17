@@ -1,4 +1,4 @@
-\chapter{Transfer Learning}
+\chapter{Data Generation}
 \label{sec:training}
 
 Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set $D_s = \{X_{s},Y_{s}\}$ such that it can be applied on a target set of unknown examples $D_t = \{X_{t}\}$ to obtain the corresponding labels:
@@ -242,7 +242,7 @@ The aforementioned hypotheses are summarized in the following:
 
 For data generation several tools are used. 3D Models for the \ac{OoI} are taken from ... OpenGl is used to render these objects and replace the background with a particular image. The Unreal Engine and AirSim are used to render a full scene.
 
-Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \todoref{arg1} the corresponding 2D coordinates on the image plane can be obtained with the following:
+Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \autoref{eq:pinhole1} the corresponding 2D coordinates on the image plane can be obtained with the following:
 
 The camera position is described by its rotation matrix $R$ and its translation vector $t$. Where $R$ is obtained from the Euler angles with:
 $$
@@ -262,7 +262,7 @@ The full projection can then be expressed by the matrix multiplication:
 $$
 X' = C\times T\times X
 $$
-Where $C$ is the intrinsic camera matrix defined in \todoref{arg1}.
+Where $C$ is the intrinsic camera matrix defined in \autoref{eq:pinhole1}.
 
 
 

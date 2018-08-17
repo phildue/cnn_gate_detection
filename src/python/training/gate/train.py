@@ -12,6 +12,7 @@ from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
+from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 import numpy as np
 
@@ -57,9 +58,10 @@ def train(architecture=MODEL_NAME,
           input_channels=3,
           weight_file=None,
           n_polygon=4,
-          min_distance=-1,
-          max_distance=20,
           max_angle=30,
+          min_obj_size=0.1,
+          max_obj_size=1.2,
+          validation_set=None,
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -89,9 +91,35 @@ def train(architecture=MODEL_NAME,
     Datasets
     """
 
-    train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=0.05,
+    def filter(label):
+
+        objs_in_size = [obj for obj in label.objects if
+                        min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
+
+        max_aspect_ratio = 1.05 / (max_angle / 90)
+        objs_within_angle = [obj for obj in objs_in_size if obj.height / obj.width < max_aspect_ratio]
+
+        objs_in_view = []
+        for obj in objs_within_angle:
+            mat = obj.gate_corners.mat
+            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
+                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
+                continue
+            objs_in_view.append(obj)
+
+        return ImgLabel(objs_in_size)
+
+    valid_frac = 0.05
+    valid_gen = None
+    if validation_set is not None:
+        valid_gen = GateGenerator(validation_set, batch_size=batch_size, valid_frac=1.0,
+                                  color_format='bgr', label_format='xml', filter=filter,
+                                  remove_filtered=False, remove_empty=False).generate_valid()
+        valid_frac = 0.0
+
+    train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              remove_filtered=False, remove_empty=True)
+                              remove_filtered=False, remove_empty=True, filter=filter)
 
     """
     Paths
@@ -134,6 +162,7 @@ def train(architecture=MODEL_NAME,
                         epochs=epochs,
                         log_csv=True,
                         lr_reduce=0.1,
+                        validation_generator=valid_gen
                         )
 
     summary = training.summary
@@ -141,8 +170,9 @@ def train(architecture=MODEL_NAME,
     summary['anchors'] = anchors
     summary['img_res'] = img_res
     summary['grid'] = predictor.grid
-    summary[min_distance] = min_distance
-    summary[max_distance] = max_distance
+    summary['valid_set'] = validation_set
+    summary['min_obj_size'] = min_obj_size
+    summary['max_obj_size'] = max_obj_size
     summary[max_angle] = max_angle
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)

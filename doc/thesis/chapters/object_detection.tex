@@ -16,7 +16,7 @@ On an abstract level the problem of object detection can be described by two ind
 	
 	\centering
 	\includegraphics[width=\linewidth]{fig/ObjectDetection}
-	\caption{Object Detection Pipeline.where $A_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
+	\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
 	\label{fig:obj_pipeline}
 	
 	\end{figure}
@@ -28,11 +28,11 @@ On an abstract level the problem of object detection can be described by two ind
 
 	\end{enumerate}
 
-	Commonly the areas $A$ are chosen as square bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
+	Commonly the areas $B$ are chosen as quadratic bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
 
 	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \autoref{sec:object_detection:related}.
 
-	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define this more properly}
+	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define here more properly why we are interested in the top part only, that can also be the argument to use 4 corners instead of h,w only}
 
 	In this thesis it is studied how a detection model can be applied to wire frame objects. Therefore a definition of wire frame objects is given. To the best of the authors knowledge the object class has not been previously defined or explicitly addressed by the research community.
 
@@ -212,23 +212,35 @@ On an abstract level the problem of object detection can be described by two ind
 
 
 
-\section{Wire-frame objects}
-
 \todo{Definition of a wireframe object}
 
 
 \todoref{Wire detection}
-\todoref{Method from last year, Other papers on drone racing}
 
-\todo{Compare the individual methods, based on the literature and previous results formulate a hypothesis}
+
+\section{Approach}
+\label{sec:object_detection:approach}
+Comparing state of the art results shows the superiority of \acp{CNN}-based methods in basically every vision task \todo{elaborate}. Hence, the first hypothesis formulated is that a state of the art object detector should be able to learn the detection task of wire frame objects. 
+
+As the single class case is considered the loss functions of state of the art detectors is simplified to the following:
+
+\todo{text}
+
+Hence, the only difference between X,Y,Z is ...
+Therefore the second hypothesis to be evaluated is that there is not a very large difference between the mentioned methods.
+
+
+The reason to be assumed responsible for the superiority of \acp{CNN}-based methods is the fact that the can learn powerful object representations directly on the task. \todoref{visualizing cnns} show how the model combines simple shapes like edges, corners and blobs to more complex shapes like noses and eyes. For the task of wire-frame object detection there is no such intuitive combination of such higher order shapes. Therefore the second hypothesis formulated is that the deeper levels of a \acp{CNN} are not necessary for the detector.
 
 \section{Hypothesis}
 
+\label{sec:object_detection:hypothesis}
 Several hypothesis are formulated and will be examined experimentally:
 \begin{enumerate}
-	\item \textbf{A \acp{CNN} should be able to learn the object detection task.}
-	\item \textbf{For wireframe objects the deeper layers don't learn anything as the object consist of relatively simple shapes.}
-	\item \textbf{The detection of fine grain structures is important.}
+	\item[$\mathcal{H}_1$] \textbf{A \acp{CNN} should be able to learn the object detection task.}
+	\item[$\mathcal{H}_2$] \textbf{Considering the single class case state of the art methods will learn the same representation}
+	\item[$\mathcal{H}_3$] \textbf{For wireframe objects the deeper layers don't learn anything as the object consist of relatively simple shapes.}
+	
 \end{enumerate}
 \newpage
 \section{Experiments}

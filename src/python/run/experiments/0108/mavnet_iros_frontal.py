@@ -34,16 +34,16 @@ architecture = [
     {'name': 'predict'}
 ]
 
-model_name = 'mavnet_iros_frontal{}x{}'.format(img_res[0], img_res[1])
+model_name = 'mavnet_iros_frontal_noaug{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,
       img_res=img_res,
       augmenter=RandomEnsemble([
-          (1.0, RandomBrightness(0.5, 1.5)),
+          # (1.0, RandomBrightness(0.5, 1.5)),
           (0.5, TransformFlip()),
           (0.1, TransformGray()),
-          (0.25, TransformHistEq()),
+          # (0.25, TransformHistEq()),
           #          (1.0, RandomGrayNoise()),
           #          (0.1, TransformerBlur(iterations=10)),
       ]),

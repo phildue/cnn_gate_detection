@@ -22,7 +22,9 @@ class Training:
                  log_csv=True,
                  initial_epoch=0,
                  epochs=100,
-                 callbacks=None):
+                 callbacks=None,
+                 validation_generator: DatasetGenerator = None):
+        self.validation_generator = validation_generator if validation_generator is not None else dataset_gen.generate_valid()
         self.patience_lr_reduce = patience_lr_reduce
         self.initial_epoch = initial_epoch
         self.epochs = epochs
@@ -74,7 +76,7 @@ class Training:
             epochs=self.epochs,
             initial_epoch=self.initial_epoch,
             verbose=1,
-            validation_data=self.predictor.preprocessor.preprocess_train_generator(self.dataset_gen.generate_valid()),
+            validation_data=self.predictor.preprocessor.preprocess_train_generator(self.validation_generator),
             validation_steps=100,
             callbacks=self.callbacks)
 
@@ -102,6 +104,6 @@ class Training:
                    'transform': augmentation,
                    'initial_epoch': self.initial_epoch,
                    'epochs': self.epochs,
-                   #'architecture': self.predictor.net.backend.get_config(),
+                   # 'architecture': self.predictor.net.backend.get_config(),
                    'weights': self.predictor.net.backend.count_params()}
         return summary
