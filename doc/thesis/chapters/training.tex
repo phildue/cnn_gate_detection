@@ -108,48 +108,75 @@ This leads to the formulation of two hypothesis to be investigated:
 	\item[H2] The less similar the properties between $D_s$ and $D_t$ the more complex a model has to be to keep $m_t$.
 \end{enumerate}
 
+The two domain shifts are studied individually. The shift between light conditions and rooms can be experimented with using synthetic data and is addressed first. In the second step the domain shift from synthetic to real data is considered. 
 
+Several properties of the trainingset are defined in order to evaluate the models performance when included in the training set. The properties are divided in three categories.
+
+\subsection{Scene}
+
+The scene describes how the \ac{OoI} is placed within its environment. This reaches from the selection of the image background, over the \ac{OoI}'s placement and environmental light conditions to low level image operations to embed the object in the scene.
+
+The first used method \textit{Scene I} is the placement of the \ac{OoI} on randomly selected backgrounds. Such a method can not only be easily implemented it also forces a model to learn an object representation that is independent of the background. However, it also can not pick up any cues of the background and bears the risk that the chosen dataset does not contain backgrounds the model will see in the real world. For example detecting a wire frame object within a humans face might be easier than detecting a wire frame object in a industrial scene as here are more shapes present, that are similar to the \ac{Ooi}'s shape. In addition it might be easier to detect an object that does not fit at all to the scene than detecting an object that is realistically embedded in the environment.
+
+Therefore, a more sophisticated method is to choose backgrounds according to how they would appear in the real application (\textit{Scene II}). Provided that there is enough variance in the backgrounds, the model should learn a background independent representation, while still needing to deal with shapes that are similar to the \ac{Ooi}. Still in such a method the object's light conditions would still not fit to the scenes light conditions, neither does the object placement fit to the rest of the scene.
+
+In order to embed the object better in the scenes light conditions, the object parts can be merged using a blur filter\todo{how exactly} (\textit{Scene III}). However, this still does not solve the object placement problem.
+
+Finally, the whole scene can be rendered (\textit{Scene IV}). This allows a realistic scene ,light conditions. However, it includes more synthetic parts.
+
+
+\subsection{Camera Placement}
+
+Camera placement refers to the view point of the camera. Chosen methods reach from randomly placing the camera in a scene to modeling the flight behaviour of an \ac{MAV}.
+
+In \textit{Camera Placement I} the camera is placed randomly in a scene, as long as the object is still visible.
+
+In \textit{Camera Placement II} the camera positions are limited by what is to expected in the target domain. Hence, the roll angle is limited to XX \todo{etc}.
+
+In \textit{Camera Placement III} the camera positions are chosen following a kinematic model of a \ac{MAV}. The model is \todo{put model}.
+
+\todo{motion noise?}
+
+
+\subsection{Camera Properties}
+
+Camera properties refers to the intrinsic camera parameters. 
+
+In \textit{Camera Properties I} the camera model in the target domain is not considered. The model is trained on \todo{bla bla}.
+
+In \textit{Camera Properties II} the camera matrix is considered.
+
+In \textit{Camera Properties III} the camera matrix and a distortion model is included.
+
+\todo{sensor noise}
+
+\subsection{Background} 
+
+Background refers to the scene's background. The chosen methods reach from random selection to the full rendering of a scene.
+
+An easy implementable method is the random selection of backgrounds from a dataset. 
+Therefore a more sophisticated method is to particularly chose the backgrounds according to some criteria e.g. their similarity to the target domain. 
+
+In \text{Background II} backgrounds are chosen from different datasets \todo{which?} that contain indoor/industrial scenes as this mostly resembles the target domain. \todo{refactor this when we actually have a real dataset}
+
+In \text{Background III} the scene is fully rendered.
+
+
+\subsection{Object Placement} 
+
+Object placement refers to the object's location in the scene. The chosen methods reach from random placement to following a similar pattern as in the target domain.
+
+In \textit{Object Placement I} the objects are placed within a scene and considering phyiscal laws. In \textit{Object Placement II} the objects are placed as they appear in the target domain, so they follow a race circuit.
+
+\subsection{Illumination}
+
+Light conditions can influence the object appearance and its background. Chosen methods reach from a sun-like light source to the simulation artificial indoor light.
 
 \section{Experiments}
 \label{sec:training:experiments}
 
-The experiments conducted
+	
 
-Initially those domain properties are investigated that can be controlled when creating the training data. The domain shift between synthethi
-\begin{enumerate}
-	\item \textbf{Background.} 
-	
-	Background refers to how the object is embedded in the environment. For example if synthetic objects are placed on random backgrounds this will not necessarily represent the background in the real world.
-	
-	The property can be influenced when creating the object scene: (1) The objects can be placed on randomly selected images, (2) The background can be chosen according to some properties, e.g. their similarity to the target domain. (3) A full scene can be rendered when creating data.
-	
-	\item \textbf{Object Placement.} 
-	
-	Object placement refers to the object's location in the scene. For example one would not expect an apple placed at the ceiling of a room.
-	
-	This property can be controlled when placing the images in background: (1) The objects can be placed at a random location on the background. (2) The objects can be placed similarly as in the target domain.
-	
-	\item \textbf{Illumination.} 
-	
-	Light conditions can influence the object appearance and its background.
-	
-	This property can be controlled by the graphic engine: (1) A sun-like light source can be used that spreads equally across the scene. (2) More particular light sources can be used e.g. for simulation artificial indoor light.
-	
-	
-	\item \textbf{Camera Placement.} 
-	
-	Camera placement refers to the view point of the camera. For example on an \ac{MAV} the view point is limited within a range where it is still possible to fly. Randomly placing the camera does not capture such patterns.
-	
-	This property can be controlled when synthesizing data: (1) The camera can be placed randomly in the scene, as long as the object is still visible. (2) The camera can be placed based on the expectations in the target domain. (3) The camera can be placed following a physical model of a drone.
-	
-	\item \textbf{Camera Properties.} Camera properties refers to the intrinsic camera parameters. For example lens distortion can significantly influence the appearance of an object.
-	
-	(1) Random properties (2) Camera model, distortion model.
-	
-	\item \textbf{Noise.} Noise can be created by different sources. For example is noise introduced by the sensor, but also by camera motion.
-	(1) Gray/Colour noise (2) Motion blur
-	
-\end{enumerate}
 
 \todo{Prepare a synthetic dataset of several rooms}
 \todo{Prepare a real dataset of at least two rooms}

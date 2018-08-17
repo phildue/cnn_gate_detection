@@ -11,24 +11,28 @@
 	
 	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define this more properly}
 	
-	This leads to a detection task of a very particular kind of object that is referred to as wire-frame object in this thesis. To the best of the authors knowledge there exists no previous definition of this kind of object. Therefore, several properties are defined:
+	This leads to a detection task of a very particular kind of object that is referred to as wire-frame object in this thesis. To the best of the authors knowledge there exists no previous definition of this object class. Therefore, several properties are defined:
 		
 	\begin{enumerate}
-		\item The \ac{OoI} does not consist of complex shapes but only basic geometric shapes like corners, lines and edges.
+		\item The \ac{OoI} does not consist of complex but only basic geometric shapes like corners, lines and edges.
 		\item The \ac{OoI} parts themselves are thin structures.
 		\item The \ac{OoI} parts can be spread over large parts of the image.
 		\item The \ac{OoI} parts are sparse. The bounding box around the object is largely occupied by background.
 	\end{enumerate}
 	
+	The detection of wire-frame objects is studied in two examples, that are displayed in \autoref{fig:gate_examples}. The research question for this chapter is stated as follows:
+	
 	\begin{center}
 		\textbf{ How can a detection model represent wire frame objects?}
 	\end{center}
+	
+	In order to answer this question a detection model is created and evaluated in terms of detection performance. Furthermore, the model's representation is studied and a sensitivity analysis is conducted. Therefore the dependency of the detector on the objects color, occlusion, visibility and pose is studied.
 	
 	\section{Related Work}
 	\label{sec:object_detection:related}
 	Object detection has been an intensively studied area within computer vision. Reaching back to \todoref{first object detection}, the machine based determination of what kind of objects we see where in the image has always been in the interest of academia and industry.
 	
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization and non-maximum suppression. An overview is displayed in \autoref{fig:obj_pipeline}.
+	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of Feature Extraction, Classification/Localization and non-maximum suppression. An overview is displayed in \autoref{fig:obj_pipeline}.
 	
 	\begin{figure}[hbtp]
 	
