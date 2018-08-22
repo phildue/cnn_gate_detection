@@ -5,41 +5,20 @@
 
 While currently a human pilot is still necessary in most applications research is conducted to enable the autonomous flight of \acp{MAV}. ...
 
-A major challenge of autonomous flight is the accurate determination of the current position. As the system is highly dynamic, the position can change rapidly and on-board sensors like \acp{IMU} suffer from a lot of noise. External infrastructure like GPS and optical tracking systems can provide more accurate position determination but there is no guarantee that such systems are present in real world applications. Cameras on the other hand are cheap and lightweight and there-forth one of the most reliable sensors when it comes to on-board, global position determination.
+A major challenge of autonomous flight is the accurate estimation of the \ac{MAV}'s state and within its environment. The system is highly dynamic so position and orientation can change rapidly. At the same time motor vibrations cause a lot of noise and make on-board sensors like \acp{IMU} an unreliable source of information. External infrastructure like GPS and optical tracking systems can provide more accurate measurements but there is no guarantee that such systems are present in real world applications. Cameras on the other hand are cheap and lightweight which makes them a popular choice as sensor for on-board state estimation.
 
-The high-dimensional signal obtained from the camera is processed by computer vision algorithms running on the \ac{MAV}'s microprocessor. Within the field of Computer Vision, deep learning based algorithms have been pushing state of the art results tremendously after a long time of almost no improvements\todoref{alexnet ..}. The reason anticipated to be responsible for the performance boost is the flexibility of deep neural networks and the fact that a whole detection pipeline from feature extraction to classification and localization can be integrated into one model and trained directly on the task.\todoref{cite}
+Yet the signal delivered by the camera is high dimensional data that can not directly be interpreted as position or orientation measurement. Further processing by computer vision algorithms is  required to interpret the image and extract relevant information.
 
-One main drawback of these \acp{CNN} is the immense amount of data and computational resources required to train all their parameters. Only when faster processing technologies evolved and the Internet simplified collecting, distributing and annotating large amounts of training examples, the potential of \acp{CNN} could be exploited \todoref{sth from gartner?} and led to the tremendous performance boost.
+In recent years deep learning based methods have emerged as the predominant choice for almost any vision task. Several experiments have shown how these methods outperform manually crafted and traditional machine learning based methods in a lot of examples.
 
-Hence, the power of state-of-the art object detection arises from the complexity of real-world objects that can be efficiently represented by \acp{CNN} when trained with large amounts of annotated examples.
+The hereby used \acp{CNN} are designed in an hierarchical way, using multiple layers that are evaluated sequentially enabling to model highly non-linear functions. Although this design is assumed to be the reason for their superior performance, it also leads to immense requirements in computational resources. The deployment of deep learning based vision systems on robotic devices that have limited processing power and need to follow hard real-time requirements is still an open challenge. 
 
+This work addresses one example of image processing from a monocular \ac{FPV} camera on a \ac{MAV}: Gate detection at the \acp{IROS} 2018 Autonomous Drone Race. Within the race court several metal gates are placed and need to be passed one after another. The detection of these gates can be formulated as object detection problem and state-of-the-art object detectors can be applied. However, the type of object poses a particular challenge for a vision system. The object consists only of small edges and corners, which are spread over large distances in the image while a majority of the area is occupied by background. The detection of these particular objects is described in \autoref{sec:object_detection}. 
 
-This scenario imposes strong constraints on software systems as computational resources like memory and processing speed are very limited. In addition does less computation not only prolong the battery life of a \ac{MAV} but also allows more lightweight platforms and thus more aggressive flight maneouvres.
+Without an accurate detection of the racing gate, the \ac{MAV} is not able to determine its current position and thus to complete the race court. On the other hand, with a more lightweight algorithm less computational resources are required and a lighter \ac{MAV} can be built. This allows faster and more aggressive trajectories as well as longer battery live. Hence, the trade-off between accuracy and inference speed is of particular interest for this application and is addressed in \autoref{sec:trade-off}.
 
-The field that is concerned with the processing of visual signals is Computer Visin.
+Another drawback of deep-learning based methods is the requirement of a lot of annotated examples which are not available for every application. \todo{how do people deal with that}
 
-A particularly challenging example of the described scenario is the \ac{IROS} 2018 Autonomous Drone Race. Within this race court several metal gates are placed and need to be passed one after another. The race allows engineers and scientists to evaluate their algorithms in a real world competitive environment.
-
-The gates in the race court can be used
-
-Object detection has been an intensively studied area within computer vision. The determination of what kind of objects we see where in an image is an everyday human task, that machines still have a hard time at solving.
-
-\todo{paragraph about how learning based methods usually perform better than manually crafted models}
-
-
-However, there are applications where each of the above is only available to a limited extent. For example mobile phones, robots and \acp{MAV} need to exploit their resources efficiently. Not only since saving energy allows for a longer lifetime but also because these systems usually need to meet real-time constraints.
-
-Therefore, reducing the computational costs of deep neural networks has been widely addressed by the research community \todoref{Mobilnet, Quantized nets etc}. However, the majority of the publications still addresses network architectures with resource requirements that are prohibitive for \acp{MAV}. In contrast, DroNet \cite{Kyrkou2018} is a network architecture particular targeted to object detection on aerial images from \acp{MAV}. However, as this thesis shows the proposed method can not be transferred to first person view cameras (?) where a larger variety in scales is to be expected.
-
-This work addresses a particularly challenging example of object detection from a FPV monocular camera on \acp{MAV}: Gate Detection at the IROS 2018 Autonomous Drone Race. Within this race court several coloured metal gates are placed and need to be passed one after another as fast as possible. Hence, the more lightweight the algorithm can be executed, the less computational resources are required, the lighter the \ac{MAV} can be build and the more aggressive manoeuvres can be flown. On the other hand if the method is too inaccurate, the drone can miss a gate and is likely to loose the race or even crash.
-
-Due to these constraints previous methods for this application rely on manually engineered computer vision techniques e.g.\todoref{snake gate} as they are computationally much cheaper than state-of-the art object detection methods. However, these methods tend to be little robust to changes in illumination or object variance. That is why this thesis investigates a learning based approach for the detection of wire frame objects.
-
-\todoref{koreans} use a \acp{CNN}-based gate detection method but rely with Jetson TX1 on a fast but heavy (XXg) computational platform. This work uses a Jevois Smart Camera \todoref{jevois} as target platform. The camera weighs XX g and contains 4 CPUs as well as a GPU \todo{elaborate}.
-
-The class of objects considered poses particular challenges to an object detection system. For example the object can cover a large area of the input image while the majority of the area is still background or potentially another object. Furthermore does the object only consist of quite simple shapes like edges and corners. These object class is defined as wire frame objects. A full definition is given in \autoref{sec:object_detection}.
-
-Machine learning based object detection assumes that a general concept of the object of interest can be learned from a limited set of annotated examples. However, \todo{why?} to this end there is no publicly available training set for wire frame objects. Instead the use of synthetic data for training object detection is studied. In particular it is studied how data generation can support the development of a lightweight \acp{CNN}-architecture.
 
 \subsection*{Research Question}
 

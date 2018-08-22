@@ -1,4 +1,4 @@
-\babel@toc {english}{}
+\select@language {english}
 \contentsline {chapter}{Summary}{1}{chapter*.4}
 \contentsline {chapter}{\numberline {1}Introduction}{5}{chapter.1}
 \contentsline {chapter}{\numberline {2}Evaluation Metrics}{7}{chapter.2}
@@ -8,9 +8,9 @@
 \contentsline {subsection}{\numberline {3.2.1}Generalization versus Specialization}{11}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}Domain Properties}{12}{subsection.3.2.2}
 \contentsline {subsubsection}{Scene}{12}{subsection.3.2.2}
-\contentsline {subsubsection}{Camera Placement.}{13}{section*.23}
-\contentsline {subsubsection}{Camera Properties.}{13}{section*.24}
-\contentsline {paragraph}{Camera Model}{13}{section*.24}
+\contentsline {subsubsection}{Camera Placement.}{13}{section*.20}
+\contentsline {subsubsection}{Camera Properties.}{13}{section*.21}
+\contentsline {paragraph}{Camera Model}{13}{section*.21}
 \contentsline {paragraph}{Lense Distortion Model}{14}{equation.3.2.2}
 \contentsline {paragraph}{Sensor Noise Model}{14}{equation.3.2.3}
 \contentsline {paragraph}{Motion Noise Model}{14}{equation.3.2.3}
@@ -19,8 +19,8 @@
 \contentsline {section}{\numberline {3.4}Experiments}{15}{section.3.4}
 \contentsline {section}{\numberline {3.5}Results}{15}{section.3.5}
 \contentsline {section}{\numberline {3.6}Conclusion}{15}{section.3.6}
-\contentsline {chapter}{\numberline {4}Object Detection}{17}{chapter.4}
-\contentsline {paragraph}{Definition - Wire Frame Objects}{18}{section*.31}
+\contentsline {chapter}{\numberline {4}Detection of Empty Wire Frame Objects}{17}{chapter.4}
+\contentsline {paragraph}{Definition - Wire Frame Objects}{18}{section*.28}
 \contentsline {section}{\numberline {4.1}Related Work}{18}{section.4.1}
 \contentsline {section}{\numberline {4.2}Traditional Methods}{18}{section.4.2}
 \contentsline {section}{\numberline {4.3}\acp {CNN}-based Detectors}{19}{section.4.3}
@@ -31,7 +31,7 @@
 \contentsline {section}{\numberline {4.6}Experiments}{23}{section.4.6}
 \contentsline {section}{\numberline {4.7}Results}{23}{section.4.7}
 \contentsline {section}{\numberline {4.8}Conclusion}{23}{section.4.8}
-\contentsline {chapter}{\numberline {5}Speed Optimization}{25}{chapter.5}
+\contentsline {chapter}{\numberline {5}Investigating the Trade-Off between Detection Performance and Inference Time}{25}{chapter.5}
 \contentsline {section}{\numberline {5.1}Related Work}{26}{section.5.1}
 \contentsline {section}{\numberline {5.2}Conceptual Level}{26}{section.5.2}
 \contentsline {section}{\numberline {5.3}Architectural Level}{26}{section.5.3}
@@ -42,5 +42,5 @@
 \contentsline {section}{\numberline {5.6}Conclusion}{27}{section.5.6}
 \contentsline {chapter}{\numberline {6}Method}{29}{chapter.6}
 \contentsline {chapter}{\numberline {7}Discussion}{31}{chapter.7}
-\contentsline {chapter}{Bibliography}{33}{appendix*.67}
+\contentsline {chapter}{Bibliography}{33}{appendix*.64}
 \contentsfinish 
