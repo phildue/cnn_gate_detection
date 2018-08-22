@@ -1,15 +1,31 @@
 \chapter{Introduction}
 \label{sec:intro}
 
-Object detection has been an intensively studied area within computer vision. The determination of what kind of objects we see where in an image is an everyday human task, that machines still have a hard time at solving.
+\acp{MAV} are an emerging technology that potentially can be used in a wide range of consumer, industrial and safety applications. For exampled \ac{MAV} are used to deliver medicine \todoref{https://www.cnet.com/news/zipline-new-delivery-drones-fly-medical-supplies-faster-farther/}, fight fires \todoref{https://www.nbcnews.com/mach/science/drones-are-fighting-wildfires-some-very-surprising-ways-ncna820966} or find survivors in disaster situations \todoref{https://www.titech.ac.jp/english/news/2017/040159.html}.
 
-\todo{paragraph about how learning based methods usually perform better than manually crafted models}
+While currently a human pilot is still necessary in most applications research is conducted to enable the autonomous flight of \acp{MAV}. ...
 
-In recent years deep learning based object detectors have been pushing state of the art results tremendously after a long time of almost no improvements\todoref{alexnet ..}. The reason anticipated to be responsible for the performance boost is the flexibility of deep neural networks and the fact that a whole detection pipeline from feature extraction to classification and localization can be integrated into one model and trained directly on the task.\todoref{cite}
+A major challenge of autonomous flight is the accurate determination of the current position. As the system is highly dynamic, the position can change rapidly and on-board sensors like \acp{IMU} suffer from a lot of noise. External infrastructure like GPS and optical tracking systems can provide more accurate position determination but there is no guarantee that such systems are present in real world applications. Cameras on the other hand are cheap and lightweight and there-forth one of the most reliable sensors when it comes to on-board, global position determination.
+
+The high-dimensional signal obtained from the camera is processed by computer vision algorithms running on the \ac{MAV}'s microprocessor. Within the field of Computer Vision, deep learning based algorithms have been pushing state of the art results tremendously after a long time of almost no improvements\todoref{alexnet ..}. The reason anticipated to be responsible for the performance boost is the flexibility of deep neural networks and the fact that a whole detection pipeline from feature extraction to classification and localization can be integrated into one model and trained directly on the task.\todoref{cite}
 
 One main drawback of these \acp{CNN} is the immense amount of data and computational resources required to train all their parameters. Only when faster processing technologies evolved and the Internet simplified collecting, distributing and annotating large amounts of training examples, the potential of \acp{CNN} could be exploited \todoref{sth from gartner?} and led to the tremendous performance boost.
 
 Hence, the power of state-of-the art object detection arises from the complexity of real-world objects that can be efficiently represented by \acp{CNN} when trained with large amounts of annotated examples.
+
+
+This scenario imposes strong constraints on software systems as computational resources like memory and processing speed are very limited. In addition does less computation not only prolong the battery life of a \ac{MAV} but also allows more lightweight platforms and thus more aggressive flight maneouvres.
+
+The field that is concerned with the processing of visual signals is Computer Visin.
+
+A particularly challenging example of the described scenario is the \ac{IROS} 2018 Autonomous Drone Race. Within this race court several metal gates are placed and need to be passed one after another. The race allows engineers and scientists to evaluate their algorithms in a real world competitive environment.
+
+The gates in the race court can be used
+
+Object detection has been an intensively studied area within computer vision. The determination of what kind of objects we see where in an image is an everyday human task, that machines still have a hard time at solving.
+
+\todo{paragraph about how learning based methods usually perform better than manually crafted models}
+
 
 However, there are applications where each of the above is only available to a limited extent. For example mobile phones, robots and \acp{MAV} need to exploit their resources efficiently. Not only since saving energy allows for a longer lifetime but also because these systems usually need to meet real-time constraints.
 
