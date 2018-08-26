@@ -1,76 +1,80 @@
-\chapter{Synthesizing Data to Train an Object Detector for \ac{EWFO} on \acp{MAV}}
+\chapter{Synthesizing Data to Train an Object Detector for Empty Wire Frame Objects on an \ac{MAV}}
 \label{sec:training}
 
-Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set $D_s = \{X_{s},Y_{s}\}$ such that it can be applied on a target set of unknown examples $D_t = \{X_{t}\}$ to obtain the corresponding labels:
+Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding labels:
 
 $$
-h(X_t)\rightarrow Y_t
+h(X_T)\rightarrow Y_T
 $$ 
 
-Whether $h$ is performing well, can evaluated by splitting the labelled set of $D_s$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on the $D_{test}$. By evaluating a performance metric $m_A$ on $D_{train}$ information about the representation strength of $h$ can be inferred. The performance metric $m$ on $D_{test}$ gives an estimate of the performance of $h$ on $D_t$. Comparing $m_A$ and $m$ allows to evaluate whether model and dataset are suitable for the task.
+Whether $h$ is performing well, can evaluated by splitting the labelled set of $D_S$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on the $D_{test}$. By evaluating a performance metric $m_A$ on $D_{train}$ information about the representation strength of $h$ can be inferred. The performance metric $m$ on $D_{test}$ gives an estimate of the performance of $h$ on $D_T$. Comparing $m_A$ and $m$ allows to evaluate whether model and dataset are suitable for the task.
 			
-This basic supervised machine learning setting relies on the assumption that $D_s$ follows the same i.i.d distribution as $D_t$. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the IROS 2018 autonomous drone race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
+This basic supervised machine learning setting relies on the assumption that $D_S$ and $D_T$ are \ac{i.i.d.}. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
 
 Learning models in such an environment is concerned by the field of Transfer Learning. The goal is to find a concept $h$ that performs best in the target domain $T$. Similar to $m_A$ and $m$ the performance $m_S$ in $S$ and the performance $m_T$ in $T$ can be used to evaluate whether a suitable model/dataset has been chosen/is available.
 
 The task of learning from synthetic data can be summarized in:
 
 $$
-\text{arg}\max\limits_{h,S} m_t
+\text{arg}\max\limits_{h,S} m_T
 $$
 
-The goal is to create source domain $D_s$ and find a concept $h$ that maximizes its performance in the target domain $m_t$. This formulation yields two levels at which the domain shift problem can be addressed: (1) Generating data $S$ or (2) finding a hypothesis $h$ that maximizes the performance.
+The goal is to create source domain $D_S$ and find a concept $h$ that maximizes its performance $m_T$ in the target domain. This formulation yields two levels at which the domain shift problem has to be addressed: (1) Generating data $S$ and (2) finding a hypothesis $h$ that maximizes the performance.
 
-In this thesis the first level is considered. It is studied how detection performance can be improved when incorporating target domain properties in the training set. The domain shift between synthetic and real data is not considered as it is beyond the scope of this work(?). Furthermore the conducted research is limited to \ac{CNN}-based object detection as they are investigated in this thesis. The chapter focuses on data generation while the exact model is described in \autoref{sec:object_detection}.
+This thesis addresses the first level. Data is generated to train a model for real world applications. The focus lays on properties that can be influenced with a graphical engine, such as light conditions and camera placement. As the objects of a graphical engine are rendered, another shift in appearance can be expected due to the limitations of the graphic engine to display the real world. However, this domain shift is not considered as it is beyond the scope of this work. Furthermore the conducted research is limited to \ac{CNN}-based object detection as they are investigated in this thesis. The chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
 
 The relevant question to be investigated in this chapter is the following:
 
-\begin{center}
-	\begin{enumerate}
-		\item [RQ1] \textbf{How can data be generated to train a detection model for wire frame object detection on \acp{MAV}?}
-	\end{enumerate}
-\end{center}
+\textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?}
 
-The question will be answered by choosing a state of the art method for object detection and training it with varying properties in $D_s$. By evaluating $m_s$ on synthetic data and $m_t$ on real images the influence of these properties will be measured.
+\begin{enumerate}
+	\item[\textbf{RQ1.1}]What are the implications of the properties of \acp{EWFO} when synthesizing data?
+	\item[\textbf{RQ1.2}]What are the properties of the target domain, namely the \ac{FPV} camera of a \ac{MAV} in a GPS denied scenario?
+	\item[\textbf{RQ1.3}]Can target domain knowledge be used to improve model performance/simplify model complexity ?
+	\item[\textbf{RQ1.4}]How can data be generated in a way that the trained model is robust against expected domain shifts?
+\end{enumerate}
 
-The remaining parts of this chapter are structured as follows: \autoref{sec:training:related} discusses relevant related work. Based on the gained insights \autoref{sec:training:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:training:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:training:results} describes the obtained results. \autoref{sec:training:conclusion} discusses the results and answers the research question.
+RQ1.1 Will be answered by comparing the implications of domain properties on \ac{EWFO} and a standard object. RQ1.2 will be answered by analysing example datasets of a target domain. For RQ1.3 and RQ1.4 several domain properties are defined. The questions will be answered by choosing a state of the art method for object detection and training it with varying properties in $D_S$. By evaluating $m_S$ on synthetic data and $m_T$ on real images the influence of these properties will be measured.
+
+The remaining parts of this chapter are structured as follows: \Cref{sec:training:related} discusses relevant related work. \Cref{sec:training:meth} describes the used methodology. Based on the gained insights \Cref{sec:training:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:training:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:training:results} describes the obtained results. \Cref{sec:training:conclusion} discusses the results and answers the research question.
 
 \section{Related Work}
 \label{sec:training:related}
 
-Domain shifts have been intensively studied in Machine Learning. 
+Using synthetic images to train Machine Learning models has a long tradition in Computer Vision especially for tasks where not many example images are available or the ground truth labelling is expensive. Methods vary from changing low level properties of images like brightness or scale over pasting 3D-models of objects on real backgrounds to rendering full 3D-environments. Other publications show how the incorporation of sensor effects is important when generating data. However, most of these methods can be combined in different pipelines. Therefore most publications do not use on particular approach but different combinations. The related approaches are categorized in on which image level they operate.
 
-A recent work \cite{Chen2018c} concerns the domain shift for object detection with deep neural networks. Based on the $\mathcal{H}$-Divergence \cite{Ben-David2010} domain classifiers are included in the network on the higher order feature activations. By incorporating the classifier in the training process and using a gradient reverse layer \todoref{gradient reverse} the feature activations are forced to be more similar. This enables to perform feature alignment in and end-to-end training process.
+\subsection{Augmenting Real Data}
 
-\cite{Xu2017} incorporate the domain adaptation by adversarial training. In a first step the network is trained using samples for the target and source domain. The obtained feature extractor is used to train a domain classifier. Finally the feature extractor is updated by inverting the domain classifier loss function and thus aligning the feature extractors.
+\subsubsection{Low-Level Image Augmentation}
 
-\cite{Inoue} use variational auto encoders to create synthetic images.
+Low-Level Image Augmentation applies transformations on the samples of a given dataset. It is a common part of current Computer Vision pipelines.
 
-\cite{Rozantsev} estimate parameters from real images to render synthetic images.
+\citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} use PCA to incorporate colour variations. \cite{Howard2013} shows how several image transformations can improve the performance of a Classification model. In Object Detection \cite{Redmon} use random scaling and translation of the input image, as well as random variations in saturation and exposure. \citeauthor{Liu} \cite{Liu} additionally crop and flip the image with a certain probability. The common aim of these methods is to make the model more invariant towards changes in the augmented properties.
 
-\cite{Peng2017} includes task-irrelevant samples and a source classifier to make the final network robust (?). Called zero-shot domain adaptation as no samples of the target domain are required.
+In contrast \citeauthor{Carlson2018}\cite{Carlson2018} augment the image based on a physical camera model. The proposed pipeline incorporates sensor and lens effects like chromatic aberration, blur, exposure and noise.
 
-\cite{Liu2018a}
+Low-Level Image Augmentation is a comparatively cheap method to generate a lot of data. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it is restricted to some extent to the dataset that to be augmented.
 
-\cite{Peng} use 3D CAD-models to augment the data during training.
+In this work only the dataset of one room is available which is too small to train a model for multiple rooms with different environmental conditions. Hence, low-level image augmentation cannot be the only method for data generation.
 
-Incorporating Camera Effects:
-\cite{Carlson2018}
-\begin{itemize}
-	\item heaps of references in how camera properties influence object detectors
-	\item introduces image augmentation pipeline based on physical model: chromatic aberration, blur, exposure, noise and color shift
-	\item input parameters are modelled by hand, then randomly selected within "realistic" range
-	\item no lense distortion
-	\item method seem to benefit for small objects and when oversaturation applies due to camera effects
-\end{itemize}
+\subsubsection{Augmenting Real Images with 3D - Models}
+
+If a 3D-model of an object is available, it can be placed on real images to artificially create or increase a dataset. 
+
+Several publications demonstrate the usefulness of this method in Object Detection \cite{Girshick2013}, \cite{Peng}.
+
+While the previous methods simply place the object in a scene \citeauthor{Rozantsev} \cite{Rozantsev} propose to estimate rendering parameters first.
+
+In contrast augmenting the images on a low-level this method allows to generate new view points and does not require original images to augment. However, the created image is likely to be relatively artificial as for example light conditions and shadows are not align with the background scene. Furthermore can the object be placed in quite arbitrary positions and thus violate geometric and physical properties that are present in real images. 
 
 
-\cite{Vass}
+\subsection{Fully Synthesizing Data}
 
-Image Augmentation
-\cite{Bai2017},
+\cite{Sadeghi2016,Hinterstoisser2017,Krizhevsky2012a}
 
-\ac{DR} was initially introduced by \cite{Tobin2017} for object localization. In contrast to domain adaptation approaches the method does not try to model the domain shift. Instead large variability in the source domain shall enable the model to learn a robust representation that is domain agnostic. \cite{Tremblay2018a} extends the approach to object detection.
+While training models only in a simulated environment is common for Control tasks, it is less popular in Computer Vision as often the quality of graphic engines is too poor or the rendering is very time consuming. However, the advances in Computer Graphics and faster processing technologies nowadays allow the generation of more realistic images and various studies tried to train models in fully synthesized data.
+
+\cite{Tobin2017} was one of the first publications that used only synthetic images for the task of Object Localization. The proposed method \ac{DR} uses a high degree of randomization when rendering the image. Thus a model has to learn a general representation, that can also be applicable in the real world. \cite{Tremblay2018a} extends the approach to object detection.
 
 The data is generated by a graphical engine. The following properties of the scene and the object are varied \cite{Tremblay2018a}:
 
@@ -84,25 +88,51 @@ The data is generated by a graphical engine. The following properties of the sce
 \end{enumerate}
 
 An advantage of \ac{DR} is its ease of implementation and use, no assumptions about the target distribution have to be made neither are samples or labels of the target domain required. However, the method can fail to capture important patterns if the randomization is too strong. For example the movement pattern of a \ac{MAV} is ignored when placing the camera randomly.
- 
-\section{Approach}
-\label{sec:training:hypothesis}
+
+
+\subsection{Augmenting Synthetic Data}
+
+
+Approaches that require samples of the target domain \cite{Chen2018c} \cite{Xu2017} \cite{Inoue} 
+
+\cite{Peng2017} includes task-irrelevant samples and a source classifier to make the final network robust (?). Called zero-shot domain adaptation as no samples of the target domain are required.
+
+
+\cite{Vass}
+
+
+
+
+\section{Methodology}
+\label{sec:training:meth}
+
+This chapter describes methods used in this thesis. By discussing the methods described in literature with respect to the problem of \ac{EWFO} Detection on \acp{MAV} several hypotheses are formulated.
+
+\subsection{Implications of \ac{EWFO}}
+
+The described approaches mainly focus on objects that have complex structures and therefore provide robust features that can be learned by an object detection model. For example a face provides eyes and a nose, which appearances are influenced to some extend by light conditions but relatively independent from the image background. \ac{EWFO} on the other hand do not contain this kind of complex structure but mainly consist of image background. A comparable work is \cite{Madaan2017} which tries to detect wires that are also of thin structure. However, their experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
+
+Therefore, we first investigate whether there are implications of the object shape on data generation. We hypothesize, that \ac{EWFO} are particular sensitive to changes in image background and lightning conditions. 
 
 \subsection{Generalization versus Specialization}
+\label{sec:training:genvsspc}
+While some approaches discussed in \Cref{sec:training:related} aim to learn a general representation that works across domains, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as domain generalization and domain specialization.
 
-While a lot of approaches discussed in \autoref{sec:training:related} aim to learn a general representation that works across domains, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as domain generalization and domain specialization.
+We hypothesize that there is a trade-off between these two entities. For example placing the \ac{TO} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for \acp{EWFO} where a large part of the surrounding bounding box is occupied by background.
 
-The first hypothesis formulated is that there is a trade-off between these two entities. For example placing the \ac{OoI} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for wire-frame objects where a large part of the surrounding bounding box is occupied by background.
+On the other hand, placing the \ac{TO} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear on sky background.
 
-On the other hand, placing the \ac{OoI} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear on sky background.
+Hence, it is expected that the performance $m_{S}$ in the source domain  of a certain model $h$ improves with increasing specialization. Moreover, domain specialization should allow a more lightweight model to learn the same task equally well as a more complex model. That is with increasing specialization it should be possible to reduce the number of parameters $w$ while $m_{S}$ stays constant. Finally, if increasing specialization of a training set improves $m_{S}$ target performance $m_T$ should also improve as long as the specialization does not omit patterns that are present in the target domain. For example, if the model is applied in the real world it can safely be assumed that objects obey physical laws.
 
-Hence, it is expected that the training performance $m_{a}$ of a certain model $h$ improves with increasing specialization. Moreover, domain specialization should allow a more lightweight model to learn the same task equally well as a more complex model. That is with increasing specialization it should be possible to reduce the number of parameters $w$ while $m_{a}$ stays constant. Finally, if increasing specialization of a training set improves $m_{a}$ it follows that the specialization should also improve test performance $m$ as long as the specialization does not omit patterns that are present in the target domain. For example, if the model is applied in the real world it can safely be assumed that objects obey physical laws.
+The formulated hypotheses are summarized in \Cref{sec:training:hypothesis}.
 
 \subsection{Domain Properties}
 
-In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following the first hypothesis it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.
+In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following \Cref{sec:training:genvsspc} it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.
 
-In the following the different domain properties are defined and their appearance in the target domain is measured. By drawing the properties of $S$ and $T$ closer it is hypothesized, $m_T$ will improve.
+In the following the different domain properties are defined and their appearance in the target domain is measured. The hypothesis is formulated that by drawing the properties of $S$ and $T$ closer to each other $m_T$ will improve.
+
+The formulated hypotheses are summarized in \Cref{sec:training:hypothesis}.
 
 \subsubsection{Scene}
 
@@ -113,9 +143,10 @@ Several methods are studied to synthetically create a scene:
 \begin{enumerate}
 
 \item \textbf{Random (non trivial) selection of background images.}
+
 This method is commonly used in literature \todoref{some examples}
 
-Within this method the background is randomly selected from a dataset that covers a large variance of non-trivial images. Non-trivial in this case means the backgrounds contain a sophisticated amount of information and contain similar shapes as the \ac{OoI}. The \ac{OoI} is rendered in a scene of a black room and subsequently the black background is replaced by the randomly selected image. In order to embedd the object better to the scene the edges are merged with a Gaussian blur \todo{describe this properly}
+Within this method the background is randomly selected from a dataset that covers a large variance of non-trivial images. Non-trivial in this case means the backgrounds contain a sophisticated amount of information and contain similar shapes as the \ac{TO}. The \ac{TO} is rendered in a scene of a black room and subsequently the black background is replaced by the randomly selected image. In order to embedd the object better to the scene the edges are merged with a Gaussian blur \todo{describe this properly}
 
 \item \textbf{Targeted selection of background images.}
 
@@ -123,17 +154,17 @@ Within this method the backgrounds are further selected by their similarity to t
 
 \item \textbf{Full rendering of a scene.}
 
-For this method a whole scene is rendered. This includes \ac{OoI}, background objects as well as light conditions. It enables to embedded the \ac{OoI} align with the rest of the scene. That way inherent image properties are followed and also shadows and the like fall correctly.
+For this method a whole scene is rendered. This includes \ac{TO}, background objects as well as light conditions. It enables to embedded the \ac{TO} align with the rest of the scene. That way inherent image properties are followed and also shadows and the like fall correctly.
 
 \end{enumerate}
 
 Using random backgrounds without rendering the full scene is considered as very general, since backgrounds can be anything including for example animals and human faces. However, the objects are not aligned with the scene or the light conditions of the environment. Also inherent image properties like view perspective are not followed. This creates a very specialized learning problem, as the model could also just learn to distinguish the object that does not fit to the rest of the image. Therefore the learning problem gets harder, when the scene is fully rendered and the object is embedded in the scene realistically.
 
-These assumptions are evaluated in several experiments. Three models are trained on different datasets and the training performance is evaluated. Model I is trained on a dataset created with Method I. The training data for Model II is created by randomly placing the object in scene rendered with the simulator. Model III is trained on a dataset created by Method III. It is expected that Model II performs better than Model I, while Model III performs worst. The exact experiments are further described in \autoref{sec:training:experiments}.
+These assumptions are evaluated in several experiments. Three models are trained on different datasets and the training performance is evaluated. Model I is trained on a dataset created with Method I. The training data for Model II is created by randomly placing the object in scene rendered with the simulator. Model III is trained on a dataset created by Method III. It is expected that Model II performs better than Model I, while Model III performs worst. The exact experiments are further described in \Cref{sec:training:experiments}.
 
 Next to evaluating the trade-off between specialization and generalization it is also evaluated how the above mentioned methods can be used to generate a suitable training set for a real world application. Therefore the possible target domain is analyzed in the example of two recorded datasets. \todo{Measure and describe scene property in real datasets.}
 
-Several experiments are carried out. In one the target domain properties are mimicked in the training set as close as possible. In another one the source domain properties are randomized, such that the model can learn a more general representation. Both approaches are evaluated in terms of model complexity and detection performance.The exact experiments are further described in \autoref{sec:training:experiments}.
+Several experiments are carried out. In one the target domain properties are mimicked in the training set as close as possible. In another one the source domain properties are randomized, such that the model can learn a more general representation. Both approaches are evaluated in terms of model complexity and detection performance.The exact experiments are further described in \Cref{sec:training:experiments}.
 
 \subsubsection{Camera Placement.}
 
@@ -159,7 +190,7 @@ Multiple methods to select $r$ and $t$ are studied:
 
 In Method I the degree of specialization can be controlled by the distribution models. The more camera positions are considered, the more varies the object appearance. Method II has a high degree of specialization as it limits the view points to those that are expected to be seen in a real world application.
 
-Several experiments are conducted as further described in \autoref{sec:training:experiments}. It is expected that by reducing the amount of possible poses $m_a$ can be improved. The best $m$ should be obtained using Method II.
+Several experiments are conducted as further described in \Cref{sec:training:experiments}. It is expected that by reducing the amount of possible poses $m_a$ can be improved. The best $m$ should be obtained using Method II.
 
 \subsubsection{Camera Properties.}
 
@@ -225,6 +256,7 @@ Several methods to incorporate the described sensor effects are studied:
 
 
 \subsection{Hypothesis}
+\label{sec:training:hypothesis}
 
 The aforementioned hypotheses are summarized in the following:
 
@@ -240,9 +272,9 @@ The aforementioned hypotheses are summarized in the following:
 \section{Experimental Setup}
 \label{sec:training:setup}
 
-For data generation several tools are used. 3D Models for the \ac{OoI} are taken from ... OpenGl is used to render these objects and replace the background with a particular image. The Unreal Engine and AirSim are used to render a full scene.
+For data generation several tools are used. 3D Models for the \ac{TO} are taken from ... OpenGl is used to render these objects and replace the background with a particular image. The Unreal Engine and AirSim are used to render a full scene.
 
-Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \autoref{eq:pinhole1} the corresponding 2D coordinates on the image plane can be obtained with the following:
+Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \Cref{eq:pinhole1} the corresponding 2D coordinates on the image plane can be obtained with the following:
 
 The camera position is described by its rotation matrix $R$ and its translation vector $t$. Where $R$ is obtained from the Euler angles with:
 $$
@@ -262,7 +294,7 @@ The full projection can then be expressed by the matrix multiplication:
 $$
 X' = C\times T\times X
 $$
-Where $C$ is the intrinsic camera matrix defined in \autoref{eq:pinhole1}.
+Where $C$ is the intrinsic camera matrix defined in \Cref{eq:pinhole1}.
 
 
 
