@@ -1,3 +1,4 @@
+*.toc
 .idea
 resource/backgrounds
 resource/samples

@@ -11,7 +11,7 @@ grid = [(13, 13),
         (7, 7),
         (3, 3),
         (1, 1)]
-img_res = 416, 416
+img_res = 208, 208
 
 anchors = [
     [[1, 1], [1.5, 0.5]],
@@ -31,7 +31,6 @@ architecture = [
     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'predict'},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
     {'name': 'predict'},
@@ -42,16 +41,21 @@ architecture = [
 
 ]
 
-model_name = 'baseline_multiscale{}x{}'.format(img_res[0], img_res[1])
+model_name = 'baseline_multiscale_flight{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
       work_dir='0108/' + model_name,
       img_res=img_res,
       image_source=['resource/ext/samples/daylight_course1',
-                    'resource/ext/samples/daylight_course2',
+                    'resource/ext/samples/daylight_course5',
                     'resource/ext/samples/daylight_course3',
-                    'resource/ext/samples/mixed_rooms',
+                    'resource/ext/samples/iros2018_course1',
+                    'resource/ext/samples/iros2018_course5'
+                    'resource/ext/samples/basement_course3'
+                    'resource/ext/samples/basement_course1'
                     ],
+      validation_set=['resource/ext/samples/iros2018_course3_test'],
+
       augmenter=RandomEnsemble([
           (1.0, RandomBrightness(0.5, 1.5)),
           (0.5, TransformFlip()),

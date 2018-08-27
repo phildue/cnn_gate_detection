@@ -114,7 +114,7 @@ def train(architecture=MODEL_NAME,
     if validation_set is not None:
         valid_gen = GateGenerator(validation_set, batch_size=batch_size, valid_frac=1.0,
                                   color_format='bgr', label_format='xml', filter=filter,
-                                  remove_filtered=False, remove_empty=False).generate_valid()
+                                  remove_filtered=False, remove_empty=True).generate_valid()
         valid_frac = 0.0
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,

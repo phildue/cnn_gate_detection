@@ -20,8 +20,12 @@ def show_voc():
 
 def show_img(path):
     def filter(label):
-        max_aspect_ratio = 1.05 / (45 / 90)
-        objs_within_angle = [obj for obj in label.objects if obj.height / obj.width < max_aspect_ratio]
+
+        objs_in_size = [obj for obj in label.objects if
+                        0.01 < (obj.height * obj.width) / (416 * 416) < 1.2]
+
+        max_aspect_ratio = 1.05 / (30 / 90)
+        objs_within_angle = [obj for obj in objs_in_size if obj.height / obj.width < max_aspect_ratio]
 
         objs_in_view = []
         for obj in objs_within_angle:
@@ -31,10 +35,10 @@ def show_img(path):
                 continue
             objs_in_view.append(obj)
 
-        return ImgLabel(objs_in_view)
+        return ImgLabel(objs_in_size)
 
     gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
-                                   filter=None, remove_filtered=True)
+                                   filter=filter, remove_filtered=False)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -52,5 +56,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['lib/dronerace2018/target/simulator/simulations/datagen/bin/Debug'])
+show_img(path=['resource/ext/samples/daylight_course3'])
 # show_voc()
