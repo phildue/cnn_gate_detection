@@ -72,7 +72,11 @@ In contrast augmenting the images on a low-level this method allows to generate 
 
 \cite{Sadeghi2016,Hinterstoisser2017,Krizhevsky2012a}
 
-While training models only in a simulated environment is common for Control tasks, it is less popular in Computer Vision as often the quality of graphic engines is too poor or the rendering is very time consuming. However, the advances in Computer Graphics and faster processing technologies nowadays allow the generation of more realistic images and various studies tried to train models in fully synthesized data.
+While training models only in a simulated environment is common for Control tasks, it is less popular in Computer Vision as often the quality of graphic engines is too poor or the rendering is very time consuming. However, the advances in Computer Graphics and faster processing technologies nowadays allow the generation of more realistic images and various studies tried to incorporate these samples in their training process.
+
+\cite{Ros2016, Gaidon2016} are fully rendered datasets used for Computer Vision. 
+
+\cite{Johnson-Roberson2016} training in simulation only.
 
 \cite{Tobin2017} was one of the first publications that used only synthetic images for the task of Object Localization. The proposed method \ac{DR} uses a high degree of randomization when rendering the image. Thus a model has to learn a general representation, that can also be applicable in the real world. \cite{Tremblay2018a} extends the approach to object detection.
 
@@ -92,21 +96,128 @@ An advantage of \ac{DR} is its ease of implementation and use, no assumptions ab
 
 \subsection{Augmenting Synthetic Data}
 
-
+\subsection{Others}
 Approaches that require samples of the target domain \cite{Chen2018c} \cite{Xu2017} \cite{Inoue} 
 
 \cite{Peng2017} includes task-irrelevant samples and a source classifier to make the final network robust (?). Called zero-shot domain adaptation as no samples of the target domain are required.
 
 
-\cite{Vass}
-
-
-
-
 \section{Methodology}
 \label{sec:training:meth}
 
-This chapter describes methods used in this thesis. By discussing the methods described in literature with respect to the problem of \ac{EWFO} Detection on \acp{MAV} several hypotheses are formulated.
+In the following methods used in this thesis are described. We define several domain properties and model them during data generation.
+
+The models are implemented in a toolchain that applies the different steps. An overview can be seen in \Cref{fig:training:toolchain_datagen} \todo{Put example images}. The individual steps are described in the following.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{fig/Toolchain_datagen}
+	\caption{Overview of the data generation process. The environment model determines background and lightning conditions and produces a 3D-Scene. The motion model determines the camera pose and location and thus the view point. Projecting the 3D-Scene on the image plane of the camera delivers the 2D-View. A final post processing step incorporates sensor and lens effects.}
+	\label{fig:training:toolchain_datagen}
+\end{figure}
+
+\subsection{Environment Model}
+\label{sec:training:scene}
+We define environment properties as illumination and background. For example a scene can be set outdoor in the forest at night or indoor with artificial light sources. Two methods are used two create an environment.
+
+\subsubsection{Pasting a 3D-Model on Real Images}
+
+Similarly to several methods in literature \cite{Girshick2013, Peng, Rozantsev} a 3D-Model of the \ac{TO} is pasted on real images.
+
+The 3D-Model is provided by TODO and a tool to render these models is implemented using OpenGL. A scene with black background is created and several objects are placed on a virtual ground plane with different rotations to each other. Additionally light sources are placed at different locations and with different intensities. The exact light model is part of OpenGL and will not be further discussed in this thesis. 
+
+After creating a scene the black background is replaced with an image obtained from a dataset. As the light conditions between background image and \ac{TO} are different, the created image can be quite artificial. Hence a postprocessing step applies a Gaussian blur kernel along the edges of the \ac{TO}. This leads to a better embedding of the \ac{TO} in the background.
+ \todo{put example images}
+
+The parameters and locations of objects and light sources as well as the selected backgrounds are parameters of the implemented tool that can be varied when creating a dataset.
+
+\subsubsection{Full Rendering of a Scene}
+
+Following \cite{Ros2016, Gaidon2016, Johnson-Roberson2016, Tobin2017, Tremblay2018a} the second approach to create a scene is fully rendering the environment using a graphic engine, namely the UnrealEngine including the AirSim plugin.
+
+The UnrealEditor allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three environments, namely three indoor scenarios are created. This resembles GPS-denied scenarios as they are targeted in this thesis. Within the environment the light conditions, background textures, object locations can be changed manually.
+
+\subsection{Motion Model}
+
+The motion model refers to the camera's point of view. For the implemented tools in \Cref{sec:training:scene} the camera view point can be set during data creation. The camera pose is determined by:
+
+$$
+\text{Translation: }t = [x y z] \text{ and Rotation: } r = [\phi, \theta, \psi]
+$$
+Where the left-handed coordinate system is used with $z$ pointing in the image.
+
+\subsubsection{Random Placement}
+	
+The value for each dimension of $r$ and $t$ are drawn from a probability distribution. The chosen distributions have to follow certain limitations, for example the gate should still be visible in most images.
+	
+\subsubsection{Quad-rotor Model}
+	
+$r$ and $t$ follow a the motion model of a quad-rotor \ac{MAV}.  The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}.
+
+Using this motion model, the camera follows a certain trajectory through the 3D-Environment. Storing the current image at a frequency of 2 Hz creates the corresponding samples.
+	
+\subsection{Sensor Model}
+
+In the real world camera and lens have significant influence on the image appearance as well as the performance of neural networks \cite{Andreopoulos2012,Dodge2016a}. In order to model these effects a post-processing step is applied on the images obtained in the previous steps. The pipeline is mainly inspired by \cite{Carlson2018}, so the model for chromatic aberration, exposure, blur and noise is included. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, no model for information loss due to post-processing is applied. Instead all images are converted into YUV-colour space, a format that is obtained from most visual sensors. Additionally, since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}, the pipeline is extend by a model for lens distortion. 
+
+The post-processing pipeline is summarized as:
+
+\begin{equation}
+	I' = \phi_{noise}(\phi_{exposure}(\phi_{blur}(\phi_{Chrom.}(\phi_{Lense}(I)))))
+	\label{eq:postprocess}
+\end{equation}
+
+The individual models are described in the following.
+
+\subsection{Lens Model}
+
+\cite{Vass}
+Lens distortion is modelled with Browns distortion model:
+
+\begin{equation}
+bla
+\label{eq:distortion}
+\end{equation}
+
+
+\subsubsection{Motion Noise Model}
+
+Motion blur
+
+\subsubsection{Chromatic Aberration Model}
+
+
+\subsubsection{Blur Model}
+
+Sensor and motion noise can lead to blurry images. In order to obtain a level of robustness, images are blurred with varying parameters. For the blur operation a Gaussian kernel is applied on the input image with:
+
+$$ I' = k * I $$
+
+where: $k = \frac{1}{2\sigma_x\sigma_y\pi}\exp^{\sqrt{\frac{num}{\sigma_x\sigma_y}}} $
+
+\subsubsection{Exposure Model}
+
+
+\subsubsection{Noise Model}
+
+
+\subsection{Artificial Augmentation}
+
+Inspired by \cite{Howard2013, Redmon, Liu} the application of several artificial image transformations is studied. The overall goal is to generate more variations in the input signal and thus to make the model more invariant against changes in those properties. We do not use image scaling or translation for augmentation as it is easier to incorporate such variations using the motion model.
+
+\begin{enumerate}
+	\item \textbf{Brightness} In order to obtain a model that is more robust against illumination changes image brightness is alternated. Therefore a scaling on the V-channel in HSV-colour space is applied. The scaling is drawn from a uniform distribution in between $b_1$ and $b_2$.
+	
+	\item \textbf{Grayscale} By transforming a subset of samples into grayscale images, the model is forced to learn more color invariant features. A grayscale conversion is applied with a probability of $g$.
+	
+	\item \textbf{Histogram Equalization} Changes in the environmental conditions can also affect contrast. By applying a histogram equalization on a subset of images, variations in contrast are achieved. \todo{histeq}
+	
+	\item \textbf{Flip} By mirroring the image vertically, more variations in object locations are achieved. The operation is applied with a probability of $f$.
+\end{enumerate}
+
+
+\subsection{Hypothesis}
+\label{sec:training:hypothesis}
 
 \subsection{Implications of \ac{EWFO}}
 
@@ -116,185 +227,34 @@ Therefore, we first investigate whether there are implications of the object sha
 
 \subsection{Generalization versus Specialization}
 \label{sec:training:genvsspc}
-While some approaches discussed in \Cref{sec:training:related} aim to learn a general representation that works across domains, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as domain generalization and domain specialization.
 
-We hypothesize that there is a trade-off between these two entities. For example placing the \ac{TO} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for \acp{EWFO} where a large part of the surrounding bounding box is occupied by background.
+While some approaches discussed in \Cref{sec:training:related} aim to learn a general representation that is robust against sensor noise or changes in illumination, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as generalization and specialization.
 
-On the other hand, placing the \ac{TO} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear on sky background.
+We hypothesize that there is a trade-off between these two entities. Assuming one model that is trained in rooms with different lightning conditions and another model that is trained in an environment with constant lightning conditions model trained in different lightning conditions might perform we
+
+For example placing the \ac{TO} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for \acp{EWFO} where a large part of the surrounding bounding box is occupied by background.
+
+On the other hand, placing the \ac{TO} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear in the sky.
 
 Hence, it is expected that the performance $m_{S}$ in the source domain  of a certain model $h$ improves with increasing specialization. Moreover, domain specialization should allow a more lightweight model to learn the same task equally well as a more complex model. That is with increasing specialization it should be possible to reduce the number of parameters $w$ while $m_{S}$ stays constant. Finally, if increasing specialization of a training set improves $m_{S}$ target performance $m_T$ should also improve as long as the specialization does not omit patterns that are present in the target domain. For example, if the model is applied in the real world it can safely be assumed that objects obey physical laws.
 
-The formulated hypotheses are summarized in \Cref{sec:training:hypothesis}.
-
-\subsection{Domain Properties}
-
 In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following \Cref{sec:training:genvsspc} it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.
-
-In the following the different domain properties are defined and their appearance in the target domain is measured. The hypothesis is formulated that by drawing the properties of $S$ and $T$ closer to each other $m_T$ will improve.
-
-The formulated hypotheses are summarized in \Cref{sec:training:hypothesis}.
-
-\subsubsection{Scene}
-
-Scene properties cover environmental conditions like illumination and background. For example a scene can be set outdoor in the forest at night or indoor with artificial light sources.
-
-Several methods are studied to synthetically create a scene:
-
-\begin{enumerate}
-
-\item \textbf{Random (non trivial) selection of background images.}
-
-This method is commonly used in literature \todoref{some examples}
-
-Within this method the background is randomly selected from a dataset that covers a large variance of non-trivial images. Non-trivial in this case means the backgrounds contain a sophisticated amount of information and contain similar shapes as the \ac{TO}. The \ac{TO} is rendered in a scene of a black room and subsequently the black background is replaced by the randomly selected image. In order to embedd the object better to the scene the edges are merged with a Gaussian blur \todo{describe this properly}
-
-\item \textbf{Targeted selection of background images.}
-
-Within this method the backgrounds are further selected by their similarity to the target domain. That way the model can learn a target domain specific representation.
-
-\item \textbf{Full rendering of a scene.}
-
-For this method a whole scene is rendered. This includes \ac{TO}, background objects as well as light conditions. It enables to embedded the \ac{TO} align with the rest of the scene. That way inherent image properties are followed and also shadows and the like fall correctly.
-
-\end{enumerate}
-
-Using random backgrounds without rendering the full scene is considered as very general, since backgrounds can be anything including for example animals and human faces. However, the objects are not aligned with the scene or the light conditions of the environment. Also inherent image properties like view perspective are not followed. This creates a very specialized learning problem, as the model could also just learn to distinguish the object that does not fit to the rest of the image. Therefore the learning problem gets harder, when the scene is fully rendered and the object is embedded in the scene realistically.
-
-These assumptions are evaluated in several experiments. Three models are trained on different datasets and the training performance is evaluated. Model I is trained on a dataset created with Method I. The training data for Model II is created by randomly placing the object in scene rendered with the simulator. Model III is trained on a dataset created by Method III. It is expected that Model II performs better than Model I, while Model III performs worst. The exact experiments are further described in \Cref{sec:training:experiments}.
-
-Next to evaluating the trade-off between specialization and generalization it is also evaluated how the above mentioned methods can be used to generate a suitable training set for a real world application. Therefore the possible target domain is analyzed in the example of two recorded datasets. \todo{Measure and describe scene property in real datasets.}
-
-Several experiments are carried out. In one the target domain properties are mimicked in the training set as close as possible. In another one the source domain properties are randomized, such that the model can learn a more general representation. Both approaches are evaluated in terms of model complexity and detection performance.The exact experiments are further described in \Cref{sec:training:experiments}.
-
-\subsubsection{Camera Placement.}
-
-Camera placement refers to the camera's point of view. It is chosen when rendering a scene. The camera pose is determined by:
-
-$$
-\text{Translation: }t = [x y z] \text{ and Rotation: } r = [\phi, \theta, \psi]
-$$
-Where the left-handed coordinate system is used with $z$ pointing in the image.
-
-Multiple methods to select $r$ and $t$ are studied:
-
-\begin{enumerate}
-	\item \textbf{Random Placement within margins.}
-
-		  The value for each dimension of $r$ and $t$ are drawn from a probability distribution. The chosen distributions have to follow certain limitations, for example the gate should still be visible in most images.
-
-	\item \textbf{Placement following a motion model.}
-
-		$r$ and $t$ follow a motion model. As in this thesis object detection on \acp{MAV} is studied, the motion model of a small \ac{MAV} that is used for the IROS2018 is applied. The development of this model has not been done within this thesis but is described here for completeness: \todo{put shuos model here}.
-
-\end{enumerate}
-
-In Method I the degree of specialization can be controlled by the distribution models. The more camera positions are considered, the more varies the object appearance. Method II has a high degree of specialization as it limits the view points to those that are expected to be seen in a real world application.
-
-Several experiments are conducted as further described in \Cref{sec:training:experiments}. It is expected that by reducing the amount of possible poses $m_a$ can be improved. The best $m$ should be obtained using Method II.
-
-\subsubsection{Camera Properties.}
-
-Camera properties describes the behaviour of the visual sensor. In the real world the used camera and its lense have significant influence on the image appearance. These properties can be modelled when creating synthetic data.
-
-\paragraph{Camera Model}
-
-\hfill \\
-The camera itself is modelled with the pinhole camera model that contains six parameters:
-
-\begin{enumerate}
-	\item Focal length $f_x,f_y$
-	\item Central point $c_x,c_y$
-	\item Sensor skew $s_x, s_y$
-\end{enumerate}
-
-The model can be summarized in the intrinsic camera matrix $C$:
-\begin{equation}
-	C = \begin{bmatrix}
-	\frac{fx}{s_x} & 0 &cx \\
-	0&  \frac{f_y}{s_y}&cy \\
-	0& 	0&	1
-	\end{bmatrix}
-	\label{eq:pinhole1}
-\end{equation}
-
-The model projects 3D coordinates $X$ to the image plane following:
-\begin{equation}
-	X' = C X
-	\label{eq:pinhole2}
-\end{equation}
-Where $X$ are points described in homogeneous coordinates originating from the cameras position.
-
-\paragraph{Lense Distortion Model}\hfill \\
-Lense distortion is modelled with Browns distortion model:
-
-\begin{equation}
-bla
-	\label{eq:distortion}
-\end{equation}
-
-\paragraph{Sensor Noise Model}\hfill \\
-
-Sensor noise is modelled by ..
-Gray/Colour noise
-\paragraph{Motion Noise Model}	\hfill \\
-
-Motion blur
-
-Several methods to incorporate the described sensor effects are studied:
-
-\begin{enumerate}
-	\item \textbf{Varying model parameters.}
-
-	For each model the parameters are varied by drawing them from a uniform distribution within certain margins. That way the model can learn a general representation that is robust against sensor/lense changes.
-
-	\item \textbf{Estimating the model parameters from the target domain.}
-
-	The model parameters for each model can be estimated from images taken with the camera. By incorporating the parameters from the target domain a high degree of specialization can potentially be achieved.
-
-	The procedure to estimate the model parameters is described in the following: \todo{Describe camera calibration}
-\end{enumerate}
-
-
-\subsection{Hypothesis}
-\label{sec:training:hypothesis}
 
 The aforementioned hypotheses are summarized in the following:
 
 \begin{enumerate}
-	\item[$\mathcal{H}_1$] The more general a model has to be the harder the learning problem becomes. Hence $m_{train}$ drops with an increasing degree of generalization $g$.
-
-	\item[$\mathcal{H}_2$] The more specialized a model is, the less parameters are necessary to achieve the same performance. Hence, $m_train$ remains constant when reducing the degree of generalization and the number of parameters $w$.
-
-	\item[$\mathcal{H}_3$] The more properties of $T$ can be incorporated in $S$ the less complex a model has to be to achieve similar performance. That is the same $m_T$ can be achieved with a model with smaller $w$ when the properties in $S$ and $D$ are closer.
+	\item[$\mathcal{H}_1$] \ac{EWFO} are more sensitive to domain shifts than other objects. Hence, the performance drop between $m_T$ and $m_S$ of a model $h$ trained in $S$ where the environment conditions in $S$ are very different to the ones in $T$ will be larger for a \ac{EWFO} than for an object with rich structure.
+	
+	\item[$\mathcal{H}_2$] The more general a model has to be the harder the learning problem becomes. Hence $m_{train}$ drops with an increasing degree of generalization $g$.
+	
+	\item[$\mathcal{H}_3$] The more specialized a model is, the less parameters are necessary to achieve the same performance. Hence, $m_train$ remains constant when reducing the degree of generalization and the number of parameters $w$.
+	
+	\item[$\mathcal{H}_4$] The more properties of $T$ can be incorporated in $S$ the less complex a model has to be to achieve similar performance. That is the same $m_T$ can be achieved with a model with smaller $w$ when the properties in $S$ and $D$ are closer.
 \end{enumerate}
 
 
-\section{Experimental Setup}
-\label{sec:training:setup}
 
-For data generation several tools are used. 3D Models for the \ac{TO} are taken from ... OpenGl is used to render these objects and replace the background with a particular image. The Unreal Engine and AirSim are used to render a full scene.
 
-Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \Cref{eq:pinhole1} the corresponding 2D coordinates on the image plane can be obtained with the following:
-
-The camera position is described by its rotation matrix $R$ and its translation vector $t$. Where $R$ is obtained from the Euler angles with:
-$$
-R =
-$$
-The 3D coordinates of the objects relative to the camera can be obtained by applying the inverse transformation $T$ of $R$ and $t$ with:
-$$
-t' = R \times t
-$$
-$$
-T = R^{-1}|-t'
-$$
-$$
-X_{Cam} = T\times X
-$$
-The full projection can then be expressed by the matrix multiplication:
-$$
-X' = C\times T\times X
-$$
-Where $C$ is the intrinsic camera matrix defined in \Cref{eq:pinhole1}.
 
 
 

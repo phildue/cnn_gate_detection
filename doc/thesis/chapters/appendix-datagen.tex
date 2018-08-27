@@ -1,0 +1,56 @@
+\section{Data Generation}
+\label{sec:appendix:datagen}
+
+This section describes how the ground truth labels are obtained when generating data.
+
+\subsection{Camera Model}
+
+\hfill \\
+The camera itself is modelled with the pinhole camera model that contains six parameters:
+
+\begin{enumerate}
+	\item Focal length $f_x,f_y$
+	\item Central point $c_x,c_y$
+	\item Sensor skew $s_x, s_y$
+\end{enumerate}
+
+The model can be summarized in the intrinsic camera matrix $C$:
+\begin{equation}
+C = \begin{bmatrix}
+\frac{fx}{s_x} & 0 &cx \\
+0&  \frac{f_y}{s_y}&cy \\
+0& 	0&	1
+\end{bmatrix}
+\label{eq:pinhole1}
+\end{equation}
+
+The model projects 3D coordinates $X$ to the image plane following:
+\begin{equation}
+X' = C X
+\label{eq:pinhole2}
+\end{equation}
+Where $X$ are points described in homogeneous coordinates originating from the cameras position.
+
+For data generation several tools are used. 3D Models for the \ac{TO} are taken from ... OpenGl is used to render these objects and replace the background with a particular image. The Unreal Engine and AirSim are used to render a full scene.
+
+Within the graphic engines, the objects can be placed in 3D space. From the known object shape the surrounding bounding box can be defined in 3D coordinates. Using the pinhole camera model described in \Cref{eq:pinhole1} the corresponding 2D coordinates on the image plane can be obtained with the following:
+
+The camera position is described by its rotation matrix $R$ and its translation vector $t$. Where $R$ is obtained from the Euler angles with:
+$$
+R =
+$$
+The 3D coordinates of the objects relative to the camera can be obtained by applying the inverse transformation $T$ of $R$ and $t$ with:
+$$
+t' = R \times t
+$$
+$$
+T = R^{-1}|-t'
+$$
+$$
+X_{Cam} = T\times X
+$$
+The full projection can then be expressed by the matrix multiplication:
+$$
+X' = C\times T\times X
+$$
+Where $C$ is the intrinsic camera matrix defined in \Cref{eq:pinhole1}.
