@@ -64,7 +64,7 @@ class XmlParser(AbstractDatasetParser):
         samples = []
         labels = []
         for i, file in enumerate(files):
-            if 0 < n < i: break
+            if n > 0 and 0 < n < i: break
             label = XmlParser.read_label(file)
             if label is None: continue
             image = imread(file.replace('xml', self.image_format), self.color_format)
