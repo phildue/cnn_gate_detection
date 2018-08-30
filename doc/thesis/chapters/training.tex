@@ -289,6 +289,8 @@ Where $\mathcal{N}$ is a Gaussian-PDF with mean $\mu$ and variance $\sigma$,  $K
 
 \subsubsection{Chromatic Aberration}
 
+Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
+
 \begin{equation}
 	\begin{pmatrix}
 	x' \\
@@ -304,6 +306,19 @@ Where $\mathcal{N}$ is a Gaussian-PDF with mean $\mu$ and variance $\sigma$,  $K
 	1
 	\end{pmatrix}
 \end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
+	\end{minipage}
+	\caption{Example Chromatic Aberration with $S=[1, 1.01, -5.0]$, $t_x=[10,0.1,0.01]$, $t_y=[0.1,-0.1,0.0.01]$. Original scene (left), after transformation (right)}
+	\label{fig:chromatic}
+\end{figure}
+
 \subsubsection{Out-of-focus Blur}
 
 Next to motion, sensor noise can lead to blurry images. For the blur operation a 2D Gaussian kernel is applied on the input image with:
@@ -312,13 +327,49 @@ Next to motion, sensor noise can lead to blurry images. For the blur operation a
  k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\sqrt{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
 \end{equation}
 
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
+	\end{minipage}
+	\caption{Example Out-of-Focus blur.}
+	\label{fig:focusblur}
+\end{figure}
 
 \subsubsection{Exposure}
 
+With the exposure model:
+ 
 \begin{equation}
-	I' = \frac{255}{1 + e^{A \times \frac{1 + e^{-A \times S}}{255} + \Delta S}}
+ I = f(S) = \frac{255}{1 + e^{-A S}}
+\end{equation}
+where $A$ is a constant term for contrast and $S$ the exposure.
+
+Following the model from \cite{Carlson2018} the image is re-exposed using:
+
+\begin{equation}
+	I' = f(S+\Delta S)
 \end{equation}
 
+where $S$ is obtained from :
+\begin{equation}
+S = f^{-1}(I) = \frac{\ln(\frac{255}{I}-1)}{-A}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
+	\end{minipage}
+	\caption{Example Exposure with $\Delta S = 2.0$, $A = 1.0$.}
+	\label{fig:exposure}
+\end{figure}
 
 \subsubsection{Noise}
 
