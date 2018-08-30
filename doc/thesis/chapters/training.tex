@@ -1,15 +1,15 @@
 \chapter{Synthesizing Data to Train an Object Detector for Empty Wire Frame Objects on an \ac{MAV}}
 \label{sec:training}
 
-Supervised machine learning relies on the assumption that a hypothesis $h$ can be learned from a limited set of samples $X$ with their corresponding set of labels $Y$. The goal is to learn $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding labels:
+Machine learning relies on the assumption that a general concept can be extracted from a limited set of examples. In Supervised Machine Learning, the set of examples $X$ is augmented with a set of labels $Y$ that describes task dependent information that is present in the sample. For Object Detection this could be the coordinates of the bounding box that surrounds the object of interest. The goal is to learn a hypothesis $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding target labels:
 
 $$
 h(X_T)\rightarrow Y_T
 $$ 
 
-Whether $h$ is performing well, can evaluated by splitting the labelled set of $D_S$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on the $D_{test}$. By evaluating a performance metric $m_A$ on $D_{train}$ information about the representation strength of $h$ can be inferred. The performance metric $m$ on $D_{test}$ gives an estimate of the performance of $h$ on $D_T$. Comparing $m_A$ and $m$ allows to evaluate whether model and dataset are suitable for the task.
+Whether $h$ is performing well, can be evaluated by splitting $D_S$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on $D_{test}$. By evaluating a performance metric $m$ on $D_{test}$ the expected performance of $h$ on $D_T$ can be estimated and allows evaluate whether model and dataset are suitable for the task.
 			
-This basic supervised machine learning setting relies on the assumption that $D_S$ and $D_T$ are \ac{i.i.d.}. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
+In this setting it is assumed that $D_S$ and $D_T$ are \ac{i.i.d.}. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
 
 Learning models in such an environment is concerned by the field of Transfer Learning. The goal is to find a concept $h$ that performs best in the target domain $T$. Similar to $m_A$ and $m$ the performance $m_S$ in $S$ and the performance $m_T$ in $T$ can be used to evaluate whether a suitable model/dataset has been chosen/is available.
 
@@ -109,7 +109,7 @@ In the following methods used in this thesis are described. We define several do
 
 The models are implemented in a toolchain that applies the different steps. An overview can be seen in \Cref{fig:training:toolchain_datagen} \todo{Put example images}. The individual steps are described in the following.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/Toolchain_datagen}
 	\caption{Overview of the data generation process. The environment model determines background and lightning conditions and produces a 3D-Scene. The motion model determines the camera pose and location and thus the view point. Projecting the 3D-Scene on the image plane of the camera delivers the 2D-View. A final post processing step incorporates sensor and lens effects.}
@@ -127,15 +127,48 @@ Similarly to several methods in literature \cite{Girshick2013, Peng, Rozantsev} 
 The 3D-Model is provided by TODO and a tool to render these models is implemented using OpenGL. A scene with black background is created and several objects are placed on a virtual ground plane with different rotations to each other. Additionally light sources are placed at different locations and with different intensities. The exact light model is part of OpenGL and will not be further discussed in this thesis. 
 
 After creating a scene the black background is replaced with an image obtained from a dataset. As the light conditions between background image and \ac{TO} are different, the created image can be quite artificial. Hence a postprocessing step applies a Gaussian blur kernel along the edges of the \ac{TO}. This leads to a better embedding of the \ac{TO} in the background.
- \todo{put example images}
+Examples can be seen in \Cref{fig:random_bg}
 
 The parameters and locations of objects and light sources as well as the selected backgrounds are parameters of the implemented tool that can be varied when creating a dataset.
+
+\begin{figure}[hbtp]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/shot}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/random_bg2}
+	\end{minipage}
+	\caption{Examples for pasting the 3D-Model on various backgrounds. A scene with background is rendered (left), subsequently the black background is replaced with an image from a dataset.}
+	\label{fig:random_bg}
+\end{figure}
 
 \subsubsection{Full Rendering of a Scene}
 
 Following \cite{Ros2016, Gaidon2016, Johnson-Roberson2016, Tobin2017, Tremblay2018a} the second approach to create a scene is fully rendering the environment using a graphic engine, namely the UnrealEngine including the AirSim plugin.
 
 The UnrealEditor allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three environments, namely three indoor scenarios are created. This resembles GPS-denied scenarios as they are targeted in this thesis. Within the environment the light conditions, background textures, object locations can be changed manually.
+
+In total three base environments are created. Examples can be seen in \Cref{fig:environments}.
+
+\begin{figure}[hbtp]
+	\centering
+	\begin{minipage}{\textwidth}
+		\includegraphics[width=\textwidth,height=5cm]{fig/basement_perspective}
+	\end{minipage}
+
+
+\begin{minipage}{\textwidth}
+	\includegraphics[width=\textwidth,height=5cm]{fig/daylight_perspective}
+\end{minipage}
+
+
+\begin{minipage}{\textwidth}
+	\includegraphics[width=\textwidth,height=5cm]{fig/iros_perspective}
+\end{minipage}
+\caption{Base environments when rendering a full scene. From top to bottom: \textit{Basement}, \textit{Daylight}, \textit{IROS}.}
+\label{fig:environments}
+\end{figure}
 
 \subsection{Motion Model}
 
@@ -158,47 +191,136 @@ Using this motion model, the camera follows a certain trajectory through the 3D-
 	
 \subsection{Sensor Model}
 
-In the real world camera and lens have significant influence on the image appearance as well as the performance of neural networks \cite{Andreopoulos2012,Dodge2016a}. In order to model these effects a post-processing step is applied on the images obtained in the previous steps. The pipeline is mainly inspired by \cite{Carlson2018}, so the model for chromatic aberration, exposure, blur and noise is included. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, no model for information loss due to post-processing is applied. Instead all images are converted into YUV-colour space, a format that is obtained from most visual sensors. Additionally, since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}, the pipeline is extend by a model for lens distortion. 
+In the real world camera and lens have significant influence on the image appearance as well as the performance of neural networks \cite{Andreopoulos2012,Dodge2016a}. In order to model these effects a post-processing step is applied on the images obtained in the previous steps. The experiments in \cite{Carlson2018} show how such a step can be particularly beneficial when applied on artificially generated data. 
+
+Inspired by \cite{Carlson2018} the model for chromatic aberration, exposure, blur and noise is included. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, no model for information loss due to post-processing is applied. Instead all images are converted into YUV-colour space, a format that is obtained from most visual sensors. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected.
 
 The post-processing pipeline is summarized as:
 
 \begin{equation}
-	I' = \phi_{noise}(\phi_{exposure}(\phi_{blur}(\phi_{Chrom.}(\phi_{Lense}(I)))))
+	I' = \phi_{noise}(\phi_{exposure}(\phi_{FocusBlur}(\phi_{MotionBlur}(\phi_{Chrom.}(\phi_{Lense}(I))))))
 	\label{eq:postprocess}
 \end{equation}
 
 The individual models are described in the following.
 
-\subsection{Lens Model}
+\subsection{Lens Distortion}
 
-\cite{Vass}
-Lens distortion is modelled with Browns distortion model:
+\todo{Explain what lense does and its effects}
+
+Lens distortion is applied using the model for wide-angle lenses from \cite{Vass}. It models the \textit{removal} of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
 
 \begin{equation}
-bla
+\begin{pmatrix}
+	p_x' \\
+	p_y'
+\end{pmatrix} = \begin{pmatrix}
+p_x(1 + \kappa_1 p_x^2 + \kappa_1 (1 + \lambda _x)p_y^2 + \kappa_2(p_x^2 + p_y^2)^2) \\
+p_y(1 + \frac{\kappa_1 }{s}p_x^2 + \frac{\kappa_1}{s} (1 + \lambda _y)p_y^2 + \frac{\kappa_2}{s}(p_x^2 + p_y^2)^2)
+\end{pmatrix} 
 \label{eq:distortion}
+\end{equation}
+Where:
+\begin{itemize}
+	\item $p_x'$ and $p_y'$ are the undistorted coordinates.
+	\item $\kappa_1$ controls the primary distortion (default 0)
+	\item $\kappa_2$ controls the secondary distortion (default 0)
+	\item $s$ controls the squeeze factor (default 1)
+	\item $\lambda_x$ and $\lambda_y$ controls asymmetric distortion (default 0)
+\end{itemize}
+ 
+Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution,the Newton-approximation is used:
+
+\begin{equation}
+	p_i = p_{i-1} - \nabla p^{-1} (f(p)_i-p')
+\end{equation}
+
+Where $f$ is the function defined in \Cref{eq:distortion}. For derivation and implementation the interested reader is referred to \cite{Vass}.
+
+In \Cref{fig:distortion} an example is shown. The distortion is applied on the original image (left) using $k_1=0.8, k_2=0$ for the radial and non-radial part. As the distortion leads to an increased \ac{FoV}, this creates black borders in the image. Therefore the center image part is cropped and rescaled to the original image size. The right image shows the same image after the crop and rescale operation without the distortion. Thus we see the original scene (left), one possible view on that scene with a wide-angle lens (center) and the same view without the lens (right). 
+
+\begin{figure}[htbp]
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+\begin{minipage}{0.33\textwidth}
+	\includegraphics[width=\textwidth]{fig/gate_example_distorted}
+\end{minipage}
+\begin{minipage}{0.33\textwidth}
+	\includegraphics[width=\textwidth]{fig/gate_example_undistorted}
+\end{minipage}
+\caption{Example Lens Distortion. Original scene (left), distorted view (center), undistorted view (right)}
+\label{fig:distortion}
+\end{figure}
+
+\subsubsection{Motion Noise}
+
+Motion blur is a phenomenon depending on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian median filter:
+
+\begin{equation}
+K_v = \begin{pmatrix}
+...				 \\
+\mathcal{N}(\mu-1) \\
+\mathcal{N}(\mu)  \\
+\mathcal{N}(\mu+1)	 \\
+	...					
+\end{pmatrix} \quad
+K_h = \begin{pmatrix}
+...	& \mathcal{N}(\mu-1)	&	\mathcal{N}(\mu) &	\mathcal{N}(\mu+1) & ...\\
+\end{pmatrix}
+	\label{eq:motion_noise}
+\end{equation}
+
+Where $\mathcal{N}$ is a Gaussian-PDF with mean $\mu$ and variance $\sigma$,  $K_v$ models vertical motion blur, $K_h$ horizontal motion blur. The size of the kernel is chosen by $k$.
+
+\begin{figure}[htbp]
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_h}
+	\end{minipage}
+	\caption{Example Motion Blur with $k=15$, $\sigma=5.0$. Original scene (left), vertical movement (center), horizontal movement (right)}
+	\label{fig:motionblur}
+\end{figure}
+
+\subsubsection{Chromatic Aberration}
+
+\begin{equation}
+	\begin{pmatrix}
+	x' \\
+	y' \\
+	1
+	\end{pmatrix} = \begin{pmatrix}
+	S & 0 & t_x \\
+	0 & S & t_y \\
+	0 & 0 & 1
+	\end{pmatrix} \begin{pmatrix}
+	x \\
+	y \\
+	1
+	\end{pmatrix}
+\end{equation}
+\subsubsection{Out-of-focus Blur}
+
+Next to motion, sensor noise can lead to blurry images. For the blur operation a 2D Gaussian kernel is applied on the input image with:
+
+\begin{equation}
+ k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\sqrt{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
 \end{equation}
 
 
-\subsubsection{Motion Noise Model}
+\subsubsection{Exposure}
 
-Motion blur
-
-\subsubsection{Chromatic Aberration Model}
-
-
-\subsubsection{Blur Model}
-
-Sensor and motion noise can lead to blurry images. In order to obtain a level of robustness, images are blurred with varying parameters. For the blur operation a Gaussian kernel is applied on the input image with:
-
-$$ I' = k * I $$
-
-where: $k = \frac{1}{2\sigma_x\sigma_y\pi}\exp^{\sqrt{\frac{num}{\sigma_x\sigma_y}}} $
-
-\subsubsection{Exposure Model}
+\begin{equation}
+	I' = \frac{255}{1 + e^{A \times \frac{1 + e^{-A \times S}}{255} + \Delta S}}
+\end{equation}
 
 
-\subsubsection{Noise Model}
+\subsubsection{Noise}
 
 
 \subsection{Artificial Augmentation}
