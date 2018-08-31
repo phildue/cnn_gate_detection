@@ -1,4 +1,5 @@
-from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate
+from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate, \
+    UpSampling2D
 import keras.backend as K
 from modelzoo.backend.tensor.DepthwiseConv2D import DepthwiseConv2D
 
@@ -214,6 +215,14 @@ def conv_concat(netin, filters, compression, kernel_size, strides, alpha):
     return out
 
 
+def upsample_creator(netin, config):
+    return upsample(netin, config['size'])
+
+
+def upsample(netin, size):
+    return UpSampling2D(size)(netin)
+
+
 layers = {'conv_leaky': conv_leaky_creator,
           'dconv': dconv_creator,
           'bottleneck_conv': bottleneck_conv_creator,
@@ -226,5 +235,6 @@ layers = {'conv_leaky': conv_leaky_creator,
           'wr_basic_conv_leaky': wr_basic_conv_leaky_creator,
           'wr_bottleneck_conv_leaky': wr_bottleneck_conv_leaky_creator,
           'wr_inception_conv_leaky': wr_inception_conv_leaky_creator,
-          'conv_concat': conv_creator
+          'conv_concat': conv_creator,
+          'upsample': upsample_creator
           }

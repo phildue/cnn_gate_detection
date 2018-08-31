@@ -73,6 +73,7 @@ class GateNetBase(Net):
         self.grid = []
         prediction_layer_i = 0
         predictions = []
+        layers = []
         for i, config in enumerate(architecture):
             if 'predict' in config['name']:
                 with K.name_scope('predict{}'.format(prediction_layer_i)):
@@ -83,12 +84,19 @@ class GateNetBase(Net):
                     reshape = Reshape((-1, n_polygon + 1))(inference)
                     prediction = Netout(n_polygon)(reshape)
                     predictions.append(prediction)
+                    layers.append(inference)
                     grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
                     self.grid.append(grid)
+            elif 'route' in config['name']:
+                if len(config['index']) > 1:
+                    net = Concatenate()([layers[i] for i in config['index']])
+                else:
+                    net = layers[config['index'][0]]
+                layers.append(net)
             else:
                 with K.name_scope('layer' + str(i)):
                     net = create_layer(net, config)
-
+                    layers.append(net)
         if len(predictions) > 1:
             predictions = Concatenate(-2)(predictions)
         else:

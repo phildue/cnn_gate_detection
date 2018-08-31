@@ -12,9 +12,9 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/iros16'],
+generator = GateGenerator(directories=['resource/ext/samples/eth'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=4800, valid_frac=1.0,
+                          shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format=None,
                           )
 #
@@ -34,8 +34,8 @@ model = GateNet.create_by_arch(architecture=summary['architecture'],
                                anchors=summary['anchors'],
                                color_format='yuv',
                                # preprocessor=TransformGray(),
-                               conf_thresh=0.7,
+                               conf_thresh=0.6,
                                n_polygon=4
                                )
 # create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
-demo_generator(model, generator, t_show=1, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])
+demo_generator(model, generator, t_show=0, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])

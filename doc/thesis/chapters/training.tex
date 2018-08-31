@@ -392,26 +392,27 @@ Inspired by \cite{Howard2013, Redmon, Liu} the application of several artificial
 \subsection{Hypothesis}
 \label{sec:training:hypothesis}
 
-\subsection{Implications of \ac{EWFO}}
+\subsubsection{Background Sensitivity}
 
-The described approaches mainly focus on objects that have complex structures and therefore provide robust features that can be learned by an object detection model. For example a face provides eyes and a nose, which appearances are influenced to some extend by light conditions but relatively independent from the image background. \ac{EWFO} on the other hand do not contain this kind of complex structure but mainly consist of image background. A comparable work is \cite{Madaan2017} which tries to detect wires that are also of thin structure. However, their experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
+Several methods in \Cref{sec:training:related} show how synthetic data can be used to benefit the performance of Computer Vision models. However, most of described approaches focus on objects that have complex structures and therefore provide robust features that are insensitive to image background. For example a face contains eyes and a nose, which appearances are influenced to some extend by light conditions but relatively independent from the rest of the scene. \ac{EWFO} on the other hand do not contain this kind of complex structure but mainly consist of image background. Therefore we hypothesize that \acp{EWFO} are particularly sensitive to domain shifts. That is, if the backgrounds in $S$ are very different to the backgrounds in $T$ the performance $m_T$ will be much less than the performance $m_S$. In contrast the performance difference of an object with rich structure in the same setting will be much smaller. 
 
-Therefore, we first investigate whether there are implications of the object shape on data generation. We hypothesize, that \ac{EWFO} are particular sensitive to changes in image background and lightning conditions. 
+A comparable work has been done in \cite{Madaan2017} to detect wires based on synthetic data. However, the experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
 
-\subsection{Generalization versus Specialization}
+\subsubsection{Scene Dependency}
+
+A common method in literature is to paste 3D-Meshes on real images to generate training data. With this method, the consistency between object of interest and the rest of the scene is violated. That is the object can appear in locations which are physically impossible. Furthermore, the perspective towards the object does not align with the background view and the shadows do not fall correctly. We hypothesize that this creates an unrealistic, simplified learning problem. The model is likely to learn how to detect objects that do not align with the scene rather than learning a robust representation that can be transformed into the real world. Following, the first hypothesis we hypothesize this is less of a problem for complex objects, that provide rich structure that is consistent across images, but affects particularly the generation of data for \acp{EWFO}.
+
+\subsubsection{Camera Placement}
+
+Most methods in literature use random placement of the camera to generate view points. Although easy to implement we hypothesize this method is likely to create a dataset bias. View points that appear in the real world are potentially under-represented while unrealistic and uncommon view points are over-represented. Therefore we hypothesize that using a motion model for the camera that resembles the real world will improve model performance. 
+
+
+\subsubsection{Generalization versus Specialization}
 \label{sec:training:genvsspc}
 
 While some approaches discussed in \Cref{sec:training:related} aim to learn a general representation that is robust against sensor noise or changes in illumination, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as generalization and specialization.
 
-We hypothesize that there is a trade-off between these two entities. Assuming one model that is trained in rooms with different lightning conditions and another model that is trained in an environment with constant lightning conditions model trained in different lightning conditions might perform we
-
-For example placing the \ac{TO} at random locations in an image with various backgrounds forces a model to learn a general representation that is invariant to the background. This holds especially for \acp{EWFO} where a large part of the surrounding bounding box is occupied by background.
-
-On the other hand, placing the \ac{TO} align with a scene, only in positions that are physically possible reduces the variance greatly and should simplify the learning problem. Additionally it allows to exploit context cues such as that certain objects can not fly and therefore usually don't appear in the sky.
-
-Hence, it is expected that the performance $m_{S}$ in the source domain  of a certain model $h$ improves with increasing specialization. Moreover, domain specialization should allow a more lightweight model to learn the same task equally well as a more complex model. That is with increasing specialization it should be possible to reduce the number of parameters $w$ while $m_{S}$ stays constant. Finally, if increasing specialization of a training set improves $m_{S}$ target performance $m_T$ should also improve as long as the specialization does not omit patterns that are present in the target domain. For example, if the model is applied in the real world it can safely be assumed that objects obey physical laws.
-
-In this thesis object detection for wire frame objects on \acp{MAV} is investigated. As in this scenario computational resources are limited, simple models are the preferred solution. Following \Cref{sec:training:genvsspc} it should be possible to use a model with less parameters and thus faster computation time, if more knowledge of the target domain is included. Therefore different domain properties are defined and it is studied how their incorporation in the training process affects model performance.
+We hypothesize that there is a trade-off between these two entities. A model that performs generally well across domains will perform poorer in a particular domain compared to a model that is trained for that particular domain.
 
 The aforementioned hypotheses are summarized in the following:
 
