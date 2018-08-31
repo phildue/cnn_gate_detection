@@ -11,19 +11,19 @@ from samplegen.shotgen.engine3d.opengl.GateGLTall import GateGLTall
 from samplegen.shotgen.lightgen.ConstantLightGen import ConstantLightGen
 from samplegen.shotgen.lightgen.RandomLightGen import RandomLightGen
 from samplegen.shotgen.positiongen.RandomPositionGen import RandomPositionGen
-from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.fileaccess.utils import create_dirs
 from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
 
-name = "thick_square_roll"
+name = "test"
 shot_path = "resource/shots/" + name + "/"
 
 N = 0
-n_positions = 1000 - N * 100
-n_batches = 100 - N
+n_positions = 100 - N * 100
+n_batches = 10 - N
 cam_range_side = (-1, 1)
 cam_range_forward = (0, 5)
 cam_range_lift = (-0.5, 1.5)
@@ -57,7 +57,7 @@ scene_engine = SceneEngine(scene, width=width, height=height)
 shot_creator = ShotCreate(position_gen, light_gen, scene_engine, perc_empty=0.1)
 
 create_dirs([shot_path])
-set_writer = SetFileParser(shot_path, img_format='bmp', label_format='xml', start_idx=N * 100)
+set_writer = DatasetParser.get_parser(shot_path, image_format='bmp', label_format='xml', start_idx=N * 100,color_format='bgr')
 
 for i in range(n_batches):
     tic()

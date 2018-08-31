@@ -26,8 +26,8 @@ class GateGenerator(DatasetGenerator):
     def __init__(self, directories: [str], batch_size: int, shuffle: bool = True, img_format: str = 'jpg',
                  color_format='yuv',
                  label_format: str = 'pkl', n_samples=None, valid_frac=0.0, start_idx=0, org_aspect_ratio=1.05,
-                 filter=None, remove_filtered=True, remove_empty=False):
-        self.remove_empty = remove_empty
+                 filter=None, remove_filtered=True, max_empty=1.0, forever=True):
+        self.forever = forever
         self._filter = filter
         self.remove_filtered = remove_filtered
         self.org_aspect_ratio = org_aspect_ratio
@@ -37,6 +37,7 @@ class GateGenerator(DatasetGenerator):
         self.shuffle = shuffle
         self.img_format = img_format
         self.directories = directories
+        self.max_empty_frac = max_empty
         files_all = []
         for d in directories:
             files_dir = sorted(glob.glob(d + "/*." + img_format))
@@ -71,6 +72,8 @@ class GateGenerator(DatasetGenerator):
     def _generate(self, files):
         current_batch = []
         files_it = iter(files)
+        max_empty = int(self.max_empty_frac*self.n_samples)
+        n_empty = 0
         if not files:
             raise ValueError('GateGenerator::Cannot generate from empty list.')
         while True:
@@ -89,9 +92,11 @@ class GateGenerator(DatasetGenerator):
                     else:
                         label_filtered = label
 
-                    if self.remove_empty and len(label_filtered.objects) == 0:
-                        continue
-
+                    if len(label_filtered.objects) == 0:
+                        if n_empty < max_empty:
+                            n_empty += 1
+                        else:
+                            continue
 
                     n_filtered = len(label.objects) - len(label_filtered.objects)
                     # print("Filtered labels: {}".format(n_filtered))
@@ -107,5 +112,9 @@ class GateGenerator(DatasetGenerator):
                     del current_batch
                     current_batch = []
             except StopIteration:
-                if self.shuffle: random.shuffle(files)
-                files_it = iter(files)
+                if self.forever:
+                    if self.shuffle: random.shuffle(files)
+                    files_it = iter(files)
+                else:
+                    break
+

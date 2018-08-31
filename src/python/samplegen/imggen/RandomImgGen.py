@@ -57,7 +57,7 @@ class RandomImgGen(ImgGen):
         idx_fg = shot.array != self.background_color
         new_img.array[idx_fg] = shot.array[idx_fg]
 
-        if not np.any(idx_fg):
+        if not np.any(idx_fg) or not kernels:
             return new_img
         else:
             new_img = self.convolve(idx_fg, new_img, kernels)

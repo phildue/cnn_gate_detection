@@ -29,9 +29,9 @@ class Pose:
         return self.pitch == other.pitch and \
                self.roll == other.roll and \
                self.yaw == other.yaw and \
-               self.north == other.dist_forward and \
-               self.east == other.dist_side and \
-               self.up == other.lift
+               self.north == other.north and \
+               self.east == other.east and \
+               self.up == other.up
 
     def __add__(self, other):
         return Pose(north=self.north + other.north,
