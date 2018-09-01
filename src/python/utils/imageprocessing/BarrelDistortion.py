@@ -263,12 +263,12 @@ class BarrelDistortion(DistortionModel):
         h, w = coord.shape[:2]
 
         dx_x = k_1 * x ** 2 + k_1 * y ** 2 * (l_x + 1) + k_2 * (x ** 2 + y ** 2) ** 2 + x * (
-            2 * k_1 * x + 4 * k_2 * x * (x ** 2 + y ** 2)) + 1
+                2 * k_1 * x + 4 * k_2 * x * (x ** 2 + y ** 2)) + 1
         dx_y = x * (2 * k_1 * y * (l_x + 1) + 4 * k_2 * y * (x ** 2 + y ** 2))
 
         dy_x = y * (2 * k_1 * x / s + 4 * k_2 * x * (x ** 2 + y ** 2) / s)
         dy_y = k_1 * x ** 2 / s + k_1 * y ** 2 * (l_y + 1) / s + k_2 * (x ** 2 + y ** 2) ** 2 / s + y * (
-            2 * k_1 * y * (l_y + 1) / s + 4 * k_2 * y * (x ** 2 + y ** 2) / s) + 1
+                2 * k_1 * y * (l_y + 1) / s + 4 * k_2 * y * (x ** 2 + y ** 2) / s) + 1
 
         gradient = np.zeros((h, w, 2, 2))
         gradient[:, :, 0, 0] = dx_x
@@ -276,3 +276,22 @@ class BarrelDistortion(DistortionModel):
         gradient[:, :, 1, 0] = dy_x
         gradient[:, :, 1, 1] = dy_y
         return gradient
+
+    def __repr__(self):
+        return 'Scale: {}\n' \
+               'Shape: {}\n' \
+               'Eps: {}\n' \
+               'Center: {}\n' \
+               'DistRadius: {}\n' \
+               'NonRad Params: {}\n' \
+               'MaxIterations: {}\n' \
+               'Squeeze: {}\n' \
+               'RadDist Params: {}\n'.format(self.scale,
+                                             self.img_shape,
+                                             self.epsilon,
+                                             self.center,
+                                             self.distortion_radius,
+                                             self.non_rad_dist_params,
+                                             self.max_iterations,
+                                             self.squeeze,
+                                             self.rad_dist_params)

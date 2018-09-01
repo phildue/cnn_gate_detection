@@ -19,7 +19,7 @@ class TransformMotionBlur(ImgTransform):
 
         self.direction = direction
 
-    def transform(self, img: Image, label: ImgLabel):
+    def transform(self, img: Image, label: ImgLabel = ImgLabel([])):
         img_t = img.copy()
         label_t = label.copy()
 
@@ -39,14 +39,20 @@ class TransformMotionBlur(ImgTransform):
     def kernel_horizontal(kernel_size, sigma):
         kernel_offset = int((kernel_size - 1) / 2)
         kernel = np.zeros((kernel_size, kernel_size))
-        kernel[kernel_offset, :] = np.ones(kernel_size) * sigma
-        kernel /= kernel_size
+        for i in range(kernel_size):
+            kernel[kernel_offset, i] = TransformMotionBlur.gaussian1d(i, kernel_offset, sigma)
+        kernel /= np.sum(kernel)
         return kernel
 
     @staticmethod
     def kernel_vertical(kernel_size, sigma):
         kernel_offset = int((kernel_size - 1) / 2)
         kernel = np.zeros((kernel_size, kernel_size))
-        kernel[:, kernel_offset] = np.ones(kernel_size) * sigma
-        kernel /= kernel_size
+        for i in range(kernel_size):
+            kernel[i, kernel_offset] = TransformMotionBlur.gaussian1d(i, kernel_offset, sigma)
+        kernel /= np.sum(kernel)
         return kernel
+
+    @staticmethod
+    def gaussian1d(x, mean, sigma=1.0):
+        return 1 / sigma * np.sqrt(2 * np.math.pi) * np.exp(-0.5 * ((x - mean) / sigma) ** 2)
