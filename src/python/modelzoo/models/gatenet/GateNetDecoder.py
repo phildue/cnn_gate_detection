@@ -36,10 +36,10 @@ class GateNetDecoder(Decoder):
         """
         coord_t_dec = coord_t.copy()
 
-        coord_t_dec[:, 0] *= coord_t_dec[:, -2]
-        coord_t_dec[:, 2] *= coord_t_dec[:, -2]
-        coord_t_dec[:, 1] *= coord_t_dec[:, -1]
-        coord_t_dec[:, 3] *= coord_t_dec[:, -1]
+        coord_t_dec[:, 0] *= coord_t_dec[:, -2] * self.norm[0]
+        coord_t_dec[:, 2] *= coord_t_dec[:, -2] * self.norm[0]
+        coord_t_dec[:, 1] *= coord_t_dec[:, -1] * self.norm[1]
+        coord_t_dec[:, 3] *= coord_t_dec[:, -1] * self.norm[1]
 
         coord_t_dec[:, 0] += coord_t_dec[:, -4]
         coord_t_dec[:, 1] += coord_t_dec[:, -3]

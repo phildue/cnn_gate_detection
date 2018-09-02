@@ -43,7 +43,7 @@ class YoloEncoder(Encoder):
         anchor_t[:, :, :, 1] = cy_grid
 
         for i in range(n_boxes):
-            anchor_t[:, :, i, 2:4] = np.array(norm) / np.array(grid) / anchor_dims[i]
+            anchor_t[:, :, i, 2:4] = anchor_dims[i] / np.array(norm)
 
         anchor_t = np.reshape(anchor_t, (grid[0] * grid[1] * n_boxes, -1))
 
@@ -69,7 +69,7 @@ class YoloEncoder(Encoder):
                 print("\nGateEncoder::No matching anchor box found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                class_probs[match_idx, 0] = 1.0
+                class_probs[match_idx, b.prediction] = 1.0
                 coords[match_idx] = b.cx, b.cy, b.w, b.h
 
         confidences[np.isnan(confidences)] = 0.0

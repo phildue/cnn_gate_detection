@@ -1,4 +1,4 @@
-\chapter{Synthesizing Data to Train an Object Detector for Empty Wire Frame Objects on an \ac{MAV}}
+\chapter{Synthesizing Data for Object Detection on \acp{MAV}}
 \label{sec:training}
 
 Machine learning relies on the assumption that a general concept can be extracted from a limited set of examples. In Supervised Machine Learning, the set of examples $X$ is augmented with a set of labels $Y$ that describes task dependent information that is present in the sample. For Object Detection this could be the coordinates of the bounding box that surrounds the object of interest. The goal is to learn a hypothesis $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding target labels:
@@ -7,21 +7,17 @@ $$
 h(X_T)\rightarrow Y_T
 $$ 
 
-Whether $h$ is performing well, can be evaluated by splitting $D_S$ in a training set $D_{train}$ and test set $D_{test}$. $h$ is learned using the full information of $D_{train}$ and applied on $D_{test}$. By evaluating a performance metric $m$ on $D_{test}$ the expected performance of $h$ on $D_T$ can be estimated and allows evaluate whether model and dataset are suitable for the task.
+Whether $h$ is performing well, can be evaluated by splitting $D_S$ in a training and test set. $h$ is learned using the full information of the training set and applied on the test set. By evaluating a performance metric $m$ on the models output, the expected performance of $h$ on $D_T$ can be estimated and allows to evaluate whether model and dataset are suitable for the task.
 			
-In this setting it is assumed that $D_S$ and $D_T$ are \ac{i.i.d.}. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
-
-Learning models in such an environment is concerned by the field of Transfer Learning. The goal is to find a concept $h$ that performs best in the target domain $T$. Similar to $m_A$ and $m$ the performance $m_S$ in $S$ and the performance $m_T$ in $T$ can be used to evaluate whether a suitable model/dataset has been chosen/is available.
-
-The task of learning from synthetic data can be summarized in:
+In this setting it is assumed that the samples in $S$ and $T$ are \ac{i.i.d.}. However, when $S$ is synthesized, this assumption is violated as $S$ will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race are unknown and can be significantly different to the ones used at training time. Such a setting, in which $S$ only shares a subset of properties with $T$, is also referred to as a domain shift scenario. The goal is to create source domain $S$ and find a concept $h$ that maximizes its performance $m_T$ in the target domain. It can be summarized in:
 
 $$
 \text{arg}\max\limits_{h,S} m_T
 $$
 
-The goal is to create source domain $D_S$ and find a concept $h$ that maximizes its performance $m_T$ in the target domain. This formulation yields two levels at which the domain shift problem has to be addressed: (1) Generating data $S$ and (2) finding a hypothesis $h$ that maximizes the performance.
+In order to evaluate whether the generated data is suitable domain shifts on different levels are mode
 
-This thesis addresses the first level. Data is generated to train a model for real world applications. The focus lays on properties that can be influenced with a graphical engine, such as light conditions and camera placement. As the objects of a graphical engine are rendered, another shift in appearance can be expected due to the limitations of the graphic engine to display the real world. However, this domain shift is not considered as it is beyond the scope of this work. Furthermore the conducted research is limited to \ac{CNN}-based object detection as they are investigated in this thesis. The chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
+The conducted research focuses on \ac{CNN}-based object detection as they are investigated in this thesis. This chapter investigates data generation while the exact model is described in \Cref{sec:object_detection}.
 
 The relevant question to be investigated in this chapter is the following:
 

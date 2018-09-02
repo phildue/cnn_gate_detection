@@ -14,6 +14,7 @@ anchors = np.array([[[1.08, 1.19],
                      [6.63, 11.38],
                      [9.42, 5.11],
                      [16.62, 10.52]]])
+# 10,14, 23,27, 37,58, 81,82, 135,169, 344,319
 
 architecture = [
     {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},

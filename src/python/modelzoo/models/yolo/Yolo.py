@@ -153,9 +153,9 @@ class Yolo(Predictor):
                                     n_classes=self.n_classes + 1,
                                     color_format=color_format)
 
-        decoder = YoloDecoder(norm=norm,
-                              grid=grid,
-                              class_names=class_names)
+        decoder = YoloDecoder(n_classes=len(class_names),
+                              norm=norm,
+                              grid=grid)
         postprocessor = Postprocessor(decoder=decoder,
                                       conf_thresh=self.conf_thresh,
                                       iou_thresh=iou_thresh)

@@ -2,6 +2,7 @@ from pprint import pprint
 
 from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.yolo.Yolo import Yolo
 from modelzoo.visualization.demo import demo_generator
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
@@ -12,7 +13,7 @@ import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/eth'],
+generator = GateGenerator(directories=['resource/ext/samples/muro'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format=None,
@@ -26,16 +27,17 @@ generator = GateGenerator(directories=['resource/ext/samples/eth'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/0108/mavnet_flight_filtered_noempty208x208/'
+src_dir = 'out/thesis/datagenyolov3_person416x416_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
-model = GateNet.create_by_arch(architecture=summary['architecture'],
-                               weight_file=src_dir + 'model.h5', batch_size=8, norm=summary['img_res'],
-                               anchors=summary['anchors'],
-                               color_format='yuv',
-                               # preprocessor=TransformGray(),
-                               conf_thresh=0.6,
-                               n_polygon=4
-                               )
+model = Yolo.create_by_arch(architecture=summary['architecture'],
+                            weight_file=src_dir + 'model.h5', batch_size=8, norm=summary['img_res'],
+                            anchors=summary['anchors'],
+                            color_format='bgr',
+                            # preprocessor=TransformGray(),
+                            conf_thresh=0.0,
+                            augmenter=None,
+                            class_names='muro'
+                            )
 # create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
 demo_generator(model, generator, t_show=0, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])

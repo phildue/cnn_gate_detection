@@ -52,7 +52,7 @@ class GateNetEncoder(Encoder):
         anchor_t[:, :, :, 1] = cy_grid
 
         for i in range(n_boxes):
-            anchor_t[:, :, i, 2:4] = np.array(norm) / np.array(grid) / anchor_dims[i]
+            anchor_t[:, :, i, 2:4] = anchor_dims[i]
 
         anchor_t = np.reshape(anchor_t, (grid[0] * grid[1] * n_boxes, -1))
 
