@@ -38,7 +38,7 @@ def show_img(path):
         return ImgLabel(objs_in_size)
 
     gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
-                                   filter=filter, remove_filtered=False)
+                                   filter=None, remove_filtered=False)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -56,5 +56,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight'])
+show_img(path=['resource/ext/samples/muro/'])
 # show_voc()

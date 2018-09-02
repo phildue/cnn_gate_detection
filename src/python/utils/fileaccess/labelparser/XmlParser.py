@@ -103,7 +103,6 @@ class XmlParser(AbstractDatasetParser):
                 tree = ET.parse(f)
                 objects = []
                 for element in tree.findall('object'):
-                    # TODO extend this to parse gate corners/pose
                     name = element.find('name').text
 
                     gate_corners_xml = element.find('gate_corners')
@@ -120,19 +119,11 @@ class XmlParser(AbstractDatasetParser):
 
                     else:
                         box = element.find('bndbox')
-                        x1 = int(np.round(float(box.find('xmin').text)))
-                        y1 = int(np.round(float(box.find('ymin').text)))
-                        x2 = int(np.round(float(box.find('xmax').text)))
-                        y2 = int(np.round(float(box.find('ymax').text)))
-                        xmin = min((x1, x2))
-                        xmax = max((x1, x2))
-                        ymin = min((y1, y2))
-                        ymax = max((y1, y2))
+                        xmin = int(np.round(float(box.find('xmin').text)))
+                        ymin = int(np.round(float(box.find('ymin').text)))
+                        xmax = int(np.round(float(box.find('xmax').text)))
+                        ymax = int(np.round(float(box.find('ymax').text)))
                         label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
-                        label.y_min = ymin
-                        label.y_max = ymax
-                        label.x_min = xmin
-                        label.x_max = xmax
                         objects.append(label)
                 return ImgLabel(objects)
             except ET.ParseError:

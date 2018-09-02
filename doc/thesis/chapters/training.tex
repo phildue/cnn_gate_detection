@@ -65,6 +65,8 @@ Several publications demonstrate the usefulness of this method in Object Detecti
 
 While the previous methods simply place the object in a scene \citeauthor{Rozantsev} \cite{Rozantsev} propose to estimate rendering parameters first.
 
+A comparable work has been done in \cite{Madaan2017} to detect wires based on synthetic data. However, the experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
+
 In contrast augmenting the images on a low-level this method allows to generate new view points and does not require original images to augment. However, the created image is likely to be relatively artificial as for example light conditions and shadows are not align with the background scene. Furthermore can the object be placed in quite arbitrary positions and thus violate geometric and physical properties that are present in real images. 
 
 
@@ -116,7 +118,7 @@ The models are implemented in a toolchain that applies the different steps. An o
 	\label{fig:training:toolchain_datagen}
 \end{figure}
 
-\subsection{Environment Model}
+\subsection{Scene Generation}
 \label{sec:training:scene}
 We define environment properties as illumination and background. For example a scene can be set outdoor in the forest at night or indoor with artificial light sources. Two methods are used two create an environment.
 
@@ -153,24 +155,31 @@ In total three base environments are created. Examples can be seen in \Cref{fig:
 
 \begin{figure}[hbtp]
 	\centering
-	\begin{minipage}{\textwidth}
-		\includegraphics[width=\textwidth,height=5cm]{fig/basement_perspective}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/basement_perspective}
 	\end{minipage}
-
-
-\begin{minipage}{\textwidth}
-	\includegraphics[width=\textwidth,height=5cm]{fig/daylight_perspective}
+	\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/basement_perspective}
 \end{minipage}
 
+\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/daylight_perspective}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/daylight_perspective}
+\end{minipage}
 
-\begin{minipage}{\textwidth}
-	\includegraphics[width=\textwidth,height=5cm]{fig/iros_perspective}
+\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/iros_perspective}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/iros_perspective}
 \end{minipage}
 \caption{Base environments when rendering a full scene. From top to bottom: \textit{Basement}, \textit{Daylight}, \textit{IROS}.}
 \label{fig:environments}
 \end{figure}
 
-\subsection{Motion Model}
+\subsection{Camera Placement}
 
 The motion model refers to the camera's point of view. For the implemented tools in \Cref{sec:training:scene} the camera view point can be set during data creation. The camera pose is determined by:
 
@@ -189,8 +198,9 @@ $r$ and $t$ follow a the motion model of a quad-rotor \ac{MAV}.  The development
 
 Using this motion model, the camera follows a certain trajectory through the 3D-Environment. Storing the current image at a frequency of 2 Hz creates the corresponding samples.
 	
-\subsection{Sensor Model}
+\subsection{Post-processing}
 
+\subsubsection{Model-based augmentation}
 In the real world camera and lens have significant influence on the image appearance as well as the performance of neural networks \cite{Andreopoulos2012,Dodge2016a}. In order to model these effects a post-processing step is applied on the images obtained in the previous steps. The experiments in \cite{Carlson2018} show how such a step can be particularly beneficial when applied on artificially generated data. 
 
 Inspired by \cite{Carlson2018} the model for chromatic aberration, exposure, blur and noise is included. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, no model for information loss due to post-processing is applied. Instead all images are converted into YUV-colour space, a format that is obtained from most visual sensors. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected.
@@ -204,7 +214,7 @@ The post-processing pipeline is summarized as:
 
 The individual models are described in the following.
 
-\subsection{Lens Distortion}
+\paragraph{Lens Distortion}
 
 \todo{Explain what lense does and its effects}
 
@@ -253,7 +263,40 @@ In \Cref{fig:distortion} an example is shown. The distortion is applied on the o
 \label{fig:distortion}
 \end{figure}
 
-\subsubsection{Motion Noise}
+\paragraph{Chromatic Aberration.}
+
+Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
+
+\begin{equation}
+\begin{pmatrix}
+x' \\
+y' \\
+1
+\end{pmatrix} = \begin{pmatrix}
+S & 0 & t_x \\
+0 & S & t_y \\
+0 & 0 & 1
+\end{pmatrix} \begin{pmatrix}
+x \\
+y \\
+1
+\end{pmatrix}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
+	\end{minipage}
+	\caption{Example Chromatic Aberration with $S=[1, 1.01, -5.0]$, $t_x=[10,0.1,0.01]$, $t_y=[0.1,-0.1,0.0.01]$. Original scene (left), after transformation (right)}
+	\label{fig:chromatic}
+\end{figure}
+
+
+\paragraph{Motion Noise.}
 
 Motion blur is a phenomenon depending on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian median filter:
 
@@ -287,39 +330,8 @@ Where $\mathcal{N}$ is a Gaussian-PDF with mean $\mu$ and variance $\sigma$,  $K
 	\label{fig:motionblur}
 \end{figure}
 
-\subsubsection{Chromatic Aberration}
 
-Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
-
-\begin{equation}
-	\begin{pmatrix}
-	x' \\
-	y' \\
-	1
-	\end{pmatrix} = \begin{pmatrix}
-	S & 0 & t_x \\
-	0 & S & t_y \\
-	0 & 0 & 1
-	\end{pmatrix} \begin{pmatrix}
-	x \\
-	y \\
-	1
-	\end{pmatrix}
-\end{equation}
-
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
-	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
-	\end{minipage}
-	\caption{Example Chromatic Aberration with $S=[1, 1.01, -5.0]$, $t_x=[10,0.1,0.01]$, $t_y=[0.1,-0.1,0.0.01]$. Original scene (left), after transformation (right)}
-	\label{fig:chromatic}
-\end{figure}
-
-\subsubsection{Out-of-focus Blur}
+\paragraph{Out-of-focus Blur.}
 
 Next to motion, sensor noise can lead to blurry images. For the blur operation a 2D Gaussian kernel is applied on the input image with:
 
@@ -339,7 +351,7 @@ Next to motion, sensor noise can lead to blurry images. For the blur operation a
 	\label{fig:focusblur}
 \end{figure}
 
-\subsubsection{Exposure}
+\paragraph{Exposure.}
 
 With the exposure model:
  
@@ -371,91 +383,111 @@ S = f^{-1}(I) = \frac{\ln(\frac{255}{I}-1)}{-A}
 	\label{fig:exposure}
 \end{figure}
 
-\subsubsection{Noise}
+\paragraph{Noise.}
 
 
 \subsection{Artificial Augmentation}
 
 Inspired by \cite{Howard2013, Redmon, Liu} the application of several artificial image transformations is studied. The overall goal is to generate more variations in the input signal and thus to make the model more invariant against changes in those properties. We do not use image scaling or translation for augmentation as it is easier to incorporate such variations using the motion model.
 
-\begin{enumerate}
-	\item \textbf{Brightness} In order to obtain a model that is more robust against illumination changes image brightness is alternated. Therefore a scaling on the V-channel in HSV-colour space is applied. The scaling is drawn from a uniform distribution in between $b_1$ and $b_2$.
+\paragraph{Brightness.} In order to obtain a model that is more robust against illumination changes image brightness is alternated. Therefore a scaling on the V-channel in HSV-colour space is applied. The scaling is drawn from a uniform distribution in between $b_1$ and $b_2$.
 	
-	\item \textbf{Grayscale} By transforming a subset of samples into grayscale images, the model is forced to learn more color invariant features. A grayscale conversion is applied with a probability of $g$.
+\paragraph{Grayscale.} By transforming a subset of samples into grayscale images, the model is forced to learn more color invariant features. A grayscale conversion is applied with a probability of $g$.
 	
-	\item \textbf{Histogram Equalization} Changes in the environmental conditions can also affect contrast. By applying a histogram equalization on a subset of images, variations in contrast are achieved. \todo{histeq}
+\paragraph{Histogram Equalization.} Changes in the environmental conditions can also affect contrast. By applying a histogram equalization on a subset of images, variations in contrast are achieved. \todo{histeq}
 	
-	\item \textbf{Flip} By mirroring the image vertically, more variations in object locations are achieved. The operation is applied with a probability of $f$.
-\end{enumerate}
+\paragraph{Flip.} By mirroring the image vertically, more variations in object locations are achieved. The operation is applied with a probability of $f$.
 
 
 \subsection{Hypothesis}
 \label{sec:training:hypothesis}
 
-\subsubsection{Background Sensitivity}
+Transfer to real should be easier if complexity can be modelled
 
-Several methods in \Cref{sec:training:related} show how synthetic data can be used to benefit the performance of Computer Vision models. However, most of described approaches focus on objects that have complex structures and therefore provide robust features that are insensitive to image background. For example a face contains eyes and a nose, which appearances are influenced to some extend by light conditions but relatively independent from the rest of the scene. \ac{EWFO} on the other hand do not contain this kind of complex structure but mainly consist of image background. Therefore we hypothesize that \acp{EWFO} are particularly sensitive to domain shifts. That is, if the backgrounds in $S$ are very different to the backgrounds in $T$ the performance $m_T$ will be much less than the performance $m_S$. In contrast the performance difference of an object with rich structure in the same setting will be much smaller. 
+Most of described approaches in \Cref{sec:training:related} focus on objects that have complex structures and therefore provide robust features that are independent of the rest of the scene. For example a face contains eyes and a nose, which appearances are influenced to some extend by light conditions but relatively independent from image background. It has been shown in \todoref{visualizing cnns} how object detectors exploit this kind of structure in the learned representation. We hypothesize that a model to detect such complex objects is less domain dependent and can therefore be more easily transferred to domains with other environmental conditions. That is the performance drop $\Delta m$ of a model trained in $S$ and applied in $T$ where $S$ and $T$ are different in terms of environmental conditions will be larger for an \ac{EWFO} than for a more complex object.
 
-A comparable work has been done in \cite{Madaan2017} to detect wires based on synthetic data. However, the experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
+If the environmental conditions have an high impact, their modelling is particularly important in the data generation process. We hypothesize that, as pasting the image on random backgrounds fails to capture these conditions, it is not a sufficient method to train a model for the detection of \acp{EWFO}. That is the performance drop $\Delta m$ of a model trained in $S$ and applied in $T$ where $S$ is generated by pasting a 3D-Mesh on random backgrounds and $T$ is modelled using full environment rendering will be prohibitively large.
+ 
+From that it follows that in order to generate data for \ac{EWFO} Object Detection it is particularly important to address the domain shift. In literature two ways to approach this problem on the data level can be found: (1) providing a lot of variance in the training data to obtain a representation that is robust against domain shifts; (2) including target domain knowledge in the training data to obtain a representation that is tailored to the target domain. We hypothesize that there is a trade-off between these two approaches: A model that performs well across domains will perform poorer in a particular domain but better in other domains compared to a model that is trained for that particular domain. Hence, we hypothesize, if knowledge of $T$ is included when generating $S$ the performance in $T$ will improve given a fixed modelsize/ the model can be simplified achieving equal performance. 
 
-\subsubsection{Scene Dependency}
-
-A common method in literature is to paste 3D-Meshes on real images to generate training data. With this method, the consistency between object of interest and the rest of the scene is violated. That is the object can appear in locations which are physically impossible. Furthermore, the perspective towards the object does not align with the background view and the shadows do not fall correctly. We hypothesize that this creates an unrealistic, simplified learning problem. The model is likely to learn how to detect objects that do not align with the scene rather than learning a robust representation that can be transformed into the real world. Following, the first hypothesis we hypothesize this is less of a problem for complex objects, that provide rich structure that is consistent across images, but affects particularly the generation of data for \acp{EWFO}.
-
-\subsubsection{Camera Placement}
-
-Most methods in literature use random placement of the camera to generate view points. Although easy to implement we hypothesize this method is likely to create a dataset bias. View points that appear in the real world are potentially under-represented while unrealistic and uncommon view points are over-represented. Therefore we hypothesize that using a motion model for the camera that resembles the real world will improve model performance. 
-
-
-\subsubsection{Generalization versus Specialization}
-\label{sec:training:genvsspc}
-
-While some approaches discussed in \Cref{sec:training:related} aim to learn a general representation that is robust against sensor noise or changes in illumination, other methods try to incorporate more target domain knowledge to improve performance. These two ways can be seen as generalization and specialization.
-
-We hypothesize that there is a trade-off between these two entities. A model that performs generally well across domains will perform poorer in a particular domain compared to a model that is trained for that particular domain.
-
-The aforementioned hypotheses are summarized in the following:
+In the data generation process this can be addressed on several levels:
 
 \begin{enumerate}
-	\item[$\mathcal{H}_1$] \ac{EWFO} are more sensitive to domain shifts than other objects. Hence, the performance drop between $m_T$ and $m_S$ of a model $h$ trained in $S$ where the environment conditions in $S$ are very different to the ones in $T$ will be larger for a \ac{EWFO} than for an object with rich structure.
+	\item \textbf{Scene Generation.} A model trained for a particular room, with particular lightning conditions will perform better in that room but perform poorly in other rooms than a model trained on various rooms with various lightning conditions. By modelling the environment of the real data, the performance on the real data can be improved.
 	
-	\item[$\mathcal{H}_2$] The more general a model has to be the harder the learning problem becomes. Hence $m_{train}$ drops with an increasing degree of generalization $g$.
+	\item \textbf{Camera Placement.} A model trained using the quad-rotor model will perform better on real data than a model trained using random camera locations.
 	
-	\item[$\mathcal{H}_3$] The more specialized a model is, the less parameters are necessary to achieve the same performance. Hence, $m_train$ remains constant when reducing the degree of generalization and the number of parameters $w$.
-	
-	\item[$\mathcal{H}_4$] The more properties of $T$ can be incorporated in $S$ the less complex a model has to be to achieve similar performance. That is the same $m_T$ can be achieved with a model with smaller $w$ when the properties in $S$ and $D$ are closer.
+	\item \textbf{Postprocessing.} A model trained using a post-processing pipeline that models the real-world sensor will perform better on the real data than a model that is trained on using varying parameters in the post-processing pipeline.  
 \end{enumerate}
 
+The hypotheses are summarized in the following:
 
+\begin{enumerate}
+	\item[$\mathcal{H}_1$] The performance drop $\Delta m$ of a model trained in $S$ and applied in $T$ where $S$ and $T$ are different in terms of environmental conditions will be larger for an \ac{EWFO} than for a more complex object.
+	
+	\item[$\mathcal{H}_2$] In contrast to a more complex object, the performance drop $\Delta m$ of a model for the detection of \acp{EWFO} trained in $S$ and applied in $T$ where $S$ is generated by pasting a 3D-Mesh on random backgrounds and $T$ is modelled using full environment rendering will be prohibitively large.
+	
+	\item[$\mathcal{H}_3$] A model trained in $S_0$ where $S_0 \in S$ and applied in $T_0$, where $S_0 = T_0$ will perform better in $T_0$ than a model that is trained in $S$ but perform worse in $T_1$ where $T_1 \in S$ and $T_1 \neq S_0$. 
 
+	\item[$\mathcal{H}_3$] By including properties of $T$ in $S$ where $S$ is an artificial set $T$ is the real data, the performance $m_T$ of a model can be improved. 
 
-
-
+\end{enumerate}
 
 \section{Experiments}
 \label{sec:training:experiments}
+In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}. The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 10 runs are reported.
+\begin{equation}
+	x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
+	\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+	\label{eq:distroexp}
+\end{equation}
 
 
-The experiments conducted
+\subsection{Experiment I}
 
-Initially those domain properties are investigated that can be controlled when creating the training data. The domain shift between synthethi
+In order to evaluate $\mathcal{H}_1$ a model is trained in a $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.} The source environment is \textit{Basement}, the target domain is \textit{Daylight.} The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consist of 1000 samples and fixed object arrangement. The view points are samples from the distributions described in the following:
+$$
+x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)
+$$
+$$
+\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+$$
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
 
 
-\todo{Prepare a synthetic dataset of several rooms}
-\todo{Prepare a real dataset of at least two rooms}
+\subsection{Experiment II}
 
-\todo{Mesaure similarity between generated set and real set: label distribution (h,w, location, angles), domain(?), h divergence}
+In order to evaluate $\mathcal{H}_2$ a model is trained in a $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.}  The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consist of 1000 samples and fixed object arrangement. The training set is generated by replacing the background with images samples from the Pascal VOC dataset. The test set is taken in \textit{Daylight} Environment. The view points are samples from the distributions described in the following:
 
-\todo{Quantify each property. Make a plot performance vs more effects}
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
 
+\subsection{Experiment III}
+
+In order to evaluate $\mathcal{H}_3$ the individual domain properties and their incorporation in the data generation process are studied. Each property is compared in terms of specialization and generalization. That is the property are varied between three configurations: (1) Resembling the target domain, (2) Generalizing across domains, (3) Disabled (if applicable).
+
+The test set is generated in the environment \textit{IROS}, using the quad-rotor model. In total 1000 images are sampled taken from one trajectory. The post-processing applies:
+\begin{enumerate}
+	\item Lense distortion
+	\item Chromatic Abberration
+	\item Motion Blur
+	\item Out-of-Focus Blur
+	\item Exposure
+\end{enumerate}
+
+\subsection{Experiment IV}
+
+In order to evaluate $\mathcal{H}_4$ the individual domain properties are measured on the target domain and incorporated in the training set.
 
 
 \section{Results}
 \label{sec:training:results}
 
+\section{Discussion}
+\label{sec:training:discussion}
+
 \section{Conclusion}
 \label{sec:training:conclusion}
 
-%\section{Summaries}
-%\subsection{Modeling Camera Effects to Improve Deep Vision for Real and Synthetic Data\cite{Carlson2018}}
-%
+

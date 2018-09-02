@@ -4,8 +4,10 @@ import pprint as pp
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
+from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
 from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
@@ -55,14 +57,12 @@ def train(architecture=MODEL_NAME,
           img_res=(IMG_HEIGHT, IMG_WIDTH),
           anchors=ANCHORS,
           augmenter=AUGMENTER,
-          input_channels=3,
           weight_file=None,
-          n_polygon=4,
           max_angle=30,
           min_obj_size=0.1,
           max_obj_size=1.2,
           validation_set=None,
-          ):
+          class_names='gate'):
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
@@ -78,36 +78,18 @@ def train(architecture=MODEL_NAME,
     Model
     """
 
-    if isinstance(architecture, str):
-        predictor = ModelFactory.build(architecture, batch_size, src_dir=None, img_res=img_res, grid=[(13, 13)],
-                                       anchors=anchors)
-        predictor.preprocessor.augmenter = augmenter
-    else:
-        predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
-                                           norm=img_res, input_channels=input_channels, weight_file=weight_file,
-                                           n_polygon=n_polygon)
+    predictor = Yolo.create_by_arch(class_names=class_names,
+                                    architecture=architecture,
+                                    color_format='bgr',
+                                    anchors=anchors,
+                                    batch_size=batch_size,
+                                    augmenter=augmenter,
+                                    norm=img_res,
+                                    weight_file=weight_file)
 
     """
     Datasets
     """
-
-    def filter(label):
-
-        objs_in_size = [obj for obj in label.objects if
-                        min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
-
-        max_aspect_ratio = 1.05 / (max_angle / 90)
-        objs_within_angle = [obj for obj in objs_in_size if obj.height / obj.width < max_aspect_ratio]
-
-        objs_in_view = []
-        for obj in objs_within_angle:
-            mat = obj.gate_corners.mat
-            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
-                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
-                continue
-            objs_in_view.append(obj)
-
-        return ImgLabel(objs_in_size)
 
     valid_frac = 0.05
     valid_gen = None
@@ -118,7 +100,7 @@ def train(architecture=MODEL_NAME,
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              remove_filtered=False, max_empty=True, filter=filter)
+                              remove_filtered=False, max_empty=0.0)
 
     """
     Paths
@@ -137,14 +119,11 @@ def train(architecture=MODEL_NAME,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    if n_polygon == 4:
-        def average_precision(y_true, y_pred):
-            return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-                                           norm=predictor.norm, iou_thresh=0.6).compute(y_true, y_pred)
+    # def average_precision(y_true, y_pred):
+    #     return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+    #                                 norm=predictor.norm, iou_thresh=0.6).compute(y_true, y_pred)
 
-        predictor.compile(params=params, metrics=[average_precision])
-    else:
-        predictor.compile(params=params)
+    predictor.compile(params=params)
 
     """
     Training Config
@@ -170,8 +149,6 @@ def train(architecture=MODEL_NAME,
     summary['img_res'] = img_res
     summary['grid'] = predictor.grid
     summary['valid_set'] = validation_set
-    summary['min_obj_size'] = min_obj_size
-    summary['max_obj_size'] = max_obj_size
     summary[max_angle] = max_angle
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)

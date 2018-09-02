@@ -20,8 +20,6 @@ class ObjectLabel:
 
     def __init__(self, class_name, bounding_box, confidence=1.0):
         self.confidence = confidence
-        if class_name not in ObjectLabel.classes:
-            ObjectLabel.classes.append(class_name)
         self.class_name = class_name
         self.__bounding_box = bounding_box
 
@@ -41,33 +39,17 @@ class ObjectLabel:
     def x_min(self):
         return np.min(self.__bounding_box[:, 0])
 
-    @x_min.setter
-    def x_min(self, x):
-        self.__bounding_box[np.argmin(self.__bounding_box[:, 0])] = x
-
     @property
     def y_min(self):
         return np.min(self.__bounding_box[:, 1])
-
-    @y_min.setter
-    def y_min(self, y):
-        self.__bounding_box[np.argmin(self.__bounding_box[:, 1])] = y
 
     @property
     def x_max(self):
         return np.max(self.__bounding_box[:, 0])
 
-    @x_max.setter
-    def x_max(self, x):
-        self.__bounding_box[np.argmax(self.__bounding_box[:, 0])] = x
-
     @property
     def y_max(self):
         return np.max(self.__bounding_box[:, 1])
-
-    @y_max.setter
-    def y_max(self, y):
-        self.__bounding_box[np.argmax(self.__bounding_box[:, 1])] = y
 
     @property
     def class_id(self):

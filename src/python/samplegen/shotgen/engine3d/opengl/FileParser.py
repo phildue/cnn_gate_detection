@@ -20,9 +20,13 @@ class FileParser:
             elif mtl is None:
                 raise ValueError("mtl file doesn't start with newmtl stmt")
             elif values[0] == 'map_Kd':
+
                 # load the texture referred to by this declaration
                 mtl[values[0]] = values[1]
-                surf = pygame.image.load(mtl['map_Kd'])
+                surf_file = mtl['map_Kd']
+                if surf_file.endswith('.tga'):
+                    TGA_Header
+                surf = pygame.image.load()
                 image = pygame.image.tostring(surf, 'RGBA', 1)
                 ix, iy = surf.get_rect().size
                 texid = mtl['texture_Kd'] = glGenTextures(1)

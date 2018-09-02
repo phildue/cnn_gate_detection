@@ -3,13 +3,14 @@ import pygame
 from samplegen.shotgen.engine3d.PointProjector import PointProjector
 from samplegen.shotgen.engine3d.SceneEngine import SceneEngine
 from samplegen.shotgen.positiongen.PositionGen import PositionGen
-from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
+from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 
 
 class Explorer:
     def __init__(self, scene_engine: SceneEngine, projector: PointProjector = None, move_rate=0.1,
-                 position_gen: PositionGen = None, recorder: SetFileParser = None,
+                 position_gen: PositionGen = None, recorder: DatasetParser = None,
                  ):
 
         self.recorder = recorder
@@ -55,24 +56,24 @@ class Explorer:
                     if event.key == pygame.K_e:
                         position.roll += self.move_rate
                     if event.key == pygame.K_w:
-                        position.dist_forward += self.move_rate
+                        position.north += self.move_rate
                     if event.key == pygame.K_s:
-                        position.dist_forward -= self.move_rate
+                        position.north -= self.move_rate
                     if event.key == pygame.K_a:
-                        position.dist_side -= self.move_rate
+                        position.east -= self.move_rate
                     if event.key == pygame.K_d:
-                        position.dist_side += self.move_rate
+                        position.east += self.move_rate
                     if event.key == pygame.K_r:
-                        position.lift += self.move_rate
+                        position.up += self.move_rate
                     if event.key == pygame.K_f:
-                        position.lift -= self.move_rate
+                        position.up -= self.move_rate
                     if event.key == pygame.K_KP5:
                         position.roll = 0
                         position.pitch = 0
                         position.yaw = 0
-                        position.dist_forward = -10
+                        position.east = -10
                         position.lift = 0
-                        position.dist_side = 0
+                        position.east = 0
                     if event.key == pygame.K_SPACE:
                         img = self.scene_engine.screen_shot()
                         obj_labels = self.projector.create_labels(self.scene_engine.scene.objects)

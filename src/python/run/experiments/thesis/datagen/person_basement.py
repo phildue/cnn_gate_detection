@@ -1,11 +1,6 @@
 import numpy as np
 
-from training.gate.train import train
-from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.TransformFlip import TransformFlip
-from utils.imageprocessing.transform.TransformHistEq import TransformHistEq
-from utils.imageprocessing.transform.TransfromGray import TransformGray
+from training.yolo.train import train
 
 n_repetitions = 10
 img_res = 416, 416
@@ -40,13 +35,11 @@ architecture = [
     {'name': 'predict'}
 ]
 
-model_name = 'yolov3_plain{}x{}'.format(img_res[0], img_res[1])
+model_name = 'yolov3_person{}x{}'.format(img_res[0], img_res[1])
 
-augmenter = RandomEnsemble([
-    (0.5, TransformFlip()),
-])
+augmenter = None
 
-image_source = ['resource/ext/samples/daylight15k']
+image_source = ['resource/ext/samples/muro']
 
 for i in range(n_repetitions):
     train(architecture=architecture,
@@ -57,5 +50,5 @@ for i in range(n_repetitions):
           anchors=anchors,
           epochs=100,
           n_samples=None,
-          input_channels=3,
+          class_names='muro',
           initial_epoch=0)
