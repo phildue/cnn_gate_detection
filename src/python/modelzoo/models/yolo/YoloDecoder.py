@@ -13,6 +13,16 @@ class YoloDecoder(Decoder):
         self.grid = grid
         self.norm = norm
 
+    @staticmethod
+    def softmax(x):
+        """Compute softmax values for each sets of scores in x."""
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum(axis=0)  # only difference
+
+    @staticmethod
+    def sigmoid(x):
+        return 1 / (1 + np.math.exp(-x))
+
     def decode_netout_to_boxes(self, label_t):
         """
         Convert label tensor to objects of type Box.
@@ -20,8 +30,10 @@ class YoloDecoder(Decoder):
         :return: boxes
         """
         coord_t = label_t[:, self.n_classes + 1:]
-        class_t = label_t[:, :self.n_classes]
-        conf_t = label_t[:, 1]
+        class_t = label_t[:, 1:self.n_classes + 1]
+        class_t = YoloDecoder.softmax(class_t)
+        conf_t = label_t[:, 0]
+        conf_t = YoloDecoder.softmax(conf_t)
         coord_t_dec = self.decode_coord(coord_t)
         coord_t_dec = np.reshape(coord_t_dec, (-1, 4))
         class_t = np.reshape(class_t, (-1, self.n_classes))
