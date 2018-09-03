@@ -67,7 +67,7 @@ class YoloLoss(Loss):
         conf_pred = y_pred[:, :, 0:1]
         conf_true = y_true[:, :, 0:1]
 
-        conf_loss = K.binary_crossentropy(conf_pred, conf_true, from_logits=True) * weight
+        conf_loss = K.binary_crossentropy(output=conf_pred, target=conf_true, from_logits=True) * weight
 
         conf_loss_total = .5 * K.sum(K.sum(conf_loss, -1), -1)
 
@@ -84,7 +84,7 @@ class YoloLoss(Loss):
 
         weight = self.scale_prob * positives
 
-        class_loss = K.categorical_crossentropy(class_pred, class_true, from_logits=True) * weight
+        class_loss = K.categorical_crossentropy(output=class_pred, target=class_true, from_logits=True) * weight
 
         class_loss_sum = .5 * K.sum(K.sum(class_loss, -1), -1)
 

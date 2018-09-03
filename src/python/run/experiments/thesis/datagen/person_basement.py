@@ -62,6 +62,7 @@ if __name__ == '__main__':
               image_source=image_source,
               anchors=anchors,
               epochs=100,
+              batch_size=16,
               n_samples=None,
               class_names='muro',
               initial_epoch=0)

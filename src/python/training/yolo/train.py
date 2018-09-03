@@ -25,7 +25,7 @@ MODEL_NAME = 'GateNetV39'
 # {'name': 'max_pool', 'size': (2, 2)},
 # {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
 WORK_DIR = 'v39_rev'
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 N_SAMPLES = None
 EPOCHS = 100
 INITIAL_EPOCH = 0
