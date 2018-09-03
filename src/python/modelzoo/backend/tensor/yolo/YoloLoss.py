@@ -38,7 +38,7 @@ class YoloLoss(Loss):
         return loc_loss + conf_loss + class_loss
 
     def localization_loss(self, y_true, y_pred):
-        positives = y_true[:, :, 0]
+        positives = y_true[:, :, self.n_classes]
 
         w_pos = self.scale_coor * K.stack(4 * [positives], -1)
         coord_true = y_true[:, :, 1:5]
@@ -61,12 +61,12 @@ class YoloLoss(Loss):
         return loc_loss_sum
 
     def confidence_loss(self, y_true, y_pred):
-        positives = y_true[:, :, 1:2]
+        positives = y_true[:, :, self.n_classes:self.n_classes + 1]
 
         weight = self.scale_noob * (1. - positives) + self.scale_obj * positives
 
-        conf_pred = y_pred[:, :, 1:2]
-        conf_true = y_true[:, :, 1:2]
+        conf_pred = y_pred[:, :, self.n_classes:self.n_classes + 1]
+        conf_true = y_true[:, :, self.n_classes:self.n_classes + 1]
         conf_loss = K.pow(conf_pred - conf_true, 2) * weight
 
         conf_loss_total = .5 * K.sum(K.sum(conf_loss, -1), -1)
@@ -77,7 +77,7 @@ class YoloLoss(Loss):
         class_pred = y_pred[:, :, 0:self.n_classes]
         class_true = y_true[:, :, 0:self.n_classes]
 
-        positives = y_true[:, :, 1:2]
+        positives = y_true[:, :, self.n_classes:self.n_classes + 1]
 
         weight = self.scale_prob * K.stack(self.n_classes * [positives])
 

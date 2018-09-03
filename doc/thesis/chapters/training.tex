@@ -1,111 +1,91 @@
-\chapter{Synthesizing Data for Object Detection on \acp{MAV}}
+\chapter{Synthesizing Data for Object Detection on \ac{MAV}}
 \label{sec:training}
 
-Machine learning relies on the assumption that a general concept can be extracted from a limited set of examples. In Supervised Machine Learning, the set of examples $X$ is augmented with a set of labels $Y$ that describes task dependent information that is present in the sample. For Object Detection this could be the coordinates of the bounding box that surrounds the object of interest. The goal is to learn a hypothesis $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding target labels:
+Machine learning relies on the assumption that a general concept can be extracted from a limited set of examples. In Supervised Machine Learning, the set of examples $X$ is augmented with a set of labels $Y$ that describes task dependent information that is present in the sample. For Object Detection this usually describes the coordinates of the bounding box that surrounds the object of interest. The goal is to learn a hypothesis $h$ from a source set $D_S = \{X_{S},Y_{S}\}$ such that it can be applied on a target set of unknown examples $D_T = \{X_{T}\}$ to obtain the corresponding target labels:
 
 $$
 h(X_T)\rightarrow Y_T
 $$ 
 
-Whether $h$ is performing well, can be evaluated by splitting $D_S$ in a training and test set. $h$ is learned using the full information of the training set and applied on the test set. By evaluating a performance metric $m$ on the models output, the expected performance of $h$ on $D_T$ can be estimated and allows to evaluate whether model and dataset are suitable for the task.
+Whether $h$ is performing well, can be evaluated by splitting $D_S$ in a training set and test set. $h$ is learned using the full information of the training set and applied on the test set. By evaluating a performance metric $m$ the expected performance of $h$ in the target domain $T$ can be estimated.
 			
-In this setting it is assumed that the samples in $S$ and $T$ are \ac{i.i.d.}. However, when $S$ is synthesized, this assumption is violated as $S$ will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race are unknown and can be significantly different to the ones used at training time. Such a setting, in which $S$ only shares a subset of properties with $T$, is also referred to as a domain shift scenario. The goal is to create source domain $S$ and find a concept $h$ that maximizes its performance $m_T$ in the target domain. It can be summarized in:
+In this setting it is assumed that the samples in source $S$ and target $T$ domain are \ac{i.i.d.}. However, this can not be assumed within this thesis. As most of the data is artificially created it will share properties with the real data but only to the extent that they can be modelled during creation. For example a graphic engine can not fully capture visual properties of all materials and light sources. Furthermore, are the environmental conditions for applications of the method such as at the \ac{IROS} 2018 Autonomous Drone Race unknown and can be significantly different to the ones used at training time. When the source domain $S$ only shares a subset of properties with the target domain $T$ this is also referred to as a domain shift scenario.
+
+In this thesis the scenario is addressed in the data generation process. We aim to create a synthetic source domain in such a way that the trained model performs well in various target domains of the real world. This goal can be summarized in:
 
 $$
 \text{arg}\max\limits_{h,S} m_T
 $$
 
-In order to evaluate whether the generated data is suitable domain shifts on different levels are mode
-
-The conducted research focuses on \ac{CNN}-based object detection as they are investigated in this thesis. This chapter investigates data generation while the exact model is described in \Cref{sec:object_detection}.
-
+This chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
 The relevant question to be investigated in this chapter is the following:
 
 \textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?}
 
 \begin{enumerate}
 	\item[\textbf{RQ1.1}]What are the implications of the properties of \acp{EWFO} when synthesizing data?
-	\item[\textbf{RQ1.2}]What are the properties of the target domain, namely the \ac{FPV} camera of a \ac{MAV} in a GPS denied scenario?
-	\item[\textbf{RQ1.3}]Can target domain knowledge be used to improve model performance/simplify model complexity ?
-	\item[\textbf{RQ1.4}]How can data be generated in a way that the trained model is robust against expected domain shifts?
+	\item[\textbf{RQ1.2}]How can target domain knowledge be included in the data generation process?
+	\item[\textbf{RQ1.3}]How can data be generated in a way that the trained model is robust against expected domain shifts?
 \end{enumerate}
 
-RQ1.1 Will be answered by comparing the implications of domain properties on \ac{EWFO} and a standard object. RQ1.2 will be answered by analysing example datasets of a target domain. For RQ1.3 and RQ1.4 several domain properties are defined. The questions will be answered by choosing a state of the art method for object detection and training it with varying properties in $D_S$. By evaluating $m_S$ on synthetic data and $m_T$ on real images the influence of these properties will be measured.
+RQ1.1 Will be answered by comparing the implications of domain properties on \ac{EWFO} to a more complex object. RQ1.2 will be answered by modelling aspects of the target domain and investigating how their incorporation in the data generation process affects performance. RQ1.3 will be answered by simulating various source and target domains and studying the effects on model performance.
 
-The remaining parts of this chapter are structured as follows: \Cref{sec:training:related} discusses relevant related work. \Cref{sec:training:meth} describes the used methodology. Based on the gained insights \Cref{sec:training:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:training:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:training:results} describes the obtained results. \Cref{sec:training:conclusion} discusses the results and answers the research question.
+The remaining parts of this chapter are structured as follows: \Cref{sec:training:related} discusses relevant related work. \Cref{sec:training:meth} describes the used methodology. Based on the gained insights \Cref{sec:training:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:training:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:training:results} describes the obtained results. \Cref{sec:training:discussion} discusses the results and \Cref{sec:training:conclusion} answers the research question.
 
 \section{Related Work}
 \label{sec:training:related}
 
-Using synthetic images to train Machine Learning models has a long tradition in Computer Vision especially for tasks where not many example images are available or the ground truth labelling is expensive. Methods vary from changing low level properties of images like brightness or scale over pasting 3D-models of objects on real backgrounds to rendering full 3D-environments. Other publications show how the incorporation of sensor effects is important when generating data. However, most of these methods can be combined in different pipelines. Therefore most publications do not use on particular approach but different combinations. The related approaches are categorized in on which image level they operate.
+Several lines of research concern the generation of training data. Methods vary from changing low level properties of images like brightness or scale over pasting 3D-models of objects on real backgrounds to rendering full 3D-environments. Often various combinations of synthesized and real data are applied. The related approaches are categorized in on which image level they operate.
 
-\subsection{Augmenting Real Data}
-
-\subsubsection{Low-Level Image Augmentation}
+\subsection{Low-Level Image Augmentation}
 
 Low-Level Image Augmentation applies transformations on the samples of a given dataset. It is a common part of current Computer Vision pipelines.
 
-\citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} use PCA to incorporate colour variations. \cite{Howard2013} shows how several image transformations can improve the performance of a Classification model. In Object Detection \cite{Redmon} use random scaling and translation of the input image, as well as random variations in saturation and exposure. \citeauthor{Liu} \cite{Liu} additionally crop and flip the image with a certain probability. The common aim of these methods is to make the model more invariant towards changes in the augmented properties.
+\citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} use PCA to incorporate colour variations. \citeauthor{Howard2013} \cite{Howard2013} shows how several image transformations can improve the performance of a Classification model. In Object Detection \cite{Redmon} use random scaling and translation of the input image, as well as random variations in saturation and exposure. \citeauthor{Liu} \cite{Liu} additionally crop and flip the image with a certain probability. The common aim of these methods is to make the model more invariant towards changes in the augmented properties.
 
 In contrast \citeauthor{Carlson2018}\cite{Carlson2018} augment the image based on a physical camera model. The proposed pipeline incorporates sensor and lens effects like chromatic aberration, blur, exposure and noise.
 
-Low-Level Image Augmentation is a comparatively cheap method to generate a lot of data. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it is restricted to some extent to the dataset that to be augmented.
+Low-Level Image Augmentation is a comparatively cheap method to generate a lot of data. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it needs a sufficiently large base data set that is augmented. This work addresses the case when only very little training data is available.
 
-In this work only the dataset of one room is available which is too small to train a model for multiple rooms with different environmental conditions. Hence, low-level image augmentation cannot be the only method for data generation.
+\subsection{Augmenting Real Images with CAD - Models}
 
-\subsubsection{Augmenting Real Images with 3D - Models}
+If a CAD-model of an object is available, it can be placed on real images to artificially create or increase the size of a dataset. 
 
-If a 3D-model of an object is available, it can be placed on real images to artificially create or increase a dataset. 
+Various publications \cite{Girshick2013, Peng, Rozantsev, Madaan2017} use the technique for training or combine it with the use of real data. The results show an improvement compared to using real data alone.
 
-Several publications demonstrate the usefulness of this method in Object Detection \cite{Girshick2013}, \cite{Peng}.
+\citeauthor{Peng}\cite{Peng} particularly address the simulation of image cues like texture, colour and background. The experiments show how the used \acp{CNN} are relatively insensitive towards context but use shape as primary, texture and colour as secondary most important feature. The study covers various objects such as birds, bicycles and airplanes. In contrast to \ac{EWFO} these objects contain complex shape and texture. 
 
-While the previous methods simply place the object in a scene \citeauthor{Rozantsev} \cite{Rozantsev} propose to estimate rendering parameters first.
+\citeauthor{Madaan2017}\cite{Madaan2017} study the segmentation of wires based on synthetic training data. However, the experiments focus on a single domain, namely sky images and thus the variations in background are comparatively small.
 
-A comparable work has been done in \cite{Madaan2017} to detect wires based on synthetic data. However, the experiments focus on a single domain, namely wires in the sky and thus the variations in background are comparatively small.
+\citeauthor{Hinterstoisser2017} \cite{Hinterstoisser2017} propose to use a base network that has been trained on real images and to continue training on images with CAD-meshes. During training the base network is frozen and only the last layers are updated. The method does not use real data but requires a suitable base network. In contrast this thesis studies the detection of objects on \acp{MAV} with a tailored network design.
 
-In contrast augmenting the images on a low-level this method allows to generate new view points and does not require original images to augment. However, the created image is likely to be relatively artificial as for example light conditions and shadows are not align with the background scene. Furthermore can the object be placed in quite arbitrary positions and thus violate geometric and physical properties that are present in real images. 
-
+In contrast to augmenting the images on a low-level basis, 3D-models allows to generate new view points and does not require original images to augment. Various authors showed the successful use for Object Detection. However, most publications only show improvement when the generated data is used in combination with real data or an computationally expensive feature extractor. Furthermore the publications focus on a single domain or relatively complex objects. In contrast this thesis addresses various domains and simple shaped objects. 
 
 \subsection{Fully Synthesizing Data}
 
-\cite{Sadeghi2016,Hinterstoisser2017,Krizhevsky2012a}
+While training models only in a simulated environment is common for Control tasks, it is less popular in Computer Vision as often the quality of graphic engines is too poor or the rendering is very time consuming. However, the advances in Computer Graphics and faster processing technologies nowadays allow the generation of more realistic images and thus to fully synthesized datasets\cite{Ros2016, Gaidon2016}. Various studies tried to incorporate these samples in their training process.
 
-While training models only in a simulated environment is common for Control tasks, it is less popular in Computer Vision as often the quality of graphic engines is too poor or the rendering is very time consuming. However, the advances in Computer Graphics and faster processing technologies nowadays allow the generation of more realistic images and various studies tried to incorporate these samples in their training process.
+\citeauthor{Johnson-Roberson2016} \cite{Johnson-Roberson2016} train an Object Detection model entirely in simulation. The results show an improvement towards data annotated by humans especially when using vast amounts of simulated data. However, the simulated environment is highly detailed and therefore requires a lot of engineering work.
 
-\cite{Ros2016, Gaidon2016} are fully rendered datasets used for Computer Vision. 
-
-\cite{Johnson-Roberson2016} training in simulation only.
-
-\cite{Tobin2017} was one of the first publications that used only synthetic images for the task of Object Localization. The proposed method \ac{DR} uses a high degree of randomization when rendering the image. Thus a model has to learn a general representation, that can also be applicable in the real world. \cite{Tremblay2018a} extends the approach to object detection.
-
-The data is generated by a graphical engine. The following properties of the scene and the object are varied \cite{Tremblay2018a}:
-
-\begin{enumerate}
-	\item number, type and texture of objects of interest
-	\item number, types, colours, scales of irrelevant objects (distractors)
-	\item background image
-	\item camera pose
-	\item light sources
-	\item visibility of ground plane
-\end{enumerate}
-
-An advantage of \ac{DR} is its ease of implementation and use, no assumptions about the target distribution have to be made neither are samples or labels of the target domain required. However, the method can fail to capture important patterns if the randomization is too strong. For example the movement pattern of a \ac{MAV} is ignored when placing the camera randomly.
+In contrast \cite{Sadeghi2016, Tobin2017, Tremblay2018a} use a relatively simple environment but a high degree of randomization to address the reality gap. The aim is to achieve an abstract representation by varying textures, light conditions and object locations. \citeauthor{Tobin2017} introduced this technique as \ac{DR}. We hypothesize that a too high degree of randomization omits pattern in the target domain that could otherwise be exploited by the model. Hence, we investigate the trade-off between generalization and specialization. 
 
 
-\subsection{Augmenting Synthetic Data}
+\subsection{Transfer Learning}
 
-\subsection{Others}
-Approaches that require samples of the target domain \cite{Chen2018c} \cite{Xu2017} \cite{Inoue} 
+The field of transfer learning particularly addresses domain shifts in the modelling process. Hence, a common application is the learning from synthetic data.
+
+Approaches that require samples of the target domain \cite{Chen2018c} \cite{Xu2017} 
 
 \cite{Peng2017} includes task-irrelevant samples and a source classifier to make the final network robust (?). Called zero-shot domain adaptation as no samples of the target domain are required.
 
+\subsection{Generative Adversarial Networks}
+
+\cite{Inoue} 
 
 \section{Methodology}
 \label{sec:training:meth}
 
-In the following methods used in this thesis are described. We define several domain properties and model them during data generation.
-
-The models are implemented in a toolchain that applies the different steps. An overview can be seen in \Cref{fig:training:toolchain_datagen} \todo{Put example images}. The individual steps are described in the following.
+In the following methods used in this thesis are described. The different steps are implemented in a toolchain. An overview can be seen in \Cref{fig:training:toolchain_datagen} \todo{Put example images}. The individual steps are described in the following.
 
 \begin{figure}[htbp]
 	\centering
@@ -116,15 +96,16 @@ The models are implemented in a toolchain that applies the different steps. An o
 
 \subsection{Scene Generation}
 \label{sec:training:scene}
-We define environment properties as illumination and background. For example a scene can be set outdoor in the forest at night or indoor with artificial light sources. Two methods are used two create an environment.
+
+The first step creates a scene in which the object is embedded. Therefore it determines the context as well as light conditions. Two methods are studied.
 
 \subsubsection{Pasting a 3D-Model on Real Images}
 
-Similarly to several methods in literature \cite{Girshick2013, Peng, Rozantsev} a 3D-Model of the \ac{TO} is pasted on real images.
+Inspired by \cite{Girshick2013, Peng, Rozantsev} a 3D-Model of the \ac{TO} is pasted on real images.
 
-The 3D-Model is provided by TODO and a tool to render these models is implemented using OpenGL. A scene with black background is created and several objects are placed on a virtual ground plane with different rotations to each other. Additionally light sources are placed at different locations and with different intensities. The exact light model is part of OpenGL and will not be further discussed in this thesis. 
+The 3D-Model is provided by TODO and a tool to render these models is implemented using \textit{OpenGL}. A scene with black background is created and several objects are placed on a virtual ground plane with different rotations to each other. Additionally light sources are placed at different locations and with different intensities. 
 
-After creating a scene the black background is replaced with an image obtained from a dataset. As the light conditions between background image and \ac{TO} are different, the created image can be quite artificial. Hence a postprocessing step applies a Gaussian blur kernel along the edges of the \ac{TO}. This leads to a better embedding of the \ac{TO} in the background.
+After creating a scene the black background is replaced with an image obtained from a dataset. As the light conditions between background image and \ac{TO} are different, the created image can be quite artificial. Hence a post-processing step applies a Gaussian blur kernel along the edges of the \ac{TO}. This leads to a better embedding of the \ac{TO} in the background.
 Examples can be seen in \Cref{fig:random_bg}
 
 The parameters and locations of objects and light sources as well as the selected backgrounds are parameters of the implemented tool that can be varied when creating a dataset.
@@ -143,9 +124,9 @@ The parameters and locations of objects and light sources as well as the selecte
 
 \subsubsection{Full Rendering of a Scene}
 
-Following \cite{Ros2016, Gaidon2016, Johnson-Roberson2016, Tobin2017, Tremblay2018a} the second approach to create a scene is fully rendering the environment using a graphic engine, namely the UnrealEngine including the AirSim plugin.
+Following \cite{Ros2016, Gaidon2016, Johnson-Roberson2016, Tobin2017, Tremblay2018a} the second approach to create a scene is fully rendering the environment using a graphic engine, namely the \textit{UnrealEngine} including the \textit{AirSim} plugin.
 
-The UnrealEditor allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three environments, namely three indoor scenarios are created. This resembles GPS-denied scenarios as they are targeted in this thesis. Within the environment the light conditions, background textures, object locations can be changed manually.
+The \textit{UnrealEditor} allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three environments, namely three indoor scenarios are created. This resembles GPS-denied scenarios as they are targeted in this thesis. Within the environment the light conditions, background textures, object locations can be changed manually.
 
 In total three base environments are created. Examples can be seen in \Cref{fig:environments}.
 
@@ -177,12 +158,12 @@ In total three base environments are created. Examples can be seen in \Cref{fig:
 
 \subsection{Camera Placement}
 
-The motion model refers to the camera's point of view. For the implemented tools in \Cref{sec:training:scene} the camera view point can be set during data creation. The camera pose is determined by:
+The second step places the camera in the scene and creates a 2D-image. Hence, it determines the perspective of the image on the scene. The camera pose is determined by:
 
 $$
 \text{Translation: }t = [x y z] \text{ and Rotation: } r = [\phi, \theta, \psi]
 $$
-Where the left-handed coordinate system is used with $z$ pointing in the image.
+Where the \ac{NED} coordinate system is used based originating from the initial position of the camera. Two methods are studied.
 
 \subsubsection{Random Placement}
 	
@@ -196,10 +177,11 @@ Using this motion model, the camera follows a certain trajectory through the 3D-
 	
 \subsection{Post-processing}
 
-\subsubsection{Model-based augmentation}
-In the real world camera and lens have significant influence on the image appearance as well as the performance of neural networks \cite{Andreopoulos2012,Dodge2016a}. In order to model these effects a post-processing step is applied on the images obtained in the previous steps. The experiments in \cite{Carlson2018} show how such a step can be particularly beneficial when applied on artificially generated data. 
+In the final step low-level image transformations are applied. The studied methods can be distinguished in sensor model based augmentation and artificial augmentation.
 
-Inspired by \cite{Carlson2018} the model for chromatic aberration, exposure, blur and noise is included. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, no model for information loss due to post-processing is applied. Instead all images are converted into YUV-colour space, a format that is obtained from most visual sensors. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected.
+\subsubsection{Model-based augmentation}
+
+The applied pipeline is strongly based on \cite{Carlson2018}. However, on the camera of the \ac{MAV} we assume that we can process the raw image signal. Hence, the for information loss due to post-processing is not included. Instead all images are converted into YUYV-colour space, a format that is obtained from most visual sensors as well as the target platform of this thesis. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often used wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected.
 
 The post-processing pipeline is summarized as:
 
@@ -212,9 +194,9 @@ The individual models are described in the following.
 
 \paragraph{Lens Distortion}
 
-\todo{Explain what lense does and its effects}
+Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. In for \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
 
-Lens distortion is applied using the model for wide-angle lenses from \cite{Vass}. It models the \textit{removal} of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
+The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
 
 \begin{equation}
 \begin{pmatrix}
@@ -222,7 +204,7 @@ Lens distortion is applied using the model for wide-angle lenses from \cite{Vass
 	p_y'
 \end{pmatrix} = \begin{pmatrix}
 p_x(1 + \kappa_1 p_x^2 + \kappa_1 (1 + \lambda _x)p_y^2 + \kappa_2(p_x^2 + p_y^2)^2) \\
-p_y(1 + \frac{\kappa_1 }{s}p_x^2 + \frac{\kappa_1}{s} (1 + \lambda _y)p_y^2 + \frac{\kappa_2}{s}(p_x^2 + p_y^2)^2)
+p_y(1 + \kappa_1 p_x^2 + \kappa_1 (1 + \lambda _y)p_y^2 + \kappa_2(p_x^2 + p_y^2)^2)
 \end{pmatrix} 
 \label{eq:distortion}
 \end{equation}
@@ -231,7 +213,6 @@ Where:
 	\item $p_x'$ and $p_y'$ are the undistorted coordinates.
 	\item $\kappa_1$ controls the primary distortion (default 0)
 	\item $\kappa_2$ controls the secondary distortion (default 0)
-	\item $s$ controls the squeeze factor (default 1)
 	\item $\lambda_x$ and $\lambda_y$ controls asymmetric distortion (default 0)
 \end{itemize}
  
@@ -241,7 +222,7 @@ Applying the lens distortion to an image is done using the inverse of \Cref{eq:d
 	p_i = p_{i-1} - \nabla p^{-1} (f(p)_i-p')
 \end{equation}
 
-Where $f$ is the function defined in \Cref{eq:distortion}. For derivation and implementation the interested reader is referred to \cite{Vass}.
+Where $f$ is the function defined in \Cref{eq:distortion}. 
 
 In \Cref{fig:distortion} an example is shown. The distortion is applied on the original image (left) using $k_1=0.8, k_2=0$ for the radial and non-radial part. As the distortion leads to an increased \ac{FoV}, this creates black borders in the image. Therefore the center image part is cropped and rescaled to the original image size. The right image shows the same image after the crop and rescale operation without the distortion. Thus we see the original scene (left), one possible view on that scene with a wide-angle lens (center) and the same view without the lens (right). 
 
@@ -260,6 +241,8 @@ In \Cref{fig:distortion} an example is shown. The distortion is applied on the o
 \end{figure}
 
 \paragraph{Chromatic Aberration.}
+
+Chromatic Aberration is caused when different wavelengths of light end up in different locations of the visual sensor. This leads to a shift in the colour channels of the image.
 
 Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
 
@@ -294,7 +277,9 @@ y \\
 
 \paragraph{Motion Noise.}
 
-Motion blur is a phenomenon depending on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian median filter:
+Motion noise is caused when light falls in different locations of the images sensor due to a fast movement of the camera. It leads to blurry images based on the sensor motion.
+
+The phenomenon depends on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian filter:
 
 \begin{equation}
 K_v = \begin{pmatrix}
@@ -349,14 +334,16 @@ Next to motion, sensor noise can lead to blurry images. For the blur operation a
 
 \paragraph{Exposure.}
 
-With the exposure model:
+Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
+
+Following the model from \cite{Carlson2018}:
  
 \begin{equation}
  I = f(S) = \frac{255}{1 + e^{-A S}}
 \end{equation}
 where $A$ is a constant term for contrast and $S$ the exposure.
 
-Following the model from \cite{Carlson2018} the image is re-exposed using:
+The image can be re-exposed with:
 
 \begin{equation}
 	I' = f(S+\Delta S)

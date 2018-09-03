@@ -37,7 +37,7 @@ architecture = [
 model_name = 'mavnet_daylight_new{}x{}'.format(img_res[0], img_res[1])
 
 train(architecture=architecture,
-      work_dir='0108/' + model_name,
+      work_dir='test/' + model_name,
       img_res=img_res,
       augmenter=RandomEnsemble([
           (1.0, RandomBrightness(0.5, 1.5)),

@@ -32,7 +32,7 @@ class Yolo(Predictor):
                 conf_thresh=0.3,
                 class_names=None,
                 weight_file=None,
-                color_format='yuv'):
+                color_format='yuv', augmenter=None):
 
         if anchors is None:
             anchors = np.array([[1.3221, 1.73145],
@@ -72,7 +72,7 @@ class Yolo(Predictor):
                     grid=grid,
                     norm=norm,
                     conf_thresh=conf_thresh,
-                    color_format=color_format)
+                    color_format=color_format, augmenter=augmenter)
 
     @staticmethod
     def create_by_arch(

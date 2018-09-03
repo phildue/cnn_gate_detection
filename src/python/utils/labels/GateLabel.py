@@ -34,38 +34,15 @@ class GateLabel(ObjectLabel):
     def x_min(self):
         return min(self.gate_corners.mat[:, 0])
 
-    @x_min.setter
-    def x_min(self, x):
-        corners_as_mat = self.gate_corners.mat
-        corners_as_mat[np.argmin(corners_as_mat[:, 0])] = x
-        self.gate_corners = GateCorners.from_mat(corners_as_mat)
-
     @property
     def y_min(self):
         return min(self.gate_corners.mat[:, 1])
-
-    @y_min.setter
-    def y_min(self, y):
-        corners_as_mat = self.gate_corners.mat
-        corners_as_mat[np.argmin(corners_as_mat[:, 1])] = y
-        self.gate_corners = GateCorners.from_mat(corners_as_mat)
 
     @property
     def x_max(self):
         return max(self.gate_corners.mat[:, 0])
 
-    @x_max.setter
-    def x_max(self, x):
-        corners_as_mat = self.gate_corners.mat
-        corners_as_mat[np.argmax(corners_as_mat[:, 0])] = x
-        self.gate_corners = GateCorners.from_mat(corners_as_mat)
-
     @property
     def y_max(self):
         return max(self.gate_corners.mat[:, 1])
 
-    @y_max.setter
-    def y_max(self, y):
-        corners_as_mat = self.gate_corners.mat
-        corners_as_mat[np.argmax(corners_as_mat[:, 1])] = y
-        self.gate_corners = GateCorners.from_mat(corners_as_mat)
