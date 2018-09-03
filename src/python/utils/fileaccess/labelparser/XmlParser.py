@@ -119,10 +119,14 @@ class XmlParser(AbstractDatasetParser):
 
                     else:
                         box = element.find('bndbox')
-                        xmin = int(np.round(float(box.find('xmin').text)))
-                        ymin = int(np.round(float(box.find('ymin').text)))
-                        xmax = int(np.round(float(box.find('xmax').text)))
-                        ymax = int(np.round(float(box.find('ymax').text)))
+                        x1 = int(np.round(float(box.find('xmin').text)))
+                        y1 = int(np.round(float(box.find('ymin').text)))
+                        x2 = int(np.round(float(box.find('xmax').text)))
+                        y2 = int(np.round(float(box.find('ymax').text)))
+                        xmin = min((x1, x2))
+                        xmax = max((x1, x2))
+                        ymin = min((y1, y2))
+                        ymax = max((y1, y2))
                         label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
                         objects.append(label)
                 return ImgLabel(objects)
