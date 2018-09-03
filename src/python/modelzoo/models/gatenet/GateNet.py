@@ -249,7 +249,7 @@ class GateNet(Predictor):
         self.architecture = architecture
         self.color_format = color_format
 
-        ObjectLabel.classes = ['gate']
+        ObjectLabel.classes = ['muro']
 
         self.anchors = anchors
         self.batch_size = batch_size

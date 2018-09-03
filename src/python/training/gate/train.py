@@ -118,7 +118,7 @@ def train(architecture=MODEL_NAME,
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              remove_filtered=False, max_empty=True, filter=filter)
+                              remove_filtered=False, max_empty=True, filter=None)
 
     """
     Paths

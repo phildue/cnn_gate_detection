@@ -6,48 +6,53 @@ from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.imageprocessing.transform.TransformHistEq import TransformHistEq
 from utils.imageprocessing.transform.TransfromGray import TransformGray
+from utils.labels.ObjectLabel import ObjectLabel
 
-img_res = 208, 208
+img_res = 416, 416
 
-anchors = [
-    [[1, 1, ], [1.5, 0.5]],
-    [[1, 1, ], [1.5, 0.5], [2.5, 0.25]]
-]
-
+anchors = np.array([[[81, 82],
+                     [135, 169],
+                     [344, 319]],
+                    [[10, 14],
+                     [23, 27],
+                     [37, 58]]])
 architecture = [
-    # First layer it does not see complex shapes so we apply a few large filters for efficiency
-    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-    # Second layers we use more but smaller filters to combine shapes in non-linear fashion
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1,
-     'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 30, 'strides': (2, 2), 'alpha': 0.1,
-     'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
-     'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (7, 7), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'},
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
-     'compression': 0.5},
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
-     'compression': 0.5},
+    {'name': 'route', 'index': [-4]},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'upsample', 'size': 2},
+    {'name': 'route', 'index': [-1, 8]},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ]
 
 model_name = 'mavnet_daylight_new{}x{}'.format(img_res[0], img_res[1])
-
+ObjectLabel.classes.append('muro')
 train(architecture=architecture,
       work_dir='test/' + model_name,
       img_res=img_res,
       augmenter=RandomEnsemble([
-          (1.0, RandomBrightness(0.5, 1.5)),
-          (0.5, TransformFlip()),
-          (0.1, TransformGray()),
-          (0.25, TransformHistEq()),
+          # (1.0, RandomBrightness(0.5, 1.5)),
+          # (0.5, TransformFlip()),
+          # (0.1, TransformGray()),
+          # (0.25, TransformHistEq()),
           #          (1.0, RandomGrayNoise()),
           #          (0.1, TransformerBlur(iterations=10)),
       ]),
-      image_source=['resource/ext/samples/daylight15k'
+      image_source=['resource/ext/samples/muro'
                     ],
       anchors=anchors,
       epochs=100,

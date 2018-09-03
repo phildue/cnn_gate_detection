@@ -1,6 +1,7 @@
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
@@ -9,50 +10,29 @@ from utils.labels.ObjectLabel import ObjectLabel
 
 
 class YoloEncoder(Encoder):
-    def __init__(self, anchor_dims, img_norm, grids, n_boxes, n_classes):
-        self.n_classes = n_classes
+    def __init__(self, anchor_dims=None, img_norm=(416, 416), grids=None, n_boxes=5, n_classes=4,
+                 color_format='yuv'):
+        if anchor_dims is None:
+            anchor_dims = [np.array([[1.08, 1.19],
+                                     [3.42, 4.41],
+                                     [6.63, 11.38],
+                                     [9.42, 5.11],
+                                     [16.62, 10.52]])]
+        if grids is None:
+            grids = [(13, 13)]
 
         self.anchor_dims = anchor_dims
+        self.n_classes = n_classes
+        self.color_format = color_format
         self.n_boxes = n_boxes
         self.grids = grids
         self.norm = img_norm
 
-    @staticmethod
-    def generate_anchors(norm, grids, anchor_dims):
-
-        n_output_layers = len(grids)
-        anchors = [YoloEncoder.generate_anchor_layer(norm, grids[i], anchor_dims[i]) for i in
-                   range(n_output_layers)]
-        anchors = np.concatenate(anchors, 0)
-
-        return anchors
-
-    @staticmethod
-    def generate_anchor_layer(norm, grid, anchor_dims):
-        n_boxes = len(anchor_dims)
-        anchor_t = np.zeros((grid[0], grid[1], n_boxes, 4)) * np.nan
-
-        cell_height = norm[0] / grid[0]
-        cell_width = norm[1] / grid[1]
-        cx = np.linspace(cell_width / 2, norm[1] - cell_width / 2, grid[1])
-        cy = np.linspace(cell_height / 2, norm[0] - cell_height / 2, grid[0])
-        cx_grid, cy_grid = np.meshgrid(cx, cy)
-        cx_grid = np.expand_dims(cx_grid, -1)
-        cy_grid = np.expand_dims(cy_grid, -1)
-        anchor_t[:, :, :, 0] = cx_grid
-        anchor_t[:, :, :, 1] = cy_grid
-
-        for i in range(n_boxes):
-            anchor_t[:, :, i, 2:4] = anchor_dims[i] / np.array(norm)
-
-        anchor_t = np.reshape(anchor_t, (grid[0] * grid[1] * n_boxes, -1))
-
-        return anchor_t
-
     def _assign_true_boxes(self, anchors, true_boxes):
         coords = anchors.copy()
         confidences = np.zeros((anchors.shape[0], 1)) * np.nan
-        class_probs = np.zeros((anchors.shape[0], self.n_classes))
+        class_prob = np.zeros((anchors.shape[0], self.n_classes))
+
         anchor_boxes = BoundingBox.from_tensor_centroid(confidences, coords)
 
         for b in true_boxes:
@@ -69,11 +49,11 @@ class YoloEncoder(Encoder):
                 print("\nGateEncoder::No matching anchor box found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                class_probs[match_idx, b.prediction] = 1.0
+                class_prob[match_idx, b.prediction] = 1.0
                 coords[match_idx] = b.cx, b.cy, b.w, b.h
 
         confidences[np.isnan(confidences)] = 0.0
-        return class_probs, confidences, coords
+        return confidences, class_prob, coords
 
     def _encode_coords(self, anchors_assigned, anchors):
         wh = anchors_assigned[:, -2:] / anchors[:, -2:]
@@ -94,9 +74,9 @@ class YoloEncoder(Encoder):
         :return: label-tensor
 
         """
-        anchors = YoloEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims)
-        class_probs, confidences, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
+        anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, 4)
+        confidences, class_prob, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
         coords = self._encode_coords(coords, anchors)
-        label_t = np.hstack((class_probs, confidences, coords, anchors))
-        label_t = np.reshape(label_t, (-1, self.n_classes + 1 + 4 + 4))
+        label_t = np.hstack((confidences, class_prob, coords, anchors))
+        label_t = np.reshape(label_t, (-1, 1 + self.n_classes + 4 + 4))
         return label_t

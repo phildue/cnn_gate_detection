@@ -22,7 +22,7 @@ class YoloLoss(Loss):
 
     def compute(self, y_true, y_pred):
         """
-        Loss function for Yolo.
+        Loss function for GateNet.
         :param y_true: y as fed for learning
         :param y_pred: raw network output
         :return: loss
@@ -32,13 +32,12 @@ class YoloLoss(Loss):
         loc_loss = self.localization_loss(y_true, y_pred)
 
         conf_loss = self.confidence_loss(y_true, y_pred)
-
         class_loss = self.class_loss(y_true, y_pred)
 
         return loc_loss + conf_loss + class_loss
 
     def localization_loss(self, y_true, y_pred):
-        positives = y_true[:, :, self.n_classes]
+        positives = y_true[:, :, 0]
 
         w_pos = self.scale_coor * K.stack(4 * [positives], -1)
         coord_true = y_true[:, :, 1:5]
@@ -61,23 +60,27 @@ class YoloLoss(Loss):
         return loc_loss_sum
 
     def confidence_loss(self, y_true, y_pred):
-        positives = y_true[:, :, self.n_classes:self.n_classes + 1]
+        positives = y_true[:, :, 0:1]
 
         weight = self.scale_noob * (1. - positives) + self.scale_obj * positives
 
-        conf_pred = y_pred[:, :, self.n_classes:self.n_classes + 1]
-        conf_true = y_true[:, :, self.n_classes:self.n_classes + 1]
+        conf_pred = y_pred[:, :, 0:1]
+        conf_true = y_true[:, :, 0:1]
+
         conf_loss = K.pow(conf_pred - conf_true, 2) * weight
 
         conf_loss_total = .5 * K.sum(K.sum(conf_loss, -1), -1)
 
+        # conf_loss_total = K.print_tensor(conf_loss_total,'Conf Loss=')
+
+
         return conf_loss_total
 
     def class_loss(self, y_true, y_pred):
-        class_pred = y_pred[:, :, 0:self.n_classes]
-        class_true = y_true[:, :, 0:self.n_classes]
+        class_pred = y_pred[:, :, 1:self.n_classes + 1]
+        class_true = y_true[:, :, 1:self.n_classes + 1]
 
-        positives = y_true[:, :, self.n_classes:self.n_classes + 1]
+        positives = y_true[:, :, 0:1]
 
         weight = self.scale_prob * K.stack(self.n_classes * [positives])
 

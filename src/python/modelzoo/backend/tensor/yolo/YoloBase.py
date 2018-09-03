@@ -7,6 +7,7 @@ from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
 from modelzoo.backend.tensor.layers import create_layer
 from modelzoo.backend.tensor.yolo.Netout import Netout
 from modelzoo.models.Net import Net
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from modelzoo.models.yolo.YoloEncoder import YoloEncoder
 
 
@@ -44,12 +45,11 @@ class YoloBase(Net):
     def __init__(self, architecture,
                  anchors,
                  loss,
-                 img_shape=(52, 52),
-                 n_boxes=[5],
-                 weight_file=None,
-                 n_classes=1,
+                 n_classes,
+                 img_shape,
+                 n_boxes,
                  input_channels=3,
-                 ):
+                 weight_file=None):
 
         self.n_classes = n_classes
         self.loss = loss
@@ -78,8 +78,8 @@ class YoloBase(Net):
                                        strides=(1, 1), name='predictor{}'.format(prediction_layer_i))(
                         net)
                     prediction_layer_i += 1
-                    reshape = Reshape((-1, 4 + 1 + self.n_classes))(inference)
-                    prediction = Netout(4)(reshape)
+                    reshape = Reshape((-1, 4 + 1 + + self.n_classes))(inference)
+                    prediction = Netout(self.n_classes)(reshape)
                     predictions.append(prediction)
                     layers.append(inference)
                     grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
@@ -99,7 +99,7 @@ class YoloBase(Net):
         else:
             predictions = predictions[0]
 
-        meta_t = K.constant(YoloEncoder.generate_anchors(self.norm, self.grid, self.anchors),
+        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, 4),
                             K.tf.float32)
 
         netout = ConcatMeta(meta_t)(predictions)

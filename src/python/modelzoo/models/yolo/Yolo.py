@@ -105,7 +105,8 @@ class Yolo(Predictor):
             loss=loss,
             n_boxes=n_boxes,
             img_shape=norm,
-            weight_file=weight_file)
+            weight_file=weight_file,
+            n_classes=len(class_names))
 
         return Yolo(net,
                     augmenter=augmenter,
@@ -145,8 +146,7 @@ class Yolo(Predictor):
             anchor_dims=anchors,
             img_norm=norm,
             grids=grid,
-            n_boxes=self.n_boxes,
-            n_classes=self.n_classes)
+            n_boxes=self.n_boxes)
         preprocessor = Preprocessor(augmenter=augmenter,
                                     encoder=encoder,
                                     img_shape=self.norm,
