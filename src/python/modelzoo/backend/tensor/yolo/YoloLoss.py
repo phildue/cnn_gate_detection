@@ -4,14 +4,18 @@ from modelzoo.backend.tensor.metrics.Loss import Loss
 
 
 class YoloLoss(Loss):
-    def __init__(self, n_boxes=5, n_polygon=4, weight_loc=5.0, weight_noobj=0.5,
-                 weight_conf=5.0, weight_prob=1.0, n_classes=20):
+    def __init__(self, n_boxes,
+                 n_classes,
+                 weight_loc=5.0,
+                 weight_noobj=0.5,
+                 weight_conf=5.0,
+                 weight_prob=1.0,
+                 ):
         self.n_classes = n_classes
         self.scale_prob = weight_prob
         self.scale_noob = weight_noobj
         self.scale_obj = weight_conf
         self.scale_coor = weight_loc
-        self.n_polygon = n_polygon
         self.n_boxes = n_boxes
 
     def loss(self, y_true, y_pred):
