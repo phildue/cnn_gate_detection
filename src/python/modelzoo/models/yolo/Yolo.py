@@ -32,7 +32,8 @@ class Yolo(Predictor):
                 conf_thresh=0.3,
                 class_names=None,
                 weight_file=None,
-                color_format='yuv', augmenter=None):
+                color_format='yuv',
+                augmenter=None):
 
         if anchors is None:
             anchors = np.array([[1.3221, 1.73145],
@@ -72,7 +73,9 @@ class Yolo(Predictor):
                     grid=grid,
                     norm=norm,
                     conf_thresh=conf_thresh,
-                    color_format=color_format, augmenter=augmenter)
+                    color_format=color_format,
+                    augmenter=augmenter,
+                    iou_thresh=0.4)
 
     @staticmethod
     def create_by_arch(
@@ -81,15 +84,15 @@ class Yolo(Predictor):
             architecture,
             augmenter,
             anchors,
-            norm=(416, 416),
-            batch_size=8,
+            norm,
+            batch_size,
+            conf_thresh,
+            iou_thresh,
             scale_noob=0.5,
             scale_conf=5.0,
             scale_coor=5.0,
             scale_prob=1.0,
-            conf_thresh=0.3,
-            weight_file=None,
-    ):
+            weight_file=None):
 
         n_boxes = [len(a) for a in anchors]
 
@@ -116,7 +119,8 @@ class Yolo(Predictor):
                     grid=net.grid,
                     norm=norm,
                     conf_thresh=conf_thresh,
-                    color_format=color_format)
+                    color_format=color_format,
+                    iou_thresh=iou_thresh)
 
     def __init__(self,
                  net,
@@ -125,10 +129,10 @@ class Yolo(Predictor):
                  color_format,
                  anchors,
                  class_names,
-                 norm=(416, 416),
-                 batch_size=8,
-                 conf_thresh=0.3,
-                 iou_thresh=0.4):
+                 norm,
+                 batch_size,
+                 conf_thresh,
+                 iou_thresh):
 
         self.color_format = color_format
 
@@ -146,7 +150,8 @@ class Yolo(Predictor):
             anchor_dims=anchors,
             img_norm=norm,
             grids=grid,
-            n_boxes=self.n_boxes)
+            n_boxes=self.n_boxes,
+            n_classes=self.n_classes)
         preprocessor = Preprocessor(augmenter=augmenter,
                                     encoder=encoder,
                                     img_shape=self.norm,

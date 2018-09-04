@@ -6,24 +6,13 @@ from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
-from utils.labels.ObjectLabel import ObjectLabel
 
 
 class YoloEncoder(Encoder):
-    def __init__(self, anchor_dims=None, img_norm=(416, 416), grids=None, n_boxes=5, n_classes=4,
-                 color_format='yuv'):
-        if anchor_dims is None:
-            anchor_dims = [np.array([[1.08, 1.19],
-                                     [3.42, 4.41],
-                                     [6.63, 11.38],
-                                     [9.42, 5.11],
-                                     [16.62, 10.52]])]
-        if grids is None:
-            grids = [(13, 13)]
+    def __init__(self, anchor_dims, img_norm, grids, n_boxes, n_classes):
 
         self.anchor_dims = anchor_dims
         self.n_classes = n_classes
-        self.color_format = color_format
         self.n_boxes = n_boxes
         self.grids = grids
         self.norm = img_norm

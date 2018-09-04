@@ -21,7 +21,7 @@ class YoloDecoder(Decoder):
 
     @staticmethod
     def sigmoid(x):
-        return 1 / (1 + np.math.exp(-x))
+        return 1 / (1 + np.exp(-x))
 
     def decode_netout_to_boxes(self, label_t):
         """
@@ -32,12 +32,12 @@ class YoloDecoder(Decoder):
         coord_t = label_t[:, self.n_classes + 1:]
         class_t = label_t[:, 1:self.n_classes + 1]
         class_t = YoloDecoder.softmax(class_t)
-        conf_t = label_t[:, 0]
-        conf_t = YoloDecoder.softmax(conf_t)
+        conf_t = label_t[:, 0:1]
+        conf_t = YoloDecoder.sigmoid(conf_t)
         coord_t_dec = self.decode_coord(coord_t)
         coord_t_dec = np.reshape(coord_t_dec, (-1, 4))
         class_t = np.reshape(class_t, (-1, self.n_classes))
-        boxes = BoundingBox.from_tensor_centroid(class_t, coord_t_dec, conf_t)
+        boxes = BoundingBox.from_tensor_centroid(conf_t, coord_t_dec)
 
         return boxes
 

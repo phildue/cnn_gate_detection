@@ -27,7 +27,7 @@ generator = GateGenerator(directories=['resource/ext/samples/muro'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/thesis/datagenyolov3_person416x416_i00/'
+src_dir = 'out/thesis/datagen/yolov3_person416x416_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 model = Yolo.create_by_arch(architecture=summary['architecture'],
