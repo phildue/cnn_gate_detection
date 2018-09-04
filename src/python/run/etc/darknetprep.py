@@ -7,7 +7,7 @@ from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 from utils.workdir import cd_work
-
+import numpy as np
 
 def filter(label):
     min_obj_size = 0.01
