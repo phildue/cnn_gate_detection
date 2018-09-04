@@ -3,6 +3,7 @@ import random
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.labelparser.YoloParser import YoloParser
 from utils.fileaccess.utils import create_dirs
+from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 from utils.workdir import cd_work
@@ -30,8 +31,8 @@ def filter(label):
     return ImgLabel(objs_in_size)
 
 
-cd_work()
-set_name = 'yolo_flight_bgr'
+project_dir = cd_work()
+set_name = 'yolo_all'
 out_dir = 'resource/ext/samples/' + set_name
 src_dir = 'resource/ext/samples/'
 
@@ -40,11 +41,15 @@ sets = ['daylight_course1',
         'daylight_course3',
         'iros2018_course1',
         'iros2018_course5',
+        'iros2018_flights',
+        'basement20k',
+        'basement15k',
         'basement_course3',
         'basement_course1',
         'iros2018_course3_test']
 
-create_dirs([out_dir])
+sample_dir = out_dir + '/samples'
+create_dirs([out_dir, sample_dir])
 batch_size = 8
 generator = GateGenerator([src_dir + s for s in sets], batch_size,
                           color_format='bgr', shuffle=True,
@@ -52,13 +57,14 @@ generator = GateGenerator([src_dir + s for s in sets], batch_size,
                           img_format='jpg',
                           start_idx=0,
                           valid_frac=0,
+                          n_samples=None,
                           filter=filter,
                           max_empty=0.0,
                           forever=False)
 reader = generator.generate()
 n_images = generator.n_samples
 
-writer = YoloParser(out_dir, color_format='bgr', image_format='jpg', img_norm=(208, 208))
+writer = YoloParser(out_dir + '/samples', color_format='bgr', image_format='jpg', img_norm=(208, 208))
 n_images_filtered = 0
 
 for i in range(0, n_images, batch_size):
@@ -73,7 +79,6 @@ for i in range(0, n_images, batch_size):
     except StopIteration:
         break
 
-darknet_rel = '/home/phil/dronevision/'
 indeces = [i for i in range(n_images_filtered)]
 random.shuffle(indeces)
 valid_set = indeces[:int(0.1 * len(indeces))]
@@ -84,15 +89,15 @@ valid_set_path = out_dir + '/valid.txt'
 
 with open(valid_set_path, 'w') as f:
     for i in valid_set:
-        f.write('{0:s}{1:s}/{2:05d}.jpg\n'.format(darknet_rel, out_dir, i))
+        f.write('{0:s}{1:s}/{2:05d}.jpg\n'.format(project_dir, sample_dir, i))
 
 with open(train_set_path, 'w') as f:
     for i in train_set:
-        f.write('{0:s}{1:s}/{2:05d}.jpg\n'.format(darknet_rel, out_dir, i))
+        f.write('{0:s}{1:s}/{2:05d}.jpg\n'.format(project_dir, sample_dir, i))
 
 with open(out_dir + '/' + set_name + '.txt', 'w') as f:
     f.write('classes= 1\n')
-    f.write('train= ' + darknet_rel + train_set_path + '\n')
-    f.write('valid= ' + darknet_rel + valid_set_path + '\n')
-    f.write('names= data/gate.names.list\n')
-    f.write('backup= backup/\n')
+    f.write('train= ' + project_dir + train_set_path + '\n')
+    f.write('valid= ' + project_dir + valid_set_path + '\n')
+    f.write('names= ' + project_dir + '/lib/darknet/data/gate.names.list\n')
+    f.write('backup= ' + project_dir + '/out\n')

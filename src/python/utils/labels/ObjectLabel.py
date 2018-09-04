@@ -22,6 +22,8 @@ class ObjectLabel:
         self.confidence = confidence
         self.class_name = class_name
         self.__bounding_box = bounding_box
+        if class_name not in ObjectLabel.classes:
+            ObjectLabel.classes.append(class_name)
 
     def __repr__(self):
         return '{0:s}: \t{1!s}->{2!s}, {3:}sq'.format(self.class_name, (self.x_min, self.y_min),
