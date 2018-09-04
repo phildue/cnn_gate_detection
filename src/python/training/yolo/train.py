@@ -85,7 +85,9 @@ def train(architecture=MODEL_NAME,
                                     batch_size=batch_size,
                                     augmenter=augmenter,
                                     norm=img_res,
-                                    weight_file=weight_file)
+                                    weight_file=weight_file,
+                                    conf_thresh=0.5,
+                                    iou_thresh=0.4)
 
     """
     Datasets
@@ -119,11 +121,12 @@ def train(architecture=MODEL_NAME,
               'epsilon': 1e-08,
               'decay': 0.0005}
 
-    # def average_precision(y_true, y_pred):
-    #     return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
-    #                                 norm=predictor.norm, iou_thresh=0.6).compute(y_true, y_pred)
+    def average_precision06(y_true, y_pred):
+        return AveragePrecisionYolo(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
+                                    norm=predictor.norm, iou_thresh=0.6, iou_thresh_nms=0.4,
+                                    n_classes=len(class_names)).compute(y_true, y_pred)
 
-    predictor.compile(params=params)
+    predictor.compile(params=params, metrics=[average_precision06])
 
     """
     Training Config

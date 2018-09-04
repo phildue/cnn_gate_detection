@@ -13,9 +13,6 @@ class PrecisionRecallYolo(MetricYolo):
         Calculates the precision-recall for one confidence level
         :return: precision, recall
         """
-        y_true = K.reshape(y_true, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_classes + 5])
-        y_pred = K.reshape(y_pred, [-1, self.grid[0], self.grid[1], self.n_boxes, self.n_classes + 5])
-
         coord_true_t, class_true_t = self._postprocess_truth(y_true)
 
         coord_pred_t, class_pred_t = self._postprocess_pred(y_pred)

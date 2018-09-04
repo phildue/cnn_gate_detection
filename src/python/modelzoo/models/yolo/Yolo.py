@@ -144,7 +144,7 @@ class Yolo(Predictor):
         self.grid = grid
         self.norm = norm
         self.conf_thresh = conf_thresh
-        self.n_boxes = anchors.shape[0]
+        self.n_boxes = [len(a) for a in anchors]
 
         encoder = YoloEncoder(
             anchor_dims=anchors,
