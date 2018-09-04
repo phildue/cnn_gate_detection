@@ -22,7 +22,8 @@ def filter(label):
 
     objs_in_view = []
     for obj in objs_within_angle:
-        mat = obj.gate_corners.mat
+        mat = np.array([[obj.x_min, obj.y_max],
+                        [obj.x_max, obj.y_max]])
         if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
             len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
             continue
