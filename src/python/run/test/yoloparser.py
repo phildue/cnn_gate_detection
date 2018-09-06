@@ -5,7 +5,7 @@ from utils.workdir import cd_work
 cd_work()
 parser = DatasetParser.get_parser(label_format='yolo',
                                   color_format='bgr',
-                                  directory='resource/ext/samples/yolo_test/samples',
+                                  directory='resource/ext/samples/yolo_all/samples',
                                   img_norm=(208, 208))
 
 images, labels = parser.read(10)
