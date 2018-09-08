@@ -1,73 +1,67 @@
 import argparse
 import pprint as pp
 
+import numpy as np
+
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
-from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.models.ModelFactory import ModelFactory
-from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.yolo.Yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomShift import RandomShift
-from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
-import numpy as np
 
-MODEL_NAME = 'GateNetV39'
-# [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-# {'name': 'max_pool', 'size': (2, 2)},
-# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-# {'name': 'max_pool', 'size': (2, 2)},
-# {'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1}]
-WORK_DIR = 'v39_rev'
 BATCH_SIZE = 16
 N_SAMPLES = None
 EPOCHS = 100
 INITIAL_EPOCH = 0
 LEARNING_RATE = 0.001
-IMAGE_SOURCE = ["resource/ext/samples/daylight/", "resource/ext/samples/industrial_new/"]
-TEST_IMAGE_SOURCE_1 = ['resource/ext/samples/industrial_new_test/']
-TEST_IMAGE_SOURCE_2 = ['resource/ext/samples/daylight_test/']
-IMG_HEIGHT = 52
-IMG_WIDTH = 52
-ANCHORS = np.array([[[1, 1],
-                     [0.3, 0.3],
-                     [2, 1],
-                     [1, 0.5],
-                     [0.7, 0.7]
-                     ]])
-AUGMENTER = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
-                            (0.5, TransformFlip()),
-                            (0.2, RandomShift(-.3, .3))])
+IMG_HEIGHT = 416
+IMG_WIDTH = 416
 
 
-def train(architecture=MODEL_NAME,
-          work_dir=WORK_DIR,
+def train(architecture,
+          work_dir,
+          image_source,
+          anchors,
+          augmenter,
+          min_obj_size,
+          max_obj_size,
+          max_aspect_ratio,
+          min_aspect_ratio,
+          img_res=(IMG_HEIGHT, IMG_WIDTH),
           batch_size=BATCH_SIZE,
           n_samples=N_SAMPLES,
           initial_epoch=INITIAL_EPOCH,
           learning_rate=LEARNING_RATE,
           epochs=EPOCHS,
-          image_source=IMAGE_SOURCE,
-          img_res=(IMG_HEIGHT, IMG_WIDTH),
-          anchors=ANCHORS,
-          augmenter=AUGMENTER,
           weight_file=None,
-          max_angle=30,
-          min_obj_size=0.1,
-          max_obj_size=1.2,
           validation_set=None,
           class_names='gate'):
+
     def learning_rate_schedule(epoch):
         if epoch > 50:
             return 0.0001
         else:
             return 0.001
+
+    def filter(label):
+        objs_in_size = [obj for obj in label.objects if
+                        min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
+
+        objs_within_angle = [obj for obj in objs_in_size if
+                             min_aspect_ratio < obj.height / obj.width < max_aspect_ratio]
+
+        objs_in_view = []
+        for obj in objs_within_angle:
+            mat = np.array([[obj.x_min, obj.y_max],
+                            [obj.x_max, obj.y_max]])
+            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
+                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
+                continue
+            objs_in_view.append(obj)
+
+        return ImgLabel(objs_in_size)
 
     cd_work()
 
@@ -102,7 +96,7 @@ def train(architecture=MODEL_NAME,
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              remove_filtered=False, max_empty=0.0)
+                              remove_filtered=filter, max_empty=0.0)
 
     """
     Paths
@@ -152,7 +146,10 @@ def train(architecture=MODEL_NAME,
     summary['img_res'] = img_res
     summary['grid'] = predictor.grid
     summary['valid_set'] = validation_set
-    summary[max_angle] = max_angle
+    summary['min_obj_size'] = min_obj_size
+    summary['max_obj_size'] = max_obj_size
+    summary['min_aspect_ratio'] = min_aspect_ratio
+    summary['max_aspect_ratio'] = max_aspect_ratio
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)
@@ -161,35 +158,4 @@ def train(architecture=MODEL_NAME,
     training.fit_generator()
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", help="model name",
-                        type=str, default=MODEL_NAME)
-    parser.add_argument("--work_dir", help="Working directory", type=str, default=WORK_DIR)
-    parser.add_argument("--image_source", help="List of folders to be scanned for train images",
-                        default=IMAGE_SOURCE)
-    parser.add_argument("--test_image_source_1", help="List of folders to be scanned for test images", type=str,
-                        default=TEST_IMAGE_SOURCE_1)
-    parser.add_argument("--test_image_source_2", help="List of folders to be scanned for test images", type=str,
-                        default=TEST_IMAGE_SOURCE_2)
-    parser.add_argument("--batch_size", help="Batch Size", type=int, default=BATCH_SIZE)
-    parser.add_argument("--n_samples", type=int, default=N_SAMPLES)
-    parser.add_argument("--initial_epoch", type=int, default=INITIAL_EPOCH)
-    parser.add_argument("--epochs", type=int, default=EPOCHS)
-    parser.add_argument("--learning_rate", type=float, default=LEARNING_RATE)
-    parser.add_argument("--img_width", default=IMG_WIDTH, type=int)
-    parser.add_argument("--img_height", default=IMG_HEIGHT, type=int)
 
-    args = parser.parse_args()
-
-    train(
-        architecture=args.model_name,
-        work_dir=args.work_dir,
-        batch_size=args.batch_size,
-        n_samples=args.n_samples,
-        initial_epoch=args.initial_epoch,
-        learning_rate=args.learning_rate,
-        epochs=args.epochs,
-        image_source=args.image_source,
-        img_res=(args.img_height, args.img_width)
-    )

@@ -65,4 +65,8 @@ if __name__ == '__main__':
               batch_size=16,
               n_samples=None,
               class_names='gate',
+              min_obj_size=0.1,
+              max_obj_size=1.2,
+              min_aspect_ratio=0.3,
+              max_aspect_ratio=3.0,
               initial_epoch=0)
