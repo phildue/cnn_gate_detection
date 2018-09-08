@@ -119,7 +119,7 @@ While transfer learning provides the theoretical framework as well as methods to
 \section{Methodology}
 \label{sec:training:meth}
 
-In the following, methods used in this thesis are described. The different steps are implemented in a data generation pipeline and the effect of the individual steps are studied in various experiments. An overview can be seen in \Cref{fig:training:toolchain_datagen} \todo{Put example images}. The individual steps are described in the following.
+In the following, methods used in this thesis are described. The different steps are implemented in a data generation pipeline and the effect of the individual steps are studied in various experiments. An overview can be seen in \Cref{fig:training:toolchain_datagen}. The individual steps are described in the following.
 
 \begin{figure}[htbp]
 	\centering
@@ -461,6 +461,31 @@ In order to evaluate $\mathcal{H}_4$ the individual domain properties are measur
 
 \section{Results}
 \label{sec:training:results}
+\begin{table}[htbp]
+	\caption{Results of varying training sets on TODO}
+	\small
+	\begin{tabular}{|p{3cm}|p{2cm}|p{2cm}|p{2cm}|p{3cm}|p{2cm}|}
+		\hline
+		& General &  & Specific & General + Specific & Inactive \\ \hline
+		Scene & Real Backgrounds & \textit{Basement, Daylight} & \textit{IROS2018} & Real Backgrounds, Synth. Environments & - \\ \hline
+		&  &  &  &  & - \\ \hline
+		Camera Placement & Heuristic Selection & Fitted on target set &  & Heuristic Selection + Target Set &  \\ \hline
+		&  &  &  &  &  \\ \hline
+		Lens Distortion & Varying parameters &  &  &  &  \\ \hline
+		&  &  &  &  &  \\ \hline
+		Chromatic Aberration &  &  &  &  &  \\ \hline
+		Motion Noise &  &  &  &  &  \\ \hline
+		Out-of-Focus Blur &  &  &  &  &  \\ \hline
+		Exposure &  &  &  &  &  \\ \hline
+		Sensor Noise &  &  &  &  &  \\ \hline
+		Brightness &  &  &  &  &  \\ \hline
+		Grayscale &  &  &  &  &  \\ \hline
+		Histogram &  &  &  &  &  \\ \hline
+		Flip &  &  &  &  &  \\ \hline
+	\end{tabular}
+	\label{genvsspec}
+\end{table}
+
 
 \section{Discussion}
 \label{sec:training:discussion}
