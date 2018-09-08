@@ -44,18 +44,19 @@ AUGMENTER = RandomEnsemble([(1.0, RandomBrightness(0.5, 2.0)),
                             (0.2, RandomShift(-.3, .3))])
 
 
-def train(architecture=MODEL_NAME,
-          work_dir=WORK_DIR,
-          batch_size=BATCH_SIZE,
+def train(architecture,
+          work_dir,
+          batch_size,
+          image_source,
+          anchors,
+          img_res,
+          augmenter,
+          color_format,
+          input_channels=3,
           n_samples=N_SAMPLES,
           initial_epoch=INITIAL_EPOCH,
           learning_rate=LEARNING_RATE,
           epochs=EPOCHS,
-          image_source=IMAGE_SOURCE,
-          img_res=(IMG_HEIGHT, IMG_WIDTH),
-          anchors=ANCHORS,
-          augmenter=AUGMENTER,
-          input_channels=3,
           weight_file=None,
           n_polygon=4,
           min_aspect_ratio=0,
@@ -86,7 +87,7 @@ def train(architecture=MODEL_NAME,
     else:
         predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
                                            norm=img_res, input_channels=input_channels, weight_file=weight_file,
-                                           n_polygon=n_polygon)
+                                           n_polygon=n_polygon, color_format=color_format)
 
     """
     Datasets
@@ -173,7 +174,8 @@ def train(architecture=MODEL_NAME,
     summary['valid_set'] = validation_set
     summary['min_obj_size'] = min_obj_size
     summary['max_obj_size'] = max_obj_size
-    summary[max_angle] = max_angle
+    summary['max_aspect_ratio'] = max_aspect_ratio
+    summary['min_aspect_ratio'] = min_aspect_ratio
     pp.pprint(summary)
     save_file(summary, 'summary.txt', result_path, verbose=False)
     save_file(summary, 'summary.pkl', result_path, verbose=False)

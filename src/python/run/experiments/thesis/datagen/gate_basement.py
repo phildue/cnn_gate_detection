@@ -68,4 +68,5 @@ if __name__ == '__main__':
               max_obj_size=1.2,
               min_aspect_ratio=0.3,
               max_aspect_ratio=3.0,
-              initial_epoch=0)
+              initial_epoch=0,
+              color_format='bgr')
