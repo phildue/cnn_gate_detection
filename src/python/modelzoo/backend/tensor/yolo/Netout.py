@@ -17,8 +17,8 @@ class Netout(Layer):
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        pred_c = x[:, :, 0:1]
-        pred_class = x[:, :, 1:self.n_classes]
+        pred_c = x[:, :, :1]
+        pred_class = x[:, :, 1:-4]
         pred_xy = K.sigmoid(x[:, :, -4:-2])
         pred_wh = K.exp(x[:, :, -2:])
 

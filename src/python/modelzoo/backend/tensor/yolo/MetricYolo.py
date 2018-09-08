@@ -48,14 +48,14 @@ class MetricYolo(Metric):
         return coord_dec_t
 
     def _postprocess_truth(self, y_true):
-        conf_t, class_t, coord_t, anchors_t = MetricYolo.decode_t(y_true)
+        conf_t, class_t, coord_t, anchors_t = MetricYolo.split_t(y_true)
 
         coord_dec_t = self._decode_coord(coord_t, anchors_t)
 
         return conf_t, class_t, coord_dec_t
 
     @staticmethod
-    def decode_t(label_t):
+    def split_t(label_t):
         coord_t = label_t[:, :, -8:-4]
         conf_t = label_t[:, :, :1]
         class_t = label_t[:, :, 1:-8]
@@ -64,7 +64,7 @@ class MetricYolo(Metric):
         return conf_t, class_t, coord_t, anchors_t
 
     def _postprocess_pred(self, y_pred):
-        conf_t, class_t, coord_t, anchors_t = MetricYolo.decode_t(y_pred)
+        conf_t, class_t, coord_t, anchors_t = MetricYolo.split_t(y_pred)
         conf_pp_t = K.sigmoid(conf_t)
         class_pp_t = K.softmax(class_t)
 

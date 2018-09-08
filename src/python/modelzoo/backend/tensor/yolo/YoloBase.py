@@ -71,14 +71,15 @@ class YoloBase(Net):
         prediction_layer_i = 0
         predictions = []
         layers = []
+        n_outputs_per_box = 4 + 1 + self.n_classes  # cx,cy,w,h,object,class
         for i, config in enumerate(architecture):
             if 'predict' in config['name']:
                 with K.name_scope('predict{}'.format(prediction_layer_i)):
-                    inference = Conv2D(n_boxes[prediction_layer_i] * (4 + 1 + self.n_classes), kernel_size=(1, 1),
+                    inference = Conv2D(n_boxes[prediction_layer_i] * n_outputs_per_box, kernel_size=(1, 1),
                                        strides=(1, 1), name='predictor{}'.format(prediction_layer_i))(
                         net)
                     prediction_layer_i += 1
-                    reshape = Reshape((-1, 4 + 1 + + self.n_classes))(inference)
+                    reshape = Reshape((-1, n_outputs_per_box))(inference)
                     prediction = Netout(self.n_classes)(reshape)
                     predictions.append(prediction)
                     layers.append(inference)
