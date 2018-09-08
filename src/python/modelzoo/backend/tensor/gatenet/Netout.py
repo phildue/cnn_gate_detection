@@ -1,5 +1,5 @@
-from keras.engine.topology import Layer
 import keras.backend as K
+from keras.engine.topology import Layer
 
 
 class Netout(Layer):
@@ -19,7 +19,7 @@ class Netout(Layer):
         """
         pred_xy = K.sigmoid(x[:, :, :2])
         pred_wh = K.exp(x[:, :, 2:self.polygon])
-        pred_c = K.sigmoid(x[:, :, -1:])
+        pred_c = x[:, :, -1:]
 
         return K.concatenate([pred_c, pred_xy, pred_wh], -1)
 

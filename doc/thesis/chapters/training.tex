@@ -12,7 +12,7 @@ However, in many practical applications the gathering of such large amounts of t
 
 Therefore it has been a long interest in Computer Vision to automatize the data generation process. By synthetically generating samples with corresponding labels, the theoretical amount of training data is infinite. In addition, it can allow to generate data for domains that are uncommon and where samples are difficult and expensive to obtain.
 
-Yet bears the generation of data its own challenges. First and foremost because the generation process in itself is based on model assumptions. If these model assumptions do not sufficiently capture the real world, a model trained in such an environment might be heavily biased and perform poorly in the real world. Secondly, because the generation of visual data requires a lot of computational resources. Despite recent advances in Computer Graphics can virtual environments not yet fully capture the real world.
+Yet bears the generation of data its own challenges. First and foremost because the generation process in itself is based on model assumptions. If these do not sufficiently capture the real world, a model trained in such an environment might be heavily biased and perform poorly in the real world. Secondly, because the generation of visual data requires a lot of computational resources. Despite recent advances in Computer Graphics can virtual environments not yet fully capture the real world.
 
 The domain of \ac{MAV}-Vision is a particular field where samples are not easy to obtain. One reason is the fact that different sensor and lens vary depending on camera and \ac{MAV} thus an image of the same scene can appear substantially different. Hence, a training set obtained from one \ac{MAV} might not be applicable for another \ac{MAV}. While it is possible to remove such effects in post-processing, this can lead to information loss and requires on-board resources.
 
@@ -46,8 +46,8 @@ As only very little examples of the real world are available the datasets are on
 
 This chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
 The relevant question to be investigated in this chapter is the following:
-
-\textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?}
+$ 
+\textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?} $
 
 \begin{enumerate}
 	\item[\textbf{RQ1.1}]What are the implications of the properties of \acp{EWFO} when synthesizing data?

@@ -3,7 +3,7 @@
 	
 	Object Detection has always been in the field of Computer Vision. The description of what kind of objects can be seen where in an image is an everyday human task that machines still have a hard time at solving.
 	
-	The task can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an object detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization. An overview is displayed in \Cref{fig:obj_pipeline}.
+	The task can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
 	
 	\begin{figure}[hbtp]
 		
@@ -11,7 +11,7 @@
 		\includegraphics[width=\linewidth]{fig/ObjectDetection}
 		\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
 		\label{fig:obj_pipeline}
-		
+	\end{figure}
 	\begin{enumerate}
 	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation.
 	
@@ -19,9 +19,13 @@
 	
 	\end{enumerate}
 
-	In recent years Deep Learning based models achieved big advances in the task of Object Detection. Previous state-of-the art results were passed by \todo{putin}. Next to their superior performance Deep Learning models also offer several engineering benefits. In contrast to their traditional counter parts, the whole detection pipeline is included into one model and trained on the task. This omits the often cumbersome work of carefully designing feature extractors and object models. It also enables to apply a similar model on a comparable task easily. Furthermore, it has been shown how pre-trained feature extractors can be transferred to other vision tasks. This further simplifies the application of Computer Vision models to other tasks. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
+	Manually designing feature extractors is a cumbersome work. Implicit assumptions might not be correct. Features are task dependent. Pipelines need to be optimized individually. Environmental influences are hard to capture and use in the design of feature extractors.
+
+	In recent years Deep Learning based models achieved big advances in the task of Object Detection. Previous state-of-the art results were passed by \todo{putin}. In contrast to their traditional counter parts, the whole detection pipeline is included into one model and trained on the task. This omits the often cumbersome work of carefully designing feature extractors and object models. It also enables to apply a similar model on a comparable task easily. Furthermore, it has been shown how pre-trained feature extractors can be transferred to other vision tasks. This further simplifies the application of Computer Vision models to other tasks. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
 	
 	However, their superior performance comes with several drawbacks. First of all are large amounts of annotated examples required in order to training the vast amount of parameters present in Deep Learning models. Furthermore, the computational costs during training and inference are high. Only faster and tailored processing units like \acp{GPU} enable the practical application of Deep Learning models. Finally, the presentation learned by the model is not transparent. Hence, the process that leads to the decision of a Computer Vision can usually not be understand by a human. The lack of transparency also makes the design of a Deep Learning model not an easy task.
+	
+	The domain of \acp{MAV} can have particular strong variations due to sensor properties etc. Hence, designing a good filter is difficult. Deep Learning can address these problems.
 	
 	\acp{EWFO}
 	- can appear in various ways
@@ -31,46 +35,19 @@
 	
 	Because we hypothesize that empty wireframe objects do not require a strong feature extractor and we have simulation of data and better getting computational resources we consider deep learning as a good model for the detection task. we address the lack of transparency by conducting a thorough analysis on what the model has learned.
 	
-On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. In a probabilistic view this is expressed by the conditional joint probability:
-
-	\begin{equation}
-		p(C,B|I)
-	\end{equation}
-
-	where $I$ is the image, $B$ is an area and $C$ is a class probability.
-
-
-	
-	\end{figure}
-
-
-
-	Commonly the areas $B$ are chosen as quadratic bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
-
-	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \Cref{sec:object_detection:related}.
-
-	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define here more properly why we are interested in the top part only, that can also be the argument to use 4 corners instead of h,w only}
-
-	In this thesis it is studied how a detection model can be applied to wire frame objects. Therefore a definition of wire frame objects is given. To the best of the authors knowledge the object class has not been previously defined or explicitly addressed by the research community.
-
-	\paragraph{Definition - Wire Frame Objects}	\hfill \\
-	The properties of wireframe object can be summarized in:
-		\begin{enumerate}
-		\item The \ac{OoI} does not consist of complex but only basic geometric shapes like corners, lines and edges.
-		\item The \ac{OoI} parts themselves are thin structures.
-		\item The \ac{OoI} parts can be spread over large parts of the image.
-		\item The \ac{OoI} parts are sparse. The bounding box around the object is largely occupied by background.
-	\end{enumerate}
 	
 	The relevant research question of this chapter is stated as follows:
+	\textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?}
 	
-	\begin{center}
-		\textbf{ How can a detection model represent wire frame objects?}
-	\end{center}
+	\begin{enumerate}
+		\item[\textbf{RQ2.1}] Can state-of-the art models represent an \ac{EWFO}?
+		\item[\textbf{RQ2.2}] What is the representation a state-of-the-art model learns for the Detection of \acp{EWFO}?
+		\item[\textbf{RQ2.3}] Can the insights be used to create a more suitable model for the Detection \ac{EWFO}?
+	\end{enumerate}
 
-	The question will be answered by doing a literature study and selecting several of the most promising methods for further experiments. The respective models are applied and evaluated in terms of performance. Furthermore, the insights of the models representation are studied.
+	The first question will be answered by analysing the performance of state of the art model on the detection of \acp{EWFO}. RQ2.2 will be answered by conduction a sensitivity analysis on the trained model and visualizing the internal representation. RQ2.3 will be answered by refactoring the model architecture and examining whether the performance can be improved or weights can be removed.
 
-	The rest of the chapter is organized as follows: \Cref{sec:object_detection:related} discusses relevant related work. Based on the gained insights \Cref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:object_detection:results} describes the obtained results. \Cref{sec:object_detection:conclusion} discusses the results and answers the research question.
+	The rest of the chapter is organized as follows: \Cref{sec:object_detection:related} discusses relevant related work. \Cref{sec:object_detection:approach} describes the methodology of this work. \Cref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:object_detection:results} describes the obtained results. \Cref{sec:object_detection:discussion} discusses the results. \Cref{sec:object_detection:conclusion} answers the research question and formulates a conclusion.
 
 
 	\section{Related Work}
@@ -79,14 +56,11 @@ On an abstract level the problem of object detection can be described by two ind
 	
 	\section{Traditional Methods}
 	
-	"Traditional" is not a very precise term but has also been used in other publications to  group methods that don't use the recently very popular \acp{CNN}-feature extractor. Therefore the term is similarly used in this work.
+	One of the first object detection methods was \cite{Viola2004} that used simple filters inspired by Haar-basis functions as a feature extractor for human face detection. The image was processed in a cascade of classifiers that assigned the label "face" or "background" to image patches. The output of the first stages were further classified when going deeper in the cascade. The processing of one image patch stopped, when a classifier assigned the label "background". Although being very fast the Haar-based feature extraction is not very robust towards rotation-, scale- or shape-variations \todo{quote}. 
 	
-	One of the first object detection methods was \cite{Viola2004} that used simple filters inspired by Haar-basis functions as a feature extractor for human face detection. The image was processed in a cascade of classifiers that assigned the label "face" or "background" to image patches. The output of the first stages were further classified when going deeper in the cascade. To employ an attention process, the processing of one image patch stopped, when a classifier assigned the label "background".
-	
-	Although being very fast the Haar-based feature extraction was not very robust towards rotation-, scale- or shape-variations \todo{quote}. A more robust feature extractor was proposed by \cite{Dalal} and \cite{Lowe2004} for pedestrian detection. A local (normalized) histogram of gradients is computed for a fixed window size. 
+	A more robust feature extractor was proposed by \cite{Dalal} and \cite{Lowe2004} for pedestrian detection. A local (normalized) histogram of gradients is computed for a fixed window size. 
 
-	However, these methods prove to be sensitive towards part occlusions or large deformations. This gave raise to deformable part models where parts of the object are explicitly learned and detected.  \todo{describe springs}
-
+	Previously mentioned methods modelled objects as one instance. This prove to be sensitive towards part occlusions or large deformations. Deformable part models detect object parts individually and combine them. Thus a feature extractor can still give a high response when even only object parts are visible or they are arranged in a way untypical to the training set.
 	
 	Guido proposes a neural network to learn an attention model.
 	

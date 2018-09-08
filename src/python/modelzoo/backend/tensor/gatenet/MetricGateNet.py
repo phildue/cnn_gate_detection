@@ -1,10 +1,11 @@
 from abc import abstractmethod
 
 import keras.backend as K
+import numpy as np
 
 from modelzoo.backend.tensor.metrics.AveragePrecision import AveragePrecision
 from modelzoo.backend.tensor.metrics.Metric import Metric
-import numpy as np
+
 
 class MetricGateNet(Metric):
     @abstractmethod
@@ -57,7 +58,7 @@ class MetricGateNet(Metric):
 
     def _postprocess_pred(self, y_pred):
         coord_pred_t = y_pred[:, :, 1:5]
-        conf_pred_t = y_pred[:, :, :1]
+        conf_pred_t = K.sigmoid(y_pred[:, :, :1])
         anchors_t = y_pred[:, :, 5:]
 
         coord_pred_dec_t = self._decode_coord(coord_pred_t, anchors_t)
