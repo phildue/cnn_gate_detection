@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from training.yolo.train import train
+from training.gate.train import train
 
 if __name__ == '__main__':
     start_idx = 0
@@ -64,9 +64,8 @@ if __name__ == '__main__':
               epochs=100,
               batch_size=16,
               n_samples=None,
-              class_names=['muro'],
               min_obj_size=0.1,
               max_obj_size=1.2,
-              min_aspect_ratio=0.3,
-              max_aspect_ratio=3.0,
+              min_aspect_ratio=0.1,
+              max_aspect_ratio=10.0,
               initial_epoch=0)

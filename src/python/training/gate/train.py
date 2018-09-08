@@ -1,8 +1,9 @@
 import argparse
 import pprint as pp
 
+import numpy as np
+
 from modelzoo.backend.tensor.Training import Training
-from modelzoo.backend.tensor.callbacks.MeanAveragePrecision import MeanAveragePrecision
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.gatenet.GateNet import GateNet
@@ -14,7 +15,6 @@ from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
-import numpy as np
 
 MODEL_NAME = 'GateNetV39'
 # [{'name': 'conv_leaky', 'kernel_size': (6, 6), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
@@ -58,9 +58,10 @@ def train(architecture=MODEL_NAME,
           input_channels=3,
           weight_file=None,
           n_polygon=4,
-          max_angle=30,
-          min_obj_size=0.1,
-          max_obj_size=1.2,
+          min_aspect_ratio=0,
+          max_aspect_ratio=100.0,
+          max_obj_size=5,
+          min_obj_size=0,
           validation_set=None,
           ):
     def learning_rate_schedule(epoch):
@@ -96,8 +97,8 @@ def train(architecture=MODEL_NAME,
         objs_in_size = [obj for obj in label.objects if
                         min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
 
-        max_aspect_ratio = 1.05 / (max_angle / 90)
-        objs_within_angle = [obj for obj in objs_in_size if obj.height / obj.width < max_aspect_ratio]
+        objs_within_angle = [obj for obj in objs_in_size if
+                             min_aspect_ratio < obj.height / obj.width < max_aspect_ratio]
 
         objs_in_view = []
         for obj in objs_within_angle:
