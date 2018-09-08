@@ -12,15 +12,37 @@ However, in many practical applications the gathering of such large amounts of t
 
 Therefore it has been a long interest in Computer Vision to automatize the data generation process. By synthetically generating samples with corresponding labels, the theoretical amount of training data is infinite. In addition, it can allow to generate data for domains that are uncommon and where samples are difficult and expensive to obtain.
 
-Yet bears the generation of data its own challenges. First and foremost because the generation process in itself is based on model assumptions. If these model assumptions do not sufficiently capture the real world, a model trained in such an environment might be heavily biased and performs poorly in the real world. Secondly, because the generation of visual data requires a lot of computational resources. Despite recent advances in Computer Graphics can virtual environments not yet fully capture the real world.
+Yet bears the generation of data its own challenges. First and foremost because the generation process in itself is based on model assumptions. If these model assumptions do not sufficiently capture the real world, a model trained in such an environment might be heavily biased and perform poorly in the real world. Secondly, because the generation of visual data requires a lot of computational resources. Despite recent advances in Computer Graphics can virtual environments not yet fully capture the real world.
 
-The domain of \ac{MAV}-Vision is a particular field where samples are not easy to obtain. One reason is the fact that different sensor and lens vary depending on camera and \ac{MAV} thus an image of the same scene can appear substantially different. Hence, a training set obtained from one \ac{MAV} might not be applicable for another \ac{MAV}. Furthermore, \ac{MAV} typically record video data. While such data provides a lot of information the real time storage of this data given the limited resources is not an easy task. In addition, the manual labeling of these videos is very work intense. Finally, as \ac{MAV} are brittle vehicles and mistakes in development can lead to damage on hardware, engineers and researchers often use simulators to evaluate their systems before transferring them to the real work. Thus the basic infrastructure required to generate data is often already available. Hence, the use of data generation is particularly useful for the \ac{MAV} domain.
+The domain of \ac{MAV}-Vision is a particular field where samples are not easy to obtain. One reason is the fact that different sensor and lens vary depending on camera and \ac{MAV} thus an image of the same scene can appear substantially different. Hence, a training set obtained from one \ac{MAV} might not be applicable for another \ac{MAV}. While it is possible to remove such effects in post-processing, this can lead to information loss and requires on-board resources.
 
-The detection of \ac{EWFO} is an example of the aforementioned case. To this end no annotated training data is publicly available. Hence, the generation of data is a crucial step to use more complex models for the detection of \ac{EWFO}. \todo{this could be more elaborate}
+Furthermore, \ac{MAV} typically record video data. While such data provides a lot of information the real time storage given the limited resources is not an easy task. In addition, the manual labelling of these videos is very work intense. Finally, as \ac{MAV} are brittle vehicles and mistakes in development can lead to damage on hardware, engineers and researchers often use simulators to evaluate their systems before transferring them to the real work. Thus the basic infrastructure required to generate data is often already available. Hence, the use of data generation is particularly useful for the \ac{MAV} domain.
 
-Therefore this work addresses the generation of data for the detection of \ac{EWFO} on \acp{MAV}. The aim is to create a synthetic source domain $S$ in such a way that the trained model $h$ performs well in various target domains $T$ of the real world. The performance is evaluated by applying the learned model on real world datasets and calculating a performance metric $m$.
+The detection of \ac{EWFO} is an example of the case mentioned before. In everyday life these object do not appear and thus not many examples exist that can be used for training. To this end no annotated dataset is publicly available. In addition, \ac{EWFO} are largely occupied by background. Thus if samples are taken from only one race court the variation in backgrounds is quite limited. A model trained on such a set is likely to use the background as a cue and does overfits to this domain. This makes the creation of a dataset for \ac{EWFO} particularly cumbersome. Therefore, data generation would benefit the development of Computer Vision models for \acp{EWFO}.
 
-The amount of annotated examples consists of 2 datasets obtained by \todo{describe once there}. As only very little examples of the real world are available and they stem from a subset of domains the case where no real world training samples are available is studied. The datasets are only used to evaluate the data generation process. However, as only a subset of domains are covered in the real world datasets, various domain shifts are simulated and its effects on performance is studied.
+\begin{figure}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/real_cyberzoo2}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/real_cyberzoo1}
+	\end{minipage}
+	\label{fig:examples}
+	\caption{Example of the \text{Cyberzoo} dataset. On the left an image while the \ac{MAV} is hovering, on the right an image during a turn manoevre.}
+\end{figure}
+
+In \Cref{fig:examples} example images of the target domain of this work are displayed. The images are taken during a test flight at a test environment. The left image shows an example when the \ac{MAV} is hovering and thus is in a very stable position. The object in this case is clearly visible as a single orange square. In contrast the right image shows a close up example during a turn manoeuvre. Here it can be seen how the used wide angle lens causes distortion and thus the lines to appear as circular shape. Furthermore, the large parts of the image including the horizontal bars of the object in the back appear blurred due to the circular velocity of the \ac{MAV}. In addition, the light conditions of the environment significantly influence the appearance of the object.
+
+Since complex Computer Vision models benefit from large training sets which are particularly hard to obtain for \ac{EWFO} detection on \acp{MAV}, this work addresses the generation of data for this application. The aim is to create a synthetic source domain $S$ in such a way that the trained model $h$ performs well in various target domains $T$ of the real world. The performance is evaluated by applying the learned model on real world datasets and calculating a performance metric $m$.
+
+The amount of annotated examples consists of 2 datasets obtained during test flights and manually labelled. These are described in the following:
+
+\begin{enumerate}
+ \item \textit{Cyberzoo}. The dataset consist of 200 images taken during a test flight at the cyberzoo at TU Delft Faculty of Aerospace. The race court consist of two gates which are passed in circular fashion.
+ \item \textit{Testarea}. \todo{insert once done} 
+\end{enumerate}
+
+As only very little examples of the real world are available the datasets are only used for evaluation. However, as the real data only covers a subset of possible application domains additional domain shifts are simulated and their effects on performance is studied.
 
 This chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
 The relevant question to be investigated in this chapter is the following:
@@ -46,22 +68,23 @@ Data generation has been studied in a wide range of publications. Methods vary f
 
 A common part of current Computer Vision pipelines is to augment a given data set by transforming low level properties of the image. By artificially increasing variations in the input signal, a model that is more invariant to the augmented properties shall be obtained.
 
-\citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} use \ac{PCA} to incorporate colour variations. \citeauthor{Howard2013} \cite{Howard2013} shows how several image transformations can improve the performance of a \ac{CNN}-based Classification model. The proposed pipeline includes variations in the crop of the input image as well as variations in brightness, color and contrast. In \ac{CNN}-based Object Detection \citeauthor{Redmon} \cite{Redmon} uses random scaling and translation of the input image, as well as random variations in saturation and exposure. \citeauthor{Liu} \cite{Liu} additionally crop and flip each image with a certain probability. 
+\citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} use \ac{PCA} to incorporate colour variations. \citeauthor{Howard2013} \cite{Howard2013} shows how several image transformations can improve the performance of a \ac{CNN}-based Classification model. The proposed pipeline includes variations in the crop of the input image as well as variations in brightness, color and contrast. In \ac{CNN}-based Object Detection \citeauthor{Redmon} \cite{Redmon} uses random scaling and translation of the input image, as well as random variations in saturation and exposure. \citeauthor{Liu} \cite{Liu} additionally crop and flip each image with a certain probability.
 
-While most of these approaches add artificial noise to the input data, \citeauthor{Carlson2018}\cite{Carlson2018} augment the image based on a physical camera model. The proposed pipeline incorporates models for sensor and lens effects like chromatic aberration, blur, exposure and noise. The reported results show an improvement of model performance especially when training on fully synthesized datasets.
+Since most methods use image augmentation and \citeauthor{Krizhevsky2012a} \cite{Krizhevsky2012a} mentions it to be the particularly reason for superior performance at ILSVRC2012 competition it can be assumed to be beneficial for Computer Vision models. Unfortunately, none of the publications measures the improvements gained by the different operations. This work includes a subset of the proposed techniques and measures its effect on model performance.
 
-Low-level image augmentation is a comparatively cheap method to increase the variance in a dataset. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it needs a sufficiently large base dataset that is augmented. This work addresses the case when only very little training data is available. Hence, low-level image augmentation is incorporated in the training process but can not be the only method applied.
+While the aforementioned approaches add artificial variation to the input data, \citeauthor{Carlson2018}\cite{Carlson2018} augment the image based on a physical camera model. The proposed pipeline is applied for Object Detection and incorporates models for sensor and lens effects like chromatic aberration, blur, exposure and noise. While being of minor effect for the augmentation of real data (0.1\% - 1.62\% \ac{mAP}70) the reported results show an improvement when training on fully synthesized datasets. Here the reported gains vary between 1.26 and 6.5 \% \ac{mAP}70.
+
+Low-level image augmentation is a comparatively cheap method to increase the variance in a dataset. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it needs a sufficiently large base dataset that is augmented. This work addresses the case when no real training data is available. Hence, low-level image augmentation is incorporated in the training process but can not be the only method applied.
 
 \subsection{Augmenting Real Images with CAD - Models}
 
-If a CAD-model of an object is available, it can be placed on real images to artificially create or increase the size of a dataset. Various publications \cite{Girshick2013, Peng, Rozantsev, Madaan2017} include the technique in the training process. Their results show an improvement compared to using real data alone.
+\ac{CAD}-models describe the 3D-shape of an object. In a lot of industrial applications such models are available as they are also used to produce the object. For Computer Vision it can be placed on real images to artificially create or increase the size of a dataset. 
 
-\citeauthor{Peng}\cite{Peng} particularly address how the modeling of image cues like texture, colour and background affects model performance. The experiments show how the used \acp{CNN} are relatively insensitive towards context but use shape as primary, texture and colour as secondary most important features. This enables competitive performance even when the object of interest is placed only on uniformly covered backgrounds. However, the study only covers solid objects such as birds, bicycles and airplanes. \ac{EWFO} are substantially different and we hypothesize that other image cues must be relevant.
+\citeauthor{Peng}\cite{Peng} study the use of \ac{CAD}-models in the context of \ac{CNN}-based Object Detection. The authors particularly address how modelling of image cues like texture, colour and background affects model performance. The experiments show how the used \acp{CNN} are relatively insensitive towards context but use shape as primary, texture and colour as secondary most important features. This enables competitive performance even when the object of interest is placed only on uniformly covered backgrounds. However, the study only covers solid objects such as birds, bicycles and airplanes. \ac{EWFO} are substantially different and we hypothesize that other image cues must be relevant.
 
-\citeauthor{Madaan2017}\cite{Madaan2017} study the segmentation of wires based on synthetic training. As wires similarly to \ac{EWFO} only consist of thin edges, the application is quite close to this work. However, the experiments focus on a single domain, namely sky images and thus the variations in background are comparatively small. This work investigates the application in multiple domains.
-\comm{so what??}
+\citeauthor{Madaan2017}\cite{Madaan2017} study the segmentation of wires based on synthetic training. As wires similarly to \ac{EWFO} only consist of thin edges, the application is quite close to this work. However, the experiments focus on a single domain, namely sky images and thus the variations in background are comparatively small. We hypothesize that \ac{EWFO} are particularly sensitive to such variations and address the application in multiple domains.
 
-\citeauthor{Hinterstoisser2017} \cite{Hinterstoisser2017} propose to use a base network that has been trained on real images and to continue training on images with CAD-meshes. During training the base network is frozen and only the last layers are updated. The method does not use real data but requires a suitable base network. As most available feature extractors (further discussed in \Cref{sec:object_detection}) are of a size that is computationally prohibitive for \ac{MAV} the method is not really applicable for this work. 
+\citeauthor{Hinterstoisser2017} \cite{Hinterstoisser2017} propose to use a base network that has been trained on real images and to continue training on images with \ac{CAD}-models. During training the base network is frozen and only the last layers are updated. The method does not use real data but requires a suitable base network. As most available feature extractors (further discussed in \Cref{sec:object_detection}) are of a size that is computationally prohibitive for \ac{MAV} the method is not really applicable for this work. 
 
 The use of CAD-models in combination with real backgrounds allows to generate totally new view points for the object of interest. Furthermore, the image background consists of real data and thus the synthetic textures only concern the rendered object. However, the geometric properties like perspective as well as the physical properties like object placement are violated and therefore create an artificial scene. Despite this fact, literature shows that such images can benefit model performance in various cases. Yet, most of the approaches still use real data and/or focus on solid objects with rich textures and complex shape. We hypothesize that since \ac{EWFO} do not provide these kind of structures the results do not apply in the same way. Hence, we incorporate the method to generate data and investigate how it can be applied for the detection of \ac{EWFO}.
 
@@ -73,20 +96,20 @@ Training models only in a simulated environment is common for Control tasks. In 
 
 In contrast \cite{Sadeghi2016, Tobin2017, Tremblay2018a} use a relatively simple environment but a high degree of randomization to address the reality gap. The aim is to learn an abstract representation by strongly varying textures, light conditions and object locations. \citeauthor{Tobin2017} introduced this technique as \ac{DR}. The drawback of the approach is that a too high degree of randomization may omit pattern in the target domain that could otherwise be exploited by the model. 
 
-Training a model in a fully synthesized environment enables the full control of all properties present in an image. The object of interest can be placed according to physical laws, shadows fall correctly and geometric properties of an image are followed. However, if the graphical models do not fully capture the detail of real world objects, the generated data might look too artificial. Methods in literature address this problem in two ways: (1) Creating a virtual environment that resembles the real world. Although a lot of engineering effort and processing power is required, a lot of properties of the real domain can be incorporated; (2) Creating a lot of variance in the data generation to obtain an abstract representation. While bearing the risk of omitting properties of the target domain this method requires less engineering effort.\comm{something wrong in the use of the punctuation?}
+Training a model in a fully synthesized environment enables the full control of all properties present in an image. The object of interest can be placed according to physical laws, shadows fall correctly and geometric properties of an image are followed. However, if the graphical models do not fully capture the detail of real world objects, the generated data might look too artificial. Methods in literature address this problem in two ways: (1) Creating a virtual environment that resembles the real world. Although a lot of engineering effort and processing power is required, a lot of properties of the real domain can be incorporated; (2) Creating a lot of variance in the data generation to obtain an abstract representation. While bearing the risk of omitting properties of the target domain, this method requires less engineering effort.
 
-This work addresses the application of \acp{MAV} in \ac{GPS} denied scenarios. Such scenarios cover a wide range of possible environmental conditions and a full modeling of all these possible domains is beyond the scope of this work. On the other hand, we hypothesize that a model with a high degree of abstraction might perform well across domains but poor in a particular domain. Hence, we investigate this trade-off for the detection of \acp{EWFO}.
+This work addresses the application of \acp{MAV} in \ac{GPS} denied scenarios. Such scenarios cover a wide range of possible environmental conditions and a full modelling of all these possible domains is beyond the scope of this work. On the other hand, we hypothesize that a model with a high degree of abstraction might perform well across domains but poor in a particular domain. Hence, we investigate this trade-off for the detection of \acp{EWFO}.
 
 
 \subsection{Transfer Learning}
 
-The field of transfer learning particularly addresses domain shifts in the modeling process. Hence, a common application is the learning from synthetic data.
+The field of transfer learning particularly addresses domain shifts in the modelling process. Hence, a common application is the learning from synthetic data.
 
 A common approach in \ac{CNN}-based models is the incorporation of a domain classifier in the model. By augmenting the data with domain labels, the classifier learns to distinguish the two domains. Subsequently a gradient reverse layer is applied and thus the weights are updated in such a way that a domain agnostic representation is learned. Examples of the approach can be found in \cite{Chen2018c} \cite{Xu2017}.
 
-While the aforementioned approaches require labeled samples from the target domain, \citeauthor{Peng2017} \cite{Peng2017} propose to include task-irrelevant samples and a source classifier. As a result no samples of the target domain are required.
+While the aforementioned approaches require labelled samples from the target domain, \citeauthor{Peng2017} \cite{Peng2017} propose to include task-irrelevant samples and a source classifier. As a result no samples of the target domain are required.
 
-While transfer learning provides the theoretical framework as well as methods to deal with domain shifts, it does not allow to generate data. Furthermore, it often requires samples of the target domain. This work addresses the case when only very little training data is available. While the field is interesting to be incorporated in the data generation pipeline investigated in this thesis, it can not be used as a start off point. Therefore we denote the use of transfer learning in the modeling process as future work.
+While transfer learning provides the theoretical framework as well as methods to deal with domain shifts, it does not allow to generate data. Furthermore, it often requires samples of the target domain. This work addresses the case when no real data is used for training. The field is interesting to be incorporated in the data generation pipeline investigated in this thesis but it can not be used as a start off point. Hence, the use of transfer learning in the modelling process is denoted as future work.
 
 \subsection{Generative Adversarial Networks}
 
@@ -153,21 +176,21 @@ In total three base environments are created. Examples can be seen in \Cref{fig:
 	\begin{minipage}{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/basement_perspective}
 \end{minipage}
-
+\caption{\textit{Basement} Environment.}
 \begin{minipage}{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/daylight_perspective}
 \end{minipage}
 \begin{minipage}{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/daylight_perspective}
 \end{minipage}
-
+\caption{\textit{Daylight} Environment.}
 \begin{minipage}{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/iros_perspective}
 \end{minipage}
 \begin{minipage}{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/iros_perspective}
 \end{minipage}
-\caption{Base environments when rendering a full scene. From top to bottom: \textit{Basement}, \textit{Daylight}, \textit{IROS}.}
+\caption{\textit{IROS2018} Environment.}
 \label{fig:environments}
 \end{figure}
 
@@ -192,20 +215,11 @@ Using this motion model, the camera follows a certain trajectory through the 3D-
 	
 \subsection{Post-processing}
 
-In the final step low-level image transformations are applied. The studied methods can be distinguished in sensor model based augmentation and artificial augmentation. \comm{what do you mean by : distinguish??}
+In the final step low-level image transformations are applied. Steps include sensor model based an artificial augmentation.
 
 \subsubsection{Model-based augmentation}
 
-The applied pipeline is strongly based on \cite{Carlson2018}. However, on the camera of the \ac{MAV} we assume that the raw image signal can be processed. Hence, the model for information loss due to post-processing is not included. Instead all images are converted into YUYV-colour space, a format that is obtained from most visual sensors as well as the target platform of this thesis. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often use wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected.
-
-The post-processing pipeline is summarized as:
-
-\begin{equation}
-	I' = \phi_{noise}(\phi_{exposure}(\phi_{FocusBlur}(\phi_{MotionBlur}(\phi_{Chrom.}(\phi_{Lense}(I))))))
-	\label{eq:postprocess}
-\end{equation}
-
-The individual models are described in the following.
+The applied pipeline is strongly based on \cite{Carlson2018}. However, on the camera of the \ac{MAV} we assume that the raw image signal can be processed. Hence, the model for information loss due to post-processing is not included. Instead all images are converted into YUYV-colour space, a format that is obtained from most visual sensors as well as the target platform of this thesis. The pipeline is extended by two models: (1) A model for lens distortion since \ac{MAV} often use wide angle lenses to increase their \ac{FoV}; (2) A model for motion blur since fast camera movements are to be expected. The individual models are described in the following.
 
 \paragraph{Lens Distortion}
 
@@ -231,7 +245,7 @@ Where:
 	\item $\lambda_x$ and $\lambda_y$ controls asymmetric distortion (default 0)
 \end{itemize}
  
-Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution, sthe Newton-approximation is used:
+Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution, so the Newton-approximation is used:
 
 \begin{equation}
 	p_i = p_{i-1} - \nabla p^{-1} (f(p)_i-p')
@@ -239,13 +253,11 @@ Applying the lens distortion to an image is done using the inverse of \Cref{eq:d
 
 Where $f$ is the function defined in \Cref{eq:distortion}. 
 
-In \Cref{fig:distortion} an example is shown. The distortion is applied on the original image (left) using $k_1=0.8, k_2=0$ for the radial and non-radial part. As the distortion leads to an increased \ac{FoV}, this creates black borders in the image. Therefore the center image part is cropped and rescaled to the original image size. The right image shows the same image after the crop and rescale operation without the distortion. Thus we see the original scene (left), one possible view on that scene with a wide-angle lens (center) and the same view without the lens (right). 
-
-
+An example with $\kappa_1 = 0.5, \kappa_2 = 0.5$ is displayed in \Cref{fig:distortion}. It can be seen how the previously straight lines appear as circular shape.
 
 \paragraph{Chromatic Aberration.}
 
-Chromatic Aberration is caused when different wavelengths of light end up in different locations of the visual sensor. This leads to a shift in the colour channels of the image.
+Chromatic Aberration is caused when different wavelengths of light do not end up in the same locations of the visual sensor. This leads to a shift in the colour channels of the image.
 
 Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
 
@@ -264,6 +276,8 @@ y \\
 1
 \end{pmatrix}
 \end{equation}
+
+An example is displayed in \Cref{fig:chromatic}. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.
 
 \paragraph{Motion Noise.}
 
@@ -286,6 +300,8 @@ K_h = \begin{pmatrix}
 \end{equation}
 
 Where $\mathcal{N}$ is a Gaussian-PDF with mean $\mu$ and variance $\sigma$,  $K_v$ models vertical motion blur, $K_h$ horizontal motion blur. The size of the kernel is chosen by $k$.
+
+An example for vertical blur is displayed in \Cref{fig:motionblur}. It can be seen how particularly horizontal lines appear softer.
 
 \paragraph{Out-of-focus Blur.}
 
@@ -317,6 +333,8 @@ where $S$ is obtained from :
 S = f^{-1}(I) = \frac{\ln(\frac{255}{I}-1)}{-A}
 \end{equation}
 
+An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen how lighter areas appear particularly light, while dark areas remain dark.
+
 \paragraph{Noise.}
 \todo{text}
 
@@ -330,70 +348,42 @@ Inspired by \cite{Howard2013, Redmon, Liu} the application of several artificial
 	
 \paragraph{Histogram Equalization.} Changes in the environmental conditions can also affect contrast. By applying a histogram equalization on a subset of images, variations in contrast are achieved. \todo{describe}
 	
-\paragraph{Flip.} By mirroring the image vertically, more variations in object locations are achieved. The operation is applied with a probability of $f$.
+\paragraph{Flip.} By mirroring the image vertically, more variations in object locations are achieved. The operation is applied with a certain probability.
 
 
 \begin{figure}[htbp]
 	\centering
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
-	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
-	\end{minipage}
-	\caption{Example Chromatic Aberration with $S=[1, 1.01, -5.0]$, $t_x=[10,0.1,0.01]$, $t_y=[0.1,-0.1,0.0.01]$. Original scene (left), after transformation (right)}
-	\label{fig:chromatic}
-\end{figure}
-\begin{figure}[htbp]
 	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example}
+\caption{Original Image.}
+\label{fig:orig}
 	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
+	\caption{Chromatic Aberration.} 		
+	\label{fig:chromatic}
+\end{minipage}
 	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_distorted}
+	\caption{Lens Distortion. }		
+\label{fig:distortion}
 	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_undistorted}
-	\end{minipage}
-	\caption{Example Lens Distortion. Original scene (left), distorted view (center), undistorted view (right)}
-	\label{fig:distortion}
-\end{figure}
 
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
-	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
+	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
-	\end{minipage}
-	\caption{Example Out-of-Focus blur.}
-	\label{fig:focusblur}
-\end{figure}
-
-\begin{figure}[htbp]
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
+	\caption{Out-of-Focus blur.}
+\label{fig:focusblur}
 	\end{minipage}
 	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
+	\caption{Vertical Motion Blur.}
+\label{fig:motionblur}
 	\end{minipage}
 	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_h}
-	\end{minipage}
-	\caption{Example Motion Blur with $k=15$, $\sigma=5.0$. Original scene (left), vertical movement (center), horizontal movement (right)}
-	\label{fig:motionblur}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
-	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
+	\caption{Exposure.}
+\label{fig:exposure}
 	\end{minipage}
-	\caption{Example Exposure with $\Delta S = 2.0$, $A = 1.0$.}
-	\label{fig:exposure}
 \end{figure}
 
 \subsection{Hypothesis}
@@ -403,7 +393,7 @@ Most of described approaches in \Cref{sec:training:related} focus on objects tha
 
 If the environmental conditions have an high impact, their modelling is particularly important in the data generation process. We hypothesize that, as pasting the image on random backgrounds fails to capture these conditions, it is not a sufficient method to train a model for the detection of \acp{EWFO}. That is the performance drop $\Delta m$ of a model trained in $S$ and applied in $T$ where $S$ is generated by pasting a 3D-Mesh on random backgrounds and $T$ is modelled using full environment rendering will be prohibitively large.
  
-From that it follows that in order to generate data for \ac{EWFO} Object Detection it is particularly important to address the domain shift. In literature two ways to approach this problem on the data level can be found: (1) providing a lot of variance in the training data to obtain a representation that is robust against domain shifts; (2) including target domain knowledge in the training data to obtain a representation that is tailored to the target domain. We hypothesize that there is a trade-off between these two approaches: a model that performs well across domains will perform poorer in a particular domain but better in other domains compared to a model that is trained for that particular domain. Hence, we hypothesize, if knowledge of $T$ is included when generating $S$ the performance in $T$ will improve given a fixed modelsize/ the model can be simplified achieving equal performance. \comm{what??}
+From that it follows that in order to generate data for \ac{EWFO} Object Detection it is particularly important to address the domain shift. In literature two ways to approach this problem on the data level can be found: (1) providing a lot of variance in the training data to obtain a representation that is robust against domain shifts; (2) including target domain knowledge in the training data to obtain a representation that is tailored to the target domain. We hypothesize that there is a trade-off between these two approaches: a model that performs well across domains will perform poorer in a particular domain but better in other domains compared to a model that is trained for that particular domain. Hence, we hypothesize, if knowledge of $T$ is included when generating $S$ the performance in $T$ will improve.
 
 In the data generation process this can be addressed on several levels:
 
@@ -420,7 +410,7 @@ The hypotheses are summarized in the following:
 \begin{enumerate}
 	\item[$\mathcal{H}_1$] The performance drop $\Delta m$ of a model trained in $S$ and applied in $T$ where $S$ and $T$ are different in terms of environmental conditions will be larger for an \ac{EWFO} than for a more complex object.
 	
-	\item[$\mathcal{H}_2$] In contrast to a more complex object, the performance drop $\Delta m$ of a model for the detection of \acp{EWFO} trained in $S$ and applied in $T$ where $S$ is generated by pasting a 3D-Mesh on random backgrounds and $T$ is modelled using full environment rendering will be prohibitively large.
+	\item[$\mathcal{H}_2$] In contrast to a more complex object, the performance drop $\Delta m$ of a model for the detection of \acp{EWFO} trained in $S$ and applied in $T$ where $S$ is generated by pasting a \ac{CAD}-Model on real backgrounds and $T$ is modelled using full environment rendering will be prohibitively large.
 	
 	\item[$\mathcal{H}_3$] A model trained in $S_0$ where $S_0 \in S$ and applied in $T_0$, where $S_0 = T_0$ will perform better in $T_0$ than a model that is trained in $S$ but perform worse in $T_1$ where $T_1 \in S$ and $T_1 \neq S_0$. 
 
@@ -430,33 +420,26 @@ The hypotheses are summarized in the following:
 
 \section{Experiments}
 \label{sec:training:experiments}
-In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}.\comm{missing thing???} The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 10 runs are reported.
+In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}. The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 5 runs are reported.
+
+For the random view point generation the following parameters are used:
+
 \begin{equation}
 	x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
 	\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
 	\label{eq:distroexp}
 \end{equation}
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
 
+The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
 
 \subsection{Experiment I}
 
-In order to evaluate $\mathcal{H}_1$ a model is trained in $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.} The source environment is \textit{Basement}, the target domain is \textit{Daylight.} The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consists of 1000 samples and fixed object arrangement. The view points are samples from the distributions described in the following:
-$$
-x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)
-$$
-$$
-\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
-$$
-Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
-The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
-
+In order to evaluate $\mathcal{H}_1$ a model is trained in $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.} The source environment is \textit{Basement}, the target domain is \textit{Daylight.} The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consists of 1000 samples and fixed object arrangement. The view points are samples from the distributions described in \Cref{eq:distroexp}
 
 \subsection{Experiment II}
 
-In order to evaluate $\mathcal{H}_2$ a model is trained in $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.}  The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consists of 1000 samples and fixed object arrangement. The training set is generated by replacing the background with images samples from the Pascal VOC dataset. The test set is taken in \textit{Daylight} Environment. The view points are samples from the distributions described in the following:
-
-Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
-The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
+In order to evaluate $\mathcal{H}_2$ a model is trained in $S$ and applied in $T$. Three objects are investigated namely the \textit{Square-Gate}, \textit{Round-Gate} and \textit{Person.}  The training set consists of 20 000 samples, where for every batch of 2000 samples the objects are rearranged in the room. The test set consists of 1000 samples and fixed object arrangement. The training set is generated by replacing the background with images samples from the Pascal VOC dataset. The test set is taken in \textit{Daylight} Environment. The view points are samples from the distributions described in \Cref{eq:distroexp}
 
 \subsection{Experiment III}
 
