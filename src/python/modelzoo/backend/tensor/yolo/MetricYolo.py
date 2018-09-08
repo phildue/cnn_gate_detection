@@ -65,13 +65,15 @@ class MetricYolo(Metric):
 
     def _postprocess_pred(self, y_pred):
         conf_t, class_t, coord_t, anchors_t = MetricYolo.decode_t(y_pred)
+        conf_pp_t = K.sigmoid(conf_t)
+        class_pp_t = K.softmax(class_t)
 
         coord_dec_t = self._decode_coord(coord_t, anchors_t)
 
         class_nms_batch = self.map_adapter.non_max_suppression_batch(coord_dec_t,
-                                                                     class_t,
+                                                                     class_pp_t,
                                                                      self.batch_size,
                                                                      K.shape(anchors_t)[0],
                                                                      self.iou_thresh)
 
-        return conf_t, class_nms_batch, coord_dec_t
+        return conf_pp_t, class_nms_batch, coord_dec_t

@@ -36,9 +36,9 @@ class YoloLoss(Loss):
         loc_loss = self.localization_loss(y_true, y_pred)
 
         conf_loss = self.confidence_loss(y_true, y_pred)
-        # class_loss = self.class_loss(y_true, y_pred)
+        class_loss = self.class_loss(y_true, y_pred)
 
-        return loc_loss + conf_loss  # + class_loss
+        return loc_loss + conf_loss + class_loss
 
     def localization_loss(self, y_true, y_pred):
         positives = y_true[:, :, 0]

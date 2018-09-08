@@ -1,6 +1,35 @@
 	\chapter{Modelling the Detection of \ac{EWFO}}
-	
 	\label{sec:object_detection}
+	
+	Object Detection has always been in the field of Computer Vision. The description of what kind of objects can be seen where in an image is an everyday human task that machines still have a hard time at solving.
+	
+	The task can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an object detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization. An overview is displayed in \Cref{fig:obj_pipeline}.
+	
+	\begin{figure}[hbtp]
+		
+		\centering
+		\includegraphics[width=\linewidth]{fig/ObjectDetection}
+		\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
+		\label{fig:obj_pipeline}
+		
+	\begin{enumerate}
+	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation.
+	
+	\item The classification/localization stage produces the final output based on this representation.
+	
+	\end{enumerate}
+
+	In recent years Deep Learning based models achieved big advances in the task of Object Detection. Previous state-of-the art results were passed by \todo{putin}. Next to their superior performance Deep Learning models also offer several engineering benefits. In contrast to their traditional counter parts, the whole detection pipeline is included into one model and trained on the task. This omits the often cumbersome work of carefully designing feature extractors and object models. It also enables to apply a similar model on a comparable task easily. Furthermore, it has been shown how pre-trained feature extractors can be transferred to other vision tasks. This further simplifies the application of Computer Vision models to other tasks. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
+	
+	However, their superior performance comes with several drawbacks. First of all are large amounts of annotated examples required in order to training the vast amount of parameters present in Deep Learning models. Furthermore, the computational costs during training and inference are high. Only faster and tailored processing units like \acp{GPU} enable the practical application of Deep Learning models. Finally, the presentation learned by the model is not transparent. Hence, the process that leads to the decision of a Computer Vision can usually not be understand by a human. The lack of transparency also makes the design of a Deep Learning model not an easy task.
+	
+	\acp{EWFO}
+	- can appear in various ways
+	- consist of simple shape
+	- computational resources get better
+	- simulation enables data generation
+	
+	Because we hypothesize that empty wireframe objects do not require a strong feature extractor and we have simulation of data and better getting computational resources we consider deep learning as a good model for the detection task. we address the lack of transparency by conducting a thorough analysis on what the model has learned.
 	
 On an abstract level the problem of object detection can be described by two individual tasks: Classification and Localization. While Classification deals with the question of what kind of object is displayed in the image, Localization is concerned with finding the position of objects. Hence, the output of a object detection system is usually a set of areas within the image and a corresponding class label. In a probabilistic view this is expressed by the conditional joint probability:
 
@@ -10,27 +39,15 @@ On an abstract level the problem of object detection can be described by two ind
 
 	where $I$ is the image, $B$ is an area and $C$ is a class probability.
 
-	Images are high dimensional signals that can contain a lot of information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), most computer vision pipelines can be separated in the stages of feature extraction, Classification/Localization. An overview is displayed in \autoref{fig:obj_pipeline}.
-	
-	\begin{figure}[hbtp]
-	
-	\centering
-	\includegraphics[width=\linewidth]{fig/ObjectDetection}
-	\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
-	\label{fig:obj_pipeline}
+
 	
 	\end{figure}
 
-	\begin{enumerate}
-	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation.
 
-	\item The classification/localization stage produces the final output based on this representation.
-
-	\end{enumerate}
 
 	Commonly the areas $B$ are chosen as quadratic bounding boxes. A lot of methods initially produce a lot of proposals that are fused to a final prediction with non-maximum suppression.
 
-	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \autoref{sec:object_detection:related}.
+	Another way to reduce the input space, next to feature extraction, is the sampling method. While Sliding-window based techniques crop the image at different sizes and aspect ratios in top-left to bottom-right manner, Attention models try to employ a more targeted way of sampling. By focusing on the relevant parts of the image one tries to mimic the human vision process and to reduce the number of unnecessary computations. There are different ways to incorporate such an attention process into a detection pipeline. These will be further discussed \Cref{sec:object_detection:related}.
 
 	In this thesis the single class case is considered. Hence, $p(C) = [0,1]$, where $0$ is background and $1$ is an object. Furthermore the focus lays on racing gates. Hence, the area $B$ is defined as a rectangular bounding box containing the object part, the drone needs to fly through. \todo{define here more properly why we are interested in the top part only, that can also be the argument to use 4 corners instead of h,w only}
 
@@ -53,7 +70,7 @@ On an abstract level the problem of object detection can be described by two ind
 
 	The question will be answered by doing a literature study and selecting several of the most promising methods for further experiments. The respective models are applied and evaluated in terms of performance. Furthermore, the insights of the models representation are studied.
 
-	The rest of the chapter is organized as follows: \autoref{sec:object_detection:related} discusses relevant related work. Based on the gained insights \autoref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:object_detection:results} describes the obtained results. \autoref{sec:object_detection:conclusion} discusses the results and answers the research question.
+	The rest of the chapter is organized as follows: \Cref{sec:object_detection:related} discusses relevant related work. Based on the gained insights \Cref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:object_detection:results} describes the obtained results. \Cref{sec:object_detection:conclusion} discusses the results and answers the research question.
 
 
 	\section{Related Work}
@@ -118,7 +135,7 @@ On an abstract level the problem of object detection can be described by two ind
 	
 	Various authors show how \acp{CNN}-based methods outperform methods with engineered feature extractors by far\todoref{Alexnet,}. \citeauthor{Razavian}s experiments show how that this is not only because \acp{CNN}-features are trained on a specific task, but that  the learned representation is quite general and can be used in other vision tasks and methods.
 	
-	This has led to common practice to train feature extractors with a classification task on the Imagenet dataset with \todo{number} images and to use these weights to initialize networks for other tasks like object detection or segmentation. Popular feature extractors are summarized in \autoref{tab:cnn-extractors}.
+	This has led to common practice to train feature extractors with a classification task on the Imagenet dataset with \todo{number} images and to use these weights to initialize networks for other tasks like object detection or segmentation. Popular feature extractors are summarized in \Cref{tab:cnn-extractors}.
 	
 	\begin{table}[htbp]
 		\centering
@@ -170,7 +187,7 @@ On an abstract level the problem of object detection can be described by two ind
 	
 	YoloV2, SSD  formulate the task by discretizing the output as a set of preparameterized bounding boxes. For each box class probabilities and bounding box offsets are predicted. In total this leads to $S*S*B*(4 + 1 + C)$ output nodes. 
 	
-	The models are trained by assigning a certain set of output nodes the "responsibility" to predict a certain object. That means only the output for these nodes is taken into account when calculating the loss for a certain sample and when updating the weights in the backward pass. This "matching strategy" is usually based on the intersection-over-union between ground truth and anchor box. \autoref{fig:anchors} illustrates the concept in the example of SSD.  
+	The models are trained by assigning a certain set of output nodes the "responsibility" to predict a certain object. That means only the output for these nodes is taken into account when calculating the loss for a certain sample and when updating the weights in the backward pass. This "matching strategy" is usually based on the intersection-over-union between ground truth and anchor box. \Cref{fig:anchors} illustrates the concept in the example of SSD.  
 	
 	\begin{figure}[hbtp]
 		

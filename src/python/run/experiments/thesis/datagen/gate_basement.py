@@ -64,7 +64,7 @@ if __name__ == '__main__':
               epochs=100,
               batch_size=16,
               n_samples=None,
-              class_names='gate',
+              class_names=['gate'],
               min_obj_size=0.1,
               max_obj_size=1.2,
               min_aspect_ratio=0.3,

@@ -64,8 +64,13 @@ class YoloEncoder(Encoder):
 
         """
         anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, 4)
-        confidences, class_prob, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
+        objectness, class_prob, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
         coords = self._encode_coords(coords, anchors)
-        label_t = np.hstack((confidences, class_prob, coords, anchors))
+
+        label_t = YoloEncoder.concat_t(objectness, class_prob, coords, anchors)
         label_t = np.reshape(label_t, (-1, 1 + self.n_classes + 4 + 4))
         return label_t
+
+    @staticmethod
+    def concat_t(objectness, class_prob, coords, anchors):
+        return np.hstack((objectness, class_prob, coords, anchors))

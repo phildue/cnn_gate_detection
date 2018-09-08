@@ -29,12 +29,12 @@ class YoloDecoder(Decoder):
         :param label_t: y as fed for learning
         :return: boxes
         """
-        coord_t = label_t[:, self.n_classes + 1:]
-        class_t = label_t[:, 1:self.n_classes + 1]
+        conf_t, class_t, coord_t, anchors_t = YoloDecoder.split_t(label_t)
+
         class_t = YoloDecoder.softmax(class_t)
-        conf_t = label_t[:, 0:1]
         conf_t = YoloDecoder.sigmoid(conf_t)
-        coord_t_dec = self.decode_coord(coord_t)
+
+        coord_t_dec = self.decode_coord(np.vstack((coord_t, anchors_t)))
         coord_t_dec = np.reshape(coord_t_dec, (-1, 4))
         class_t = np.reshape(class_t, (-1, self.n_classes))
         boxes = BoundingBox.from_tensor_centroid(conf_t, coord_t_dec)
@@ -68,3 +68,12 @@ class YoloDecoder(Decoder):
         """
         boxes = self.decode_netout_to_boxes(label_t)
         return BoundingBox.to_label(boxes)
+
+    @staticmethod
+    def split_t(label_t):
+        coord_t = label_t[:, -8:-4]
+        conf_t = label_t[:, :1]
+        class_t = label_t[:, 1:-8]
+        anchors_t = label_t[:, -4:]
+
+        return conf_t, class_t, coord_t, anchors_t
