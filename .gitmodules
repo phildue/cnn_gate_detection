@@ -22,3 +22,6 @@
 [submodule "lib/dronerace2018"]
 	path = lib/dronerace2018
 	url = https://github.com/phildue/dronerace2018.git
+[submodule "lib/datagen"]
+	path = lib/datagen
+	url = https://github.com/phildue/datagen.git

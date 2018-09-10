@@ -1,21 +1,16 @@
 from pprint import pprint
 
-from modelzoo.models.ModelFactory import ModelFactory
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.yolo.Yolo import Yolo
 from modelzoo.visualization.demo import demo_generator
-from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import load_file, create_dirs
-from utils.imageprocessing.transform.TransfromGray import TransformGray
+from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/muro'],
+generator = GateGenerator(directories=['resource/ext/samples/iros2018muro_random_test'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          shuffle=False, start_idx=50, valid_frac=1.0,
                           label_format=None,
                           )
 #
@@ -27,17 +22,15 @@ generator = GateGenerator(directories=['resource/ext/samples/muro'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/thesis/datagenyolov3_person416x416_i00/'
+src_dir = 'out/thesis/datagen/yolov3_person416x416_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
-model = Yolo.create_by_arch(architecture=summary['architecture'],
-                            weight_file=src_dir + 'model.h5', batch_size=8, norm=summary['img_res'],
-                            anchors=summary['anchors'],
-                            color_format='bgr',
-                            # preprocessor=TransformGray(),
-                            conf_thresh=0.0,
-                            augmenter=None,
-                            class_names='muro',
-                            iou_thresh=0.4)
+model = GateNet.create_by_arch(architecture=summary['architecture'],
+                               weight_file=src_dir + 'model.h5', batch_size=8, norm=summary['img_res'],
+                               anchors=summary['anchors'],
+                               color_format='bgr',
+                               # preprocessor=TransformGray(),
+                               conf_thresh=0.1,
+                               augmenter=None)
 # create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
 demo_generator(model, generator, t_show=0, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])

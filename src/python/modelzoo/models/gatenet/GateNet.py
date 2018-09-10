@@ -65,7 +65,6 @@ from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from run.etc.mulitply_adds import count_operations
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
-from utils.labels.ObjectLabel import ObjectLabel
 
 
 class GateNet(Predictor):
@@ -248,8 +247,6 @@ class GateNet(Predictor):
                  ):
         self.architecture = architecture
         self.color_format = color_format
-
-        ObjectLabel.classes = ['muro']
 
         self.anchors = anchors
         self.batch_size = batch_size

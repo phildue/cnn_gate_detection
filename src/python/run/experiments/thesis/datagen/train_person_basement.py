@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     for i in range(start_idx, n_repetitions):
         train(architecture=architecture,
-              work_dir='thesis/datagen' + model_name + '_i{0:02d}'.format(i),
+              work_dir='thesis/datagen/' + model_name + '_i{0:02d}'.format(i),
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,

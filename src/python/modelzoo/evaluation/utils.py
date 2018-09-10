@@ -1,5 +1,6 @@
 import numpy as np
 
+from modelzoo.evaluation.DetectionResult import DetectionResult
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.fileaccess.utils import load_file
 
@@ -15,6 +16,24 @@ def sum_results(detection_results: [ResultByConfidence]):
         result_sum += d
 
     return result_sum
+
+
+def mean_results(detection_results: [ResultByConfidence]):
+    confidence = np.round(np.linspace(0, 1.0, 11), 2)
+
+    mean_r = {}
+    for j, c in enumerate(confidence):
+        result_mat = np.zeros((len(detection_results), 3))
+
+        for i, result in enumerate(detection_results):
+            result_mat[i, 0] = result.results[c].true_positives
+            result_mat[i, 1] = result.results[c].false_positives
+            result_mat[i, 2] = result.results[c].false_negatives
+
+        mean = np.mean(result_mat, 0)
+        mean_r[c] = DetectionResult(mean[0], mean[1], mean[2])
+
+    return ResultByConfidence(mean_r)
 
 
 def average_precision_recall(detection_results: [ResultByConfidence]):

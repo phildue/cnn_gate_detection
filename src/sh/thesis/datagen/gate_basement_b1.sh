@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/run/experiments/thesis/datagen/gate_basement.py --start_idx=2 --n_reps=3
+srun python3 dronevision/src/python/run/experiments/thesis/datagen/train_gate_basement.py --start_idx=2 --n_reps=3

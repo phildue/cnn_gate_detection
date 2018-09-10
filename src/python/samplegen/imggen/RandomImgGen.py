@@ -1,12 +1,10 @@
 import glob
 import random
-from scipy import signal
 
 import numpy as np
 
 from samplegen.imggen.ImgGen import ImgGen
-from utils.imageprocessing.Backend import imread, replace_background, blur, noisy, convert_color, COLOR_BGR2YUV, resize, \
-    brightness
+from utils.imageprocessing.Backend import imread, resize
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
@@ -36,7 +34,7 @@ class RandomImgGen(ImgGen):
             label = labels[i]
 
             shot, label = resize(shot, background.shape[:2], label=label)
-
+            shot.array[np.mean(shot.array, -1) < 10] = (0, 0, 0)
             if self.preprocessor:
                 shot, label = self.preprocessor.transform(shot, label)
 

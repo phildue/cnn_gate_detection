@@ -13,6 +13,10 @@ class GateNetDecoder(Decoder):
         self.grid = grid
         self.norm = norm
 
+    @staticmethod
+    def sigmoid(x):
+        return 1 / (1 + np.exp(-x))
+
     def decode_netout_to_boxes(self, label_t):
         """
         Convert label tensor to objects of type Box.
@@ -20,7 +24,7 @@ class GateNetDecoder(Decoder):
         :return: boxes
         """
         coord_t = label_t[:, 1:]
-        class_t = label_t[:, :1]
+        class_t = GateNetDecoder.sigmoid(label_t[:, :1])
         coord_t_dec = self.decode_coord(coord_t)
         coord_t_dec = np.reshape(coord_t_dec, (-1, self.n_polygon))
         class_t = np.reshape(class_t, (-1, 1))

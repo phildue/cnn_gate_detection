@@ -10,24 +10,25 @@ from utils.workdir import cd_work
 
 cd_work()
 
-background_path = ["resource/backgrounds/cyberzoo_empty/"]
+background_path = ["resource/backgrounds/voc12/"]
 # background_path = ["resource/backgrounds/google-fence-gate-industry/"]
 
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/ext/samples/test/"
-shot_path = "resource/shots/test/"
+sample_path = "resource/ext/samples/real_bg/"
+shot_path = "resource/ext/samples/black/"
 
-n_backgrounds = 100
-batch_size = 10
-output_shape = (160, 315)
+n_backgrounds = 20000
+batch_size = 100
+output_shape = (416, 416)
 n_batches = int(np.ceil(n_backgrounds / batch_size))
 create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='bmp')
-set_writer = DatasetParser.get_parser(sample_path, image_format='jpg', label_format='xml', start_idx=20000,color_format='bgr')
+set_writer = DatasetParser.get_parser(sample_path, image_format='jpg', label_format='xml', start_idx=0,
+                                      color_format='bgr')
 
 augmenter = None  # RandomEnsemble(augmenters=[
 # (1.0, TransformResize((160, 315))),
