@@ -48,7 +48,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_gate{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_gate_realbg{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
 
