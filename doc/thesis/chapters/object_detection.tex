@@ -1,7 +1,7 @@
 	\chapter{Modelling the Detection of \ac{EWFO}}
 	\label{sec:object_detection}
 	
-	Object Detection can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain redundant information which is not relevant for the task. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
+	Object Detection can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain redundant and task irrelevant information. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
 	
 	\begin{figure}[hbtp]
 		
@@ -17,11 +17,11 @@
 	
 	\end{enumerate}
 
-	An efficient feature extraction pipeline is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish between classes. On the other hand the most flexible Classifier can not separate a highly overlapping feature space. Hence, Feature Engineering, the design of feature extractors is a highly investigated field in Computer Vision. Methods range from supervised and unsupervised Machine Learning techniques to conducting domain experts and trying to include their expert knowledge into the pipeline. In practical Computer Vision problems this often results in the cumbersome design of feature extractors given an application. Moreover, it requires domain knowledge and it is questionable whether the features designed for one task are easily transferable to other tasks. Finally, it results in a pipeline where each step needs to be optimized individually.
+	An efficient feature extraction pipeline is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish between classes. On the other hand even a flexible classifier struggles with a highly overlapping feature space. Hence, Feature Engineering, the design of feature extractors is a highly investigated field in Computer Vision. Methods range from supervised and unsupervised Machine Learning techniques to conducting domain experts and trying to include their expert knowledge into the pipeline. In practical Computer Vision problems this often results in the cumbersome design of feature extractors for the application. Moreover, it requires domain knowledge and it is questionable whether the features designed for one task are easily transferable to other tasks. Finally, it results in a pipeline where each step needs to be optimized individually.
 	
-	In recent years Deep Learning based models achieved big advances in the task of Object Detection. In contrast to their traditional counter parts, these models include the whole detection pipeline from raw image to Classification/Localization. The whole model is then optimized given the task and the raw image data. This omits the often cumbersome work of designing feature extractors and object models. Furthermore, it has been shown that Deep Learning based features generalize well between different Computer Vision tasks \cite{Razavian}. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
+	In recent years Deep Learning based models achieved big advances in the task of Object Detection. In contrast to their traditional counter parts, these models combine Feature Extraction and Classification/Localization stage in one model. The whole pipeline is then optimized given the task and the raw image. This omits the often cumbersome work of designing feature extractors and object models. Furthermore, it has been shown that Deep Learning based features generalize well between different Computer Vision tasks \cite{Razavian}. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
 	
-	However, their superior performance comes with several drawbacks. First of all, large amounts of annotated examples are required in order to train the vast amount of parameters present in Deep Learning models. Furthermore, the computational costs during training and inference are high. Only faster and tailored processing units like \acp{GPU} enable the practical application of Deep Learning models. Finally, the presentation learned by the model is not transparent. Hence, the process that leads to the decision of a Computer Vision can usually not be understand by a human. Also, there is no guarantee that the learned representation is not highly redundant. This is particularly problematic for devices with time constraints and limited computational resources like \acp{MAV}.
+	However, their superior performance comes with several drawbacks. First of all, large amounts of annotated examples are required in order to train the vast amount of parameters present in Deep Learning models. Furthermore, the computational costs during training and inference are high. Only faster and tailored processing units like \acp{GPU} enable the practical application of Deep Learning models. Finally, the presentation learned by the model is not transparent. Hence, the process that leads to the decision of a Computer Vision system can usually not be understand by a human. Also, there is no guarantee that the learned representation is not highly redundant. This is particularly problematic for devices with time constraints and limited computational resources like \acp{MAV}.
 	
 	This work investigates the detection of \acp{EWFO} on \ac{MAV}. \acp{EWFO} consist of simple shapes but are largely occupied by background. Hence, other objects of interest and/or distractors can appear in this area. Furthermore, sensor and lens properties as well as motion noise can have large impact on the appearance of \acp{EWFO} in the image. This makes the design of an appropriate feature extractor a non-trivial task. Deep Learning would allow to learn a feature extractor and object model given data and the task.
 	
@@ -57,40 +57,53 @@
 	
 	X propose a recurrent neural network architecture to model the attention process.
 	
-	\subsection{\acp{CNN}-based Detectors}
+	\todo{discussion traditional features}
 	
-	In recent years \acp{CNN} emerged from deep learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches in sliding window fashion. In contrast to manually designed methods, \acp{CNN} are learned task specific via back-propagation.
+	\subsection{\acp{CNN}-based Feature Extraction}
 	
+	In recent years \acp{CNN} emerged from Deep Learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches in sliding window fashion. The outputs of the initial local operations (first layer) are further processed by higher layers until the desired output size is reached. The model parameters (weights) are trained using a Loss function and the back-propagation algorithm.
 	
-	\subsubsection{\acp{CNN}-Architectures}
+	The modular structure of \acp{CNN} allow to create highly non-linear models that can represent any function. However, this flexibility also introduces the challenge of choosing a suitable architecture. On a fundamental level design parameters can be summarized in depth, width and kernel size. 
 	
-	\acp{CNN}-based Object Detectors usually use a base network that has been developed or even trained for another task and adapt the last layers according their needs/training goal. Within the research of Deep Learning architectures different results have been obtained.
+	\Cref{fig:model_design} displays these parameters and introduces additional terminology necessary for the remaining parts of this chapter. The \textit{kernel size} $\textbf{k}$ determines the spatial size of a kernel and therefore how big the patch is, the convolution is applied on. A layer usually contains multiple filters that are applied on its input. The amount of filters is also referred to as \textit{width} $w$. The filters are applied in sliding window fashion which introduces the step size ( \textit{strides} $\mathbf{s}$) as an additional parameter. The output of each convolution is concatenated and processed by the next layer. The amount of layers is also referred to as \textit{depth}. In the image also the \textit{receptive field} of a filter is visualized. This describes the image patch that is related to a certain feature response. The filter of the first layer (green) has a receptive field corresponding to its kernel size. The filter of the second layer (blue) combines the responses of the filters of the first layer at multiple spatial locations an thus has an increased receptive field.
 	
-	\todoref{arg1} demonstrate a very efficient architecture in which only 3x3 kernels are used. That way early layers focus on fine grain details and basic features like edges and corners, while higher order layers combine these features to more complex shapes. 
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{fig/model_design}
+		\label{fig:model_design}
+		\caption{Example Architecture of a \ac{CNN}}
+	\end{figure}
 	
-	Various studies suggest that going deeper with convolutions increases representation strength yielding even better results. However, such high performance comes at a cost. As \acp{CNN} grow deeper inference time and memory usage increase as well.
-	\todo{Residual Connections}
+	Among these parameters depth is considered one of the preliminary parameters to improve performance \cite{He}. \citeauthor{Simonyan2014} \cite{Simonyan2014} achieve first places in the 2014 ImageNet Classification challenge using a network that only contained filters of size 3-by-3 but up to 19 layers. \citeauthor{Szegedy2014} \cite{Szegedy2014} achieve similar performance using a network with 22 layers. The proposed network included a \textit{Inception}-module, an architectural element that allows deeper networks at a constant computational budget. 
 	
-	Next to the standard convolutional kernel several variations can be found in literature: Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}. Deformable convolutions allow a kernel shape different from the standard symmetric kernel \todo{deformable cnn}.
+	An issue that prevented training even deeper networks is the \textit{vanishing gradient problem}. As the gradient distributes while flowing through the vast amount of nodes its magnitude gets very small. Hence, the training becomes slow and the risk of converging in a local minima increases. This was addressed by \citeauthor{He2015} \cite{He2015} who propose the use of residual connections. Instead of propagating the gradient from the last to the first layer these connections allow the gradient to flow directly into all layers. This circumvents the vanishing gradient problem. The use of residual connections allowed to train a network 101 layers and improved on state of the art at that time.
 	
-	\todo{other architectural stuff}
+	However, later work by \citeauthor{Zagoruyko2016} \cite{Zagoruyko2016} shows how residual networks do not behave like a single deep model but more like an ensemble of more shallow networks. Moreover, the study shows that similar performance can be achieved by particularly wide networks and residual connections. Being of similar performance the proposed \acp{WRN} are computationally more efficient to execute.
 	
-	\subsubsection{Two-stage Approaches}
+	While wide residual networks can achieve similar performance to deep residual networks with reduced inference time the computational requirements are still large. This work addresses the detection of \ac{EWFO} with very limited resources. Hence, a network in which the vanishing gradient problem would appear is likely to be already too computationally expensive to be applied on a \ac{MAV}.
 	
-	Two-stage approaches consists of a first stage that proposes regions, likely to contain an object and second stage that classifies these objects. In a way the first stage models an attention process such that the second stage can focus on the relevant parts of the image.
+	Instead the work focuses on much smaller networks that are fast to execute. Execution time is also the motivation for \acp{FCN}. Instead of using a fully connected layer in the last stage, these network only apply local operations. This saves many computations in the last layer and enables the application of models on various input sizes.
+	
+	However, \ac{FCN} in combination with a small amount of layers introduce a limited receptive field. A way to increase the receptive field without increasing the number of computations was proposed by Atrous/Dilated convolutions consist of a sparse kernel thereby increasing the receptive field of a filter without increasing complexity or number of computations \todoref{Atrous}.
+	
+	Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with huge training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
+	
+	\subsection{\ac{CNN}-based Object Detection}
+	
+	\acp{CNN}-based feature extraction is employed in various approaches to Object Detection. 	
 
-	The research line is mainly defined by the three publications \cite{Girshick2013,Ren,Ren2015}.
+	\citeauthor{Girshick2013} \cite{Girshick2013} use the Selective Search algorithm \cite{Uijlings2013} to extract object candidates from an image and classify each region with a \ac{CNN}. However, this requires to run the whole network at various scales and overlapping locations. Hence, the approach contains a lot of redundant operations and is computationally intense.
 	
-\citeauthor{Girshick2013} \cite{Girshick2013} use Selective Search to extract relevant regions and a \ac{CNN}-based classifier to classify each region. However, this requires to run the expensive classifier at various scales and overlapping locations. Hence, the approach contains a lot of redundant operations and is computationally intense.
-
-\citeauthor{Ren} \cite{Ren} proposes a \ac{RPN} to propose regions that likely contain an object. In order to define the proposal task as a regression problem, the approach introduces the so called \textit{anchor boxes}(also \textit{prior boxes}, \textit{default boxes}). The model predicts class probabilities and coordinate offsets for a predefined set of boxes. Hence, different sets of output nodes are responsible for certain boxes. During training a set of nodes gets assigned responsible if an object overlaps more than a certain threshold with the object. \Cref{fig:anchors} illustrates the concept.
-
+	\citeauthor{Ren} \cite{Ren} use a \ac{RPN} to propose regions that likely contain an object. In order to define the proposal task as a regression problem, the approach introduces so called \textit{anchor boxes}(also \textit{prior boxes}, \textit{default boxes}). These are boxes of predefined size and location. The model predicts class probabilities and coordinate offsets for each of these boxes. Hence, a certain set of output nodes is responsible for a particular box. If during training a ground truth box has sufficient overlap with a certain box the corresponding output nodes are assigned "responsible" to predict that object. That means the loss is only propagated via those nodes. 
+	
+	\Cref{fig:anchors} illustrates the concept. The anchor boxes are displayed as dashed lines while the ground truth is displayed solid. The ground truth box in blue has sufficient overlap with two anchor boxes. Hence, these two sets of output nodes take part in the loss calculation. In the example each of these sets predicts coordinate offsets $\Delta(cx, cy, w,h)$ and class probabilities $c_1 .. c_p$.
+	
 \begin{figure}[hbtp]
 	
 	\centering
 	\captionsetup{justification=raggedright,singlelinecheck=false}
 	\includegraphics[width=0.8\linewidth]{fig/anchors}
-	\caption{The anchor boxes are displayed as dashed lines. The ground truth label of the cat in blue is assigned to two anchor boxes. The output nodes predicting coordinate offset $\Delta(cx, cy, w,h)$ and class probabilities $c_1 .. c_p$ corresponding to these two boxes take part in the loss calculation \cite{Liu}.}
+	\caption{Visualization of the anchor box concept \cite{Liu}.}
 	\label{fig:anchors}
 	
 \end{figure}
@@ -99,22 +112,17 @@ For the classification stage an \ac{SVM}-classifier is used. The classifier is t
 
 In the follow up work \cite{Ren} propose the \textit{ROI}-pooling layer. The layer uses spatial pyramid pooling in order to resize region proposals to a fixed size. This enabled the end-to-end training of the two-stage detection pipeline. \todo{And resulted in?}
 	
-Two stage approaches enable the use \acp{CNN}-based feature extraction. While the execution of a whole network multiple times on the image is computationally prohibitive for the use on \acp{MAV}, \acp{RPN} enable to propose multiple regions in one pass. Since this work considers the single class case, this would already be enough to model the detection of an \ac{EWFO}. However, even a single pass of feature extractors commonly used in two stage approaches requires a large amount of computations. Hence, this work investigates the design of a feature extractor tailored to the detection of \acp{EWFO} on \acp{MAV}.
-	
-\subsubsection{One-stage Approaches}
-
-One-stage approaches consist of a single model that performs Classification and Localization. Therefore the task is framed as Regression problem.
-
-\citeauthor{Redmon} \cite{Redmon} were the first to publish a one stage detector. The task is formulated by dividing the input image in a fixed grid and defining output nodes with softmax activation to predict $C$ class probabilities for each grid cell. Additional $5*B$ output nodes predict $B$ set of bounding box coordinates and $B$ object probabilities for each cell. \todo{what is good and bad?}
+Another end-to-end pipeline was published by \citeauthor{Redmon} \cite{Redmon}. In contrast to aforementioned approaches, the network performs Classification and Localization in a single pass. The task is formulated by dividing the input image in a fixed grid and predicting $C$ class probabilities for each grid cell. Additional $5*B$ output nodes predict $B$ set of bounding box coordinates and $B$ object probabilities for each cell. \todo{what is good and bad?}
 
 \citeauthor{Liu} propose \ac{SSD} \cite{Liu}, one stage detector using the concept of aforementioned anchor boxes. Instead of only predicting an object score for each anchor box, the model also predicts class probabilities. Another novelty in this approach is the use of multiple predictor layers for various scales. The network does not only use its final layer for prediction but also intermediate representations. Assuming that the lower layers preserve more fine grained features, early output nodes are trained on smaller objects while later output nodes focus on predicting larger scale objects.
 
-Follow up work of \citeauthor{Redmon}\cite{Redmon, Redmona} also included the concept of anchor boxes and prediction layers at multiple scales, making \ac{SSD} and \ac{Yolo} converge to a very similar solution. A novelty in \cite{Redmona} is the use of de-convolution layers for small object prediction. In order to achieve a higher accuracy for small objects the final layers are upsampled and combined with finer grain features from earlier layers. The aim is to enable a combination of deep semantic features at low spatial resolution with fine grain low level features at high resolution.
+Follow up work of \citeauthor{Redmon}\cite{Redmon, Redmona} also included the concept of anchor boxes and prediction layers at multiple scales, making \ac{SSD} and \ac{Yolo} converge to a very similar solution. A novelty in \cite{Redmona} is the use of de-convolution layers for small object prediction. In order to achieve a higher accuracy for small objects the final layers are up-sampled and combined with finer grain features from earlier layers. The aim is to enable a combination of deep semantic features at low spatial resolution with fine grain low level features at high resolution.
 
 Within the framework of \ac{SSD} and \ac{Yolo} several approaches exist that either change the base network or modify layers in between: \cite{ChengchengNing2017} propose propose a more efficient non-max-suppression method as well as to include an inception module in the network architecture to reduce computation while keeping/increasing performance. \cite{Wu} uses \textit{SqueezeNet} as base network and a mixture between the ssd and yolo loss function as training goal. \cite{Xiang} investigates the receptive fields of SSD and tries to incorporate more context, especially on lower feature maps, to increase detection rate for small objects.\cite{Linb} applies the framework for vehicle detection. They use \textit{GoogLeNet} as base network (and investigate several others).\cite{TripathiSanDiego} apply a network very similar to YoloV2 and investigate 8bit quantization of the model to make it runnable on embedded devices.
 
 A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
 
+\todoref{CornerNet}
 
 
 Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.

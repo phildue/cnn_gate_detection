@@ -1,10 +1,9 @@
 \chapter{Investigating the Trade-Off between Detection Performance and Inference Time}
 \label{sec:tradeoff}
 
-A major drawback of \acp{CNN} is their huge computational requirements. For example a state-of-the-art Computer Vision model \cite{He2015} requires 11.3 billion floating point operations \cite{Tschannen2017}. 
+A major drawback of \acp{CNN} is their huge computational requirements. For example a state-of-the-art Computer Vision model \cite{He2015} requires 11.3 billion floating point operations \cite{Tschannen2017}. For a device with computational limitations like an \ac{MAV} this is prohibitive. Furthermore, a perception system on a \ac{MAV} usually contains of multiple subsystems. Hence, a fast reaction time can be more important than an accurate detection/outbalanced by the filter etc.
 
-Hence, given a baseline performance $m_0$ the goal of speed optimization must be to reduce the inference time $t$ while keeping the performance of the faster model $m_1$ as close as possible to $m_0$. This chapter explores the optimal trade-off between $t$ and $m$.
-
+This
 
 The research question of this chapter is stated as:
 
