@@ -1,5 +1,3 @@
-import numpy as np
-
 from modelzoo.evaluation.DetectionResult import DetectionResult
 from modelzoo.evaluation.Metric import Metric
 from utils.BoundingBox import BoundingBox
@@ -31,26 +29,36 @@ class MetricDetection(Metric):
                             self.min_box_area < b.area < self.max_box_area]
 
         self._boxes_correct = []
-        tp = 0
-        fn = 0
-        n_invalid = 0
+        true_positives = []
+        false_negatives = []
+        for b in self._boxes_true:
+            box_matches = MetricDetection.match(b, self._boxes_pred, self.iou_thresh)
+            if len(box_matches) is 0:
+                false_negatives.append(b)
+            else:
+                new_matches = [m for m in box_matches if m not in true_positives]
+                if len(new_matches) > 0:
+                    true_positives.append(new_matches[0])
+                    self._boxes_correct.append(self._boxes_pred[new_matches[0]])
 
-        for b_true in self._boxes_true:
-            match = False
+        tp = len(true_positives)
+        fn = len(false_negatives)
+        fp = len(self._boxes_pred) - len(true_positives)
 
-            for b_pred in self._boxes_pred:
-                if b_true.iou(b_pred) >= self.iou_thresh and \
-                        np.argmax(b_true.probs) == np.argmax(b_pred.probs):
-                    tp += 1
-                    self._boxes_correct.append(b_pred)
-                    match = True
-                    break
-            if not match:
-                fn += 1
-
-        fp = len(self._boxes_pred) - n_invalid - tp
         self._result = DetectionResult(tp, fp, fn)
         return self._result
+
+    @staticmethod
+    def match(box_true, boxes_pred, iou_thresh):
+        matches = []
+        for i, b in enumerate(boxes_pred):
+            if box_true.iou(b) > iou_thresh and \
+                    box_true.prediction == b.prediction:
+                matches.append(i)
+
+        return matches
+
+
 
     def update(self, label_true: ImgLabel, label_pred: ImgLabel):
 

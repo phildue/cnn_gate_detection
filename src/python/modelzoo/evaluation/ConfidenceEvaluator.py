@@ -48,7 +48,7 @@ class ConfidenceEvaluator(MetricEvaluator):
         tic()
         labels_pred = []
         for i in range(len(labels_true)):
-            image = imread(image_files[i][30:], self.color_format)
+            image = imread(image_files[i], self.color_format)
             sample_result, label_pred = self.evaluate_sample(labels_raw[i], labels_true[i], image)
             labels_pred.append(label_pred)
 
