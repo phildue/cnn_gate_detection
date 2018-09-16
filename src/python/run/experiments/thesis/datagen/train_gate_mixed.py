@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     augmenter = None
 
-    image_source = ['resource/ext/samples/sim_and_real']
+    image_source = ['resource/ext/samples/real_and_sim']
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
