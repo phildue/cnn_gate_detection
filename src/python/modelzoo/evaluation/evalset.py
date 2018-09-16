@@ -15,7 +15,8 @@ def evalset(
         preprocessing=None,
         color_format=None,
         result_path=None,
-        result_file=None):
+        result_file=None,
+        image_format="jpg"):
 
     # Model
     conf_thresh = 0
@@ -50,7 +51,8 @@ def evalset(
     exp_param_file = name + '_evalset'
 
     create_dirs([result_path])
-    generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format='jpg', n_samples=n_samples,
+    generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format=image_format,
+                              n_samples=n_samples,
                               shuffle=False, color_format=color_format_dataset, label_format='xml', start_idx=0)
 
     exp_params = {'name': name,

@@ -1,5 +1,3 @@
-import numpy as np
-
 from utils.labels.GateCorners import GateCorners
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Pose import Pose
@@ -46,3 +44,6 @@ class GateLabel(ObjectLabel):
     def y_max(self):
         return max(self.gate_corners.mat[:, 1])
 
+    @property
+    def mat(self):
+        return self.gate_corners.mat

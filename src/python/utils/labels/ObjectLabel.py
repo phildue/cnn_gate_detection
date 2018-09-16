@@ -1,4 +1,5 @@
 import copy
+
 import numpy as np
 
 
@@ -9,12 +10,12 @@ class ObjectLabel:
 
     @staticmethod
     def name_to_id(name: str) -> int:
-        return ObjectLabel.classes.index(name)
+        return ObjectLabel.classes.index(name) + 1
 
     @staticmethod
     def id_to_name(id: int) -> str:
         try:
-            return ObjectLabel.classes[id]
+            return ObjectLabel.classes[id - 1]
         except IndexError:
             return "Unknown"
 

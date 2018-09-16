@@ -1,6 +1,6 @@
 import glob
 
-from utils.fileaccess.SetFileParser import SetFileParser
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.imageprocessing.Backend import split_video, imread
 from utils.imageprocessing.GateAnnotater import GateAnnotater
 from utils.imageprocessing.Imageprocessing import show
@@ -11,17 +11,20 @@ from utils.labels.Pose import Pose
 
 
 class LabelMaker:
-    def __init__(self, video_file, img_dir, set_dir, step_size=1, start_idx=0, label_format='pkl', img_format='jpg'):
+    def __init__(self, video_file, img_dir, set_dir, step_size=1, start_idx=0, label_format='pkl', img_format='jpg',
+                 color_format='bgr', image_format_in='jpg'):
         self.step_size = step_size
         self.img_dir = img_dir
         self.video_file = video_file
-        self.set_writer = SetFileParser(set_dir, img_format, label_format, start_idx)
+        self.image_format = image_format_in
+        self.set_writer = DatasetParser.get_parser(set_dir, image_format=img_format, label_format=label_format,
+                                                   start_idx=start_idx, color_format=color_format)
         self.start_idx = start_idx
 
     def parse(self):
         if self.video_file is not None:
             split_video(self.video_file, self.img_dir)
-        files = sorted(glob.glob(self.img_dir + '/*.jpg'))
+        files = sorted(glob.glob(self.img_dir + '/*.' + self.image_format))
 
         for i in range(self.start_idx * self.step_size, len(files), self.step_size):
             img = imread(files[i], 'bgr')

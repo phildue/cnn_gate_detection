@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     image_source = ['resource/ext/samples/basement20k']
 
-    for i in range(start_idx, n_repetitions):
+    for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/' + model_name + '_i{0:02d}'.format(i),
               img_res=img_res,

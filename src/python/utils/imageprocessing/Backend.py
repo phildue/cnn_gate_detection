@@ -3,6 +3,7 @@ import copy
 import cv2
 import numpy as np
 from PIL.Image import frombytes, FLIP_TOP_BOTTOM
+
 from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
@@ -282,9 +283,10 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
     y_max_cv, y_min_cv = img.shape[0] - min_xy[1], img.shape[0] - max_xy[1]
 
     img_crop = Image(img.array[int(y_min_cv):int(y_max_cv), int(x_min):int(x_max)].copy(), img.format)
-    label_crop = label.copy()
-
-    if label_crop is not None:
+    if label is None:
+        return img_crop
+    else:
+        label_crop = label.copy()
         objs_crop = []
         for obj in label_crop.objects:
             delta_x = x_min
@@ -311,8 +313,8 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             if obj.area >= 20 and (0.33 < obj.width / obj.height < 3):
                 objs_crop.append(obj)
         label_crop = ImgLabel(objs_crop)
+        return img_crop, label_crop
 
-    return img_crop, label_crop
 
 
 def split_video(src_file, out_dir):

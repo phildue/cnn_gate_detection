@@ -1,9 +1,8 @@
 from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.VocGenerator import VocGenerator
-from utils.imageprocessing.Backend import annotate_bounding_box, resize, convert_color, COLOR_YUV2BGR
-from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, LEGEND_BOX, LEGEND_TEXT, LEGEND_POSITION, \
-    LEGEND_CORNERS
+from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.Imageprocessing import show, LEGEND_POSITION
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
@@ -56,5 +55,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight15k/'])
+show_img(path=['resource/ext/samples/real_and_sim/'])
 # show_voc()

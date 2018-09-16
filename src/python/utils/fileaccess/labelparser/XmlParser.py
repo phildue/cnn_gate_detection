@@ -5,7 +5,7 @@ import numpy as np
 
 from utils.fileaccess.labelparser.AbstractDatasetParser import AbstractDatasetParser
 from utils.imageprocessing import Image
-from utils.imageprocessing.Backend import imwrite, imread
+from utils.imageprocessing.Backend import imread
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
@@ -115,7 +115,7 @@ class XmlParser(AbstractDatasetParser):
                         except AttributeError:
                             pose = Pose()
 
-                        objects.append(GateLabel(pose, gate_corners))
+                        label = GateLabel(pose, gate_corners)
 
                     else:
                         box = element.find('bndbox')
@@ -128,7 +128,14 @@ class XmlParser(AbstractDatasetParser):
                         ymin = min((y1, y2))
                         ymax = max((y1, y2))
                         label = ObjectLabel(name, np.array([[xmin, ymin], [xmax, ymax]]))
-                        objects.append(label)
+
+                    confidence_field = element.find('confidence')
+                    if confidence_field is not None:
+                        confidence = float(confidence_field.text)
+                    else:
+                        confidence = 1.0
+                    label.confidence = confidence
+                    objects.append(label)
                 return ImgLabel(objects)
             except ET.ParseError:
                 print('Error parsing: ' + path)

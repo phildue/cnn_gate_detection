@@ -1,4 +1,62 @@
-\chapter{Evaluation Metrics}
+\chapter{Background}
 \label{sec:metrics}
 
-\todo{describe metrics and hardware}
+This chapter introduces the environment in which this work has been conducted.
+
+\section{Snake Gate Detector}
+
+The baseline algorithm \textit{SnakeGate} is a low-level image processing algorithm proposed in \todoref{snakegate}. Its scheme is summarized in and described in the following.
+
+\todo{put algorithm scheme}
+
+The method samples pixels from the image based on a colour threshold. From each of these samples the neighbouring samples are followed as long as they also match the the color threshold. When a line of sufficient length is consecutively within the color range, it is accepted as a gate bar. After the detection of a square the corners are refined by chosing the location with the largest histogram.
+
+\section{Hardware Platform}
+
+The target platform is the \textit{JeVois} smart camera. It contains a quad core CPU and a duo core Mali GPU.
+
+\section{Software Environment}
+
+\section{Datasets}
+
+An evaluation set has been recorded to serve as a benchmark for the developed methods. The dataset consists of 305 images recorded with the JeVois camera during flight. The samples stem from three different rooms with varying light conditions. The rooms are referred to as \textit{Basement},\textit{Cyberzoo} and \textit{Hallway}. Example images for each room can be seen in \Cref{fig:example_real_set}.
+\begin{figure}
+	\begin{minipage}{0.3\textwidth}
+		\includegraphics[\textwidth]{imagefile}
+		\caption{Example Image taken in Basement}
+	\end{minipage}
+	\begin{minipage}{0.3\textwidth}
+	\includegraphics[\textwidth]{imagefile}
+		\caption{Example Image taken in Cyberzoo}
+\end{minipage}
+	\begin{minipage}{0.3\textwidth}
+	\includegraphics[\textwidth]{imagefile}
+	\caption{Example Image taken in Hallway}
+\end{minipage}
+\end{figure}
+
+All scenes are indoor scenes which are a typical example for a GPS-denied area, where vision based state estimation is crucial. The samples contain up to two gates that can overlap which means the gate farer away can be seen through the closer gate. Each of the rooms has different environmental conditions:
+\begin{enumerate}
+	\item Basement is a bright environment illuminated by artificial light sources. The corridor in which the objects of interest are placed are narrow while also objects and persons are visible on the samples.
+	\item Cyberzoo is taken from a test environment for drone flights. External light sources are covered such that an even illumination and dark background is created. Only in a small subset of images distractors like other objects or persons are visible. In total 88 samples stem from this room.
+	\item Hallway is a bright environment illuminated by a combination of artifical light sources as well as daylight that shines through the windows. The samples are taken with the windows as background. This leads to a very bright background such that the thin structure of the objects are hardly visible.
+\end{enumerate}
+ 
+
+\section{Evaluation Metrics}
+
+\section{Baseline}
+
+
+In order to evaluate the models investigated in this work a baseline is defined for comparison. Therefore the baseline algorithm SnakeGate is evaluated on datasets described in \todoref{arg1}. A property of SnakeGate is that it can and has to be fine tuned given an environment and its corresponding light conditions. Without fine tuning the method is not robust to domain changes which is a main motivation for this work. On the other hand, in practice the fine tuning allows to adapt the method live for a certain domain. Hence, several results are reported
+
+\subsection{Experiment}
+
+\begin{enumerate}
+	\item With Fine Tuning: For each of the three domains present in the dataset the algorithm is fine tuned using one random sample of that domain.
+	\item Without Fine Tuning: Instead of fine tuning the mean colour threshold among the fine tuned values is selected as a global parameter.
+	\item Optimization: Instead of using only one sample for tuning, up to 5 samples of each domain are selected in order to fine tune the color filter. This allows further optimization.
+\end{enumerate}
+
+\subsection{Results}
+

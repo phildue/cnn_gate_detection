@@ -24,14 +24,21 @@ class ConfidenceEvaluator(MetricEvaluator):
         results_by_conf = {}
         labels_pred = {}
         for c in self.confidence_levels:
-            label_reduced = BoundingBox.to_label(self.model.postprocessor.filter(boxes_predicted, c))
+            if self.model is None:
+                boxes_filtered = [b for b in boxes_predicted if b.c > c]
+            else:
+                boxes_filtered = self.model.postprocessor.filter(boxes_predicted, c)
+            label_reduced = BoundingBox.to_label(boxes_filtered)
             results_by_m_c = {}
             for name, m in self.metrics.items():
                 m.update(label_true=label_true, label_pred=label_reduced)
                 results_by_m_c[name] = m.result
                 if m.show:
-                    img_res = resize(img,self.model.input_shape)
-                    m.show_result(img_res)
+                    if self.model:
+                        img_res = resize(img, self.model.input_shape)
+                        m.show_result(img_res)
+                    else:
+                        m.show_result(img)
 
             results_by_conf[c] = results_by_m_c
             labels_pred[c] = label_reduced

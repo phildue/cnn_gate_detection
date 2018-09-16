@@ -8,10 +8,11 @@ from utils.workdir import cd_work
 
 cd_work()
 
-generator = GateGenerator(directories=['resource/ext/samples/iros2018muro_random_test'],
+generator = GateGenerator(directories=['resource/ext/samples/iros2018_course_final_simple_17gates'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=50, valid_frac=1.0,
-                          label_format=None,
+                          shuffle=False, start_idx=0, valid_frac=1.0,
+                          label_format='xml',
+                          img_format='jpg'
                           )
 #
 # generator = VocGenerator(batch_size=8)
@@ -22,7 +23,7 @@ generator = GateGenerator(directories=['resource/ext/samples/iros2018muro_random
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/thesis/datagen/yolov3_person416x416_i00/'
+src_dir = 'out/thesis/datagen/yolov3_gate_varioussim416x416_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 model = GateNet.create_by_arch(architecture=summary['architecture'],
@@ -33,4 +34,4 @@ model = GateNet.create_by_arch(architecture=summary['architecture'],
                                conf_thresh=0.1,
                                augmenter=None)
 # create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
-demo_generator(model, generator, t_show=0, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])
+demo_generator(model, generator, t_show=1, n_samples=2000, iou_thresh=0.6, size=summary['img_res'])

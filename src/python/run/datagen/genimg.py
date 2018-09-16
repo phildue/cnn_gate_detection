@@ -10,13 +10,13 @@ from utils.workdir import cd_work
 
 cd_work()
 
-background_path = ["resource/backgrounds/voc12/"]
+background_path = ["resource/backgrounds/plain/"]
 # background_path = ["resource/backgrounds/google-fence-gate-industry/"]
 
 # background_path = "samplegen/resource/backgrounds/single"
 # background_path = "samplegen/resource/backgrounds/single/"
 # sample_path = "resource/samples/single_background_test/"
-sample_path = "resource/ext/samples/real_bg/"
+sample_path = "resource/ext/samples/uniform/"
 shot_path = "resource/ext/samples/black/"
 
 n_backgrounds = 20000

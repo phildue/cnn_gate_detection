@@ -1,10 +1,8 @@
-import cv2
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import resize, crop
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
@@ -37,7 +35,9 @@ class Preprocessor:
             else:
                 img = img.bgr
 
-            img, label = resize(img, (self.img_height, self.img_width), label=label)
+            if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
+                img, label = self.crop_to_input(img, label)
+                img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
             # show(img.bgr, t=1)
             img_enc = self.encoder.encode_img(img)
@@ -72,7 +72,9 @@ class Preprocessor:
         else:
             img = img.bgr
 
-        img = resize(img, (self.img_height, self.img_width))
+        if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
+            img = self.crop_to_input(img)
+            img = resize(img, (self.img_height, self.img_width))
         return self.encoder.encode_img(img)
 
     def preprocess_batch(self, batch: [Image]):
@@ -80,3 +82,24 @@ class Preprocessor:
         for i, img in enumerate(batch):
             x_batch[i] = self.preprocess(img)
         return x_batch
+
+    def crop_to_input(self, img, label=None):
+        """
+        Crop the center part
+        :param img:
+        :param label:
+        :return:
+        """
+        shape = np.array(img.shape[:2])
+        short_side = np.argmin(shape)
+        diff = np.max(shape) - np.min(shape)
+        diff2 = diff / 2
+
+        if short_side == 0:
+            return crop(img, (0, diff2), (shape[1], shape[0] - diff2), label)
+
+        elif short_side == 1:
+            return crop(img, (diff2, 0), (shape[1] - diff2, shape[0]), label)
+
+        else:
+            raise ValueError("Short side doesnt make sence")
