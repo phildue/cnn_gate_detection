@@ -109,7 +109,7 @@ def train(architecture,
                 continue
             objs_in_view.append(obj)
 
-        return ImgLabel(objs_in_size)
+        return ImgLabel(objs_in_view)
 
     valid_frac = 0.05
     valid_gen = None
