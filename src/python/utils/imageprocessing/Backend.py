@@ -110,11 +110,20 @@ def flip(img: Image, label: ImgLabel = None, flip_code=1) -> (Image, ImgLabel):
     flipped = cv2.flip(img.array.copy(), flip_code)
 
     if label is not None:
-        label_flipped = copy.deepcopy(label)
-        for obj in label_flipped.objects:
-            mat = obj.gate_corners.mat
-            mat[:, 0] = img.array.shape[1] - mat[:, 0]
-            obj.gate_corners = GateCorners.from_mat(mat)
+        objs_flipped = []
+        for obj in label.objects:
+            if isinstance(obj, GateLabel):
+                mat = obj.gate_corners.mat
+                mat[:, 0] = img.array.shape[1] - mat[:, 0]
+                obj.gate_corners = GateCorners.from_mat(mat)
+                objs_flipped.append(obj)
+            else:
+                mat = np.array([[obj.x_min, obj.y_min],
+                                [obj.x_max, obj.y_max]])
+                mat[:, 0] = img.array.shape[1] - mat[:, 0]
+                label_flipped = ObjectLabel(obj.class_name, mat, obj.confidence)
+                objs_flipped.append(label_flipped)
+        label_flipped = ImgLabel(objs_flipped)
     else:
         label_flipped = None
 
@@ -300,7 +309,7 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             else:
                 raise ValueError('Unknown Type')
 
-            points -= np.array([delta_x, delta_y])
+            points -= np.array([delta_x, delta_y]).astype(points.dtype)
 
             points[:, 0] = np.maximum(0, np.minimum(points[:, 0], img_crop.shape[1]))
             points[:, 1] = np.maximum(0, np.minimum(points[:, 1], img_crop.shape[0]))
@@ -314,7 +323,6 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
                 objs_crop.append(obj)
         label_crop = ImgLabel(objs_crop)
         return img_crop, label_crop
-
 
 
 def split_video(src_file, out_dir):

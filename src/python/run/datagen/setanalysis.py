@@ -1,17 +1,13 @@
 import glob
 
-import numpy as np
-
-from modelzoo.backend.visuals.plots.BaseHist import BaseHist
 from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
-from utils.imageprocessing.Backend import imread, brightness
 from utils.timing import tic, toc
 from utils.workdir import cd_work
 
 cd_work()
 tic()
-path = 'resource/ext/samples/bebop20k/'
-img_shape = (180, 315)
+path = 'resource/ext/samples/jevois_hallway/'
+img_shape = (480, 640)
 set_analyzer = SetAnalyzer(img_shape, path)
 toc()
 set_analyzer.show_summary()

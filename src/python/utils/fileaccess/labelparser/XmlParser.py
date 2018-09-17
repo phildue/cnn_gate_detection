@@ -106,7 +106,7 @@ class XmlParser(AbstractDatasetParser):
                     name = element.find('name').text
 
                     gate_corners_xml = element.find('gate_corners')
-                    if gate_corners_xml:
+                    if gate_corners_xml is not None:
 
                         gate_corners = XmlParser._parse_gate_corners(gate_corners_xml)
                         try:

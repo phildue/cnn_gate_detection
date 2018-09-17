@@ -36,14 +36,16 @@ def mean_results(detection_results: [ResultByConfidence]):
     return ResultByConfidence(mean_r)
 
 
-def average_precision_recall(detection_results: [ResultByConfidence]):
+def average_precision_recall(detection_results: [ResultByConfidence], recall_levels=None):
     """
     Calculates average precision recall with interpolation. According to mAP of Pascal VOC metric.
     :param detection_results: list of results for each image
     :return: tensor(1,11): mean precision, tensor(1,11) mean recall
     """
-    precision = np.zeros((len(detection_results), 11))
-    recall = np.zeros((len(detection_results), 11))
+    if recall_levels is None:
+        recall_levels = np.linspace(0, 1.0, 11)
+    precision = np.zeros((len(detection_results), len(recall_levels)))
+    recall = np.zeros((len(detection_results), len(recall_levels)))
     for i, result in enumerate(detection_results):
         skip = False
         for c in result.results.keys():
@@ -53,16 +55,19 @@ def average_precision_recall(detection_results: [ResultByConfidence]):
                 skip = True
                 print('Warning weird numbers')
         if skip: continue
-        precision[i], recall[i] = interpolate(result)
+        precision[i], recall[i] = interpolate(result, recall_levels)
 
     mean_pr = np.mean(precision, 0)
+    std_pr = np.std(precision, 0)
+
     mean_rec = np.mean(recall, 0)
-    return mean_pr, mean_rec
+    std_rec = np.std(recall, 0)
+    return mean_pr, mean_rec, std_pr, std_rec
 
 
 def interpolate(results: ResultByConfidence, recall_levels=None):
     if recall_levels is None:
-        recall_levels = np.array([0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        recall_levels = np.linspace(0, 1.0, 11)
 
     sorted_results = results.values
     precision_raw = np.zeros((1, len(sorted_results)))

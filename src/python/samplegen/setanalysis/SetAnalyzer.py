@@ -12,7 +12,7 @@ from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 class SetAnalyzer:
     def __init__(self, img_shape, path):
         self.img_shape = img_shape
-        if isinstance(path,list):
+        if isinstance(path, list):
             self.labels = []
             for p in path:
                 self.label_reader = DatasetParser.get_parser(p, 'xml', color_format='bgr')
@@ -32,10 +32,11 @@ class SetAnalyzer:
                 y_min = y_limit - o.y_max
                 label_map[int(min((y_max, y_min))):int(max((y_max, y_min))), int(o.x_min): int(o.x_max)] = 1
             label_sum += label_map
+        return label_sum
 
-        label_scaled = label_sum / np.max(label_sum)
-
-        return Heatmap(label_scaled)
+    def get_heatmap(self):
+        return Heatmap(self.get_label_map(), x_label="Width", y_label="Height",
+                       title="Heatmap of Object Locations/Sizes")
 
     def mean_n_objects(self):
         n_objects = 0
@@ -44,17 +45,20 @@ class SetAnalyzer:
         return n_objects / len(self.labels)
 
     def area_distribution(self):
-        box_dims = self.get_box_dims()
-        area = box_dims[:, 0] * box_dims[:, 1]
-        boxplot = BoxPlot(x_data=area, y_label='area', x_label='', title='Distribution of Bounding Box Areas')
+        boxplot = BoxPlot(x_data=self.get_area(), y_label='Area', x_label='',
+                          title='Distribution of Bounding Box Areas')
         return boxplot
 
     def area_distribution_hist(self):
+        boxplot = BaseHist(y_data=self.get_area(), x_label='Area', y_label='Number of Boxes',
+                           title='Histogram of Bounding Box Areas', n_bins=10)
+        return boxplot
+
+    def get_area(self):
         box_dims = self.get_box_dims()
         print(len(box_dims))
         area = box_dims[:, 0] * box_dims[:, 1]
-        boxplot = BaseHist(y_data=area, x_label='area', y_label='', title='Histogram of Bounding Box Areas',n_bins=10)
-        return boxplot
+        return area
 
     def get_box_dims(self):
         wh = []
@@ -75,14 +79,14 @@ class SetAnalyzer:
         centers = kmeans.cluster_centers_
         scatter = BaseMultiPlot(x_data=[box_dims[:, 0], centers[:, 0]], y_data=[box_dims[:, 1], centers[:, 1]],
                                 line_style=['bx', 'ro'],
-                                x_label='width', y_label='height', y_lim=(0, 10))
+                                x_label='width', y_label='height', y_lim=(0, 1))
         return scatter, kmeans
 
     def show_summary(self):
-        heat_map = self.get_label_map()
+        heat_map = self.get_heatmap()
         box_dims, _ = self.kmeans_anchors()
         mean_samples = self.mean_n_objects()
-        area_distribution = self.area_distribution()
+        area_distribution = self.area_distribution_hist()
         print("Mean samples: ", mean_samples)
         box_dims.show(False)
         heat_map.show(False)
