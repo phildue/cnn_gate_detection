@@ -6,17 +6,19 @@ from utils.workdir import cd_work
 cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
-models = [  # 'yolov3_gate_realbg416x416',
+models = [
+    # 'yolov3_gate_realbg416x416',
     # 'yolov3_gate416x416',
-    # 'yolov3_gate_varioussim416x416'
+    'yolov3_gate_varioussim416x416',
     'yolov3_gate_uniform416x416',
     'yolov3_gate_mixed416x416'
 ]
 datasets = [
-    'jevois_cyberzoo',
-    'jevois_basement',
-    'jevois_hallway',
-    'iros2018_course_final_simple_17gates'
+    'real_test_labeled',
+    # 'jevois_cyberzoo',
+    # 'jevois_basement',
+    # 'jevois_hallway',
+    # 'iros2018_course_final_simple_17gates'
 ]
 work_dir = 'out/thesis/datagen/'
 n_iterations = 1

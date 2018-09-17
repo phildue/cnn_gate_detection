@@ -9,18 +9,19 @@ cd_work()
 results_root = 'out/thesis/snake/'
 image_root = 'resource/ext/samples/'
 datasets = [
-    'jevois_cyberzoo',
+    # 'jevois_cyberzoo',
     'jevois_basement',
-    'jevois_hallway',
+    # 'jevois_hallway',
     # 'iros2018_course_final_simple_17gates'
-    'real_test_labeled'
+    # 'real_test_labeled'
 ]
 prediction_folders = [
-    'predictions_cyberzoo',
+    # 'predictions_cyberzoo',
     'predictions_basement',
-    'predictions_hallway',
+    # 'predictions_hallway',
     # 'predictions_simu'
-    'predictions_all']
+    # 'predictions_all'
+]
 box_sizes = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0]
 img_area = 640 * 480
 
