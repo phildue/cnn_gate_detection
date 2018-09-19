@@ -16,7 +16,9 @@ def evalmetric(
         color_format=None,
         show=False,
         result_path=None,
-        result_file=None):
+        result_file=None,
+        min_aspect_ratio=None,
+        max_aspect_ratio=None):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -63,6 +65,8 @@ def evalmetric(
 
     evaluate_file(model, label_file,
                   metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show,
+                                           min_aspect_ratio=min_aspect_ratio,
+                                           max_aspect_ratio=max_aspect_ratio,
                                            min_box_area=min_box_area * img_res[0] * img_res[1],
                                            max_box_area=max_box_area * img_res[0] * img_res[1])],
                   verbose=True,

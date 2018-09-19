@@ -47,8 +47,10 @@ for i, a in enumerate(areas, 1):
     plt.hist(a, bins=10, rwidth=0.5)
     plt.xlabel("Area as Fraction of Total Size", fontsize=12)
     plt.ylabel("Number of Objects", fontsize=12)
+    plt.annotate(xy=(0.7, 45), s='Total: {}'.format(len(a)))
     plt.title(titles[i - 1], fontsize=12)
     plt.xlim(0, 1.0)
+    plt.ylim(0, 50)
 
 plt.subplots_adjust(left=None, bottom=None, right=None, top=None,
                     wspace=0.3, hspace=0.5)

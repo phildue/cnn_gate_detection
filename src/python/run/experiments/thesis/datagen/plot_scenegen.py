@@ -8,6 +8,7 @@ cd_work()
 models = ['datagen/yolov3_gate_realbg416x416',
           'datagen/yolov3_gate416x416',
           'datagen/yolov3_gate_varioussim416x416',
+          'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
           'datagen/yolov3_gate_uniform416x416',
           'datagen/yolov3_gate_mixed416x416'
@@ -20,17 +21,18 @@ names = [
     'Real Backgrounds',
     'Basement Environment',
     'Various Environments',
+    'Drone Model',
     # 'Snake Gate',
     'Uniform',
     'Real + Sim'
 ]
-# testset = 'iros2018_course_final_simple_17gates'
-# testset = 'iros2018_course_final_simple_17gates'
-testset = 'real_test_labeled'
+testset = 'iros2018_course_final_simple_17gates'
+# testset = 'real_test_labeled'
 legends = []
-linestyles = ['x--', 'x--', 'x--', 'x--', 'x--']
-iou_thresh = 0.6
-
+linestyles = ['x--', 'x--', 'x--', 'x--', 'x--', 'x--']
+iou_thresh = 0.4
+min_box_area = 0.0
+max_box_area = 2.0
 mean_recalls = []
 mean_precisions = []
 std_precisions = []
@@ -39,7 +41,10 @@ for model in models:
     mean_detections = []
     for i in range(n_iterations):
         model_dir = model + '_i0{}'.format(i)
-        result_file = work_dir + model_dir + '/test/scenegen_results_{}_iou{}.pkl'.format(testset, iou_thresh)
+        result_file = work_dir + model_dir + '/scenegen/' + 'results_{}_boxes{}-{}_iou{}.pkl'.format(testset,
+                                                                                                     min_box_area,
+                                                                                                     max_box_area,
+                                                                                                     iou_thresh)
         if "snake" in model:
             result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(testset, 0, 2.0, iou_thresh, i)
         try:

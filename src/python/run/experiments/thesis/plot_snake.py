@@ -50,17 +50,18 @@ for i, d in enumerate(datasets):
     plots.append(curves)
 
 plt.figure(figsize=(8, 6))
-plt.suptitle("Average Precision Recall on Testset", fontsize=12)
+plt.suptitle("Average Precision Recall at an IoU of 0.6", fontsize=12)
 for i, p in enumerate(plots, 1):
     # plt.subplot(2, 2, i)
     for j in range(len(ious)):
         mean_p, mean_r, std_p, std_r = p[j]
         # mean_p, mean_r = p[j]
         # plt.plot(xdata=mean_p, ydata=mean_r, linestyle='o--')
-        plt.errorbar(y=mean_p, x=mean_r, xerr=std_r - 0.02 + 0.02 * j, yerr=std_p - 0.02 + 0.02 * j, linestyle='-.',
+        plt.errorbar(y=mean_p, x=mean_r, yerr=std_p, linestyle='-.',
                      uplims=True, lolims=True)
 plt.xlabel("Recall", fontsize=12)
 plt.ylabel("Precision", fontsize=12)
+plt.grid(axis='both', which='minor')
 # plt.title(titles[i - 1], fontsize=12)
 plt.legend(titles)
 plt.ylim(-0.01, 1.01)
