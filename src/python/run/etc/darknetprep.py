@@ -44,7 +44,7 @@ sets = ['daylight_course1',
         'iros2018_course5',
         'iros2018_flights',
         'basement20k',
-        'basement15k',
+        'real_and_sim',
         'basement_course3',
         'basement_course1',
         'iros2018_course3_test']

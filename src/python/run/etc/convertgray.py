@@ -13,3 +13,4 @@ for i, image_file in enumerate(image_files):
     mat = cv2.cvtColor(img.array, cv2.COLOR_BGR2GRAY)
     cv2.imwrite(image_file, mat)
     print('{}/{}'.format(i, len(image_files)))
+
