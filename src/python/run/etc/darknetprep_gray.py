@@ -34,7 +34,8 @@ def filter(label):
 
 
 project_dir = cd_work()
-set_name = 'yolo_gray'
+set_name = 'yolo_gray' \
+           ''
 out_dir = 'resource/ext/samples/' + set_name
 src_dir = 'resource/ext/samples/'
 
@@ -74,7 +75,7 @@ for i in range(0, n_images, batch_size):
     tic()
     try:
         batch = next(reader)
-        imgs = [t_gray.transform(b[0]) for b in batch]
+        imgs = [t_gray.transform(b[0],ImgLabel([]))[0] for b in batch]
         labels = [b[1] for b in batch]
         writer.write(imgs, labels)
         toc(str(i) + '/' + str(n_images) + ' samples processed in ')
