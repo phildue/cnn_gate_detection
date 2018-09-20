@@ -44,10 +44,10 @@ All scenes are indoor scenes which are a typical example for a GPS-denied area, 
 The detection performance is evaluated in terms of precision and recall. These metrics are defined as:
 
 \paragraph{Precision}
-$$m_p = \frac{\text{true positives}}{\text{true positives} + \text{false positives}}$$
+$$p = \frac{\text{true positives}}{\text{true positives} + \text{false positives}}$$
 
 \paragraph{Recall}
-$$m_r = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}$$
+$$r = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}$$
 
 Where true positives are objects that are detected, false positives are detections although there is no object and false negatives are objects which have not been detected.
 
@@ -59,9 +59,13 @@ The model used within this thesis associates a "confidence" value with each pred
 
 As the learning of \acp{CNN} is stochastic, the mean across several trainings is reported. In order to determine the average precision recall trade-off the precision is interpolated across evenly distributed recall levels between 0 and 1 using:
 
-$$ p_\text{interp} = \max\lim\limits_{r' \geq r} p(r')$$
+$$ p_\text{interp}(r) = \max\limits_{r' \geq r} p(r')$$
 
-Subsequently the mean at all recall levels can be calculated. A metric that combines the precision-recall trade-off is \ac{mAP}. This is the mean precision across all recall levels.
+Subsequently the mean at all recall levels can be calculated. A metric that combines the precision-recall trade-off is \ac{mAP}:
+
+
+$$ mAP = \int_{r}p_interp(r) dr$$
+
 \todoref{There should be a source for this}
 
 \section{Baseline}

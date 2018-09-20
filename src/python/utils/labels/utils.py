@@ -50,7 +50,7 @@ def resize_label_gate(obj: GateLabel, img_shape, shape: tuple = None, scale_x=1.
     scale = np.array([scale_x, scale_y])
 
     mat = obj_resized.gate_corners.mat
-    mat *= scale
+    mat = mat * scale
 
 
     obj_resized.gate_corners = GateCorners.from_mat(mat)
