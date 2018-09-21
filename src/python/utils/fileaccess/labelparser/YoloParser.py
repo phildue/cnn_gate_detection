@@ -60,7 +60,7 @@ class YoloParser(AbstractDatasetParser):
         with open(path + '.txt', "w+") as f:
             for obj in label.objects:
                 cy = self.img_norm[0] - obj.cy
-                f.write('{} {} {} {} {}\n'.format(obj.class_id, obj.cx / self.img_norm[1], cy / self.img_norm[0],
+                f.write('{} {} {} {} {}\n'.format(obj.class_id-1, obj.cx / self.img_norm[1], cy / self.img_norm[0],
                                                   obj.width / self.img_norm[1], obj.height / self.img_norm[0]))
 
     def write(self, images: [Image], labels: [ImgLabel]):

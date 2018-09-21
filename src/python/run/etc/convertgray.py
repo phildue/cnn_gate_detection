@@ -4,7 +4,7 @@ from utils.imageprocessing.Backend import imread
 from utils.workdir import cd_work
 
 cd_work()
-directory = 'resource/ext/samples/yolo_all/samples/'
+directory = 'resource/ext/samples/real_test_labeled_gray/'
 
 image_files = glob.glob(directory + '/*.jpg')
 
