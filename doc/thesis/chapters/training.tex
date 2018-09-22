@@ -10,26 +10,18 @@ The relevant question to be investigated in this chapter is the following:
 This main question is split in multiple sub questions:
 \begin{enumerate}
 	\item[\textbf{RQ1.1}] What are the implications of the shape of \acp{EWFO} when synthesizing training data for their detection?
-	\item[\textbf{RQ1.2}] Can the incorporation of target domain knowledge in the data generation process improve the detection performance?
-	\item[\textbf{RQ1.3}] How do domain shifts between training and test data affect the detection performance?
+	\item[\textbf{RQ1.2}] How do domain shifts between training and test data affect the detection performance?
 \end{enumerate}
 
-In order to evaluate different aspects of the data generation process a pip
+In order to investigate these research questions 
 
 This chapter focuses on data generation while the exact model is described in \Cref{sec:object_detection}.
 
 
-In the following, methods used in this thesis are described. The different steps are implemented in a data generation pipeline and the effect of the individual steps are studied in various experiments. An overview can be seen in \Cref{fig:training:toolchain_datagen}. The individual steps are described in the following.
-
-The environment model determines background and lightning conditions and produces a 3D-Scene. The motion model determines the camera pose and location and thus the view point. Projecting the 3D-Scene on the image plane of the camera delivers the 2D-View. A final post processing step incorporates sensor and lens effects.
 
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig/Toolchain_datagen}
-	\caption{Overview of the data generation process.}
-	\label{fig:training:toolchain_datagen}
-\end{figure}
+
+
 
 \section{Related Work}
 \label{sec:training:related}
@@ -88,93 +80,88 @@ While transfer learning provides the theoretical framework as well as methods to
 \cite{Inoue} 
 \todo{write}
 
+\section{Methodology}
 
+In order to to investigate the research questions a data generation pipeline is implemented. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
+
+A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{fig/datagen_notation}
+	\caption{Overview of the data generation process.}
+	\label{fig:training:datagen_notation}
+\end{figure}
 
 \subsection{Scene Generation}
 \label{sec:training:scene}
 
-The first step creates a scene in which the object is embedded. Therefore it determines the context as well as light conditions.
+The first step determines the environment in which the object is embedded. This contains context such as background and other objects, as well as light conditions.
 
-\subsubsection{Pasting a CAD-Model on Real Images}
+The tool is implemented using OpenGL, UnrealEngine and AirSim. The \textit{UnrealEditor} allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three indoor base environments are created which can be seen in \Cref{fig:environments}. This resembles \ac{GPS}-denied scenarios as they are targeted in this thesis. Within the environment light conditions, background textures, object locations can be changed manually. The environments are described in the following:
 
-Inspired by \cite{Girshick2013, Peng, Rozantsev} a 3D-Model of the object of interest is pasted on real images.
-
-The 3D-Model is provided by \todo{TODO} TODO and a tool to render these models is implemented using \textit{OpenGL}. A scene with black background is created and several objects are placed on a virtual ground plane with different rotations to each other. Additionally light sources are placed at different locations and with different intensities. 
-
-After creating a scene the black background is replaced with an image obtained from a dataset. As the light conditions between background image and rendered scene are different, the created image can be quite artificial. Hence a post-processing step applies a Gaussian blur kernel along the edges of the CAD-model. This leads to a better embedding of the object in the background. Example outcomes can be seen in \Cref{fig:random_bg}
-
-The parameters and locations of objects and light sources as well as the selected backgrounds can be varied when creating a dataset.
-
-\begin{figure}[hbtp]
-	\centering
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/shot}
-	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{fig/random_bg2}
-	\end{minipage}
-	\caption{Examples for pasting the 3D-Model on various backgrounds. A scene with background is rendered (left), subsequently the black background is replaced with an image from a dataset.}
-	\label{fig:random_bg}
-\end{figure}
-
-\subsubsection{Full Rendering of a Scene}
-
-Following \cite{Ros2016, Gaidon2016, Johnson-Roberson2016, Tobin2017, Tremblay2018a} the second approach to create a scene is to fully render the environment using a graphic engine, namely the \textit{UnrealEngine} including the \textit{AirSim} plugin.
-
-The \textit{UnrealEditor} allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three indoor environments are created. This resembles \ac{GPS}-denied scenarios as they are targeted in this thesis. Within the environment light conditions, background textures, object locations can be changed manually.
-
-In total three base environments are created. Examples can be seen in \Cref{fig:environments}. The three environments are described in the following:
 \begin{enumerate}
-	\item \textit{Basement:} The environment is a room without windows, only containing artificial light sources. 
+	\item \textit{Dark:} The environment is a room without windows, only containing artificial light sources. 
 	\item \textit{Daylight:} The environment is a room with windows along all walls that allow daylight to illuminate the room. The windows can lead to strong variations in the contrast between different parts of the object.
-	\item \textit{IROS2018:} The environment resembles the room of the \ac{IROS} Autonomous Drone Race 2018. The light sources stem from a window front at one side of the room, as well as artificial light sources at the ceiling. Depending on the view point, the object might appear against bright or dark background.
+	\item \textit{IROS:} The environment resembles the room of the \ac{IROS} Autonomous Drone Race 2018. The light sources stem from a window front at one side of the room, as well as artificial light sources at the ceiling. Depending on the view point, the object might appear against bright or dark background.
 \end{enumerate}
 
 \begin{figure}[hbtp]
 	\centering
-	\begin{minipage}{0.49\textwidth}
+	\begin{minipage}{0.8\textwidth}
 		\includegraphics[width=\textwidth]{fig/basement_perspective}
 	\end{minipage}
-	\begin{minipage}{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/basement_perspective}
-\end{minipage}
-\caption{\textit{Basement} Environment.}
-\begin{minipage}{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/daylight_perspective}
-\end{minipage}
-\begin{minipage}{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/daylight_perspective}
-\end{minipage}
-\caption{\textit{Daylight} Environment.}
-\begin{minipage}{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/iros_perspective}
-\end{minipage}
-\begin{minipage}{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/iros_perspective}
-\end{minipage}
-\caption{\textit{IROS2018} Environment.}
-\label{fig:environments}
+	\caption{\textit{Basement} Environment.}
+	\begin{minipage}{0.8\textwidth}
+		\includegraphics[width=\textwidth]{fig/daylight_perspective}
+	\end{minipage}
+	\caption{\textit{Daylight} Environment.}
+	\begin{minipage}{0.8\textwidth}
+		\includegraphics[width=\textwidth]{fig/iros_perspective}
+	\end{minipage}
+	\caption{\textit{IROS2018} Environment.}
+	\label{fig:environments}
 \end{figure}
+
+The experiments in \cite{Peng} show how \acp{CNN} are relatively independent from these images cues but use shape and texture as predominant feature. However, the objects investigated are solid which is not the case for \ac{EWFO}. \ac{EWFO} have a distinctive shape but the main part of their surface contains background. We hypothesize this makes the detection of the shape harder. Furthermore, \ac{EWFO} do not provide texture that can be exploited by a detector, which further complicates the detection. We hypothesize that \ac{EWFO} are more dependent on background than solid texture rich objects. 
+
+In order to evaluate this hypothesis the following experiment is conducted. The empty space of an \ac{EWFO} is augmented with a texture rich structure. An example can be seen in \todo{text}. The object is placed in a scene with uniformly colored backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. On both objects an object detector is trained and subsequently evaluted in a test set. The test set contains 1000 samples created by placing objects in a fully synthesized environment.
+
 
 \subsection{Camera Placement}
 
-The second step places the camera in the scene and creates a 2D-image. Hence, it determines the perspective of the image on the scene. The camera pose is determined by:
-
-$$
-\text{Translation: }t = [x y z] \text{ and Rotation: } r = [\phi, \theta, \psi]
-$$
-Where the \ac{NED} coordinate system is used originating from the initial position of the camera. 
-
-\subsubsection{Random Placement}
+The pose of the camera determines the view on the scene and therefore at which distance and location the objects appear on the image.
 	
 A straightforward way of placing the camera is the random placement in the scene. The value for each dimension of $r$ and $t$ are drawn from a probability distribution. The chosen distributions have to follow certain limitations, for example the gate should still be visible in most images.
-	
-\subsubsection{Quad-rotor Model}
-	
-$r$ and $t$ follow the motion model of a quad-rotor \ac{MAV}.  The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}.
 
-Using this motion model, the camera follows a certain trajectory through the 3D-Environment. Storing the current image at a frequency of 2 Hz creates the corresponding samples.
-	
+However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. We incorporate the pattern of following a race track with an \ac{MAV} in the data generation process using a the motion model of a quad-rotor \ac{MAV}. The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}. Using a velocity controller the camera follows a certain trajectory through the 3D-Environment. Storing the current image at a frequency of 2 Hz creates the corresponding samples.
+
+When following the race track, the camera focuses the next object frontally most of the time. The appearance of the object increases as the camera approaches until the gate has been passed. This is also resembled when looking at the bounding box locations and dimensions.
+
+\begin{figure}
+	\begin{minipage}{\textwidth}
+		\includegraphics[width=\textwidth]{fig/heatmap_camplace}
+		\caption{Heatmaps based on bounding boxes. Left the distribution when using random placement, right when moving through the scene with a drone motion model.}
+		\label{fig:heatmap_camplace}
+	\end{minipage}
+	\begin{minipage}{\textwidth}
+		\includegraphics[width=\textwidth]{fig/aspect_ratios_camplace}
+		\caption{Scatterplot of bounding box dimensions.}
+		\label{fig:scatter_camplace}
+	\end{minipage}
+\end{figure}
+
+\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with the two methods. It can be seen how with the drone motion model most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations \todo{why is this shifted to the right?}.
+
+\Cref{fig:scatter_camplace} shows a scatterplot of the bounding box dimensions. With the drone motion model one can see how the bounding box aspect ratio is mostly close to one, which appears when the object is faced frontally. The dimensions are increasing linearly as the camera approaches the object. The random placement on the other hand creates a larger variance in bounding box dimensions. This is due to the fact that more relative angles towards the object are created. 
+
+\Cref{fig:scatter_camplace} also shows how the dataset generated with random placement does not contain many objects with an aspect ratio close to 1. Hence, samples where the object appears spread over the whole image, faced frontally do almost not appear in this generated set. With drone motion model on the other hand several such samples exist.
+
+\acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court.
+
+We verify the hypothesis in an experiment. Three models are trained: Model I using random placement, Model II using the drone motion model, Model III using a combination of both methods. In both experiments environment and light conditions as well as object locations are the same. The models are tested on two test sets: Set I created by randomly placing the camera. Set II by using the drone motion model, where a circuit is used that has not been part in the generation of the training data.
+
+
 \subsection{Post-processing}
 
 In the final step low-level image transformations are applied. Steps include sensor model based an artificial augmentation.

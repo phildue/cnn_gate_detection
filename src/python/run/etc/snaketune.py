@@ -4,7 +4,7 @@ from utils.imageprocessing.Backend import imread
 from utils.workdir import cd_work
 
 cd_work()
-img = imread('resource/ext/samples/iros2018_course_final_simple_17gates/00030.jpg', 'bgr')
+img = imread('resource/ext/samples/daylight_course1/00031.jpg', 'bgr')
 
 mat = img.array
 mat_yuv = cv2.cvtColor(mat, cv2.COLOR_BGR2YUV)
