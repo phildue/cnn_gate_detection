@@ -1,8 +1,8 @@
 import numpy as np
 
 from training.gate.train import train
-from utils.imageprocessing.transform.RandomBrightness import RandomBrightness
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.RandomHSV import RandomHSV
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.imageprocessing.transform.TransfromGray import TransformGray
 
@@ -35,7 +35,7 @@ architecture = [
      'compression': 0.5},
     {'name': 'predict'},
 
-    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1,
+    {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
      'compression': 0.5},
 
     {'name': 'bottleneck_conv', 'kernel_size': (9, 9), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1,
@@ -53,26 +53,31 @@ train(architecture=architecture,
       work_dir='last_hope/' + model_name,
       img_res=img_res,
       augmenter=RandomEnsemble([
-          (1.0, RandomBrightness(0.5, 1.5)),
+          (1.0, RandomHSV((0.9, 1.1), (0.5, 1.5), (0.5, 1.5))),
           (0.5, TransformFlip()),
           (0.1, TransformGray()),
           # (0.25, TransformHistEq()),
           #          (1.0, RandomGrayNoise()),
           #          (0.1, TransformerBlur(iterations=10)),
       ]),
+      weight_file='out/last_hope/' + model_name + '/model.h5',
       anchors=anchors,
+      min_aspect_ratio=.3,
+      max_aspect_ratio=4.0,
+      min_obj_size=0.01,
+      max_obj_size=2.0,
       epochs=100,
       n_samples=None,
       input_channels=3,
-      initial_epoch=0,
+      initial_epoch=1,
       image_source=['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
                     'resource/ext/samples/daylight_course3',
                     'resource/ext/samples/iros2018_course1',
                     'resource/ext/samples/iros2018_course5',
                     'resource/ext/samples/iros2018_flights',
+                    'resource/ext/samples/real_and_sim',
                     'resource/ext/samples/basement20k',
-                    'resource/ext/samples/basement15k',
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test'],

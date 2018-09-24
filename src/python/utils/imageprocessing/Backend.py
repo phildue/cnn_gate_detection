@@ -252,7 +252,7 @@ def histogram_eq(img: Image):
     return Image(img_eq, img.format)
 
 
-def brightness(img: Image, scale):
+def scale_hsv(img: Image, scale):
     """
     Randomly change the brightness of the input image.
 
@@ -266,15 +266,16 @@ def brightness(img: Image, scale):
     else:
         raise ValueError("Unknown Color format")
 
-    img_transf = hsv[:, :, 2] * scale
-    mask = img_transf > 255
-    v_channel = np.where(mask, 255, img_transf)
-    hsv[:, :, 2] = v_channel
+    img_transf = hsv * scale
+    img_transf[img_transf > 255] = 255
+    img_transf[img_transf < 0] = 0
+    img_transf = img_transf.astype(np.uint8)
+
 
     if img.format is 'bgr':
-        org = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        org = cv2.cvtColor(img_transf, cv2.COLOR_HSV2RGB)
     elif img.format is 'yuv':
-        rgb = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        rgb = cv2.cvtColor(img_transf, cv2.COLOR_HSV2RGB)
         org = cv2.cvtColor(rgb, cv2.COLOR_RGB2YUV)
     else:
         raise ValueError("Unknown Color format")
