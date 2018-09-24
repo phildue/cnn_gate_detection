@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
@@ -32,14 +33,19 @@ class Preprocessor:
 
             if self.color_format is 'yuv':
                 img = img.yuv
-            else:
+            elif self.color_format is 'bgr':
                 img = img.bgr
+            elif self.color_format is 'gray':
+                img.array = cv2.cvtColor(img.array, cv2.COLOR_BGR2GRAY)
+                img.array = np.expand_dims(img.array, -1)
+            else:
+                raise ValueError("Unkown Color format")
 
             if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
                 img, label = self.crop_to_input(img, label)
                 img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
-            # show(img.bgr, t=1)
+            # show(img.bgr, t=0)
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)
             label_enc = np.expand_dims(label_enc, 0)

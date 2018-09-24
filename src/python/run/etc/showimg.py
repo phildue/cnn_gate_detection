@@ -55,5 +55,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/real_and_sim/'])
+show_img(path=['resource/ext/samples/uniform_cats/'])
 # show_voc()

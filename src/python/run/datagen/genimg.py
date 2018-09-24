@@ -19,7 +19,7 @@ background_path = ["resource/backgrounds/plain/"]
 sample_path = "resource/ext/samples/uniform_cats/"
 shot_path = "resource/ext/samples/black_cats/"
 
-n_backgrounds = 300
+n_backgrounds = 20000
 batch_size = 100
 output_shape = (416, 416)
 n_batches = int(np.ceil(n_backgrounds / batch_size))
@@ -27,7 +27,7 @@ create_dirs([sample_path])
 tic()
 
 shot_loader = ShotLoad(shot_path, img_format='jpg')
-set_writer = DatasetParser.get_parser(sample_path, image_format='jpg', label_format='xml', start_idx=19800,
+set_writer = DatasetParser.get_parser(sample_path, image_format='jpg', label_format='xml', start_idx=0,
                                       color_format='bgr')
 
 augmenter = None  # RandomEnsemble(augmenters=[

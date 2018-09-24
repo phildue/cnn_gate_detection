@@ -80,11 +80,11 @@ While transfer learning provides the theoretical framework as well as methods to
 \cite{Inoue} 
 \todo{write}
 
-\section{Methodology}
+\section{Data Generation Pipeline}
 
-In order to to investigate the research questions a data generation pipeline is implemented. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
+In order to to investigate the research questions a data generation pipeline is implemented using OpenGL, UnrealEngine and AirSim. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
 
-A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise.
+A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise. This step is implemented using OpenCV and Python.
 
 \begin{figure}[htbp]
 	\centering
@@ -93,12 +93,18 @@ A view projection yields an image through the lens of the camera. The coordinate
 	\label{fig:training:datagen_notation}
 \end{figure}
 
-\subsection{Scene Generation}
+
+
+\section{Scene and View}
 \label{sec:training:scene}
 
-The first step determines the environment in which the object is embedded. This contains context such as background and other objects, as well as light conditions.
+The first step determines the environment in which the object is embedded. This contains context such as background and other objects, as well as light conditions. 
 
-The tool is implemented using OpenGL, UnrealEngine and AirSim. The \textit{UnrealEditor} allows to manually create environments and provides high quality rendering of objects, textures and light conditions. In total three indoor base environments are created which can be seen in \Cref{fig:environments}. This resembles \ac{GPS}-denied scenarios as they are targeted in this thesis. Within the environment light conditions, background textures, object locations can be changed manually. The environments are described in the following:
+The experiments in \cite{Peng} show how \acp{CNN} are relatively independent from these kind of image cues. Even trained on uniformly coloured backgrounds an object detector is able to achieve competitive performance. Instead \acp{CNN} seem to exploit texture and shape of the object. However, the objects investigated are solid which is not the case for \ac{EWFO}. \ac{EWFO} have a distinctive shape but the main part of their surface contains background. We hypothesize this makes the detection of the shape harder. Furthermore, \ac{EWFO} do not provide texture that can be exploited by a detector, which further complicates the detection. We hypothesize that \ac{EWFO} are more dependent on background than solid texture rich objects. 
+
+Placing a \ac{CAD}-model on existing images allows to generate samples without fully synthesizing an environment. In literature \cite{Madaan2017, Peng} approaches can be found that show the success of this method. However, without a realistic environment geometric properties of real images are violated. Furthermore, light conditions do not align with the rest of the scene. Hence, we hypothesize that only placing a \ac{CAD}-model on existing images leads to a too artificial learning setting. An object detector trained in such an environment might learn only to predict the object that does not fit to the rest of the scene.
+
+In order to evaluate the hypotheses several training and test environments are created. A black environment serves as base to replace the background with existing images. Furthermore, three indoor base environments are created that fully simulate illumination and background. An overview can be seen in \Cref{fig:environments}. Within the environment light conditions, background textures, object locations can be changed manually. The environments are described in the following:
 
 \begin{enumerate}
 	\item \textit{Dark:} The environment is a room without windows, only containing artificial light sources. 
@@ -108,33 +114,24 @@ The tool is implemented using OpenGL, UnrealEngine and AirSim. The \textit{Unrea
 
 \begin{figure}[hbtp]
 	\centering
-	\begin{minipage}{0.8\textwidth}
+	\begin{minipage}{0.3\textwidth}
 		\includegraphics[width=\textwidth]{fig/basement_perspective}
 	\end{minipage}
-	\caption{\textit{Basement} Environment.}
-	\begin{minipage}{0.8\textwidth}
+	\begin{minipage}{0.3\textwidth}
 		\includegraphics[width=\textwidth]{fig/daylight_perspective}
 	\end{minipage}
-	\caption{\textit{Daylight} Environment.}
-	\begin{minipage}{0.8\textwidth}
+	\begin{minipage}{0.3\textwidth}
 		\includegraphics[width=\textwidth]{fig/iros_perspective}
 	\end{minipage}
 	\caption{\textit{IROS2018} Environment.}
 	\label{fig:environments}
 \end{figure}
 
-The experiments in \cite{Peng} show how \acp{CNN} are relatively independent from these images cues but use shape and texture as predominant feature. However, the objects investigated are solid which is not the case for \ac{EWFO}. \ac{EWFO} have a distinctive shape but the main part of their surface contains background. We hypothesize this makes the detection of the shape harder. Furthermore, \ac{EWFO} do not provide texture that can be exploited by a detector, which further complicates the detection. We hypothesize that \ac{EWFO} are more dependent on background than solid texture rich objects. 
+Within the environment the second step places the camera and determines the view on the scene and therefore at which distance, angle and location the objects appear on the image.
 
-In order to evaluate this hypothesis the following experiment is conducted. The empty space of an \ac{EWFO} is augmented with a texture rich structure. An example can be seen in \todo{text}. The object is placed in a scene with uniformly colored backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. On both objects an object detector is trained and subsequently evaluted in a test set. The test set contains 1000 samples created by placing objects in a fully synthesized environment.
+A straightforward way is placing the camera at random locations within the scene \todo{double check}. However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. \acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that placing the camera does not cover sufficient views on the object of interest. 
 
-
-\subsection{Camera Placement}
-
-The pose of the camera determines the view on the scene and therefore at which distance and location the objects appear on the image.
-	
-A straightforward way of placing the camera is the random placement in the scene. The value for each dimension of $r$ and $t$ are drawn from a probability distribution. The chosen distributions have to follow certain limitations, for example the gate should still be visible in most images.
-
-However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. We incorporate the pattern of following a race track with an \ac{MAV} in the data generation process using a the motion model of a quad-rotor \ac{MAV}. The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}. Using a velocity controller the camera follows a certain trajectory through the 3D-Environment. Storing the current image at a frequency of 2 Hz creates the corresponding samples.
+In order to evaluate our hypothesis, we incorporate the pattern of following a race track with an \ac{MAV} in the data generation process. A motion model of a quad-rotor \ac{MAV} is implemented and a velocity controller is used to make the camera follow a certain trajectory in the environment. The environment is set up in way that it resembles a race court.  Storing the current image at a frequency of 2 Hz creates the corresponding samples. The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}. 
 
 When following the race track, the camera focuses the next object frontally most of the time. The appearance of the object increases as the camera approaches until the gate has been passed. This is also resembled when looking at the bounding box locations and dimensions.
 
@@ -153,18 +150,38 @@ When following the race track, the camera focuses the next object frontally most
 
 \Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with the two methods. It can be seen how with the drone motion model most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations \todo{why is this shifted to the right?}.
 
-\Cref{fig:scatter_camplace} shows a scatterplot of the bounding box dimensions. With the drone motion model one can see how the bounding box aspect ratio is mostly close to one, which appears when the object is faced frontally. The dimensions are increasing linearly as the camera approaches the object. The random placement on the other hand creates a larger variance in bounding box dimensions. This is due to the fact that more relative angles towards the object are created. 
+\Cref{fig:scatter_camplace} shows a scatterplot of the bounding box dimensions. With the drone motion model one can see how the bounding box aspect ratio is mostly close to one, which appears when the object is faced frontally. The dimensions are increasing linearly as the camera approaches the object. The random placement on the other hand creates a larger variance in bounding box dimensions. This is due to the fact that more relative views towards the object are created. 
 
-\Cref{fig:scatter_camplace} also shows how the dataset generated with random placement does not contain many objects with an aspect ratio close to 1. Hence, samples where the object appears spread over the whole image, faced frontally do almost not appear in this generated set. With drone motion model on the other hand several such samples exist.
+\Cref{fig:scatter_camplace} also shows how the dataset generated with random placement does not contain many objects with an aspect ratio close to 1. Hence, samples where the object appears spread over the whole image, faced frontally do almost not appear in this generated set. With the drone motion model on the other hand several such samples exist.
 
-\acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court.
+We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court.
 
-We verify the hypothesis in an experiment. Three models are trained: Model I using random placement, Model II using the drone motion model, Model III using a combination of both methods. In both experiments environment and light conditions as well as object locations are the same. The models are tested on two test sets: Set I created by randomly placing the camera. Set II by using the drone motion model, where a circuit is used that has not been part in the generation of the training data.
+\subsection{Experiments}
+
+\subsubsection{Experiment I}
+The empty space of an \ac{EWFO} is augmented with a texture rich structure. An example can be seen in \todo{text}. The object is placed in a scene with uniformly colored backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. On both objects an object detector is trained and subsequently evaluted in a test set. The test set contains 1000 samples created by placing objects in a fully synthesized environment.
+
+\subsubsection{Experiment II}
+
+Models are trained in different environments. Model I is trained on images that are created by placing objects on a real image. The background images are taken from the Pascal VOC dataset. Model II is trained on images created from the different virtual environments, where next to the environments the background textures are varied. Model III is trained on a combination of both aforementioned datasets. For all training sets 20 000 samples are created.
+
+\subsection{Experiment III}
+
+Three models are trained: Model I using random placement, Model II using the drone motion model, Model III using a combination of both methods. In both experiments environment and light conditions as well as object locations are the same. The models are tested on two test sets: Set I created by randomly placing the camera. Set II by using the drone motion model, where a circuit is used that has not been part in the generation of the training data.
+
+\subsection{Results}
+
+
+\subsection{Discussion}
+
+\subsection{Conclusion}
+
+\subsection{Camera Placement}
 
 
 \subsection{Post-processing}
 
-In the final step low-level image transformations are applied. Steps include sensor model based an artificial augmentation.
+After having created a set of 2D images, the final step applies low-level image transformations.
 
 \subsubsection{Model-based augmentation}
 

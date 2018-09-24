@@ -16,12 +16,12 @@ class GateCorners:
     @property
     def mat(self) -> np.array:
         return np.array([
-            self.center,
+
             self.top_left,
             self.top_right,
             self.bottom_right,
             self.bottom_left,
-
+            self.center,
         ])
 
     @staticmethod
