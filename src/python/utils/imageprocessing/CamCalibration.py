@@ -33,9 +33,12 @@ class CamCalibration:
         cv2.imshow('calibresult', dst)
 
         # crop the image
-        x, y, w, h = roi
-        dst = dst[y:y + h, x:x + w]
-        cv2.imshow('roi', dst)
+        try:
+            x, y, w, h = roi
+            dst = dst[y:y + h, x:x + w]
+            cv2.imshow('roi', dst)
+        except cv2.error:
+            pass
         cv2.waitKey(0)
 
     def calc_estimation_error(self, obj_points, img_points):

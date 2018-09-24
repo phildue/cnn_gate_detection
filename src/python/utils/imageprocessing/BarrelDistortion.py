@@ -1,12 +1,12 @@
 import numpy as np
 
 from utils.fileaccess.utils import load_file, save_file
+from utils.imageprocessing.DistortionModel import DistortionModel
 from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
-from utils.imageprocessing.DistortionModel import DistortionModel
 
 
 class BarrelDistortion(DistortionModel):
@@ -83,27 +83,43 @@ class BarrelDistortion(DistortionModel):
         :param mapping: mapping containing new pixel coordinates given the old coordinates
         :return: distorted label
         """
-        label_distorted = label.copy()
+
         h, w = mapping.shape[:2]
-        for obj in label_distorted.objects:
-            y_min = np.max([obj.y_min, 1])
-            x_min = np.max([obj.x_min, 1])
-            y_max = np.min([obj.y_max, h - 1])
-            x_max = np.min([obj.x_max, w - 1])
-            x_min_d, y_min_d = mapping[h - int(y_min), int(x_min)]
-            x_max_d, y_max_d = mapping[h - int(y_max), int(x_max)]
-            obj.x_min = np.min([x_min_d, x_max_d])
-            obj.x_max = np.max([x_min_d, x_max_d])
-            obj.y_min = h - np.min([y_min_d, y_max_d])
-            obj.y_max = h - np.max([y_min_d, y_max_d])
+        objects_distorted = []
+        for obj in label.objects:
             if isinstance(obj, GateLabel):
                 corners = obj.gate_corners.mat
                 corners_dist = np.zeros_like(corners)
+                out_of_view = False
                 for i in range(corners.shape[0]):
-                    corners_dist[i] = mapping[int(corners[i, 1]), int(corners[i, 0])]
-                obj.gate_corners = GateCorners.from_mat(corners_dist)
+                    try:
+                        corners_dist[i] = mapping[int(corners[i, 1]), int(corners[i, 0])]
+                    except IndexError:
+                        out_of_view = True
+                if not out_of_view:
+                    obj_d = obj.copy()
+                    obj_d.gate_corners = GateCorners.from_mat(corners_dist)
+                    objects_distorted.append(obj_d)
+            else:
+                y_min = np.max([obj.y_min, 1])
+                x_min = np.max([obj.x_min, 1])
+                y_max = np.min([obj.y_max, h - 1])
+                x_max = np.min([obj.x_max, w - 1])
+                try:
+                    x_min_d, y_min_d = mapping[h - int(y_min), int(x_min)]
+                    x_max_d, y_max_d = mapping[h - int(y_max), int(x_max)]
+                    x_min = np.min([x_min_d, x_max_d])
+                    x_max = np.max([x_min_d, x_max_d])
+                    y_min = h - np.min([y_min_d, y_max_d])
+                    y_max = h - np.max([y_min_d, y_max_d])
+                    obj_d = obj.copy()
+                    obj_d.__bounding_box = np.array([[x_min, y_min],
+                                                     [x_max, y_max]])
 
-        return label_distorted
+                except IndexError:
+                    continue
+
+        return ImgLabel(objects_distorted)
 
     def _create_mapping(self):
         """

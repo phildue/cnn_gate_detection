@@ -26,12 +26,12 @@ names = [
     'Uniform',
     'Real + Sim'
 ]
-testset = 'iros2018_course_final_simple_17gates'
-# testset = 'real_test_labeled'
+# testset = 'iros2018_course_final_simple_17gates'
+testset = 'jevois_hallway'
 legends = []
 linestyles = ['x--', 'x--', 'x--', 'x--', 'x--', 'x--']
 iou_thresh = 0.4
-min_box_area = 0.1
+min_box_area = 0.01
 max_box_area = 1.0
 ar = [4.0]
 mean_recalls = []

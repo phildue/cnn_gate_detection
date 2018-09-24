@@ -16,9 +16,9 @@ models = [
 ]
 datasets = [
     # 'real_test_labeled',
-    'jevois_cyberzoo',
-    'jevois_basement',
-    'jevois_hallway',
+    # 'jevois_cyberzoo',
+    # 'jevois_basement',
+    # 'jevois_hallway',
     'iros2018_course_final_simple_17gates'
 ]
 
@@ -56,19 +56,19 @@ for d in datasets:
                            label_file=work_dir + model_folder + '/' + exp_name + '/' + prediction_file + '.pkl',
                            result_path=work_dir + model_folder + '/' + exp_name + '/',
                            show=False)
-
-                for i_box_size in range(len(box_sizes) - 1):
-                    min_box_area = box_sizes[i_box_size]
-                    max_box_area = box_sizes[i_box_size + 1]
-                    evalmetric(name='results_{}_boxes{}-{}_iou{}'.format(d, min_box_area, max_box_area, iou_thresh, i),
-                               min_box_area=min_box_area,
-                               max_box_area=max_box_area,
-                               min_aspect_ratio=0.3,
-                               max_aspect_ratio=4.0,
-                               iou_thresh=iou_thresh,
-                               batch_size=16,
-                               model_src=work_dir + model_folder,
-                               color_format='bgr',
-                               label_file=work_dir + model_folder + '/' + exp_name + '/' + prediction_file + '.pkl',
-                               result_path=work_dir + model_folder + '/' + exp_name + '/',
-                               show=False)
+                #
+                # for i_box_size in range(len(box_sizes) - 1):
+                #     min_box_area = box_sizes[i_box_size]
+                #     max_box_area = box_sizes[i_box_size + 1]
+                #     evalmetric(name='results_{}_boxes{}-{}_iou{}'.format(d, min_box_area, max_box_area, iou_thresh, i),
+                #                min_box_area=min_box_area,
+                #                max_box_area=max_box_area,
+                #                min_aspect_ratio=0.3,
+                #                max_aspect_ratio=4.0,
+                #                iou_thresh=iou_thresh,
+                #                batch_size=16,
+                #                model_src=work_dir + model_folder,
+                #                color_format='bgr',
+                #                label_file=work_dir + model_folder + '/' + exp_name + '/' + prediction_file + '.pkl',
+                #                result_path=work_dir + model_folder + '/' + exp_name + '/',
+                #                show=False)

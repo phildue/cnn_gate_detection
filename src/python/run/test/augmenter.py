@@ -3,10 +3,14 @@ import random
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show
+from utils.imageprocessing.transform.RandomBlur import RandomBlur
+from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
 from utils.imageprocessing.transform.RandomColorShift import RandomColorShift
 from utils.imageprocessing.transform.RandomCrop import RandomCrop
+from utils.imageprocessing.transform.RandomExposure import RandomExposure
 from utils.imageprocessing.transform.RandomGrayNoise import RandomGrayNoise
 from utils.imageprocessing.transform.RandomHSV import RandomHSV
+from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
@@ -38,7 +42,8 @@ augmenters = [RandomColorShift((-0.2, 0.2), (-0.2, 0.2), (-0.2, 0.2)),  # Random
 augmenters = [RandomHSV((0.5, 2.0), (0.5, 2.0), (0.5, 2.0)), TransformFlip(), TransformGray(),
               TransformHistEq(), RandomGrayNoise(), TransformerBlur(iterations=10),
               TransformNormalize()]
-augmenters = []
+augmenters = [RandomExposure((0.5, 1.5)), RandomMotionBlur(1.0, 2.0), RandomBlur(),
+              RandomHSV((.9, 1.1), (0.5, 1.5), (0.5, 1.5)), RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))]
 
 for img, label, _ in batch:
     img, label = resize(img, (180, 315), label=label)

@@ -45,12 +45,12 @@ class GateGenerator(DatasetGenerator):
             files_all.extend(files_dir)
 
         files = files_all[start_idx:]
+        if shuffle:
+            random.shuffle(files)
         if n_samples is not None:
             files = files[:n_samples]
 
         print('Gate Generator::{0:d} samples found. Using {1:d}'.format(len(files_all), len(files)))
-        if shuffle:
-            random.shuffle(files)
 
         self.train_files = files[:int(np.ceil((1 - valid_frac) * len(files)))]
         self.test_files = files[:int(np.floor(valid_frac * len(files)))]
