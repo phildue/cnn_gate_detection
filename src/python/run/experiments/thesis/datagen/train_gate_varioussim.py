@@ -54,6 +54,7 @@ if __name__ == '__main__':
 
     image_source = ['resource/ext/samples/various_environments20k']
 
+
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/' + model_name + '_i{0:02d}'.format(i),
@@ -64,9 +65,10 @@ if __name__ == '__main__':
               epochs=100,
               batch_size=16,
               n_samples=None,
-              min_obj_size=0.1,
-              max_obj_size=1.2,
+              min_obj_size=0.01,
+              max_obj_size=2.0,
               min_aspect_ratio=0.3,
-              max_aspect_ratio=3.0,
+              max_aspect_ratio=4.0,
               initial_epoch=0,
               color_format='bgr')
+

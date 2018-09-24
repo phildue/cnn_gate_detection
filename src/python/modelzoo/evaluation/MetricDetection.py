@@ -26,7 +26,10 @@ class MetricDetection(Metric):
         self._boxes_true = None
 
     def evaluate(self, label_true: ImgLabel, label_pred: ImgLabel):
-        self._boxes_pred = BoundingBox.from_label(label_pred)
+        self._boxes_pred = [b for b in BoundingBox.from_label(label_pred) if
+                            (self.min_box_area < b.area < self.max_box_area and
+                             self.min_aspect_ratio < b.h / b.w < self.max_aspect_ratio)
+                            ]
         self._boxes_true = [b for b in BoundingBox.from_label(label_true) if
                             (self.min_box_area < b.area < self.max_box_area and
                              self.min_aspect_ratio < b.h / b.w < self.max_aspect_ratio)

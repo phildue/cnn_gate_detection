@@ -14,13 +14,24 @@
 import math
 from collections import OrderedDict
 
-net = {'conv1': [5, 2, 1],
-       'conv2': [3, 2, 1],
-       'conv3': [3, 2, 1],
-       'conv4': [3, 2, 1],
-       'conv5': [7, 1, 1],  # 129 (13,13)
-       'conv6': [3, 2, 1],
-       'conv7': [9, 1, 1],  # 129 (7,7)
+net = {'1conv': [3, 1, 1],
+       '2pool': [4, 4, 1],
+       '3conv': [3, 1, 1],
+       '4pool': [4, 4, 1],
+       '5conv': [3, 1, 1],
+       '5pool': [2, 2, 1],
+       '6conv': [5, 1, 1],
+       '7conv': [7, 1, 1],
+       # '7conv': [3, 1, 1],
+       # '7conv': [3, 1, 1],
+       # '8conv': [3, 1, 1]
+       # '6pool': [2, 2, 1],
+       # '7conv': [3, 1, 1],
+       # '8pool': [2, 2, 1],
+       # '9conv': [7, 1, 1],  # 129 (13,13)
+       # '9pool': [7, 4, 1],
+       # '10conv': [7, 1, 1],
+       # '11conv': [9, 1, 1],  # 129 (7,7)
        # 'conv8': [5, 1, 1]  # 129 (7,7)
        # 'conv7': [5, 2, 1],  #
        # 'conv9': [3, 1, 1],  # 321 (3,3)
@@ -42,7 +53,7 @@ net = OrderedDict(sorted(net.items()))
 layers = list(net.values())
 layer_names = list(net.keys())
 
-imsize = 208
+imsize = 416
 
 
 def outFromIn(conv, layerIn):

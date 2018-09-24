@@ -15,7 +15,7 @@ def resize_label(label: ImgLabel, img_shape=None, shape: tuple = None, scale_x=1
 
         if isinstance(obj, GateLabel):
             obj_resized = resize_label_gate(obj, img_shape, shape, scale_x, scale_y)
-        elif isinstance(obj,ObjectLabel):
+        elif isinstance(obj, ObjectLabel):
             obj_resized = resize_label_bb(obj, img_shape, shape, scale_x, scale_y)
         else:
             raise ValueError('Unknown Type')
@@ -31,9 +31,9 @@ def resize_label_bb(obj: ObjectLabel, img_shape, shape: tuple = None, scale_x=1.
         scale_y = (shape[0] / img_shape[0])
         scale_x = (shape[1] / img_shape[1])
 
-    mat = obj_resized.mat
     scale = np.array([scale_x, scale_y])
-    mat = mat.astype(scale.dtype) * scale
+    mat = obj_resized.mat.astype(scale.dtype)
+    mat *= scale
 
     obj_resized.mat = mat
 
@@ -49,10 +49,8 @@ def resize_label_gate(obj: GateLabel, img_shape, shape: tuple = None, scale_x=1.
 
     scale = np.array([scale_x, scale_y])
 
-    mat = obj_resized.gate_corners.mat
-    mat = mat * scale
-
-
+    mat = obj_resized.gate_corners.mat.astype(scale.dtype)
+    mat *= scale
     obj_resized.gate_corners = GateCorners.from_mat(mat)
 
     return obj_resized

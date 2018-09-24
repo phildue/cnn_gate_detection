@@ -8,9 +8,9 @@ from utils.workdir import cd_work
 
 cd_work()
 # 'resource/ext/samples/iros2018_course_final_simple_17gates'
-generator = GateGenerator(directories=['resource/ext/samples/real_test_labeled/'],
+generator = GateGenerator(directories=['resource/ext/samples/iros2018_course_final_simple_17gates/'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=150, valid_frac=1.0,
+                          shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
                           img_format='jpg'
                           )
@@ -31,7 +31,7 @@ model = GateNet.create_by_arch(architecture=summary['architecture'],
                                anchors=summary['anchors'],
                                color_format='bgr',
                                # preprocessor=TransformGray(),
-                               conf_thresh=0.6,
+                               conf_thresh=0.3,
                                augmenter=None)
 # create_dirs(['out/1807/narrow_strides_late_bottleneck416x416-13x13+9layers/img04/'])
 demo_generator(model, generator, t_show=0, n_samples=2000, iou_thresh=0.6, size=(416, 416))
