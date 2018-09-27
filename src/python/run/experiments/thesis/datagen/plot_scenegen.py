@@ -3,12 +3,13 @@ from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
+import numpy as np
 
 cd_work()
 models = ['datagen/yolov3_gate_realbg416x416',
           'datagen/yolov3_gate416x416',
           'datagen/yolov3_gate_varioussim416x416',
-          # 'datagen/yolov3_gate_dronemodel416x416',
+          'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
           'datagen/yolov3_gate_uniform416x416',
           'datagen/yolov3_gate_mixed416x416'
@@ -18,19 +19,19 @@ work_dir = 'out/thesis/'
 n_iterations = 5
 
 names = [
-    'ModelRB',
-    'ModelSVE',
-    'ModelVVE',
-    # 'Drone Model',
+    'Real Backgrounds',
+    'Basement Environment',
+    'Various Environments',
+    'Drone Model',
     # 'Snake Gate',
-    'ModelU',
-    'ModelRBVVE'
+    'Uniform',
+    'Real + Sim'
 ]
 testset = 'iros2018_course_final_simple_17gates'
-# testset = 'jevois_cyberzoo'
+# testset = 'jevois_hallway'
 legends = []
 linestyles = ['x--', 'x--', 'x--', 'x--', 'x--', 'x--']
-iou_thresh = 0.6
+iou_thresh = 0.4
 min_box_area = 0.01
 max_box_area = 1.0
 ar = [4.0]
@@ -56,6 +57,8 @@ for model in models:
             continue
 
     m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
+    print(m_p)
+    print('{}:  map{}: {}'.format(model, iou_thresh, np.mean(m_p)))
     mean_recalls.append(m_r)
     mean_precisions.append(m_p)
     std_precisions.append(std_p)
