@@ -41,7 +41,7 @@ def show_img(path):
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
-            img, label = resize(img, (208, 208), label=label)
+            # img, label = resize(img, (208, 208), label=label)
             print(label)
             show(img, 'img', labels=label, legend=LEGEND_POSITION, thickness=1)
 
@@ -55,5 +55,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight_course1/'])
+show_img(path=['resource/ext/samples/daylight_course5/'])
 # show_voc()

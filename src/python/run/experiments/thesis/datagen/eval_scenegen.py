@@ -16,9 +16,9 @@ models = [
 ]
 datasets = [
     # 'real_test_labeled',
-    # 'jevois_cyberzoo',
-    # 'jevois_basement',
-    # 'jevois_hallway',
+    'jevois_cyberzoo',
+    'jevois_basement',
+    'jevois_hallway',
     'iros2018_course_final_simple_17gates'
 ]
 
@@ -32,14 +32,14 @@ for d in datasets:
         for i in range(n_iterations):
             model_folder = model + '_i0{}'.format(i)
             prediction_file = 'predictions_{}'.format(d, i)
-            evalset(name=exp_name,
-                    result_path=work_dir + model_folder + '/' + exp_name + '/',
-                    result_file=prediction_file,
-                    batch_size=16,
-                    model_src=work_dir + model_folder,
-                    preprocessing=None,
-                    color_format='bgr',
-                    image_source=['resource/ext/samples/{}/'.format(d)])
+            # evalset(name=exp_name,
+            #         result_path=work_dir + model_folder + '/' + exp_name + '/',
+            #         result_file=prediction_file,
+            #         batch_size=16,
+            #         model_src=work_dir + model_folder,
+            #         preprocessing=None,
+            #         color_format='bgr',
+            #         image_source=['resource/ext/samples/{}/'.format(d)])
 
             min_box_area = box_sizes[0]
             max_box_area = box_sizes[-1]

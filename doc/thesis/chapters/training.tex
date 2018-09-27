@@ -169,7 +169,7 @@ In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of im
 Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. For \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
 
 The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
-
+\todo{double check formula is (y in first line?)}
 \begin{equation}
 f(x,y) =
 \begin{pmatrix}
@@ -181,9 +181,8 @@ y (1 + \kappa_1 x^2 + \kappa_1 (1 + \lambda_y) y^2 + \kappa_2(x^2 + y^2)^2)
 Where:
 \begin{itemize}
 	\item f yields the undistorted coordinates.
-	\item $\kappa_1$ controls the primary distortion
-	\item $\kappa_2$ controls the secondary distortion 
-	\item $\lambda_x$ and $\lambda_y$ controls asymmetric distortion
+	\item $\kappa_1$ $\kappa_2$ control the radial distortion 
+	\item $\lambda_x$ and $\lambda_y$ control the tangential distortion
 \end{itemize}
  
 Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution, so the Newton-approximation.
@@ -336,13 +335,22 @@ Several models are trained on 20 000 samples each.
 	\item[ModelVVE] Various Virtual Environments
 	\item[ModelRBVVE] Real Backgrounds + Various Virtual Environments
 \end{itemize}
-\todo{how many gates are in there}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.8\textwidth]{fig/datagen_II_pr}
-	\caption{Precision Recall of Models trained in different Environments and tested in the virtual race court of IROS2018. }
-\end{figure}
+
+\begin{table}[htbp]
+	\caption{}
+	\begin{tabular}{|l|l|l|l|r|r|r|l|l|l|}
+		\hline
+		& Validation Set &  &  & \multicolumn{1}{l|}{IROS2018} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & Real Data &  &  \\ \hline
+		& AP40 & AP60 & AP80 & \multicolumn{1}{l|}{AP40} & \multicolumn{1}{l|}{AP60} & \multicolumn{1}{l|}{AP80} & AP40 & AP60 & AP80 \\ \hline
+		U &  &  &  & 0.05 & 0.01 & 0 &  &  &  \\ \hline
+		SVE &  &  &  & 0.29 & 0.17 & 0.02 &  &  &  \\ \hline
+		VVE &  &  &  & 0.61 & 0.49 & 0.17 &  &  &  \\ \hline
+		RB &  &  &  & 0.42 & 0.28 & 0.04 &  &  &  \\ \hline
+	\end{tabular}
+	\label{tab:env}
+\end{table}
+
 
 \subsubsection{Experiment III}
 
@@ -356,30 +364,6 @@ In order to evaluate $\mathcal{H}_4$ the individual domain properties are measur
 
 \section{Results}
 \label{sec:training:results}
-\begin{table}[htbp]
-	\caption{Results of varying training sets on TODO}
-	\small
-	\begin{tabular}{|p{3cm}|p{2cm}|p{2cm}|p{2cm}|p{3cm}|p{2cm}|}
-		\hline
-		& General &  & Specific & General + Specific & Inactive \\ \hline
-		Scene & Real Backgrounds & \textit{Basement, Daylight} & \textit{IROS2018} & Real Backgrounds, Synth. Environments & - \\ \hline
-		&  &  &  &  & - \\ \hline
-		Camera Placement & Heuristic Selection & Fitted on target set &  & Heuristic Selection + Target Set &  \\ \hline
-		&  &  &  &  &  \\ \hline
-		Lens Distortion & Varying parameters &  &  &  &  \\ \hline
-		&  &  &  &  &  \\ \hline
-		Chromatic Aberration &  &  &  &  &  \\ \hline
-		Motion Noise &  &  &  &  &  \\ \hline
-		Out-of-Focus Blur &  &  &  &  &  \\ \hline
-		Exposure &  &  &  &  &  \\ \hline
-		Sensor Noise &  &  &  &  &  \\ \hline
-		Brightness &  &  &  &  &  \\ \hline
-		Grayscale &  &  &  &  &  \\ \hline
-		Histogram &  &  &  &  &  \\ \hline
-		Flip &  &  &  &  &  \\ \hline
-	\end{tabular}
-	\label{genvsspec}
-\end{table}
 
 \section{Discussion}
 \label{sec:training:discussion}
