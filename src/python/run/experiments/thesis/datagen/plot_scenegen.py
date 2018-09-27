@@ -8,7 +8,7 @@ cd_work()
 models = ['datagen/yolov3_gate_realbg416x416',
           'datagen/yolov3_gate416x416',
           'datagen/yolov3_gate_varioussim416x416',
-          'datagen/yolov3_gate_dronemodel416x416',
+          # 'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
           'datagen/yolov3_gate_uniform416x416',
           'datagen/yolov3_gate_mixed416x416'
@@ -18,19 +18,19 @@ work_dir = 'out/thesis/'
 n_iterations = 5
 
 names = [
-    'Real Backgrounds',
-    'Basement Environment',
-    'Various Environments',
-    'Drone Model',
+    'ModelRB',
+    'ModelSVE',
+    'ModelVVE',
+    # 'Drone Model',
     # 'Snake Gate',
-    'Uniform',
-    'Real + Sim'
+    'ModelU',
+    'ModelRBVVE'
 ]
-# testset = 'iros2018_course_final_simple_17gates'
-testset = 'jevois_hallway'
+testset = 'iros2018_course_final_simple_17gates'
+# testset = 'jevois_cyberzoo'
 legends = []
 linestyles = ['x--', 'x--', 'x--', 'x--', 'x--', 'x--']
-iou_thresh = 0.4
+iou_thresh = 0.6
 min_box_area = 0.01
 max_box_area = 1.0
 ar = [4.0]
