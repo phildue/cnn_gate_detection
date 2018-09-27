@@ -1,11 +1,23 @@
 \chapter{Background}
 \label{sec:metrics}
 
-This chapter describes background knowledge required to understand the remaining parts of the thesis. It introduces the hardware platform in which this work has been conducted as well as datasets and metrics used for evaluation. Furthermore, it describes the baseline algorithm that is used as comparison for the investigated models.
+This chapter describes background knowledge required to understand the remaining parts of the thesis. It introduces the target system for this work as well as datasets and metrics used for evaluation. Furthermore, it discusses related work in Object Detection and Data Generation.
 
-\section{Hardware Platform}
+\section{System Environment}
 
-The target platform is the \textit{JeVois} smart camera. It contains a 1.3 MP camera with 65 degree field of view. The processing units are a quad core ARM Cortex A7 processor with 1.35 GHz and a dual core MALI-400 GPU with 233 Mhz. In order to extent the field of view a 120 degree wide angle lense is mounted. In \Cref{fig:jevois} the camera is shown.
+A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
+
+
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{fig/control_loop}
+	\caption{Control Loop}
+	\label{fig:control_loop}
+\end{figure}
+
+The high level control loop how it is targeted in this work is described further detail. A first step detects the racing gate and yields the corner coordinates. These are used to estimate the relative position of the \ac{MAV} towards the gate. In the third step the visual measurements are fused with measurements of other sensors. In the case of this work \ac{IMU} and a sonar deliver altitude and attitude data. This step yields a global position estimate of the \ac{MAV}. Based on this estimate a flying trajectory is calculated. This results in desired altitude and attitude which is send as set points to the low level controller.
+
+The hardware platform used to run the high level control loop is the \textit{JeVois} smart camera. It contains a 1.3 MP camera with 65 degree field of view. The processing units are a quad core ARM Cortex A7 processor with 1.35 GHz and a dual core MALI-400 GPU with 233 Mhz. In order to extent the field of view a 120 degree wide angle lens is mounted. In \Cref{fig:jevois} the camera is shown.
 
 \begin{figure}[hbtp]
 	\centering
@@ -13,6 +25,26 @@ The target platform is the \textit{JeVois} smart camera. It contains a 1.3 MP ca
 	\caption{JeVois Camera}
 	\label{fig:jevois}
 \end{figure}
+
+\subsection{Baseline Algorithm}
+
+The baseline algorithm \textit{SnakeGate} is a low-level image processing algorithm proposed in \todoref{snakegate}. Its scheme is summarized in and described in the following.
+
+\begin{enumerate}
+	\item Filter image by colour threshold
+	\item Sample stochastically 
+	\item Follow the pixels horizontally as long as they are within the colour threshold otherwise return to 2.
+	\item If a bar of sufficient length has been found repeat 3. vertically along one end of the line found in 3.
+	\item If a vertical bar is found the square is considered as gate candidate
+	\item Create local histogram around the corners of the gate candidate and choose the highest peak as gate corner.
+	\item Count the fraction of pixels within the color threshold  in relation to the total number of pixels a long all edges of the gate candidate to determine the \textit{color fitness}.
+	\item Gate candidates that exceed a chosen threshold are considered valid detections.
+\end{enumerate}
+\todo{this can be described more formally}
+
+A property of SnakeGate is that it can and has to be fine tuned given an environment and its corresponding light conditions. This lack of robustness against domain changes are one motivation for this work. On the other hand, in practice the fine tuning allows to adapt the method live for a certain domain, which is not practical for learning based methods.
+
+
 
 \section{Datasets}
 \label{sec:datasets}
@@ -55,7 +87,7 @@ Hence, recall expresses how many of all objects are detected and therefore how c
 
 A correct detection is determined based on its overlap with a ground truth box. This is measured by the relation of \ac{IoU}. In experiments we determine 0.6 as sufficient overlap for a detection. However, to evaluate how accurate in terms of location the detections are, precision and recall are measured for different levels of \ac{IoU}.
 
-The model used within this thesis associates a "confidence" value with each prediction that can trade off precision and recall. This is further explained in \Cref{sec:object_detection}. By accepting more detections with a lower confidence threshold the probability increases that one of the predictions is a true positive. Hence, it increases recall. However, it also increases the probability of false positives and thus lowers precision. In order to evaluate this trade-off precision is plotted over recall at increasing confidence values.
+The model used within this thesis associates a "confidence" value with each prediction that can trade off precision and recall. This is further explained in \Cref{sec:object_detection}. By accepting more detections with a lower confidence threshold, the probability increases that one of the predictions is a true positive. Hence, it increases recall. However, it also increases the probability of false positives and thus lowers precision. In order to evaluate this trade-off precision is plotted over recall at increasing confidence values.
 
 As the learning of \acp{CNN} is stochastic, the mean across several trainings is reported. In order to determine the average precision recall trade-off the precision is interpolated across evenly distributed recall levels between 0 and 1 using:
 
@@ -69,10 +101,12 @@ $$ mAP = \int_{r}p_{interp}(r) dr$$
 \todoref{There should be a source for this}
 
 \section{Related Work}
+
+\subsection{Object Detection}
 \label{sec:object_detection:related}
 The existing methods can broadly be grouped in three groups. Those are more traditional approaches without \acp{CNN}-based feature extraction, two-stage detectors and one-stage detectors.
 
-\subsection{Traditional Methods}
+\subsubsection{Traditional Methods}
 
 One of the first object detection methods was \cite{Viola2004} that used simple filters inspired by Haar-basis functions as a feature extractor for human face detection. The image was processed in a cascade of classifiers that assigned the label "face" or "background" to image patches. The output of the first stages were further classified when going deeper in the cascade. The processing of one image patch stopped, when a classifier assigned the label "background". Although being very fast the Haar-based feature extraction is not very robust towards rotation-, scale- or shape-variations \todo{quote}. 
 
@@ -86,7 +120,7 @@ X propose a recurrent neural network architecture to model the attention process
 
 \todo{discussion traditional features}
 
-\subsection{\acp{CNN}-based Feature Extraction}
+\subsubsection{\acp{CNN}-based Feature Extraction}
 
 In recent years \acp{CNN} emerged from Deep Learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches in sliding window fashion. The outputs of the initial local operations (first layer) are further processed by higher layers until the desired output size is reached. The model parameters (weights) are trained using a Loss function and the back-propagation algorithm.
 
@@ -115,7 +149,7 @@ However, \ac{FCN} in combination with a small amount of layers introduce a limit
 
 Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with huge training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
-\subsection{\ac{CNN}-based Object Detection}
+\subsubsection{\ac{CNN}-based Object Detection}
 
 \acp{CNN}-based feature extraction is employed in various approaches to Object Detection. 	
 
@@ -180,12 +214,12 @@ Each of the described group of methods has strengths and weaknesses. While shall
 
 \todoref{Wire detection}
 
-\section{Related Work}
+\subsection{Data Generation}
 \label{sec:training:related}
 
 Related methods vary from changing low level properties of the image over using CAD models in combination with real background up to rendering full 3D-environments. Often various combinations of synthesized and real data are applied. 
 
-\subsection{Low-Level Image Augmentation}
+\subsubsection{Low-Level Image Augmentation}
 
 A common part of current Computer Vision pipelines is to augment a given data set by transforming low level properties of the image. By artificially increasing variations in the input signal, a model that is more invariant to the augmented properties shall be obtained.
 
@@ -197,7 +231,7 @@ While the aforementioned approaches add artificial variation to the input data, 
 
 Low-level image augmentation is a comparatively cheap method to increase the variance in a dataset. However, it cannot create totally new samples or view points. Furthermore, it cannot change the scene in which an object is placed. Therefore it needs a sufficiently large base dataset that is augmented. This work addresses the case when no real training data is available. Hence, low-level image augmentation is incorporated in the training process but can not be the only method applied.
 
-\subsection{Augmenting Existing Images with CAD - Models}
+\subsubsection{Augmenting Existing Images with CAD - Models}
 
 In order to create new view points \ac{CAD}-models can be used. These models describe 3D-shape of an object and can be placed on existing images to augment or increase a dataset.
 
@@ -209,7 +243,7 @@ In order to create new view points \ac{CAD}-models can be used. These models des
 
 The use of CAD-models in combination with real backgrounds allows to generate totally new view points for the object of interest. Furthermore, the image background consists of real data and thus the synthetic textures only concern the rendered object. However, the geometric properties like perspective as well as the physical properties like object placement are violated and therefore create an artificial scene. Despite this fact, literature shows that such images can benefit model performance in various cases. Yet, most of the approaches still use real data and/or focus on solid objects with rich textures and complex shape. We hypothesize that since \ac{EWFO} do not provide these kind of structures the results do not apply in the same way. Hence, we incorporate the method to generate data and investigate how it can be applied for the detection of \ac{EWFO}.
 
-\subsection{Fully Synthesizing Environments}
+\subsubsection{Fully Synthesizing Environments}
 
 A more realistic placement of objects can be achieved when fully synthesizing environments.  The object of interest can be placed according to physical laws, shadows fall correctly and geometric properties of an image are followed. However, if the graphical models do not fully capture the details of real world objects, the generated data might look too artificial.
 
@@ -230,7 +264,7 @@ While the aforementioned approaches require labelled samples from the target dom
 
 While transfer learning provides the theoretical framework as well as methods to deal with domain shifts, it does not allow to generate data. Furthermore, it often requires samples of the target domain. This work addresses the case when no real data is used for training. The field is interesting to be incorporated in the data generation pipeline investigated in this thesis but it can not be used as a start off point. Hence, the use of transfer learning in the modelling process is denoted as future work.
 
-\subsection{Generative Adversarial Networks}
+\subsubsection{Generative Adversarial Networks}
 
 \cite{Inoue} 
 \todo{write}
@@ -241,21 +275,6 @@ While transfer learning provides the theoretical framework as well as methods to
 
 \section{Baseline}
 
-The baseline algorithm \textit{SnakeGate} is a low-level image processing algorithm proposed in \todoref{snakegate}. Its scheme is summarized in and described in the following.
-
-\begin{enumerate}
-	\item Filter image by colour threshold
-	\item Sample stochastically 
-	\item Follow the pixels horizontally as long as they are within the colour threshold otherwise return to 2.
-	\item If a bar of sufficient length has been found repeat 3. vertically along one end of the line found in 3.
-	\item If a vertical bar is found the square is considered as gate candidate
-	\item Create local histogram around the corners of the gate candidate and choose the highest peak as gate corner.
-	\item Count the fraction of pixels within the color threshold  in relation to the total number of pixels a long all edges of the gate candidate to determine the \textit{color fitness}.
-	\item Gate candidates that exceed a chosen threshold are considered valid detections.
-\end{enumerate}
-\todo{this can be described more formally}
-
-A property of SnakeGate is that it can and has to be fine tuned given an environment and its corresponding light conditions. This lack of robustness against domain changes are one motivation for this work. On the other hand, in practice the fine tuning allows to adapt the method live for a certain domain, which is not practical for learning based methods.
 
 \subsection{Experiment}
 
