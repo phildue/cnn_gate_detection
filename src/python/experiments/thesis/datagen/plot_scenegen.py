@@ -12,7 +12,8 @@ models = ['datagen/yolov3_gate_realbg416x416',
           'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
           'datagen/yolov3_gate_uniform416x416',
-          'datagen/yolov3_gate_mixed416x416'
+          'datagen/yolov3_gate_mixed416x416',
+          'datagen/yolov3_gate_pp416x416'
           ]
 
 work_dir = 'out/thesis/'
@@ -25,15 +26,16 @@ names = [
     'Drone Model',
     # 'Snake Gate',
     'Uniform',
-    'Real + Sim'
+    'Real + Sim',
+    'Postproc'
 ]
+# testset = 'iros2018_course_final_simple_17gates'
 testset = 'iros2018_course_final_simple_17gates'
-# testset = 'jevois_hallway'
 legends = []
-linestyles = ['x--', 'x--', 'x--', 'x--', 'x--', 'x--']
+linestyles = ['x--']*len(names)
 iou_thresh = 0.4
 min_box_area = 0.01
-max_box_area = 1.0
+max_box_area = 2.0
 ar = [4.0]
 mean_recalls = []
 mean_precisions = []
@@ -43,7 +45,7 @@ for model in models:
     mean_detections = []
     for i in range(n_iterations):
         model_dir = model + '_i0{}'.format(i)
-        result_file = work_dir + model_dir + '/scenegen/' + 'results_{}_boxes{}-{}_iou{}.pkl'.format(testset,
+        result_file = work_dir + model_dir + '/' +'scenegen' + '/' + 'results_{}_boxes{}-{}_iou{}.pkl'.format(testset,
                                                                                                      min_box_area,
                                                                                                      max_box_area,
                                                                                                      iou_thresh)

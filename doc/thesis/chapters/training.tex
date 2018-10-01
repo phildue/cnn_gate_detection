@@ -269,7 +269,18 @@ Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{
 The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
 
 \subsubsection{Experiment I}
-The empty space of an \ac{EWFO} is augmented with a texture rich structure. An example can be seen in \todo{text}. The object is placed in a scene with uniformly colored backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. On both objects an object detector is trained and subsequently evaluted in a test set. The test set contains 1000 samples created by placing objects in a fully synthesized environment.
+The empty space of an \ac{EWFO} is augmented with a detailed texture. An example can be seen in \Cref{fig:cats}.
+\begin{figure}
+	\centering
+	\includegraphics[height=5cm]{fig/cat}
+	\caption{The \ac{EWFO} is augmented with a detailed texture.}
+	\label{fig:cats}
+\end{figure}
+
+The object is placed in a scene with uniformly coloured backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. The test set contains 1000 samples created in the \textit{IROS} environment by randomly placing the camera following \Cref{eq:distroexp}.
+ 
+
+ 
 
 \subsubsection{Experiment II}
 

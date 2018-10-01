@@ -6,13 +6,13 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'yolov3_gate_realbg416x416',
-    'yolov3_gate416x416',
-    'yolov3_gate_dronemodel416x416',
-    'yolov3_gate_varioussim416x416',
-    'yolov3_gate_uniform416x416',
-    'yolov3_gate_mixed416x416'
-    'yolov3_gate_pp416x416'
+    # 'yolov3_gate_realbg416x416',
+    # 'yolov3_gate416x416',
+    # 'yolov3_gate_dronemodel416x416',
+    # 'yolov3_gate_varioussim416x416',
+    # 'yolov3_gate_uniform416x416',
+    # 'yolov3_gate_mixed416x416'
+    'yolov3_pp416x416'
 ]
 testsets = [
     # 'real_test_labeled',
