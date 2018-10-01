@@ -37,7 +37,8 @@ set_name = 'yolo_refine'
 out_dir = 'resource/ext/samples/' + set_name
 src_dir = 'resource/ext/samples/'
 
-sets = ['white_bg']
+sets = ['white_bg',
+        'real_iros']
 
 sample_dir = out_dir + '/samples'
 create_dirs([out_dir, sample_dir])
