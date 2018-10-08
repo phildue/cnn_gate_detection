@@ -45,7 +45,8 @@ class Preprocessor:
                 img, label = self.crop_to_input(img, label)
                 img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
-            # show(img.bgr, t=0)
+            # show(img.bgr,labels=label, t=0)
+
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)
             label_enc = np.expand_dims(label_enc, 0)
@@ -109,3 +110,9 @@ class Preprocessor:
 
         else:
             raise ValueError("Short side doesnt make sence")
+
+    def minmax(self, dataset):
+        img_t = np.concatenate([d[0].array for d in dataset], 0)
+        d_min = np.min(img_t, -1)
+        d_max = np.max(img_t, -1)
+        return d_min, d_max

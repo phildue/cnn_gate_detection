@@ -89,7 +89,6 @@ class GateNetEncoder(Encoder):
         return np.hstack((c, wh))
 
     def encode_img(self, image: Image):
-        # TODO do we need this normalization?
         img = normalize(image)
         return np.expand_dims(img.array, axis=0)
 

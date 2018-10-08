@@ -1,4 +1,3 @@
-from samplegen.shotgen.ShotLoad import ShotLoad
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize
@@ -37,7 +36,7 @@ def show_img(path):
         return ImgLabel(objs_in_size)
 
     gate_generator = GateGenerator(path, 8, color_format='bgr', shuffle=False, label_format='xml', img_format='jpg',
-                                   filter=None, remove_filtered=False)
+                                   filter=None, remove_filtered=False, start_idx=0)
 
     for batch in gate_generator.generate():
         for img, label, _ in batch:
@@ -55,5 +54,5 @@ def show_shot(path="samplegen/resource/shots/stream/"):
 
 
 # show_shot(path="samplegen/resource/ext/samples/bebop_merge/")
-show_img(path=['resource/ext/samples/daylight_course5/'])
+show_img(path=['lib/datagen/bin/Debug/'])
 # show_voc()

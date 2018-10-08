@@ -3,12 +3,8 @@ import argparse
 import numpy as np
 
 from train import train
-from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomExposure import RandomExposure
-from utils.imageprocessing.transform.RandomHSV import RandomHSV
-from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 
 if __name__ == '__main__':
     start_idx = 0
@@ -54,15 +50,11 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_pp{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_chromatic{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
-        (1.0, RandomExposure((0.5, 1.5))),
-        (1.0, RandomMotionBlur(1.0, 2.0, 15)),
-        (1.0, RandomBlur((5, 5))),
-        (1.0, RandomHSV((.9, 1.1), (0.5, 1.5), (0.5, 1.5))),
-        (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))),
-    ])
+        (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))
+         )])
 
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
@@ -79,7 +71,7 @@ if __name__ == '__main__':
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
-              weight_file='out/thesis/datagen/yolov3_gate_varioussim416x416_i00/model.h5',
+              weight_file='out/thesis/datagen/yolov3_gate_mixed416x416_i00/model.h5',
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,

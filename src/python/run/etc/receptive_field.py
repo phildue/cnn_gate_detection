@@ -12,46 +12,55 @@
 # - r_i: receptive field of a feature in layer i
 # - start_i: position of the first feature's receptive field in layer i (idx start from 0, negative means the center fall into padding)
 import math
-from collections import OrderedDict
 
-net = {'1conv': [3, 1, 1],
-       '2pool': [4, 4, 1],
-       '3conv': [3, 1, 1],
-       '4pool': [4, 4, 1],
-       '5conv': [3, 1, 1],
-       '5pool': [2, 2, 1],
-       '6conv': [5, 1, 1],
-       '7conv': [7, 1, 1],
-       # '7conv': [3, 1, 1],
-       # '7conv': [3, 1, 1],
-       # '8conv': [3, 1, 1]
-       # '6pool': [2, 2, 1],
-       # '7conv': [3, 1, 1],
-       # '8pool': [2, 2, 1],
-       # '9conv': [7, 1, 1],  # 129 (13,13)
-       # '9pool': [7, 4, 1],
-       # '10conv': [7, 1, 1],
-       # '11conv': [9, 1, 1],  # 129 (7,7)
-       # 'conv8': [5, 1, 1]  # 129 (7,7)
-       # 'conv7': [5, 2, 1],  #
-       # 'conv9': [3, 1, 1],  # 321 (3,3)
-       # 'conv8': [4, 2, 1],  #
-       # 'conv11': [3, 1, 1],  # 737 (1,1)
+architecture = [
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
 
-       # 'conv8': [9, 1, 1],
-       # 'conv9': [5, 1, 1],
-       # 'conv10': [2, 2, 1],
-       # 'conv12': [3, 1, 1],
-       # 'conv13': [3, 1, 1],
-       # 'conv14': [3, 1, 1],
-       # 'conv15': [3, 1, 1],
-       # 'conv16': [3, 1, 1],
-       # 'conv17': [3, 1, 1],
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'},
 
-       }
-net = OrderedDict(sorted(net.items()))
-layers = list(net.values())
-layer_names = list(net.keys())
+    {'name': 'route', 'index': [-4]},
+    {'name': 'max_pool', 'size': (4, 4)},
+    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'},
+    #
+    {'name': 'route', 'index': [-8]},
+    {'name': 'max_pool', 'size': (6, 6)},
+    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'}
+]
+
+
+def arch2dict(arch, upto=None):
+    param_dict = {}
+    for j, layer in enumerate(arch):
+        if layer['name'] == 'conv_leaky':
+            param_dict['{0:02d}'.format(j)] = [layer['kernel_size'][0], layer['strides'][0],
+                                               (layer['kernel_size'][0] - 1) / 2]
+        elif layer['name'] == 'max_pool':
+            param_dict['{0:02d}'.format(j)] = [layer['size'][0], layer['size'][1], layer['size'][0] / 2]
+        elif layer['name'] == 'upsample' or layer['name'] == 'route':
+            raise ValueError('Unknown Layer')
+        else:
+            print("Not handled:")
+            print(layer)
+        if upto is not None and j > upto: break
+    return param_dict
+
+
+net = arch2dict(architecture)
+# net = OrderedDict(sorted(net.items()))
+# layers = list(net.values())
+# layer_names = list(net.keys())
 
 imsize = 416
 
@@ -88,8 +97,10 @@ if __name__ == '__main__':
     print("-------Net summary------")
     currentLayer = [imsize, 1, 1, 0.5]
     printLayer(currentLayer, "input image")
-    for i in range(len(layers)):
-        currentLayer = outFromIn(layers[i], currentLayer)
+    for k in net.keys():
+        layer = net[k]
+        currentLayer = outFromIn(layer, currentLayer)
         layerInfos.append(currentLayer)
-        printLayer(currentLayer, layer_names[i])
+        printLayer(currentLayer, k)
+
     print("------------------------")

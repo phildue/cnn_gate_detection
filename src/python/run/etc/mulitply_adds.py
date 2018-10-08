@@ -114,47 +114,51 @@ def count_operations(architecture, volume_in, verbose=False):
 
     collect = []
     for i, layer in enumerate(architecture):
-        volume_out, multiply_adds = lookup[layer['name']](volume_in, layer)
+        try:
+            volume_out, multiply_adds = lookup[layer['name']](volume_in, layer)
 
-        collect.append({'name': layer['name'], 'in': volume_in, 'out': volume_out, 'operations': multiply_adds})
+            collect.append({'name': layer['name'], 'in': volume_in, 'out': volume_out, 'operations': multiply_adds})
 
-        multiply_adds_total += multiply_adds
-        if verbose:
-            print("{}: {} {} --> {}".format(i, layer['name'], volume_in, volume_out))
-            print("Ops Layer: {}".format(multiply_adds))
-            print("Ops Total: {}".format(multiply_adds_total))
+            multiply_adds_total += multiply_adds
+            if verbose:
+                print("{}: {} {} --> {}".format(i, layer['name'], volume_in, volume_out))
+                print("Ops Layer: {}".format(multiply_adds))
+                print("Ops Total: {}".format(multiply_adds_total))
 
-        volume_in = volume_out
+            volume_in = volume_out
+        except KeyError:
+            print("Unknown:")
+            print(layer['name'])
 
     return collect
 
 
 if __name__ == '__main__':
     network = [
-        # First layer it does not see complex shapes so we apply a few large filters for efficiency
-        {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-        # Second layers we use more but smaller filters to combine shapes in non-linear fashion
-        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 30, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'bottleneck_conv', 'kernel_size': (3, 3), 'filters': 40, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 50, 'strides': (1, 1), 'alpha': 0.1,
-         'compression': 0.5},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
+
+        {'name': 'route', 'index': [-4]},
+        {'name': 'max_pool', 'size': (4, 4)},
+        {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'bottleneck_conv', 'kernel_size': (5, 5), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'bottleneck_conv', 'kernel_size': (4, 4), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'predict'},
-        {'name': 'bottleneck_conv', 'kernel_size': (4, 4), 'filters': 32, 'strides': (4, 4), 'alpha': 0.1,
-         'compression': 0.5},
-        {'name': 'predict'},
+        #
+        {'name': 'route', 'index': [-8]},
+        {'name': 'max_pool', 'size': (6, 6)},
+        {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'}
     ]
-    img = (208, 208, 3)
+    img = (416, 416, 3)
 
     count_operations(network, img, True)

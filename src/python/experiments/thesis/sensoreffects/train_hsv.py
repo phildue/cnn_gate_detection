@@ -53,7 +53,7 @@ if __name__ == '__main__':
     model_name = 'yolov3_hsv{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
-        (1.0, RandomHSV((.9, 1.1), (0.5, 1.5), (0.5, 1.5)),
+        (1.0, RandomHSV((.9, 1.1), (0.8, 1.2), (0.8, 1.2))
          )])
 
     image_source = ['resource/ext/samples/daylight_course1',
@@ -71,7 +71,6 @@ if __name__ == '__main__':
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
-              weight_file='out/thesis/datagen/yolov3_gate_mixed416x416_i00/model.h5',
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,

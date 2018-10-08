@@ -54,8 +54,8 @@ if __name__ == '__main__':
     model_name = 'yolov3_blur{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
-        (1.0, RandomMotionBlur()),
-        (1.0, RandomBlur()),
+        (0.2, RandomMotionBlur(1.0, 2.0, 15)),
+        (0.2, RandomBlur((5, 5))),
     ])
 
     image_source = ['resource/ext/samples/daylight_course1',
