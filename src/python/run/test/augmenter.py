@@ -1,7 +1,7 @@
 import random
 
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.imageprocessing.Backend import resize
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
@@ -14,6 +14,7 @@ from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.RandomScale import RandomScale
 from utils.imageprocessing.transform.RandomShift import RandomShift
 from utils.imageprocessing.transform.SSDAugmenter import SSDAugmenter
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.imageprocessing.transform.TransformHistEq import TransformHistEq
 from utils.imageprocessing.transform.TransformNormalize import TransformNormalize
@@ -34,7 +35,7 @@ img = batch[idx][0]
 label = batch[idx][1]
 ssd_augmenter = SSDAugmenter()
 augmenters = [RandomColorShift((-0.2, 0.2), (-0.2, 0.2), (-0.2, 0.2)),  # RandomMerge(), RandomRotate(10, 30),
-              # TransformDistort(BarrelDistortion.from_file('resource/distortion_model_est.pkl')),
+              # ,
               TransformFlip(), TransformGray(),
               TransformHistEq(), TransformSubsample(), RandomGrayNoise(), TransformerBlur(iterations=10),
               RandomScale(), RandomShift(), TransformNormalize(), RandomCrop()]
@@ -45,8 +46,9 @@ augmenters = [RandomHSV((0.5, 2.0), (0.5, 2.0), (0.5, 2.0)), TransformFlip(), Tr
 augmenters = [RandomExposure((0.5, 1.5)), RandomMotionBlur(1.0, 2.0), RandomBlur(),
               RandomHSV((.9, 1.1), (0.5, 1.5), (0.5, 1.5)), RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))]
 
+augmenters = [TransformDistort(BarrelDistortion.from_file('resource/demo_distortion_model.pkl'))]
 for img, label, _ in batch:
-    img, label = resize(img, (180, 315), label=label)
+    # img, label = resize(img, (180, 315), label=label)
     show(img, name='Org')
 
     for augmenter in augmenters:

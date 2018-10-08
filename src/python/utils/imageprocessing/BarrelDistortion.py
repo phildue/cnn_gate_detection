@@ -20,7 +20,7 @@ class BarrelDistortion(DistortionModel):
         save_file(self, filename, './')
 
     def __init__(self, img_shape, rad_dist_params, squeeze=1.0, tangential_dist_params=(0, 0),
-                 max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.01, scale=1.0):
+                 max_iterations=100, distortion_radius=1.0, center=None, conv_thresh=0.01):
         """
         Barrel Distortion model.
         [Vass, G., & Perlaki, T. (n.d.). Applying and removing lens distortion in post production.
@@ -32,11 +32,9 @@ class BarrelDistortion(DistortionModel):
         :param tangential_dist_params: parameters for non-radial distortion (yshift, xshift)
         :param distortion_radius: radius on which distortion should be applied
         :param center: center around which distortion is applied
-        :param scale: scale distortion
         :param conv_thresh: convergence threshold for newton approximation
         :param max_iterations: maximum iterations for newton approximation
         """
-        self.scale = scale
         self.img_shape = img_shape
         self.epsilon = conv_thresh
         self.center = center
@@ -45,9 +43,9 @@ class BarrelDistortion(DistortionModel):
         self.max_iterations = max_iterations
         self.squeeze = squeeze
         self.rad_dist_params = rad_dist_params
-        self.mapping_undist, self.mapping_dist = self._create_mapping()
+        self.map_u, self.map_d = self._create_mapping()
 
-    def undistort(self, img: Image, label: ImgLabel = None):
+    def undistort(self, img: Image, label: ImgLabel = None, scale=1.0):
         """
         Remove distortion from an image
         :param img: image
@@ -55,14 +53,19 @@ class BarrelDistortion(DistortionModel):
         :return: img,label without distortion
         """
         mat = img.array
-        mat_undistorted = self._apply_mapping(mat, self.mapping_dist)
+
+        center = np.array([img.shape[1] / 2, img.shape[0] / 2])
+
+        mapping_undist_c, mapping_dist_c = self._scale(center, scale)
+
+        mat_undistorted = self._apply_mapping(mat, mapping_dist_c)
         if label is not None:
-            label_undistorted = self._distort_label(label, self.mapping_undist)
+            label_undistorted = self._distort_label(label, mapping_undist_c)
             return Image(mat_undistorted, img.format), label_undistorted
         else:
             return Image(mat_undistorted, img.format)
 
-    def distort(self, img: Image, label: ImgLabel = None):
+    def distort(self, img: Image, label: ImgLabel = None, scale=1.0):
         """
         Apply distortion to an image
         :param img: image
@@ -70,12 +73,25 @@ class BarrelDistortion(DistortionModel):
         :return: img, label with distortion
         """
         mat = img.array
-        mat_undistorted = self._apply_mapping(mat, self.mapping_undist)
+        center = np.array([img.shape[1] / 2, img.shape[0] / 2])
+
+        mapping_undist_c, mapping_dist_c = self._scale(center, scale)
+
+        mat_undistorted = self._apply_mapping(mat, mapping_undist_c)
         if label is not None:
-            label_distorted = self._distort_label(label, self.mapping_dist)
+            label_distorted = self._distort_label(label, mapping_dist_c)
             return Image(mat_undistorted, img.format), label_distorted
         else:
             return Image(mat_undistorted, img.format)
+
+    def _scale(self, center, scale):
+        map_d = self.map_d - center
+        map_u = self.map_u - center
+        map_d *= scale
+        map_u *= scale
+        map_d += center
+        map_u += center
+        return map_u, map_d
 
     @staticmethod
     def _distort_label(label: ImgLabel, mapping):
@@ -133,13 +149,13 @@ class BarrelDistortion(DistortionModel):
         y = np.tile(np.reshape(np.arange(0, h), (h, 1)), (1, w))
         coords = np.concatenate((np.expand_dims(x, -1), np.expand_dims(y, -1)), -1)
         coords_norm = self._normalize(coords.astype(np.float))
-        mapping_undist = self.scale * self._distortion_model(coords_norm)
-        mapping_dist = 1 / self.scale * self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
-        mapping_undist = self._denormalize(mapping_undist)
-        mapping_dist = self._denormalize(mapping_dist)
-        return mapping_undist, mapping_dist
+        map_u = self._model(coords_norm)
+        map_d = self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
+        map_u = self._denormalize(map_u)
+        map_d = self._denormalize(map_d)
+        return map_u, map_d
 
-    def _distortion_model(self, coord: np.array):
+    def _model(self, coord: np.array):
         """
         Model for distortion.:
         :param coord: distorted pixel coordinates
@@ -151,11 +167,11 @@ class BarrelDistortion(DistortionModel):
         x = coord[:, :, 0]
         y = coord[:, :, 1]
 
-        x_d = x * (1 + k_1 * x ** 2 + k_1 * (1 + l_x) * y ** 2 + k_2 * (x ** 2 + y ** 2) ** 2)
-        y_d = y * (1 + k_1 / s * x ** 2 + k_1 / s * (1 + l_y) * y ** 2 + k_2 / s * (x ** 2 + y ** 2) ** 2)
-        mat_d = np.concatenate((np.expand_dims(x_d, -1), np.expand_dims(y_d, -1)), -1)
+        x_u = x * (1 + k_1 * x ** 2 + k_1 * (1 + l_x) * y ** 2 + k_2 * (x ** 2 + y ** 2) ** 2)
+        y_u = y * (1 + k_1 / s * x ** 2 + k_1 / s * (1 + l_y) * y ** 2 + k_2 / s * (x ** 2 + y ** 2) ** 2)
+        mat_u = np.concatenate((np.expand_dims(x_u, -1), np.expand_dims(y_u, -1)), -1)
 
-        return mat_d
+        return mat_u
 
     def _normalize(self, coord: np.array):
         """
@@ -228,10 +244,10 @@ class BarrelDistortion(DistortionModel):
         :param mapping: mapping containing the old indeces given the new coordinates
         :return: distorted image
         """
-        mat_distorted = remap(mat, mapping[:, :, 0:1].astype(np.float), mapping[:, :, 1:],
-                              interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+        mat_remaped = remap(mat, mapping[:, :, 0].astype(np.float32), mapping[:, :, 1].astype(np.float32),
+                            interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
-        return mat_distorted
+        return mat_remaped
 
     def _inverse_model_approx(self, coord: np.array, init):
         """
@@ -245,7 +261,7 @@ class BarrelDistortion(DistortionModel):
         for t in range(self.max_iterations):
             tic()
             mat_prev = mat_cur.copy()
-            dist_model = self._distortion_model(mat_prev)
+            dist_model = self._model(mat_prev)
             gradient = self._gradient(mat_prev)
             for i in range(h):
                 for j in range(w):
@@ -291,15 +307,14 @@ class BarrelDistortion(DistortionModel):
         return gradient
 
     def __repr__(self):
-        return 'Scale: {}\n' \
-               'Shape: {}\n' \
+        return 'Shape: {}\n' \
                'Eps: {}\n' \
                'Center: {}\n' \
                'DistRadius: {}\n' \
                'NonRad Params: {}\n' \
                'MaxIterations: {}\n' \
                'Squeeze: {}\n' \
-               'RadDist Params: {}\n'.format(self.scale,
+               'RadDist Params: {}\n'.format(
                                              self.img_shape,
                                              self.epsilon,
                                              self.center,
