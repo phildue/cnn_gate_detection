@@ -1,4 +1,6 @@
+import cv2
 import numpy as np
+from cv2.cv2 import remap
 
 from utils.fileaccess.utils import load_file, save_file
 from utils.imageprocessing.DistortionModel import DistortionModel
@@ -53,7 +55,7 @@ class BarrelDistortion(DistortionModel):
         :return: img,label without distortion
         """
         mat = img.array
-        mat_undistorted = self._distort_mat(mat, self.mapping_dist)
+        mat_undistorted = self._apply_mapping(mat, self.mapping_dist)
         if label is not None:
             label_undistorted = self._distort_label(label, self.mapping_undist)
             return Image(mat_undistorted, img.format), label_undistorted
@@ -68,7 +70,7 @@ class BarrelDistortion(DistortionModel):
         :return: img, label with distortion
         """
         mat = img.array
-        mat_undistorted = self._distort_mat(mat, self.mapping_undist)
+        mat_undistorted = self._apply_mapping(mat, self.mapping_undist)
         if label is not None:
             label_distorted = self._distort_label(label, self.mapping_dist)
             return Image(mat_undistorted, img.format), label_distorted
@@ -219,20 +221,15 @@ class BarrelDistortion(DistortionModel):
 
         return out.T
 
-    def _distort_mat(self, mat: np.array, mapping: np.array):
+    def _apply_mapping(self, mat: np.array, mapping: np.array):
         """
         Distort the image with bilinear interpolation.
         :param mat: image
         :param mapping: mapping containing the old indeces given the new coordinates
         :return: distorted image
         """
-        h, w = self.img_shape
-        mat_distorted = np.zeros_like(mat)
-        for i in range(h):
-            for j in range(w):
-                x, y = mapping[i, j]
-                if 1.0 < x < float(w) - 1.0 and 1.0 < y < float(h) - 1.0:
-                    mat_distorted[i, j] = self._bilinear_interp(mat, x, y)
+        mat_distorted = remap(mat, mapping[:, :, 0:1].astype(np.float), mapping[:, :, 1:],
+                              interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
         return mat_distorted
 
