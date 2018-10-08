@@ -33,21 +33,12 @@ def filter(label):
 
 
 project_dir = cd_work()
-set_name = 'yolo_all'
+set_name = 'yolo_refine'
 out_dir = 'resource/ext/samples/' + set_name
 src_dir = 'resource/ext/samples/'
 
-sets = ['daylight_course1',
-        'daylight_course5',
-        'daylight_course3',
-        'iros2018_course1',
-        'iros2018_course5',
-        'iros2018_flights',
-        'basement20k',
-        'real_and_sim',
-        'basement_course3',
-        'basement_course1',
-        'iros2018_course3_test']
+sets = ['white_bg',
+        'real_iros']
 
 sample_dir = out_dir + '/samples'
 create_dirs([out_dir, sample_dir])
