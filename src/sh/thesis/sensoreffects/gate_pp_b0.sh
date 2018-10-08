@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/experiments/thesis/sensoreffects/train_gate_allpp.py --start_idx=0 --n_reps=2
+srun python3 dronevision/src/python/experiments/thesis/sensoreffects/train_allpp.py --start_idx=0 --n_reps=2
