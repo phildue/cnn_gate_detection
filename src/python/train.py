@@ -1,10 +1,13 @@
 import pprint as pp
 
+import numpy as np
+
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
+from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
@@ -68,7 +71,11 @@ def train(architecture,
 
         objs_in_view = []
         for obj in objs_within_angle:
-            mat = obj.gate_corners.mat
+            if isinstance(obj, GateLabel):
+                mat = obj.gate_corners.mat
+            else:
+                mat = np.array([[obj.x_min, obj.y_min],
+                                [obj.x_max, obj.y_max]])
             if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
                 len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
                 continue

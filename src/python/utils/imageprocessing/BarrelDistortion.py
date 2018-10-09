@@ -268,7 +268,9 @@ class BarrelDistortion(DistortionModel):
                     grad = gradient[i, j]
                     np.fill_diagonal(grad, np.diag(grad) + 0.000001)
                     prev = np.reshape(mat_prev[i, j], (2, 1))
+
                     diff = np.reshape((dist_model[i, j] - coord[i, j]), (2, 1))
+
                     update = prev - np.linalg.inv(grad).dot(diff)
                     mat_cur[i, j] = update.flatten()
             delta = np.linalg.norm(mat_cur - mat_prev)

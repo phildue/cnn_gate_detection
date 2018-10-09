@@ -17,6 +17,9 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
 
             img = batch[i][0]
             label = batch[i][1]
+            show(img.bgr, 'demo',
+                 colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
+                 legend=LEGEND_TEXT, t=t_show)
             label_pred = model.predict(img)
             if img.shape[0] != model.input_shape[0] or img.shape[1] != model.input_shape[1]:
                 img, label = model.preprocessor.crop_to_input(img, label)

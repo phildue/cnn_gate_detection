@@ -8,7 +8,7 @@ from utils.workdir import cd_work
 
 cd_work()
 # 'resource/ext/samples/iros2018_course_final_simple_17gates'
-generator = GateGenerator(directories=['resource/ext/samples/jevois_cyberzoo/'],
+generator = GateGenerator(directories=['resource/ext/samples/jevois_basement/'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
@@ -23,7 +23,7 @@ generator = GateGenerator(directories=['resource/ext/samples/jevois_cyberzoo/'],
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/thesis/datagen/yolov3_pp416x416_i00/'
+src_dir = 'out/thesis/objectdetect/mavnet_416x416_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 model = GateNet.create_by_arch(architecture=summary['architecture'],

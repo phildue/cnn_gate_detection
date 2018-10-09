@@ -1,6 +1,7 @@
-from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate, \
-    UpSampling2D
 import keras.backend as K
+from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate, \
+    UpSampling2D, AveragePooling2D
+
 from modelzoo.backend.tensor.DepthwiseConv2D import DepthwiseConv2D
 
 
@@ -17,6 +18,14 @@ def conv_leaky(netin, filters, kernel_size, strides, alpha):
     norm = BatchNormalization()(conv)
     act = LeakyReLU(alpha=alpha)(norm)
     return act
+
+
+def avg_pool_creator(netin, config):
+    return avg_pool(netin, config['size'])
+
+
+def avg_pool(netin, size):
+    return AveragePooling2D(size)(netin)
 
 
 def max_pool_creator(netin, config):
@@ -230,6 +239,7 @@ layers = {'conv_leaky': conv_leaky_creator,
           'bottleneck_dconv': bottleneck_dconv_creator,
           'bottleneck_dconv_residual': bottleneck_dconv_residual_creator,
           'max_pool': max_pool_creator,
+          'avg_pool': avg_pool_creator,
           'time_dist_conv_leaky': time_dist_conv_leaky_creator,
           'time_dist_max_pool': time_dist_max_pool_creator,
           'wr_basic_conv_leaky': wr_basic_conv_leaky_creator,

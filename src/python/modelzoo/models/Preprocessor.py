@@ -103,10 +103,10 @@ class Preprocessor:
         diff2 = diff / 2
 
         if short_side == 0:
-            return crop(img, (0, diff2), (shape[1], shape[0] - diff2), label)
+            return crop(img, (diff2, 0), (shape[1] - diff2, shape[0]), label)
 
         elif short_side == 1:
-            return crop(img, (diff2, 0), (shape[1] - diff2, shape[0]), label)
+            return crop(img, (0, diff2), (shape[1], shape[0] - diff2), label)
 
         else:
             raise ValueError("Short side doesnt make sence")

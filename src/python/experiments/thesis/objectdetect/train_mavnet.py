@@ -42,17 +42,17 @@ if __name__ == '__main__':
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
 
-        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'avg_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
 
         {'name': 'route', 'index': [-4]},
-        {'name': 'max_pool', 'size': (4, 4)},
+        {'name': 'avg_pool', 'size': (4, 4)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         #
         {'name': 'route', 'index': [-8]},
-        {'name': 'max_pool', 'size': (6, 6)},
+        {'name': 'avg_pool', 'size': (6, 6)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
@@ -75,8 +75,8 @@ if __name__ == '__main__':
                     'resource/ext/samples/iros2018_flights',
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
-                    'resource/ext/samples/iros2018_course3_test'
-                    'resource/ext/samples/various_environments'
+                    'resource/ext/samples/iros2018_course3_test',
+                    'resource/ext/samples/various_environments',
                     'resource/ext/samples/real_bg'
                     ]
 
