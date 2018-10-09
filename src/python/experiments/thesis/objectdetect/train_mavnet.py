@@ -103,4 +103,4 @@ if __name__ == '__main__':
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
               initial_epoch=0,
-              color_format='bgr')
+              color_format='yuyv')
