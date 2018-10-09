@@ -113,9 +113,11 @@ class BarrelDistortion(DistortionModel):
                 obj_u = obj.copy()
                 obj_u.mat = corners_u
 
-            # if len(corners[(0 < corners_u[0, :]) | (corners_u[0, :] < self.img_shape[1])]) > 2 and \
-            #         len(corners[(0 < corners_u[1, :]) | (corners_u[1, :] < self.img_shape[0])]):
-            objects_u.append(obj_u)
+            if (len(corners_u[(corners_u[:, 0] < 0) | (corners_u[:, 0] > self.img_shape[1])]) +
+                len(corners_u[(corners_u[:, 1] < 0) | (corners_u[:, 1] > self.img_shape[0])])) > 2:
+                continue
+            else:
+                objects_u.append(obj_u)
 
         return ImgLabel(objects_u)
 
@@ -145,10 +147,12 @@ class BarrelDistortion(DistortionModel):
             else:
                 obj_d = obj.copy()
                 obj_d.mat = corners_d
-            objects_distorted.append(obj_d)
 
-            # if len(corners[(0 < corners_d[0, :]) | (corners_d[0, :] < self.img_shape[1])]) > 2 and \
-            #         len(corners[(0 < corners_d[1, :]) | (corners_d[1, :] < self.img_shape[0])]):
+            if (len(corners_d[(corners_d[:, 0] < 0) | (corners_d[:, 0] > self.img_shape[1])]) +
+                len(corners_d[(corners_d[:, 1] < 0) | (corners_d[:, 1] > self.img_shape[0])])) > 2:
+                continue
+            else:
+                objects_distorted.append(obj_d)
 
         return ImgLabel(objects_distorted)
 
@@ -302,7 +306,6 @@ class BarrelDistortion(DistortionModel):
             if delta < self.epsilon:
                 break
             toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
-            print(xy)
         return xy
 
     def _gradient(self, coord: np.array):

@@ -64,8 +64,8 @@ if __name__ == '__main__':
                     'resource/ext/samples/iros2018_flights',
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
-                    'resource/ext/samples/iros2018_course3_test'
-                    'resource/ext/samples/various_environments'
+                    'resource/ext/samples/iros2018_course3_test',
+                    'resource/ext/samples/various_environments',
                     'resource/ext/samples/real_bg'
                     ]
 

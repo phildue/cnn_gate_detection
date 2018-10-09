@@ -3,12 +3,14 @@ import argparse
 import numpy as np
 
 from train import train
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomExposure import RandomExposure
 from utils.imageprocessing.transform.RandomHSV import RandomHSV
 from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 if __name__ == '__main__':
     start_idx = 0
@@ -57,6 +59,8 @@ if __name__ == '__main__':
     model_name = 'yolov3_pp{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
+        (0.2, TransformDistort(BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0]),
+                               2.0)),
         (1.0, RandomExposure((0.8, 1.2))),
         (0.2, RandomMotionBlur(1.0, 2.0, 15)),
         (0.2, RandomBlur((5, 5))),
@@ -72,8 +76,8 @@ if __name__ == '__main__':
                     'resource/ext/samples/iros2018_flights',
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
-                    'resource/ext/samples/iros2018_course3_test'
-                    'resource/ext/samples/various_environments'
+                    'resource/ext/samples/iros2018_course3_test',
+                    'resource/ext/samples/various_environments',
                     'resource/ext/samples/real_bg'
                     ]
 

@@ -4,6 +4,7 @@ import numpy as np
 
 from train import train
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 
 if __name__ == '__main__':
@@ -52,8 +53,10 @@ if __name__ == '__main__':
 
     model_name = 'yolov3_distort{}x{}'.format(img_res[0], img_res[1])
 
-    augmenter = TransformDistort(BarrelDistortion.from_file())
-
+    augmenter = RandomEnsemble([
+        (0.2, TransformDistort(BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0]),
+                               2.0)),
+    ])
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
                     'resource/ext/samples/daylight_course3',
@@ -62,8 +65,8 @@ if __name__ == '__main__':
                     'resource/ext/samples/iros2018_flights',
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
-                    'resource/ext/samples/iros2018_course3_test'
-                    'resource/ext/samples/various_environments'
+                    'resource/ext/samples/iros2018_course3_test',
+                    'resource/ext/samples/various_environments',
                     'resource/ext/samples/real_bg'
                     ]
 
