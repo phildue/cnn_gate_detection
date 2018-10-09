@@ -66,10 +66,8 @@ class Preprocessor:
         if self.preprocess_transformer is not None:
             img, _ = self.preprocess_transformer.transform(img, ImgLabel([]))
 
-        if self.color_format is 'yuv':
-            img = img.yuv
-        else:
-            img = img.bgr
+        if self.color_format is not img.format:
+            raise ValueError("Invalid Color Format")
 
         if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
             img = self.crop_to_input(img)

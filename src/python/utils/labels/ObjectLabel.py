@@ -2,6 +2,8 @@ import copy
 
 import numpy as np
 
+from utils.labels.Pose import Pose
+
 
 class ObjectLabel:
     classes = []
@@ -19,9 +21,11 @@ class ObjectLabel:
         except IndexError:
             return "Unknown"
 
-    def __init__(self, class_name, bounding_box, confidence=1.0):
+    def __init__(self, class_name, bounding_box, confidence=1.0, pose=Pose()):
         self.confidence = confidence
         self.class_name = class_name
+        self.pose = pose
+
         self.__bounding_box = bounding_box
         if class_name not in ObjectLabel.classes:
             ObjectLabel.classes.append(class_name)

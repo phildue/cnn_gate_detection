@@ -6,10 +6,11 @@ from utils.labels.Pose import Pose
 class GateLabel(ObjectLabel):
     # TODO add "shift" that moves the points
 
-    def __init__(self, pose: Pose = None, gate_corners: GateCorners = None, confidence=1.0, class_name='gate'):
-        self.gate_corners = gate_corners
+    def __init__(self, pose: Pose = None, gate_corners: GateCorners = None, confidence=1.0,
+                 class_name='gate'):
         super().__init__(class_name, None, confidence)
         self.pose = pose
+        self.gate_corners = gate_corners
 
     @property
     def csv(self):

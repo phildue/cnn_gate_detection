@@ -4,6 +4,7 @@ from utils.imageprocessing.Imageprocessing import get_bounding_box
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Pose import Pose
 
 
 def centroid_to_minmax(coord_t):
@@ -32,9 +33,13 @@ class BoundingBox:
             if l is None: continue
             if isinstance(l, GateLabel):
                 p1, p2 = get_bounding_box(l.gate_corners)
-                l = ObjectLabel('gate', np.array([p1, p2]), l.confidence)
-
-            b = BoundingBox(len(ObjectLabel.classes) + 1)
+                l = ObjectLabel('gate', np.array([p1, p2]), l.confidence,l.pose)
+            try:
+                pose = l.pose
+            except AttributeError:
+                print("No Pose found")
+                pose = Pose()
+            b = BoundingBox(len(ObjectLabel.classes) + 1,pose=pose)
             b.w = l.x_max - l.x_min
             b.h = l.y_max - l.y_min
             b.cx = l.x_min + b.w / 2
@@ -59,7 +64,7 @@ class BoundingBox:
             ymax = int((box.cy + box.h / 2))
             box_labels.append(ObjectLabel(ObjectLabel.id_to_name(box.prediction),
                                           np.array([[xmin, ymin],
-                                                    [xmax, ymax]]), box.class_conf))
+                                                    [xmax, ymax]]), box.class_conf,pose=box.pose))
         return ImgLabel(box_labels)
 
     @staticmethod
@@ -92,7 +97,8 @@ class BoundingBox:
             boxes.append(b)
         return boxes
 
-    def __init__(self, class_num):
+    def __init__(self, class_num,pose=Pose()):
+        self.pose = pose
         self._x, self._y, self._w, self._h, self._c = 0., 0., 0., 0., 0.
         self.probs = np.zeros((class_num,))
 
