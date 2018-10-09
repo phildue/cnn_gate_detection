@@ -36,22 +36,22 @@ if __name__ == '__main__':
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
 
-        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'avg_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
 
         {'name': 'route', 'index': [-4]},
-        {'name': 'max_pool', 'size': (4, 4)},
+        {'name': 'avg_pool', 'size': (4, 4)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         #
         {'name': 'route', 'index': [-8]},
-        {'name': 'max_pool', 'size': (6, 6)},
+        {'name': 'avg_pool', 'size': (6, 6)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
-    model_name = 'mavnet_nopp{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'mavnet_avg_nopp{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
 

@@ -24,21 +24,23 @@ architecture = [
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
 
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'},
-
-    {'name': 'route', 'index': [-4]},
-    {'name': 'max_pool', 'size': (4, 4)},
-    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'},
+    # {'name': 'max_pool', 'size': (2, 2)},
+    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'predict'},
     #
-    {'name': 'route', 'index': [-8]},
+    # {'name': 'route', 'index': [-4]},
+    # {'name': 'max_pool', 'size': (4, 4)},
+    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'predict'},
+    #
+    # {'name': 'route', 'index': [-8]},
     {'name': 'max_pool', 'size': (6, 6)},
-    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ]
-
 
 def arch2dict(arch, upto=None):
     param_dict = {}
@@ -97,7 +99,7 @@ if __name__ == '__main__':
     print("-------Net summary------")
     currentLayer = [imsize, 1, 1, 0.5]
     printLayer(currentLayer, "input image")
-    for k in net.keys():
+    for k in sorted(net.keys()):
         layer = net[k]
         currentLayer = outFromIn(layer, currentLayer)
         layerInfos.append(currentLayer)

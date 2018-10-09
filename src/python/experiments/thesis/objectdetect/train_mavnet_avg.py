@@ -3,6 +3,15 @@ import argparse
 import numpy as np
 
 from train import train
+from utils.imageprocessing.BarrelDistortion import BarrelDistortion
+from utils.imageprocessing.transform.RandomBlur import RandomBlur
+from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
+from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.RandomExposure import RandomExposure
+from utils.imageprocessing.transform.RandomHSV import RandomHSV
+from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
+from utils.imageprocessing.transform.TransformDistort import TransformDistort
+from utils.imageprocessing.transform.TransformRaw import TransformRaw
 
 if __name__ == '__main__':
     start_idx = 0
@@ -36,24 +45,34 @@ if __name__ == '__main__':
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
 
-        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'avg_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
 
         {'name': 'route', 'index': [-4]},
-        {'name': 'max_pool', 'size': (4, 4)},
+        {'name': 'avg_pool', 'size': (4, 4)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         #
         {'name': 'route', 'index': [-8]},
-        {'name': 'max_pool', 'size': (6, 6)},
+        {'name': 'avg_pool', 'size': (6, 6)},
         {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
-    model_name = 'mavnet_nopp{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'mavnet_avg{}x{}'.format(img_res[0], img_res[1])
 
-    augmenter = None
+    augmenter = RandomEnsemble([
+        (0.2, TransformDistort(BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0]),
+                               2.0)),
+        (1.0, RandomExposure((0.8, 1.2))),
+        (0.2, RandomMotionBlur(1.0, 2.0, 15)),
+        (0.2, RandomBlur((5, 5))),
+        (1.0, RandomHSV((.9, 1.1), (0.8, 1.2), (0.8, 1.2))),
+        (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))),
+        (1.0, TransformRaw())
+    ])
+
 
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
@@ -84,4 +103,5 @@ if __name__ == '__main__':
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
               initial_epoch=0,
-              color_format='bgr')
+              color_format='yuyv',
+              input_channels=2)
