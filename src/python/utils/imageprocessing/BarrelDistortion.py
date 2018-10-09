@@ -43,7 +43,7 @@ class BarrelDistortion(DistortionModel):
         self.max_iterations = max_iterations
         self.squeeze = squeeze
         self.rad_dist_params = rad_dist_params
-        self.map_u, self.map_d = self._create_mapping()
+        self.map_u, self.map_d = None, None
 
     def undistort(self, img: Image, label: ImgLabel = None, scale=1.0):
         """
@@ -53,14 +53,15 @@ class BarrelDistortion(DistortionModel):
         :return: img,label without distortion
         """
         mat = img.array
-
         center = np.array([img.shape[1] / 2, img.shape[0] / 2])
+        if self.map_d is None:
+            self.map_d = self._create_dmapping()
 
-        mapping_undist_c, mapping_dist_c = self._scale(center, scale)
+        map_scaled = self._scale(self.map_d, center, 1/scale)
 
-        mat_undistorted = self._apply_mapping(mat, mapping_dist_c)
+        mat_undistorted = self._apply_mapping(mat, map_scaled)
         if label is not None:
-            label_undistorted = self._distort_label(label, mapping_undist_c)
+            label_undistorted = self._undistort_label(label,scale)
             return Image(mat_undistorted, img.format), label_undistorted
         else:
             return Image(mat_undistorted, img.format)
@@ -75,26 +76,50 @@ class BarrelDistortion(DistortionModel):
         mat = img.array
         center = np.array([img.shape[1] / 2, img.shape[0] / 2])
 
-        mapping_undist_c, mapping_dist_c = self._scale(center, scale)
+        if self.map_u is None:
+            self.map_u = self._create_umapping()
 
-        mat_undistorted = self._apply_mapping(mat, mapping_undist_c)
+        map_scaled = self._scale(self.map_u, center, 1/scale)
+
+        mat_undistorted = self._apply_mapping(mat, map_scaled)
         if label is not None:
-            label_distorted = self._distort_label(label, mapping_dist_c)
+            label_distorted = self._distort_label(label,scale)
             return Image(mat_undistorted, img.format), label_distorted
         else:
             return Image(mat_undistorted, img.format)
 
-    def _scale(self, center, scale):
-        map_d = self.map_d - center
-        map_u = self.map_u - center
-        map_d *= scale
-        map_u *= scale
-        map_d += center
-        map_u += center
-        return map_u, map_d
+    def _scale(self, map, center, scale):
+        map = map - center
+        map *= scale
+        map += center
+        return map
 
-    @staticmethod
-    def _distort_label(label: ImgLabel, mapping):
+    def _undistort_label(self, label: ImgLabel,scale=1.0):
+        objects_u = []
+        for obj in label.objects:
+            if isinstance(obj, GateLabel):
+                corners = obj.gate_corners.mat
+            else:
+                corners = obj.mat
+            corners = np.expand_dims(corners, 0)
+            corners_norm = self._normalize(corners.astype(np.float))
+            corners_norm *= scale
+            corners_u = self._model(corners_norm)
+            corners_u = self._denormalize(corners_u)[0]
+            if isinstance(obj, GateLabel):
+                obj_u = obj.copy()
+                obj_u.gate_corners = GateCorners.from_mat(corners_u)
+            else:
+                obj_u = obj.copy()
+                obj_u.mat = corners_u
+
+            # if len(corners[(0 < corners_u[0, :]) | (corners_u[0, :] < self.img_shape[1])]) > 2 and \
+            #         len(corners[(0 < corners_u[1, :]) | (corners_u[1, :] < self.img_shape[0])]):
+            objects_u.append(obj_u)
+
+        return ImgLabel(objects_u)
+
+    def _distort_label(self, label: ImgLabel, scale=1.0):
         """
         Move the coordinates of the label according to distortion.
         :param label: image label
@@ -102,47 +127,35 @@ class BarrelDistortion(DistortionModel):
         :return: distorted label
         """
 
-        h, w = mapping.shape[:2]
         objects_distorted = []
         for obj in label.objects:
             if isinstance(obj, GateLabel):
                 corners = obj.gate_corners.mat
-                corners_dist = np.zeros_like(corners)
-                out_of_view = False
-                for i in range(corners.shape[0]):
-                    try:
-                        corners_dist[i] = mapping[int(corners[i, 1]), int(corners[i, 0])]
-                    except IndexError:
-                        out_of_view = True
-                if not out_of_view:
-                    obj_d = obj.copy()
-                    obj_d.gate_corners = GateCorners.from_mat(corners_dist)
-                    objects_distorted.append(obj_d)
             else:
-                y_min = np.max([obj.y_min, 1])
-                x_min = np.max([obj.x_min, 1])
-                y_max = np.min([obj.y_max, h - 1])
-                x_max = np.min([obj.x_max, w - 1])
-                try:
-                    x_min_d, y_min_d = mapping[h - int(y_min), int(x_min)]
-                    x_max_d, y_max_d = mapping[h - int(y_max), int(x_max)]
-                    x_min = np.min([x_min_d, x_max_d])
-                    x_max = np.max([x_min_d, x_max_d])
-                    y_min = h - np.min([y_min_d, y_max_d])
-                    y_max = h - np.max([y_min_d, y_max_d])
-                    obj_d = obj.copy()
-                    obj_d.__bounding_box = np.array([[x_min, y_min],
-                                                     [x_max, y_max]])
+                corners = obj.mat
+            corners = np.expand_dims(corners, 0)
+            corners_norm = self._normalize(corners.astype(np.float))
+            corners_norm *= scale
+            corners_d = self._inverse_model_approx(corners_norm, np.zeros_like(corners))
+            corners_d = self._denormalize(corners_d)[0]
 
-                except IndexError:
-                    continue
+            if isinstance(obj, GateLabel):
+                obj_d = obj.copy()
+                obj_d.gate_corners = GateCorners.from_mat(corners_d)
+            else:
+                obj_d = obj.copy()
+                obj_d.mat = corners_d
+            objects_distorted.append(obj_d)
+
+            # if len(corners[(0 < corners_d[0, :]) | (corners_d[0, :] < self.img_shape[1])]) > 2 and \
+            #         len(corners[(0 < corners_d[1, :]) | (corners_d[1, :] < self.img_shape[0])]):
 
         return ImgLabel(objects_distorted)
 
-    def _create_mapping(self):
+    def _create_umapping(self):
         """
-        Creates mapping to apply and remove distortion.
-        :return:  mapping to apply and remove distortion
+        Creates mapping to remove distortion.
+        :return:  mapping to remove distortion
         """
         h, w = self.img_shape
         x = np.tile(np.arange(0, w), (h, 1))
@@ -150,10 +163,22 @@ class BarrelDistortion(DistortionModel):
         coords = np.concatenate((np.expand_dims(x, -1), np.expand_dims(y, -1)), -1)
         coords_norm = self._normalize(coords.astype(np.float))
         map_u = self._model(coords_norm)
-        map_d = self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
         map_u = self._denormalize(map_u)
+        return map_u
+
+    def _create_dmapping(self):
+        """
+        Creates mapping to apply distortion.
+        :return:  mapping to apply distortion
+        """
+        h, w = self.img_shape
+        x = np.tile(np.arange(0, w), (h, 1))
+        y = np.tile(np.reshape(np.arange(0, h), (h, 1)), (1, w))
+        coords = np.concatenate((np.expand_dims(x, -1), np.expand_dims(y, -1)), -1)
+        coords_norm = self._normalize(coords.astype(np.float))
+        map_d = self._inverse_model_approx(coords_norm, np.zeros_like(coords_norm))
         map_d = self._denormalize(map_d)
-        return map_u, map_d
+        return map_d
 
     def _model(self, coord: np.array):
         """
@@ -173,20 +198,20 @@ class BarrelDistortion(DistortionModel):
 
         return mat_u
 
-    def _normalize(self, coord: np.array):
+    def _normalize(self, xy: np.array):
         """
         Normalizes the pixel coordinates so that the origin is center and the radius is distortion_radius.
-        :param coord: coordinate matrix
+        :param xy: coordinate matrix
         :return: normalize coordinate matrix
         """
-        h, w = coord.shape[:2]
+        h, w = self.img_shape[:2]
 
         center = self.center if self.center is not None else np.array([w, h]) / 2
 
         h /= self.distortion_radius
         w /= self.distortion_radius
 
-        mat_dimension_less = (coord - center) / np.linalg.norm(np.array([w, h]) / 2)
+        mat_dimension_less = (xy - center) / np.linalg.norm(np.array([w, h]) / 2)
         return mat_dimension_less
 
     def _denormalize(self, coord: np.array):
@@ -195,7 +220,7 @@ class BarrelDistortion(DistortionModel):
         :param coord: normalized pixel coordinates
         :return: denormalized coordinates
         """
-        h, w = coord.shape[:2]
+        h, w = self.img_shape[:2]
         center = self.center if self.center is not None else np.array([w, h]) / 2
 
         h /= self.distortion_radius
@@ -257,27 +282,28 @@ class BarrelDistortion(DistortionModel):
         :return: approximated pixel coordinates after distortion
         """
         h, w = coord.shape[:2]
-        mat_cur = init.copy().astype(np.float)
+        xy = init.copy().astype(np.float)
         for t in range(self.max_iterations):
             tic()
-            mat_prev = mat_cur.copy()
-            dist_model = self._model(mat_prev)
-            gradient = self._gradient(mat_prev)
+            xy_prev = xy.copy()
+            f = self._model(xy_prev)
+            df = self._gradient(xy_prev)
             for i in range(h):
                 for j in range(w):
-                    grad = gradient[i, j]
-                    np.fill_diagonal(grad, np.diag(grad) + 0.000001)
-                    prev = np.reshape(mat_prev[i, j], (2, 1))
+                    df0 = df[i, j]
+                    np.fill_diagonal(df0, np.diag(df0) + 0.000001)
+                    xy_prev0 = np.reshape(xy_prev[i, j], (2, 1))
 
-                    diff = np.reshape((dist_model[i, j] - coord[i, j]), (2, 1))
+                    diff = np.reshape((f[i, j] - coord[i, j]), (2, 1))
 
-                    update = prev - np.linalg.inv(grad).dot(diff)
-                    mat_cur[i, j] = update.flatten()
-            delta = np.linalg.norm(mat_cur - mat_prev)
+                    update = xy_prev0 - np.linalg.inv(df0).dot(diff)
+                    xy[i, j] = update.flatten()
+            delta = np.linalg.norm(xy - xy_prev)
             if delta < self.epsilon:
                 break
             toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
-        return mat_cur
+            print(xy)
+        return xy
 
     def _gradient(self, coord: np.array):
         """
@@ -317,11 +343,11 @@ class BarrelDistortion(DistortionModel):
                'MaxIterations: {}\n' \
                'Squeeze: {}\n' \
                'RadDist Params: {}\n'.format(
-                                             self.img_shape,
-                                             self.epsilon,
-                                             self.center,
-                                             self.distortion_radius,
-                                             self.non_rad_dist_params,
-                                             self.max_iterations,
-                                             self.squeeze,
-                                             self.rad_dist_params)
+            self.img_shape,
+            self.epsilon,
+            self.center,
+            self.distortion_radius,
+            self.non_rad_dist_params,
+            self.max_iterations,
+            self.squeeze,
+            self.rad_dist_params)

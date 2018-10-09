@@ -46,7 +46,7 @@ augmenters = [RandomHSV((0.5, 2.0), (0.5, 2.0), (0.5, 2.0)), TransformFlip(), Tr
 augmenters = [RandomExposure((0.5, 1.5)), RandomMotionBlur(1.0, 2.0), RandomBlur(),
               RandomHSV((.9, 1.1), (0.5, 1.5), (0.5, 1.5)), RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))]
 
-augmenters = [TransformDistort(BarrelDistortion.from_file('resource/demo_distortion_model.pkl'))]
+augmenters = [TransformDistort(BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0]),2.0)]
 for img, label, _ in batch:
     # img, label = resize(img, (180, 315), label=label)
     show(img, name='Org')
