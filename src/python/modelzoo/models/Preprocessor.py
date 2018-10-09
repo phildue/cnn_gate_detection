@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
@@ -31,15 +30,8 @@ class Preprocessor:
         x_batch = []
         for img, label, _ in dataset:
 
-            if self.color_format is 'yuv':
-                img = img.yuv
-            elif self.color_format is 'bgr':
-                img = img.bgr
-            elif self.color_format is 'gray':
-                img.array = cv2.cvtColor(img.array, cv2.COLOR_BGR2GRAY)
-                img.array = np.expand_dims(img.array, -1)
-            else:
-                raise ValueError("Unkown Color format")
+            if self.color_format is not img.format:
+                raise ValueError("Invalid Color Format")
 
             if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
                 img, label = self.crop_to_input(img, label)

@@ -11,6 +11,7 @@ from utils.imageprocessing.transform.RandomExposure import RandomExposure
 from utils.imageprocessing.transform.RandomHSV import RandomHSV
 from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
+from utils.imageprocessing.transform.TransformRaw import TransformRaw
 
 if __name__ == '__main__':
     start_idx = 0
@@ -56,7 +57,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_pp{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_alleffects{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
         (0.2, TransformDistort(BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0]),
@@ -66,6 +67,7 @@ if __name__ == '__main__':
         (0.2, RandomBlur((5, 5))),
         (1.0, RandomHSV((.9, 1.1), (0.8, 1.2), (0.8, 1.2))),
         (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))),
+        (1.0, TransformRaw())
     ])
 
     image_source = ['resource/ext/samples/daylight_course1',
@@ -96,4 +98,5 @@ if __name__ == '__main__':
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
               initial_epoch=0,
-              color_format='bgr')
+              color_format='yuyv',
+              input_channels=2)

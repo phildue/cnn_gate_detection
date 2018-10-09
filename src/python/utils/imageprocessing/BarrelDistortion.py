@@ -8,7 +8,7 @@ from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
-from utils.timing import tic, toc
+from utils.timing import tic
 
 
 class BarrelDistortion(DistortionModel):
@@ -305,7 +305,7 @@ class BarrelDistortion(DistortionModel):
             delta = np.linalg.norm(xy - xy_prev)
             if delta < self.epsilon:
                 break
-            toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
+            # toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
         return xy
 
     def _gradient(self, coord: np.array):

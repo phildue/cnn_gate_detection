@@ -22,10 +22,11 @@ class TransformChromAbberr(ImgTransform):
         label_t = label.copy()
         mat = np.zeros(img.shape, dtype=np.uint8)
         for i in range(3):
-            mat[:, :, i] = cv2.warpAffine(src=img.bgr.array[:, :, i], M=self.transmat[:, :, i],
+            if img.format is not 'bgr':
+                raise ValueError("Chromatic:: Wrong Color format!")
+
+            mat[:, :, i] = cv2.warpAffine(src=img.array[:, :, i], M=self.transmat[:, :, i],
                                           dsize=(mat.shape[1], mat.shape[0]))
 
-        if img.format is 'yuv':
-            mat = cv2.cvtColor(mat, cv2.COLOR_BGR2YUV)
 
         return Image(mat, img.format), label_t

@@ -214,22 +214,70 @@ COLOR_BGR2GRAY = cv2.COLOR_BGR2GRAY
 COLOR_RGBA2BGR = cv2.COLOR_RGBA2BGR
 COLOR_BGR2RGB = cv2.COLOR_BGR2RGB
 COLOR_RGB2BGR = cv2.COLOR_RGB2BGR
+COLOR_YUV2YUYV = 99
+COLOR_YUYV2YUV = 100
 
 
 def convert_color(img: Image, code):
-    img_array = cv2.cvtColor(img.array, code)
     if code is COLOR_BGR2GRAY:
+        if img.format is not 'bgr':
+            raise ValueError('Wrong Format')
+        img_array = cv2.cvtColor(img.array, code)
         img_array = np.expand_dims(img_array, -1)
         img_array = np.tile(img_array, (1, 1, 3))
         new_format = 'bgr'
     elif code is COLOR_BGR2YUV:
+        if img.format is not 'bgr':
+            raise ValueError('Wrong Format')
+        img_array = cv2.cvtColor(img.array, code)
         new_format = 'yuv'
-    elif code is COLOR_RGBA2BGR or COLOR_YUV2BGR:
+    elif code is COLOR_RGBA2BGR:
+        if img.format is not 'rgba':
+            raise ValueError('Wrong Format')
+        img_array = cv2.cvtColor(img.array, code)
+    elif code is COLOR_YUV2BGR:
+        if img.format is not 'yuv':
+            raise ValueError('Wrong Format')
+        img_array = cv2.cvtColor(img.array, code)
         new_format = 'bgr'
+    elif code is COLOR_YUV2YUYV:
+        if img.format is not 'yuv':
+            raise ValueError('Wrong Format')
+        img_array = yuv2yuyv(img).array
+        new_format = 'yuyv'
+    elif code is COLOR_YUYV2YUV:
+        if img.format is not 'yuyv':
+            raise ValueError('Wrong Format')
+        img_array = yuyv2yuv(img).array
+        new_format = 'yuv'
     else:
-        print("Warning image is in unknown format")
-        new_format = img.format
+        raise ValueError('Unknown Conversion')
     return Image(img_array, new_format)
+
+
+def yuv2yuyv(img: Image):
+    mat = img.array
+    mat_yuyv = np.zeros((mat.shape[0], mat.shape[1], 2))
+    mat_yuyv[:, :, 0] = mat[:, :, 0]
+    for i in range(mat.shape[1]):
+        if i % 2 == 0:
+            mat_yuyv[:, i, 1] = mat[:, i, 1]
+        else:
+            mat_yuyv[:, i, 1] = mat[:, i, 2]
+    return Image(mat_yuyv, 'yuyv', img.path)
+
+
+def yuyv2yuv(img: Image):
+    mat = img.array
+    mat_yuv = np.zeros((mat.shape[0], mat.shape[1], 3),dtype=np.uint8)
+    mat_yuv[:, :, 0] = mat[:, :, 0]
+    for i in range(mat.shape[1]-1):
+        if i % 2 == 0:
+            mat_yuv[:, i:i + 2, 1] = mat[:, i, 1:]
+        else:
+            mat_yuv[:, i:i + 2, 2] = mat[:, i, 1:]
+
+    return Image(mat_yuv, 'yuv', img.path)
 
 
 def histogram_eq(img: Image):
@@ -270,7 +318,6 @@ def scale_hsv(img: Image, scale):
     img_transf[img_transf > 255] = 255
     img_transf[img_transf < 0] = 0
     img_transf = img_transf.astype(np.uint8)
-
 
     if img.format is 'bgr':
         org = cv2.cvtColor(img_transf, cv2.COLOR_HSV2RGB)
