@@ -27,9 +27,7 @@ for model in models:
                        min_box_area=0,
                        max_box_area=1.2,
                        iou_thresh=iou_thresh,
-                       batch_size=16,
                        model_src=work_dir + model_folder,
-                       color_format='bgr',
                        label_file=work_dir + model_folder + '/test/predictions_iros2018_random_test.pkl',
                        result_path=work_dir + model_folder + '/test/',
                        show=False)

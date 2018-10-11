@@ -1,5 +1,3 @@
-import os
-
 from modelzoo.evaluation.evalmetric import evalmetric
 from modelzoo.evaluation.evalset import evalset
 from utils.imageprocessing.transform.TransfromGray import TransformGray
@@ -35,9 +33,7 @@ for model in models:
                        min_box_area=box_range[i],
                        max_box_area=box_range[i + 1],
                        iou_thresh=iou_thresh,
-                       batch_size=24,
                        model_src=work_dir + model,
-                       color_format='yuv',
                        label_file=work_dir + model + '/test/daylight_industrial.pkl',
                        result_path=work_dir + model + '/test/',
                        show=False)
@@ -50,9 +46,7 @@ for model in models:
                        min_box_area=box_range[i],
                        max_box_area=box_range[i + 1],
                        iou_thresh=iou_thresh,
-                       batch_size=24,
                        model_src=work_dir + model,
-                       color_format='yuv',
                        label_file=work_dir + model + '/test/daylight_industrial.pkl',
                        result_path=work_dir + model + '/test/',
                        show=False)

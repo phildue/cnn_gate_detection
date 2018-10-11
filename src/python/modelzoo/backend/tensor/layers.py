@@ -21,19 +21,19 @@ def conv_leaky(netin, filters, kernel_size, strides, alpha):
 
 
 def avg_pool_creator(netin, config):
-    return avg_pool(netin, config['size'])
+    return avg_pool(netin, config['size'], config['strides'])
 
 
-def avg_pool(netin, size):
-    return AveragePooling2D(size)(netin)
+def avg_pool(netin, size, strides):
+    return AveragePooling2D(size, strides)(netin)
 
 
 def max_pool_creator(netin, config):
-    return max_pool(netin, config['size'])
+    return max_pool(netin, config['size'], config['strides'])
 
 
-def max_pool(netin, size):
-    return MaxPooling2D(size)(netin)
+def max_pool(netin, size, strides):
+    return MaxPooling2D(size, strides)(netin)
 
 
 def time_dist_conv_leaky_creator(netin, config):

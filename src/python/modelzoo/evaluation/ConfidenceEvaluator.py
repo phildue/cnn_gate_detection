@@ -2,7 +2,6 @@ import numpy as np
 
 from modelzoo.evaluation.Metric import Metric
 from modelzoo.evaluation.MetricEvaluator import MetricEvaluator
-from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.utils import save_file
 from utils.imageprocessing.Backend import imread, resize
@@ -11,10 +10,9 @@ from utils.timing import tic, toc
 
 
 class ConfidenceEvaluator(MetricEvaluator):
-    def __init__(self, model: Predictor, metrics: [Metric], confidence_levels=11, out_file=None, verbose=True,
+    def __init__(self, metrics: [Metric], confidence_levels=11, out_file=None, verbose=True,
                  color_format='bgr'):
         super().__init__(metrics, color_format, out_file, verbose)
-        self.model = model
 
         self.confidence_levels = np.round(np.linspace(1.0, 0, confidence_levels), 2)
 
@@ -24,10 +22,7 @@ class ConfidenceEvaluator(MetricEvaluator):
         results_by_conf = {}
         labels_pred = {}
         for c in self.confidence_levels:
-            if self.model is None:
-                boxes_filtered = [b for b in boxes_predicted if b.c > c]
-            else:
-                boxes_filtered = self.model.postprocessor.filter(boxes_predicted, c)
+            boxes_filtered = [b for b in boxes_predicted if b.c > c]
             label_reduced = BoundingBox.to_label(boxes_filtered)
             results_by_m_c = {}
             for name, m in self.metrics.items():

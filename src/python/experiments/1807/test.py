@@ -1,8 +1,4 @@
-import os
-
 from modelzoo.evaluation.evalmetric import evalmetric
-from modelzoo.evaluation.evalset import evalset
-from utils.imageprocessing.transform.TransfromGray import TransformGray
 from utils.workdir import cd_work
 
 cd_work()
@@ -43,8 +39,6 @@ for model in models:
                        min_box_area=box_range[i],
                        max_box_area=box_range[i + 1],
                        iou_thresh=iou_thresh,
-                       batch_size=24,
                        model_src='out/1807/' + model,
-                       color_format='yuv',
                        label_file='out/1807/' + model + '/test/test_results.pkl',
                        show=False)

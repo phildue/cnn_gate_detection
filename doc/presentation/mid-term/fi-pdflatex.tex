@@ -21,10 +21,10 @@
 %%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
 %%
 %% These macros specify information about the presentation
-\title{Robust Gate Detection for Autonomous Drone Racing} %% that will be typeset on the
-\subtitle{Mid-Term Presentation} %% title page.
-\author{Philipp Dürnay\\ \bigskip \bigskip Guido de Croon \hfill	\includegraphics[width=3cm]{fig/mavlab}\\
-	 David M. J. Tax  \hfill \includegraphics[width=3cm]{fig/prgroup}%
+\title{Learning an Empty Frame Object Detector for MAV's from Synthetic Data} %% that will be typeset on the
+\subtitle{Applied in Autonomous Drone Racing} %% title page.
+\author{Philipp Dürnay\\ \bigskip \bigskip Prof. Guido de Croon \hfill	\includegraphics[width=3cm]{fig/mavlab}\\
+	 Prof. David M. J. Tax  \hfill \includegraphics[width=3cm]{fig/prgroup}%
 }
 %% These additional packages are used within the document:
 \usepackage{ragged2e}  % `\justifying` text
@@ -51,18 +51,35 @@
   	\end{frame}
 	\section{Introduction}
 	\subsection{Application}
-    \begin{frame}{IROS2018}
+    \begin{frame}{Application}
     	\includegraphics[width=\textwidth]{fig/application}
     \end{frame}
 %So we start with the background. The final application will be at the Autonomous Drone Race at the IROS2018 conference in spain. There you have a track that consists of multiple orange gates that need to be passed one after another. So here on the top you see the race court of two years ago. On the bottom you see an example of how a drone looks like. And here on the right you see an example of the training data. So in our method we use these gates to determine our own position. So we detect the gate estimate our own position relative to it and then this goes to the control loop and we fly through. In my thesis I am concerned with the detection of these gates.
-    \begin{frame}{Current Method}
-       	\includegraphics[width=\textwidth]{fig/current_method}
-    \end{frame}
+
 %Now currently we have a very basic computer vision method that basically looks for orange pixels and if it finds a square it extracts the corners and together with the known geometry of the gate we can estimate our own position.
 %As you can imagine this method is purely colour based and very brittle. You need to tune the colour values depending on the light conditions of the room. And even then if you have strong shadows the method fails. Also it can happend that you are quite far away from the gate and then you don't see the square anymore but only the pole. In this case the method also doesnt work. So we want to improve this by using a learning based approach. As we hope this results in a more robust and flexible method. For example a learning based method you can train if the shapes of the gate change. So this brings me to the underlying research problem. Which can be formulated as follows.
-	\subsection{Research Problem}    
-	\begin{frame}{Research Problem}
-	\textbf{Efficient and robust detection of wire frame objects with limited resources.}
+\subsection{Challenges}    
+\begin{frame}
+
+\begin{block}{Challenges}
+	\begin{enumerate}
+		\item Objects consist of thin structures that are spread over large parts of the image.
+		
+		\item Fast motion, lens distortion and illumination affect object appearance.
+		
+		\item On board resources are limited.
+		
+		\item Limited annotated examples are available.
+		
+	\end{enumerate}
+\end{block}
+\end{frame}
+
+	\subsection{Research Question}    
+	\begin{frame}	
+	\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?}
+	
+
 	\end{frame}
  % Since it needs to run on a drone it should be fast and the faster it gets the better for the control, the faster we can fly/ a smaller drone we can use. The wire frame objects we refer to as the objects we want to detect consists only out of a thin frame but I will get back to that later. So I will look at some background in object detection.   
     \section{Background}
@@ -82,7 +99,7 @@
 % Now there are different ways for each of these steps but thats it from a high level perspective
 % State of the art methods all use convolutional neural networks and the reason that is beliefed to be responsible for that performance is the fact that you can combine all these steps in one model and train it end to end on the task so instead of manually enginnering and training models you combine it all in one.
 	\subsection{Convolutional Neural Networks}
-		\begin{frame}{Convolutional Networks}
+		\begin{frame}{Convolutional Neural Networks}
 	\includegraphics[width=\textwidth]{fig/cnn_mine}
 \end{frame}
 
@@ -90,11 +107,11 @@
 % And typically the performance improves the deeper you go. One reason is that the flexibility of the model increases but you can also look at it from another perspective and see what the different layers are responsible for. So when you visualize these filters you usually see how these early layers look for edges, corner and blobs, while higher layers then combine these low level features to more complex parts like eyes, noses and so on.
 % Now the draw back of these deep networks is their computational effort, especially the deep one is their huge consumption in energy, computations and memory which makes them not applicable for micro air vehicles.
 % But if we now rethink to the objects we want to detect so wire frame objects, racing gates that mostly consist of edges and corners, these final layers should not be very useful. So a much smaller model should actually be sufficient. 
-    \section{Approach}
+    \section{Experiments}
         \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 \end{frame}
-  \subsection{Method}
+  \subsection{Data Generation}
     \begin{frame}{Approach}
   Hypothesis: A much smaller network should be able to learn the task.
   \\ \bigskip \bigskip

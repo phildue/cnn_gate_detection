@@ -28,9 +28,14 @@ class MetricDetection(Metric):
         self.false_negatives = []
 
     def evaluate(self, label_true: ImgLabel, label_pred: ImgLabel):
-        self.boxes_pred = [b for b in BoundingBox.from_label(label_pred) if
-                           (self.min_box_area < b.area < self.max_box_area and
-                            self.min_aspect_ratio < b.h / b.w < self.max_aspect_ratio)
+
+        self.false_positives = []
+        self.true_positives = []
+        self.false_negatives = []
+
+        self.boxes_pred = [b for b in BoundingBox.from_label(label_pred) #if
+                           # (self.min_box_area < b.area < self.max_box_area and
+                           #  self.min_aspect_ratio < b.h / b.w < self.max_aspect_ratio)
                            ]
         self.boxes_true = [b for b in BoundingBox.from_label(label_true) if
                            (self.min_box_area < b.area < self.max_box_area and

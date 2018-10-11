@@ -20,7 +20,7 @@ def evaluate_generator(model: Predictor, generator: DatasetGenerator, n_batches=
         generator, n_batches)
 
     if metrics:
-        results = ConfidenceEvaluator(model, metrics, confidence_levels, out_file_metric, verbose,
+        results = ConfidenceEvaluator(metrics, confidence_levels, out_file_metric, verbose,
                                       generator.color_format).evaluate(labels_true, labels_pred,
                                                                        image_files)
         return results, labels_true, labels_pred, image_files
@@ -28,7 +28,7 @@ def evaluate_generator(model: Predictor, generator: DatasetGenerator, n_batches=
         return labels_true, labels_pred, image_files
 
 
-def evaluate_file(model: Predictor, label_file: str, metrics: [Metric] = None, out_file_metric=None,
+def evaluate_file(label_file: str, metrics: [Metric] = None, out_file_metric=None,
                   verbose=True,
                   color_format='bgr', confidence_levels=11):
     content = load_file(label_file)
@@ -37,7 +37,7 @@ def evaluate_file(model: Predictor, label_file: str, metrics: [Metric] = None, o
     image_files = content['image_files']
 
     if metrics:
-        results = ConfidenceEvaluator(model, metrics, confidence_levels, out_file_metric, verbose,
+        results = ConfidenceEvaluator(metrics, confidence_levels, out_file_metric, verbose,
                                       color_format).evaluate(labels_true, labels_pred,
                                                              image_files)
         return results, labels_true, labels_pred, image_files

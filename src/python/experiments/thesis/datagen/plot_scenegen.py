@@ -1,36 +1,37 @@
+import numpy as np
+
 from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
-models = ['datagen/yolov3_gate_realbg416x416',
-          'datagen/yolov3_gate416x416',
+models = [#'datagen/yolov3_gate_realbg416x416',
+#           'datagen/yolov3_gate416x416',
           'datagen/yolov3_gate_varioussim416x416',
           'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
-          'datagen/yolov3_gate_uniform416x416',
-          'datagen/yolov3_gate_mixed416x416',
-          'datagen/yolov3_gate_pp416x416'
+          # 'datagen/yolov3_gate_uniform416x416',
+          # 'datagen/yolov3_gate_mixed416x416',
+          # 'datagen/yolov3_gate_pp416x416'
           ]
 
 work_dir = 'out/thesis/'
 n_iterations = 5
 
 names = [
-    'Real Backgrounds',
-    'Basement Environment',
+    # 'Real Backgrounds',
+    # 'Basement Environment',
     'Various Environments',
     'Drone Model',
     # 'Snake Gate',
-    'Uniform',
-    'Real + Sim',
-    'Postproc'
+    # 'Uniform',
+    # 'Real + Sim',
+    # 'Postproc'
 ]
 # testset = 'iros2018_course_final_simple_17gates'
-testset = 'iros2018_course_final_simple_17gates'
+testset = 'iros_nocats'
 legends = []
 linestyles = ['x--']*len(names)
 iou_thresh = 0.4
@@ -45,10 +46,7 @@ for model in models:
     mean_detections = []
     for i in range(n_iterations):
         model_dir = model + '_i0{}'.format(i)
-        result_file = work_dir + model_dir + '/' +'scenegen' + '/' + 'results_{}_boxes{}-{}_iou{}.pkl'.format(testset,
-                                                                                                     min_box_area,
-                                                                                                     max_box_area,
-                                                                                                     iou_thresh)
+        result_file = work_dir + model_dir + '/test_' + testset + '/' + 'results_iou{}.pkl'.format(iou_thresh)
         if "snake" in model:
             result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(testset, 0, 2.0, iou_thresh, i)
         try:

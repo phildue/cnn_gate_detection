@@ -59,9 +59,7 @@ for i in range(n_iterations):
                    min_aspect_ratio=.3,
                    max_aspect_ratio=3.0,
                    iou_thresh=iou_thresh,
-                   batch_size=16,
                    model_src=work_dir + model_folder,
-                   color_format='bgr',
                    label_file=work_dir + model_folder + '/'+dataset+'/predictions.pkl',
                    result_path=work_dir + model_folder + '/' + dataset + '/',
                    show=False)

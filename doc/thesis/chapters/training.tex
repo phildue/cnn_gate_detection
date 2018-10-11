@@ -26,16 +26,19 @@ This chapter focuses on data generation while the exact model is described in \C
 
 \section{Methodology}
 
-In order to to investigate the research questions a data generation pipeline is implemented using OpenGL, UnrealEngine and AirSim. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
-
-A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise. This step is implemented using OpenCV and Python.
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/datagen_notation}
 	\caption{Overview of the data generation process.}
 	\label{fig:training:datagen_notation}
 \end{figure}
+
+In order to to investigate the research questions a data generation pipeline is implemented using OpenGL, UnrealEngine and AirSim. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
+
+A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise. This step is implemented using OpenCV and Python.
+
+All source code is made publicly available at \url{https://github.com/phildue/datagen.git}.
+
 
 
 
@@ -72,15 +75,25 @@ In order to evaluate the hypotheses several training and test environments are c
 \end{figure}
 
 
-\subsection{Placing the Camera}
+\subsection{Placing Object and Camera}
 
 Another important property that influences the generated sample is the camera pose. It determines the view on the scene and therefore at which distance, angle and location the objects appear on the image.
 
-A straightforward way is placing the camera at random locations within the scene \todo{double check}. However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. \acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that placing the camera does not cover sufficient views on the object of interest. 
+A straightforward way is placing the camera randomly (within some margin) in order to cover a large variation of views on the object. However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. \acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that placing the camera does not cover sufficient views on the object of interest.  
 
-In order to evaluate our hypothesis, we incorporate the pattern of following a race track with an \ac{MAV} in the data generation process. A motion model of a quad-rotor \ac{MAV} is implemented and a velocity controller is used to make the camera follow a certain trajectory in the environment. The environment is set up in way that it resembles a race court.  Storing the current image at a frequency of 2 Hz creates the corresponding samples. The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}. 
+In order to evaluate our hypothesis, we incorporate the pattern of following a race track with an \ac{MAV} in the data generation process. A motion model of a quad-rotor \ac{MAV} is implemented and a velocity controller is used to let the camera follow a certain trajectory in the environment. The environment is set up in way that it resembles a race court.  Storing the current image at a frequency of 2 Hz creates the corresponding samples. The development of this model has not been done within this thesis but is summarized here for completeness: \todo{put shuos model here}. 
 
-When following the race track, the camera focuses the next object frontally most of the time. The appearance of the object increases as the camera approaches until the gate has been passed. This is also resembled when looking at the bounding box locations and dimensions.
+This method is compared to placing the camera randomly where the following distribution is chosen heuristically:
+
+\begin{equation}
+x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
+\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+\label{eq:distroexp}
+\end{equation}
+
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+
+When following the race track, the camera focuses the next object frontally most of the time. The size of the object increases as the camera approaches until the gate has been passed. This gets clear when comparing the bounding box locations as well as the relative position of the object in 3D.
 
 \begin{figure}
 	\begin{minipage}{\textwidth}
@@ -89,21 +102,33 @@ When following the race track, the camera focuses the next object frontally most
 		\label{fig:heatmap_camplace}
 	\end{minipage}
 	\begin{minipage}{\textwidth}
-		\includegraphics[width=\textwidth]{fig/aspect_ratios_camplace}
-		\caption{Scatterplot of bounding box dimensions.}
-		\label{fig:scatter_camplace}
+		\includegraphics[width=\textwidth]{fig/hist2d_camplace}
+		\caption{Histogram of Object Occurences in 3D coordinates.}
+		\label{fig:hist2d_camplace}
 	\end{minipage}
 \end{figure}
 
-\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with the two methods. It can be seen how with the drone motion model most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations.\todo{replace this with clusters by angle and distance}
+\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with random camera placement and when following a racing track. It can be seen how with the drone motion model most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations. While this plot shows where in the image the object appears, it does not include at which angle/distance the object appears.
 
-\Cref{fig:scatter_camplace} shows a scatterplot of the bounding box dimensions. With the drone motion model one can see how the bounding box aspect ratio is mostly close to one, which appears when the object is faced frontally. The dimensions are increasing linearly as the camera approaches the object. The random placement on the other hand creates a larger variance in bounding box dimensions. This is due to the fact that more relative views towards the object are created. 
+\Cref{fig:hist2d_camplace} shows a 2D histogram of the yaw angle of the object with respect to the camera as well as the distance. Thereby 0 corresponds to facing the object frontally, 180 degrees facing the object from the back. It is appearant how the random placement covers a much larger range of relative angles, while in the racing track certain angles do not appear at all. Even more importantly the largest bins of the racing track is an angle of 0 and a distance between 0m and 4m. These bins are almost not present when placing the camera randomly. This is because close to the camera the field of view is small, while the area of the object faced frontally is big. Hence, the probability of an object ending up at this specific location is relatively low. Furthermore, when placing the camera randomly there are no samples further away than 8m. This is because in the race track the camera traverses the room from one end where it can see almost all gates to another. The probability that the randomly placed camera ends up in a similar position is relatively low.
 
-\Cref{fig:scatter_camplace} also shows how the dataset generated with random placement does not contain many objects with an aspect ratio close to 1. Hence, samples where the object appears , faced frontally with low distance do almost not appear in this generated set. With the drone motion model on the other hand several such samples exist.
+We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court. 
 
-We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court.
+In order to to evaluate this hypothesis two models are trained on 20 000 samples each. Model I is trained when placing the camera randomly, following the distribution in \Cref{eq:distroexp}. Model II is trained on varying racing courts. 
 
+For testing a dataset generated with a combination of both methods is used. That way it is ensured that similar view points as in the training sets are present. The dataset contains 1100 images and a total of XX objects. For random placement the distribution of \Cref{eq:distroexp} is used. The race court of the testset is different to the ones used for training. 
 
+\begin{figure}
+		\includegraphics[width=\textwidth]{fig/recall_yaw}
+		\caption{Performance across clusters.}
+		\label{fig:recall_yaw}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig/recall_front}
+	\caption{Performance when facing the object frontally.}
+	\label{fig:recall_front}
+\end{figure}
 \subsection{Post-processing}
 
 After having created a set of 2D images, the final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.

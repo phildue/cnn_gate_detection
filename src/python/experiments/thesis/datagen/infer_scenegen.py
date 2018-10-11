@@ -7,24 +7,26 @@ cd_work()
 # models = [name for name in os.listdir('out/0108/')]
 models = [
     # 'yolov3_gate_realbg416x416',
-    # 'yolov3_gate416x416',
-    # 'yolov3_gate_dronemodel416x416',
+    # 'yolov3_gate_uniform416x416',
+    'yolov3_gate_dronemodel416x416',
     # 'yolov3_gate_varioussim416x416',
     # 'yolov3_gate_uniform416x416',
     # 'yolov3_gate_mixed416x416'
-    'yolov3_pp416x416'
+    # 'yolov3_pp416x416'
+    # 'iros_nocats'
 ]
 testsets = [
     # 'real_test_labeled',
-    'jevois_cyberzoo',
-    'jevois_basement',
-    'jevois_hallway',
-    'iros2018_course_final_simple_17gates'
+    # 'jevois_cyberzoo',
+    # 'jevois_basement',
+    # 'jevois_hallway',
+    # 'iros2018_course_final_simple_17gates',
+    'iros_nocats'
+    # 'basement_white100'
 ]
 
-box_sizes = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0]
 work_dir = 'out/thesis/datagen/'
-n_iterations = 2
+n_iterations = 1
 ObjectLabel.classes = ['gate']
 exp_name = 'datagen'
 for d in testsets:
@@ -36,10 +38,11 @@ for d in testsets:
                 evalset(name=exp_name,
                         result_path=work_dir + model_folder + '/test_' + d + '/',
                         result_file=prediction_file,
-                        batch_size=16,
+                        batch_size=4,
                         model_src=work_dir + model_folder,
                         preprocessing=None,
                         color_format='bgr',
+                        n_samples=550,
                         image_source=['resource/ext/samples/{}/'.format(d)])
             except FileNotFoundError:
                 continue

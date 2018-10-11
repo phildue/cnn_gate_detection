@@ -15,32 +15,27 @@ import math
 
 architecture = [
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
-
-    # {'name': 'max_pool', 'size': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'predict'},
-    #
+    {'name': 'max_pool', 'size': (14, 14), 'strides': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'},
     # {'name': 'route', 'index': [-4]},
-    # {'name': 'max_pool', 'size': (4, 4)},
     # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'predict'},
-    #
-    # {'name': 'route', 'index': [-8]},
-    {'name': 'max_pool', 'size': (6, 6)},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (5, 5), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'}
+    # {'name': 'upsample', 'size': 2},
+    # {'name': 'route', 'index': [-1, 8]},
+    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'predict'}
 ]
+
 
 def arch2dict(arch, upto=None):
     param_dict = {}
@@ -49,7 +44,7 @@ def arch2dict(arch, upto=None):
             param_dict['{0:02d}'.format(j)] = [layer['kernel_size'][0], layer['strides'][0],
                                                (layer['kernel_size'][0] - 1) / 2]
         elif layer['name'] == 'max_pool':
-            param_dict['{0:02d}'.format(j)] = [layer['size'][0], layer['size'][1], layer['size'][0] / 2]
+            param_dict['{0:02d}'.format(j)] = [layer['size'][0], layer['strides'][1], layer['size'][0] / 2]
         elif layer['name'] == 'upsample' or layer['name'] == 'route':
             raise ValueError('Unknown Layer')
         else:

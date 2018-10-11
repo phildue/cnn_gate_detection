@@ -2,7 +2,7 @@ from modelzoo.models.Predictor import Predictor
 from utils.BoundingBox import BoundingBox
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.imageprocessing.Backend import resize
-from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labeled
+from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labeled, LEGEND_POSITION
 
 
 def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None,
@@ -17,9 +17,9 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
 
             img = batch[i][0]
             label = batch[i][1]
-            show(img.bgr, 'demo',
-                 colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
-                 legend=LEGEND_TEXT, t=t_show)
+            # show(img, 'demo',
+            #      colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
+            #      legend=LEGEND_TEXT, t=t_show)
             label_pred = model.predict(img)
             if img.shape[0] != model.input_shape[0] or img.shape[1] != model.input_shape[1]:
                 img, label = model.preprocessor.crop_to_input(img, label)
@@ -48,9 +48,9 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
             label_tp = BoundingBox.to_label(true_positives)
             label_fp = BoundingBox.to_label(false_positives)
             label_fn = BoundingBox.to_label(false_negatives)
-            show(img.bgr, 'demo', labels=[label_tp, label_fp, label],
+            show(img, 'demo', labels=[label_tp, label_fp, label],
                  colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
-                 legend=LEGEND_TEXT, t=t_show)
+                 legend=LEGEND_POSITION, t=t_show)
 
             if out_file is not None:
                 save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_tp, label_fp, label],
