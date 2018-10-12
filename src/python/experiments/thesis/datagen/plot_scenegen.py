@@ -7,13 +7,14 @@ from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
-models = [#'datagen/yolov3_gate_realbg416x416',
+models = [
+    'datagen/yolov3_gate_realbg416x416',
 #           'datagen/yolov3_gate416x416',
           'datagen/yolov3_gate_varioussim416x416',
-          'datagen/yolov3_gate_dronemodel416x416',
+          # 'datagen/yolov3_gate_dronemodel416x416',
           # 'snake/',
-          # 'datagen/yolov3_gate_uniform416x416',
-          # 'datagen/yolov3_gate_mixed416x416',
+          'datagen/yolov3_gate_uniform416x416',
+          'datagen/yolov3_gate_mixed416x416',
           # 'datagen/yolov3_gate_pp416x416'
           ]
 
@@ -21,17 +22,17 @@ work_dir = 'out/thesis/'
 n_iterations = 5
 
 names = [
-    # 'Real Backgrounds',
+    'Real Backgrounds',
     # 'Basement Environment',
     'Various Environments',
-    'Drone Model',
+    # 'Drone Model',
     # 'Snake Gate',
-    # 'Uniform',
-    # 'Real + Sim',
+    'Uniform',
+    'Real + Sim',
     # 'Postproc'
 ]
-# testset = 'iros2018_course_final_simple_17gates'
-testset = 'iros_nocats'
+testset = 'iros2018_course_final_simple_17gates'
+# testset = 'jevois_hallway'
 legends = []
 linestyles = ['x--']*len(names)
 iou_thresh = 0.4

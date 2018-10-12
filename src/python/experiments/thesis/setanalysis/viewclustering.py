@@ -24,7 +24,7 @@ cd_work()
 #         image_source=['resource/ext/samples/cluster_test/'])
 
 result_file = load_file(
-    'out/thesis/datagen/yolov3_gate_dronemodel416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl')
+    'out/thesis/datagen/yolov3_gate_varioussim416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl')
 labels_pred = result_file['labels_pred']
 labels_true = result_file['labels_true']
 img_files = result_file['image_files']

@@ -29,7 +29,11 @@ def avg_pool(netin, size, strides):
 
 
 def max_pool_creator(netin, config):
-    return max_pool(netin, config['size'], config['strides'])
+    try:
+        strides = config['strides']
+    except KeyError:
+        strides = config['size']
+    return max_pool(netin, config['size'], strides)
 
 
 def max_pool(netin, size, strides):

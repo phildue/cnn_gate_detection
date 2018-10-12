@@ -10,7 +10,8 @@ cd_work()
 
 result_files = [
     'out/thesis/datagen/yolov3_gate_varioussim416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/datagen/yolov3_gate_dronemodel416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
+    'out/thesis/datagen/yolov3_gate_varioussim416x416_i01/test_iros2018_course_final_simple_17gates/predictions.pkl',
+    # 'out/thesis/datagen/yolov3_gate_dronemodel416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
 ]
 
 ObjectLabel.classes = ['gate']
@@ -56,8 +57,8 @@ plt.savefig('doc/thesis/fig/recall_yaw.png')
 
 plt.figure(figsize=(4, 3))
 plt.title('Recall when facing the object frontally')
-plt.bar(distances + 1.5, recalls[0][:, 0], width=0.5, align='center')
-plt.bar(distances + 1, recalls[1][:, 0], width=0.5, align='center')
+plt.bar(distances + 1.5, (recalls[0][:, 0]+recalls[0][:, -1]/2), width=0.5, align='center')
+plt.bar(distances + 1, (recalls[1][:, 0]+recalls[0][:, -1]/2), width=0.5, align='center')
 plt.legend(titles)
 plt.xlabel('Relative Distance [m]')
 plt.ylabel('Recall')
