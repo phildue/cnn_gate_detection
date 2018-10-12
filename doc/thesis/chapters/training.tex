@@ -39,6 +39,14 @@ A view projection yields an image through the lens of the camera. The coordinate
 
 All source code is made publicly available at \url{https://github.com/phildue/datagen.git}.
 
+It should be noted that when generating data with the described methods it is likely that samples appear in which only a corner of the object is visible or the view angle is in such a way that the object appears only as a thin line. In initial experiments these corner cases led to unstable training. Hence, some minimum requirements for the labels are set and samples are removed if these are not met. The criteria are:
+
+\begin{itemize}
+	\item Minimum Width/Height: 0.025 Image Width/Height
+	\item Minimum Aspect Ratio: 0.3
+	\item Maximum Aspect Ratio: 3.0
+	\item Minimum Corners Visible: 3
+\end{itemize}
 
 
 
