@@ -1,88 +1,75 @@
-	\chapter{Modelling the Detection of \ac{EWFO}}
+	\chapter{Detecting \ac{EWFO} in Simulation}
 	\label{sec:object_detection}
 	
-	Object Detection can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain redundant and task irrelevant information. As the performance of most machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
+	In the first two steps a scene in 3D is created and the camera is placed. This determines the context in which the object is placed such as background, other objects and light conditions, as well as the view on the object.
 	
-	\begin{figure}[hbtp]
-		
-		\centering
-		\includegraphics[width=\linewidth]{fig/ObjectDetection}
-		\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
-		\label{fig:obj_pipeline}
+	In \cite{Peng} the trained \acp{CNN} are relatively independent from image cues such as background and texture. Even trained on uniformly colored backgrounds an object detector is able to achieve competitive performance. Instead \acp{CNN} seem to exploit texture and shape of the object. However, the objects investigated are solid which is not the case for \ac{EWFO}. \ac{EWFO} have a distinctive shape but the main part of their surface contains background. We hypothesize this makes the detection of the shape harder. Furthermore, \ac{EWFO} do not provide texture that can be exploited by a detector, which further complicates the detection. We hypothesize that \ac{EWFO} are more dependent on background than solid texture rich objects. Therefore we train an object detector using plain uniformly colored backgrounds in 8 different colors and test it on the generated test set. The exact experiment is described in \Cref{todo}.
+	
+	Uniformly colored backgrounds provide little variance and do not represent a real world environment. An alternative is to place a \ac{CAD}-model on existing images to generate new samples as it was also applied in \cite{Madaan2017, Peng}.  However, without a realistic environment geometric properties of real images are violated. Furthermore, light conditions do not align with the rest of the scene. Hence, we hypothesize that only placing a \ac{CAD}-model on existing images leads to a too artificial learning setting. An object detector trained in such an environment might learn only to predict the object that does not fit to the rest of the scene.
+	
+	Finally, we also use fully synthesized environments for training. Thereby all geometric properties and environmental conditions are followed (to the extent they can be modeled by the graphical engine). However, as the detail of the graphical engine are limited and creating virtual environments is cumbersome, the created training sets provide less variance in background than when pasting the object on existing images.
+	
+	Another important property that influences the generated sample is the camera pose. It determines the view on the scene and therefore at which distance, angle and location the objects appear on the image.
+	
+	A straightforward way is placing the camera randomly (within some margin) in order to cover a large variation of views on the object. However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. We examine this by simulating a flight through a race court using AirSim's \ac{MAV} model and analyzing the relative object poses. We compare the poses with relative poses obtained when placing the camera randomly using the following distributions:
+	
+	\begin{equation}
+	x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
+	\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+	\label{eq:distroexp}
+	\end{equation}
+	
+	Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+	
+	When following the race track, the camera focuses the next object frontally most of the time. The size of the object increases as the camera approaches until the gate has been passed. This gets clear when comparing the bounding box locations as well as the relative position of the object in 3D.
+	
+	\begin{figure}
+		\begin{minipage}{\textwidth}
+			\includegraphics[width=\textwidth]{fig/heatmap_camplace}
+			\caption{Heatmaps based on bounding boxes. Left the distribution when using random placement, right when moving through the scene with a drone motion model.}
+			\label{fig:heatmap_camplace}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			\includegraphics[width=\textwidth]{fig/hist2d_camplace}
+			\caption{Histogram of Object Occurences in 3D coordinates.}
+			\label{fig:hist2d_camplace}
+		\end{minipage}
 	\end{figure}
-	\begin{enumerate}
-	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation that is usually of lower dimension.
 	
-	\item The classification/localization stage produces the final output based on this representation. 
+	\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with random camera placement and when following a racing track. It can be seen how with the drone motion model most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations. While this plot shows where in the image the object appears, it does not include at which angle/distance the object appears.
 	
-	\end{enumerate}
-
-	An efficient feature extraction pipeline is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish between classes. On the other hand even a flexible classifier struggles with a highly overlapping feature space. Hence, Feature Engineering, the design of feature extractors is a highly investigated field in Computer Vision. Methods range from supervised and unsupervised Machine Learning techniques to conducting domain experts and trying to include their expert knowledge into the pipeline. In practical Computer Vision problems this often results in the cumbersome design of feature extractors for the application. Moreover, it requires domain knowledge and it is questionable whether the features designed for one task are easily transferable to other tasks. Finally, it results in a pipeline where each step needs to be optimized individually.
+	\Cref{fig:hist2d_camplace} shows a 2D histogram of the yaw angle of the object with respect to the camera as well as the distance. Thereby 0 corresponds to facing the object frontally, 180 degrees facing the object from the back. It is appearant how the random placement covers a much larger range of relative angles, while in the racing track certain angles do not appear at all. Even more importantly the largest bins of the racing track is an angle of 0 and a distance between 0m and 4m. These bins are almost not present when placing the camera randomly. This is because close to the camera the field of view is small, while the area of the object faced frontally is big. Hence, the probability of an object ending up at this specific location is relatively low. Furthermore, when placing the camera randomly there are no samples further away than 8m. This is because in the race track the camera traverses the room from one end where it can see almost all gates to another. The probability that the randomly placed camera ends up in a similar position is relatively low.
 	
-	In recent years Deep Learning based models achieved big advances in the task of Object Detection. In contrast to their traditional counter parts, these models combine Feature Extraction and Classification/Localization stage in one model. The whole pipeline is then optimized given the task and the raw image. This omits the often cumbersome work of designing feature extractors and object models. Furthermore, it has been shown that Deep Learning based features generalize well between different Computer Vision tasks \cite{Razavian}. Finally, the modular architecture of Deep Learning models allows to trade-off computational costs and model performance.
+	\acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that the generation of samples with only one of the two methods misses important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. The drone motion model tends to limit object appearances depending on the flown trajectory as well as the created race court. 
 	
-	However, their superior performance comes with several drawbacks. First of all, large amounts of annotated examples are required in order to train the vast amount of parameters present in Deep Learning models. Furthermore, the computational costs during training and inference are high. Only faster and tailored processing units like \acp{GPU} enable the practical application of Deep Learning models. Finally, the presentation learned by the model is not transparent. Hence, the process that leads to the decision of a Computer Vision system can usually not be understand by a human. Also, there is no guarantee that the learned representation is not highly redundant. This is particularly problematic for devices with time constraints and limited computational resources like \acp{MAV}.
+	\subsection{Experiments}
 	
-	This work investigates the detection of \acp{EWFO} on \ac{MAV}. \acp{EWFO} consist of simple shapes but are largely occupied by background. Hence, other objects of interest and/or distractors can appear in this area. Furthermore, sensor and lens properties as well as motion noise can have large impact on the appearance of \acp{EWFO} in the image. This makes the design of an appropriate feature extractor a non-trivial task. Deep Learning would allow to learn a feature extractor and object model given data and the task.
+	\subsubsection{Experiment - Context}
 	
-	This work address the design of a Deep Learning model for the task of \ac{EWFO}-Detection.
+	\subsubsection{Experiment - View}
 	
-	The relevant research question of this chapter is stated as follows:\\
-	\textbf{How can a detection model represent \acp{EWFO}?}
 	
-	\begin{enumerate}
-		\item[\textbf{RQ2.1}] Can state-of-the art models represent an \ac{EWFO}?
-		\item[\textbf{RQ2.2}] What is the representation a state-of-the-art model learns for the Detection of \acp{EWFO}?
-		\item[\textbf{RQ2.3}] Can the insights be used to create a more suitable model for the Detection \ac{EWFO}?
-	\end{enumerate}
-
-	The first question will be answered by analysing the performance of state of the art model on the detection of \acp{EWFO}. RQ2.2 will be answered by conduction a sensitivity analysis on the trained model and visualizing the internal representation. RQ2.3 will be answered by refactoring the model architecture and examining whether the performance can be improved or weights can be removed.
-
-	The rest of the chapter is organized as follows: \Cref{sec:object_detection:related} discusses relevant related work. \Cref{sec:object_detection:approach} describes the methodology of this work. \Cref{sec:object_detection:hypothesis} formulates several hypotheses to be investigated. \Cref{sec:object_detection:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \Cref{sec:object_detection:results} describes the obtained results. \Cref{sec:object_detection:discussion} discusses the results. \Cref{sec:object_detection:conclusion} answers the research question and formulates a conclusion.
-
-
-
-\section{Approach}
-\label{sec:object_detection:approach}
-	$$
-	L({p_i},{t_i}) = \frac{1}{N_{cls}} \sum L_{cls}(p_i,p_i*) + \lambda \frac{1}{N_{reg}} p_i* L_{reg}(t_i,t_i*)
-	$$
+	In order to to evaluate this hypothesis two models are trained on 20 000 samples each. Model I is trained when placing the camera randomly, following the distribution in \Cref{eq:distroexp}. Model II is trained on varying racing courts. 
 	
-	Where $i$ is an anchor, $p_i$ the predicted probability of the anchor being an object and $t_i$ a vector containing 4 bounding box offsets to the default anchor size. The ground truth label $t_i*$ contains the true coordinates, while $p_i*$ is 1 if the anchor overlaps a ground truth bounding box by some threshold. \todo{Which exact loss functions are used}
-
-
-Comparing state of the art results shows the superiority of \acp{CNN}-based methods in basically every vision task \todo{elaborate}. Hence, the first hypothesis formulated is that a state of the art object detector should be able to learn the detection task of wire frame objects. 
-
-As the single class case is considered the loss functions of state of the art detectors is simplified to the following:
-
-\todo{text}
-
-Hence, the only difference between X,Y,Z is ...
-Therefore the second hypothesis to be evaluated is that there is not a very large difference between the mentioned methods.
-
-
-The reason to be assumed responsible for the superiority of \acp{CNN}-based methods is the fact that the can learn powerful object representations directly on the task. \todoref{visualizing cnns} show how the model combines simple shapes like edges, corners and blobs to more complex shapes like noses and eyes. For the task of wire-frame object detection there is no such intuitive combination of such higher order shapes. Therefore the second hypothesis formulated is that the deeper levels of a \acp{CNN} are not necessary for the detector.
-
-\section{Hypothesis}
-
-\label{sec:object_detection:hypothesis}
-Several hypothesis are formulated and will be examined experimentally:
-\begin{enumerate}
-	\item[$\mathcal{H}_1$] \textbf{A \acp{CNN} should be able to learn the object detection task.}
-	\item[$\mathcal{H}_2$] \textbf{Considering the single class case state of the art methods will learn the same representation}
-	\item[$\mathcal{H}_3$] \textbf{For wireframe objects the deeper layers don't learn anything as the object consist of relatively simple shapes.}
+	For testing a dataset generated with a combination of both methods is used. That way it is ensured that similar view points as in the training sets are present. The dataset contains 1100 images and a total of XX objects. For random placement the distribution of \Cref{eq:distroexp} is used. The race court of the testset is different to the ones used for training. 
 	
-\end{enumerate}
-\newpage
-\section{Experiments}
-
-First we show that many weights in an object detector are superflous when detecting single wire frame objects:
-1. We train an object detector on a single but complex object and compare the filters to multiple objects
-2. We train an object detector on a single wireframe object and compare the filters to the other feature detectors
-3. We use the gained insights to prune the network 
-4. The pruned network should perform poorly when used on the complex object
-4. We analyse the new network in terms of sensitivity towards: occlusion, colour, distance, angle
-
-\section{Results}
-
-\section{Conclusion}
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/recall_yaw}
+		\caption{Performance across clusters.}
+		\label{fig:recall_yaw}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{fig/recall_front}
+		\caption{Performance when facing the object frontally.}
+		\label{fig:recall_front}
+	\end{figure}
+	
+	
+	\subsubsection{Results}
+	
+	
+	\subsubsection{Discussion}
+	
+	\subsubsection{Conclusion}
+	
