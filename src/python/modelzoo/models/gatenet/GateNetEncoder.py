@@ -26,6 +26,8 @@ class GateNetEncoder(Encoder):
         self.grids = grids
         self.norm = img_norm
 
+
+
     @staticmethod
     def generate_anchors(norm, grids, anchor_dims, n_polygon):
 

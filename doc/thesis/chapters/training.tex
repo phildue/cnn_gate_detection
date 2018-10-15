@@ -1,8 +1,7 @@
-\chapter{Methodology}
-\label{sec:training}
+\chapter{Synthesizing Data for the Detection of \ac{EWFO} on \acp{MAV}}
 
-\section{Data Generation}
 
+\section{Methodology}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/datagen_notation}
@@ -39,7 +38,7 @@ Within the pipeline environments for training and testing are created. A black e
 	\label{fig:environments}
 \end{figure}
 
-AirSim provides the simulation of dynamics as well as controllers for \acp{MAV}. In order to evaluate the generated models a test set is created by simulating a flight of a \ac{MAV} through a race court. Thereby the race court resembles the course of the Autonomous Drone Race at the IROS 2018 conference. The generated test set contains TODO samples with TODO objects in total.
+
 
 It should be noted that when generating data with the described methods it is likely that samples appear in which only a corner of the object is visible or the view angle is in such a way that the object appears only as a thin line. In initial experiments these corner cases led to unstable training. Hence, some minimum requirements for the labels are set and samples are removed if these are not met. The criteria are:
 
@@ -50,5 +49,299 @@ It should be noted that when generating data with the described methods it is li
 	\item Minimum Corners Visible: 3
 \end{itemize}
 
+\section{Context}
 
-\section{Detection Model}
+In the first two steps a scene in 3D is created and the camera is placed. This determines the context in which the object is placed such as background, other objects and light conditions, as well as the view on the object.
+
+In \cite{Peng} the trained \acp{CNN} are relatively independent from image cues such as background and texture. Even trained on uniformly colored backgrounds an object detector is able to achieve competitive performance. Instead \acp{CNN} seem to exploit texture and shape of the object. However, the objects investigated are solid which is not the case for \ac{EWFO}. \ac{EWFO} have a distinctive shape but the main part of their surface contains background. We hypothesize this makes the detection of the shape harder. Furthermore, \ac{EWFO} do not provide texture that can be exploited by a detector, which further complicates the detection. We hypothesize that \ac{EWFO} are more dependent on background than solid texture rich objects. Therefore we train an object detector using plain uniformly colored backgrounds in 8 different colors and test it on the generated test set. The exact experiment is described in \Cref{todo}.
+
+Uniformly colored backgrounds provide little variance and do not represent a real world environment. An alternative is to place a \ac{CAD}-model on existing images to generate new samples as it was also applied in \cite{Madaan2017, Peng}.  However, without a realistic environment geometric properties of real images are violated. Furthermore, light conditions do not align with the rest of the scene. Hence, we hypothesize that only placing a \ac{CAD}-model on existing images leads to a too artificial learning setting. An object detector trained in such an environment might learn only to predict the object that does not fit to the rest of the scene.
+
+Finally, we also use fully synthesized environments for training. Thereby all geometric properties and environmental conditions are followed (to the extent they can be modeled by the graphical engine). However, as the detail of the graphical engine are limited and creating virtual environments is cumbersome, the created training sets provide less variance in background than when pasting the object on existing images.
+
+
+\section{View}
+
+Another important property that influences the generated sample is the camera pose. It determines the view on the scene and therefore at which distance, angle and location the objects appear on the image.
+
+A straightforward way is placing the camera randomly (within some margin) in order to cover a large variation of views on the object. However, such a placement might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. We examine this by simulating a flight through a race court using AirSim's \ac{MAV} model and analyzing the relative object poses. We compare these to the relative poses obtained when placing the camera randomly using the following distributions:
+
+\begin{equation}
+x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
+\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+\label{eq:distroexp}
+\end{equation}
+
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+
+\begin{figure}
+	\begin{minipage}{\textwidth}
+		\includegraphics[width=\textwidth]{fig/heatmap_camplace}
+		\caption{Object appearances when generating samples with random poses (left) and during a \ac{MAV} flight. During the flight the object appears mostly centered on the horizontal line.}
+		\label{fig:heatmap_camplace}
+	\end{minipage}
+	\begin{minipage}{\textwidth}
+		\includegraphics[width=\textwidth]{fig/hist2d_camplace}
+		\caption{Histogram of object occurrences in yaw angle and distance relative to the camera. The random placement does rarely cover facing the object closely and frontally. }
+		\label{fig:hist2d_camplace}
+	\end{minipage}
+\end{figure}
+
+When following the race track, the camera focuses the next object frontally most of the time. The size of the object increases as the camera approaches until the gate has been passed. This creates quite a different pattern than when creating poses randomly.
+
+\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with random camera placement and when following a racing track. It can be seen how, when following the race track most of the objects are centered and distributed across the horizon. In contrast, the random placement leads to more evenly distributed object locations. This can also be seen in \Cref{fig:hist2d_camplace} where a 2D histogram of the yaw angle and distance with respect to the camera is displayed. Thereby 0 corresponds to facing the object frontally, 180 degrees facing the object from the back. It is apparent how the random placement covers a much larger range of relative angles, while in the racing track certain angles do not appear at all. Even more importantly the largest bins of the racing track is an angle of 0 and a distance between 0m and 4m. These bins are almost not present when placing the camera randomly. This is because close to the camera the field of view is small, while the area of the object faced frontally is big. Hence, the probability of an object ending up at this specific location is relatively low. Furthermore, when placing the camera randomly there are no samples further away than 8m. This is because in the race track the camera traverses the room from one end - where it can see almost all gates - to another. The probability that the randomly placed camera ends up in a similar position is relatively low.
+
+\acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that the generation of samples with only one of the two methods can miss important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. On the other hand, only training on racing tracks might lead to a bias towards the created courses.
+
+\section{Post-processing}
+
+After having created a set of 2D images, the final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
+
+In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of image augmentation is a common tool to improve the detection performance. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. In the \ac{MAV} domain sensor and lens effects have a significant influence on the obtained sample. Hence, we hypothesize that the incorporation of these effects is particularly useful for the \ac{MAV} domain.
+
+\paragraph{Lens Distortion}
+
+Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. For \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
+
+The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
+\todo{double check formula is (y in first line?)}
+\begin{equation}
+f(x,y) =
+\begin{pmatrix}
+x (1 + \kappa_1 x^2 + \kappa_1 (1 + \lambda_x) y^2 + \kappa_2(x^2 + y^2)^2) \\
+y (1 + \kappa_1 x^2 + \kappa_1 (1 + \lambda_y) y^2 + \kappa_2(x^2 + y^2)^2)
+\end{pmatrix} 
+\label{eq:distortion}
+\end{equation}
+Where:
+\begin{itemize}
+	\item f yields the undistorted coordinates.
+	\item $\kappa_1$ $\kappa_2$ control the radial distortion 
+	\item $\lambda_x$ and $\lambda_y$ control the tangential distortion
+\end{itemize}
+
+Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution, so the Newton-approximation.
+
+An example with $\kappa_1 = 0.5, \kappa_2 = 0.5$ is displayed in \Cref{fig:distortion}. It can be seen how the previously straight lines appear as circular shape.
+
+\paragraph{Chromatic Aberration.}
+
+Chromatic Aberration is caused when different wavelengths of light do not end up in the same locations of the visual sensor. This leads to a shift in the colour channels of the image.
+
+Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
+
+\begin{equation}
+f(x_C,y_C) = \begin{pmatrix}
+S & 0 & t_x \\
+0 & S & t_y \\
+0 & 0 & 1
+\end{pmatrix} \begin{pmatrix}
+x_C \\
+y_C \\
+1
+\end{pmatrix}
+\end{equation}
+
+Where $C$ is one colour channel of the image.
+
+An example is displayed in \Cref{fig:chromatic}. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.
+
+\paragraph{Blur}
+
+Motion noise is caused when light falls in different locations of the images sensor due to a fast movement of the camera. It leads to blurry images based on the sensor motion.
+
+The phenomenon depends on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian filter:
+
+An example for vertical blur is displayed in \Cref{fig:motionblur}. It can be seen how particularly horizontal lines appear softer.
+
+Next to motion, sensor noise can lead to blurry images. For the blur operation a 2D Gaussian kernel is applied on the input image with:
+
+\begin{equation}
+k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\sqrt{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
+\end{equation}
+\todo{double check notation}
+\paragraph{Exposure.}
+
+Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
+
+Following the model from \cite{Carlson2018}:
+
+\begin{equation}
+f(S) = \frac{255}{1 + e^{-A S}}
+\end{equation}
+where $A$ is a constant term for contrast and $S$ the exposure.
+\todo{whats a}
+The image can be re-exposed with:
+
+\begin{equation}
+I' = f(S+\Delta S)
+\end{equation}
+
+where $S$ is obtained from :
+\begin{equation}
+S = f^{-1}(I)
+\end{equation}
+
+An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen how lighter areas appear particularly light, while dark areas remain dark.
+
+\subsection{Color Variations}
+
+\todo{describe hsv scaling}
+
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+		\caption{Original Image.}
+		\label{fig:orig}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
+		\caption{Chromatic Aberration.} 		
+		\label{fig:chromatic}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_distorted}
+		\caption{Lens Distortion. }		
+		\label{fig:distortion}
+	\end{minipage}
+	
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
+		\caption{Out-of-Focus blur.}
+		\label{fig:focusblur}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
+		\caption{Vertical Motion Blur.}
+		\label{fig:motionblur}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
+		\caption{Exposure.}
+		\label{fig:exposure}
+	\end{minipage}
+\end{figure}
+
+
+
+\subsection{Experiments}
+
+\subsubsection{Background}
+
+The empty space of an \ac{EWFO} is augmented with a detailed texture. An example can be seen in \Cref{fig:cats}.
+\begin{figure}
+	\centering
+	\includegraphics[height=5cm]{fig/cat}
+	\caption{The \ac{EWFO} is augmented with a detailed texture.}
+	\label{fig:cats}
+\end{figure}
+
+The object is placed in a scene with uniformly coloured backgrounds and a training set of 20 000 samples is created. In similar fashion a training set is created without the texture rich augmentation. The test set contains 1000 samples created in the \textit{IROS} environment by randomly placing the camera following \Cref{eq:distroexp}.
+
+
+\subsubsection{Context}
+
+Several models are trained on 20 000 samples each.
+\begin{itemize}
+	\item[ModelU] Uniform
+	\item[ModelSVE] Single Virtual Environment
+	\item[ModelRB] Real Backgrounds
+	\item[ModelVVE] Various Virtual Environments
+	\item[ModelRBVVE] Real Backgrounds + Various Virtual Environments
+\end{itemize}
+
+
+\begin{table}[htbp]
+	\caption{}
+	\begin{tabular}{|l|l|l|l|r|r|r|l|l|l|}
+		\hline
+		& Validation Set &  &  & \multicolumn{1}{l|}{IROS2018} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & Real Data &  &  \\ \hline
+		& AP40 & AP60 & AP80 & \multicolumn{1}{l|}{AP40} & \multicolumn{1}{l|}{AP60} & \multicolumn{1}{l|}{AP80} & AP40 & AP60 & AP80 \\ \hline
+		U &  &  &  & 0.05 & 0.01 & 0 &  &  &  \\ \hline
+		SVE &  &  &  & 0.29 & 0.17 & 0.02 &  &  &  \\ \hline
+		VVE &  &  &  & 0.61 & 0.49 & 0.17 &  &  &  \\ \hline
+		RB &  &  &  & 0.42 & 0.28 & 0.04 &  &  &  \\ \hline
+	\end{tabular}
+	\label{tab:env}
+\end{table}
+
+
+\subsubsection{View}
+
+In order to to evaluate this hypothesis two models are trained on 20 000 samples each. Model I is trained when placing the camera randomly, following the distribution in \Cref{eq:distroexp}. Model II is trained on varying racing courts. 
+
+For testing a dataset generated with a combination of both methods is used. That way it is ensured that similar view points as in the training sets are present. The dataset contains 1100 images and a total of XX objects. For random placement the distribution of \Cref{eq:distroexp} is used. The race court of the testset is different to the ones used for training. 
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{fig/recall_yaw}
+	\caption{Performance across clusters.}
+	\label{fig:recall_yaw}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig/recall_front}
+	\caption{Performance when facing the object frontally.}
+	\label{fig:recall_front}
+\end{figure}
+
+\subsubsection{Discussion}
+
+\subsubsection{Conclusion}
+
+
+\subsection{Hypothesis}
+\label{sec:training:hypothesis}
+
+This chapter summarizes the hypotheses formulated in the previous chapters:
+
+\begin{enumerate}
+	\item[$\mathcal{H}_1$] An object that is not empty and provides a more distinctive structure is less background dependent than an \ac{EWFO}.
+	
+	\item[$\mathcal{H}_2$] The incorporation of correct placement/light conditions improves the performance of a model trained to detect \acp{EWFO}.
+	
+	\item[$\mathcal{H}_3$] The incorporation of a camera motion model resembling the target domain improves the performance of a model trained to detect \acp{EWFO}. 
+	
+	\item[$\mathcal{H}_3$] Including sensor effects present in the target domain, improves the performance of a model trained to detect \acp{EWFO}. 
+	
+\end{enumerate}
+
+
+
+\section{Experiments}
+\label{sec:training:experiments}
+In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}. The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 5 runs are reported.
+
+For the random view point generation the following parameters are used:
+
+
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+
+The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
+
+\subsubsection{Experiment I}
+
+
+\subsubsection{Experiment II}
+
+
+
+\subsubsection{Experiment III}
+
+Three models are trained: Model I using random placement, Model II using the drone motion model, Model III using a combination of both methods. In both experiments environment and light conditions as well as object locations are the same. The models are tested on two test sets: Set I created by randomly placing the camera. Set II by using the drone motion model, where a circuit is used that has not been part in the generation of the training data.
+
+
+\subsubsection{Experiment IV}
+
+In order to evaluate $\mathcal{H}_4$ the individual domain properties are measured on the target domain and incorporated in the training set.
+
+
+\section{Results}
+\label{sec:training:results}
+
+\section{Discussion}
+\label{sec:training:discussion}
+
+\section{Conclusion}
+\label{sec:training:conclusion}
