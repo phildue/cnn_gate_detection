@@ -75,7 +75,7 @@ class CropNetAnchorEncoder(Encoder):
             else:
                 confidences[match_idx] = 1.0
 
-                size = 1.25 * max((b.w, b.h))
+                size = 1.25 * max((b.w1, b.h1))
 
                 coords[match_idx] = b.cx, b.cy, size
 

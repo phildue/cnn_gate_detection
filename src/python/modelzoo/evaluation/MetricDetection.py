@@ -39,7 +39,7 @@ class MetricDetection(Metric):
                            ]
         self.boxes_true = [b for b in BoundingBox.from_label(label_true) if
                            (self.min_box_area < b.area < self.max_box_area and
-                            self.min_aspect_ratio < b.h / b.w < self.max_aspect_ratio)
+                            self.min_aspect_ratio < b.h1 / b.w1 < self.max_aspect_ratio)
                            ]
 
         for i,b in enumerate(self.boxes_true):

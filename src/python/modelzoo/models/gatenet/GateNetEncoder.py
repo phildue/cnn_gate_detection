@@ -79,7 +79,7 @@ class GateNetEncoder(Encoder):
                 print("\nGateEncoder::No matching anchor box found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                coords[match_idx] = b.cx, b.cy, b.w, b.h
+                coords[match_idx] = b.cx, b.cy, b.w1, b.h1
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords

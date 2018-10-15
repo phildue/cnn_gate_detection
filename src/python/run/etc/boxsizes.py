@@ -29,5 +29,5 @@ for a in aspect_ratios:
     label = resize_label(label, scale_x=0.1, scale_y=0.1)
     label = resize_label(label, scale_x=1.0, scale_y=a)
     box = BoundingBox.from_label(label)[0]
-    print(box.h / box.w)
+    print(box.h1 / box.w1)
     show(img, labels=label)

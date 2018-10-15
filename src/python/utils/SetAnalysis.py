@@ -68,7 +68,7 @@ class SetAnalysis:
             h, w = self.img_shape
             boxes = BoundingBox.from_label(label)
             for b in boxes:
-                box_dim = np.array([b.w, b.h]) / np.array([w, h])
+                box_dim = np.array([b.w1, b.h1]) / np.array([w, h])
                 box_dim = np.expand_dims(box_dim, 0)
                 wh.append(box_dim)
         box_dims = np.concatenate(wh, 0)

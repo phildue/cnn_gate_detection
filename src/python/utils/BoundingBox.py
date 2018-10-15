@@ -58,10 +58,10 @@ class BoundingBox:
         """
         box_labels = []
         for box in boxes:
-            xmin = int((box.cx - box.w / 2))
-            xmax = int((box.cx + box.w / 2))
-            ymin = int((box.cy - box.h / 2))
-            ymax = int((box.cy + box.h / 2))
+            xmin = int((box.cx - box.w1 / 2))
+            xmax = int((box.cx + box.w1 / 2))
+            ymin = int((box.cy - box.h1 / 2))
+            ymax = int((box.cy + box.h1 / 2))
             box_labels.append(ObjectLabel(ObjectLabel.id_to_name(box.prediction),
                                           np.array([[xmin, ymin],
                                                     [xmax, ymax]]), box.class_conf,pose=box.pose))
@@ -104,7 +104,7 @@ class BoundingBox:
 
     def iou(self, box):
         intersection = self.intersect(box)
-        union = self.w * self.h + box.w * box.h - intersection
+        union = self.w * self.h + box.w1 * box.h1 - intersection
         if union == 0:
             return 1
         else:
