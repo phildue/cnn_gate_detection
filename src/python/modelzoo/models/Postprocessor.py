@@ -17,9 +17,9 @@ class Postprocessor:
     def postprocess(self, netout):
         labels = []
         for i in range(netout.shape[0]):
-            label = self.decoder.decode_netout(netout)
-            objs = [self.non_max_suppression(b, self.iou_thresh) for b in label.objects]
-            objs = [self.filter(b, self.conf_thresh) for b in objs]
+            label = self.decoder.decode_netout(netout[i])
+            objs = self.non_max_suppression(label.objects, self.iou_thresh)
+            objs = self.filter(objs, self.conf_thresh)
             label.objects = objs
             labels.append(label)
         if len(labels) > 1:

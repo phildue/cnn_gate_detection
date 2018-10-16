@@ -47,10 +47,10 @@ def interpolate(precision_raw, recall_raw, recall_levels=None):
 
     precision = np.zeros(shape=(len(recall_levels)))
     for i, r in enumerate(recall_levels):
-        try:
-            idx = np.where(recall_raw[0, :] > r)[0][0]
-            precision[i] = np.max(precision_raw[0, idx:])
-        except IndexError:
+        idx = recall_raw > r
+        if np.any(idx == True):
+            precision[i] = np.max(precision_raw[idx])
+        else:
             precision[i] = 0
     return precision, recall_levels.T
 

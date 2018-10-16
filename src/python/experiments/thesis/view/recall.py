@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from modelzoo.evaluation.cluster_eval import cluster_eval
+from modelzoo.evaluation.evalcluster import evalcluster_yaw_dist
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
@@ -26,8 +26,8 @@ for i, f in enumerate(result_files):
     labels_true = result_file['labels_true']
     img_files = result_file['image_files']
 
-    fn, tp = cluster_eval(labels_true, labels_pred, conf_thresh=0.5, n_bins_angle=angle_bins, n_bins_dist=dist_bins,
-                          iou_thresh=0.8)
+    fn, tp = evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh=0.5, n_bins_angle=angle_bins, n_bins_dist=dist_bins,
+                                  iou_thresh=0.8)
 
     recall = (tp / (fn + tp))
     recall[np.isnan(recall)] = 0.0

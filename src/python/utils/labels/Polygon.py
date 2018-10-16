@@ -121,6 +121,10 @@ class Polygon:
     def height(self):
         return self.y_max - self.y_min
 
+    @property
+    def aspect_ratio(self):
+        return self.height/self.width
+
     def __repr__(self):
         return '[({0:.2f},{1:.2f}) --> ({2:.2f},{3:.2f})]'.format(self.x_min, self.y_min, self.x_max,
                                                                   self.y_max)

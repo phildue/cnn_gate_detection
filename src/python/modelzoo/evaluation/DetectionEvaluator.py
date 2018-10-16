@@ -1,4 +1,3 @@
-from modelzoo.evaluation.Metric import Metric
 
 from modelzoo.evaluation.DetectionResult import DetectionResult
 from utils.imageprocessing.Image import Image
@@ -6,7 +5,7 @@ from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show, 
 from utils.labels.ImgLabel import ImgLabel
 
 
-class DetectionEvaluator(Metric):
+class DetectionEvaluator:
     @property
     def show(self):
         return self._show
@@ -63,8 +62,8 @@ class DetectionEvaluator(Metric):
     def match(box_true, boxes_pred, iou_thresh):
         matches_idx_pred = []
         for i, b in enumerate(boxes_pred):
-            if box_true.iou(b) > iou_thresh and \
-                    box_true.prediction == b.prediction:
+            if box_true.poly.iou(b.poly) > iou_thresh and \
+                    box_true.class_id == b.class_id:
                 matches_idx_pred.append(i)
 
         return matches_idx_pred

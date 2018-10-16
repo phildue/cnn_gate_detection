@@ -17,7 +17,6 @@ def evalset(
         result_path=None,
         result_file=None,
         image_format="jpg"):
-
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -79,8 +78,9 @@ def evalset(
 
         tic()
         predictions = model.predict(images)
-        if image_files[0].shape[:2] != model.input_shape:
-            print("Evaluator:: Labels have different size")
+        if images[0].shape[0] != model.input_shape[0] or \
+            images[0].shape[1] != model.input_shape[1]:
+            raise ValueError("Evaluator:: Labels have different size")
 
         # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
         # for j in range(len(batch)):
@@ -94,4 +94,4 @@ def evalset(
         content = {'labels_true': labels_true,
                    'labels_pred': labels_pred,
                    'image_files': image_files}
-        save_file(content, result_file,result_path)
+        save_file(content, result_file, result_path)

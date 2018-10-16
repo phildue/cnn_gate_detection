@@ -2,7 +2,6 @@ import keras.backend as K
 import numpy as np
 
 from utils.labels.ObjectLabel import ObjectLabel
-from utils.labels.Polygon import Polygon
 
 
 def iou_np(box_a, box_b):
@@ -49,7 +48,7 @@ def iou_np(box_a, box_b):
 
 
 def non_max_suppression(boxes: [ObjectLabel], iou_thresh=0.4, n_max=50):
-    coord_t = Polygon.to_tensor_minmax([b.poly for b in boxes])
+    coord_t = np.concatenate([np.expand_dims(b.poly.to_quad_t_minmax,0) for b in boxes], 0)
     confs = [b.confidence for b in boxes]
     conf_t = np.array(confs).flatten()
 

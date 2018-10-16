@@ -1,6 +1,7 @@
 import numpy as np
 
 from modelzoo.models.Decoder import Decoder
+from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Polygon import Polygon
 
@@ -33,10 +34,12 @@ class GateNetDecoder(Decoder):
 
         labels = []
         for i, b in enumerate(boxes):
-            label = ObjectLabel(b, class_t)
+            conf = np.max(class_t[i])
+            class_id = np.argmax(class_t[i,:])
+            label = ObjectLabel(ObjectLabel.id_to_name(class_id), conf, b)
             labels.append(label)
 
-        return labels
+        return ImgLabel(labels)
 
     def decode_coord(self, coord_t):
         """
@@ -56,4 +59,3 @@ class GateNetDecoder(Decoder):
         coord_t_dec[:, 1] = self.norm[0] - coord_t_dec[:, 1]
 
         return coord_t_dec[:, :self.n_polygon]
-

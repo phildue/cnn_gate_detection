@@ -50,7 +50,11 @@ class DetectionResult:
             n_tp = len([o for o in self.true_positives if o.confidence > c])
             if np.any(np.array([n_fp, n_tp]) < 0):
                 raise ValueError("Weird Numbers")
-            precision[j] = (n_tp / (n_fp + n_tp))
+            try:
+                precision[j] = (n_tp / (n_fp + n_tp))
+            except ZeroDivisionError:
+                precision[j] = 0.0
+
         return precision
 
     @property
@@ -62,7 +66,10 @@ class DetectionResult:
             n_fn = len(self.true_positives + self.false_negatives) - n_tp
             if np.any(np.array([n_tp, n_fn]) < 0):
                 raise ValueError("Weird Numbers")
-            recall[j] = (n_tp / (n_fn + n_tp))
+            try:
+                recall[j] = (n_tp / (n_fn + n_tp))
+            except ZeroDivisionError:
+                recall[j] = 0.0
         return recall
 
     def __repr__(self):
@@ -73,7 +80,15 @@ class DetectionResult:
                                                self.n_tn)
 
     def __add__(self, other):
+        tn = None
+        if self.true_negatives and other.true_negatives:
+            tn = self.true_negatives + other.true_negatives
+        elif self.true_negatives:
+            tn = self.true_negatives
+        elif other.true_negatives:
+            tn = other.true_negatives
+
         return DetectionResult(self.true_positives + other.true_positives,
                                self.false_positives + other.false_positives,
                                self.false_negatives + other.false_negatives,
-                               self.true_negatives + other.true_negatives)
+                               tn)

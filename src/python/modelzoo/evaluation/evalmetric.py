@@ -8,13 +8,13 @@ def evalmetric(
         label_file,
         img_res=None,
         min_box_area=0,
-        max_box_area=1.0,
+        max_box_area=2.0,
         iou_thresh=0.4,
         show=False,
         result_path=None,
         result_file=None,
-        min_aspect_ratio=None,
-        max_aspect_ratio=None):
+        min_aspect_ratio=0.0,
+        max_aspect_ratio=100.0):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
@@ -58,7 +58,7 @@ def evalmetric(
     labels_pred = content['labels_pred']
     image_files = content['image_files']
     results = []
-    for i in range(labels_true):
+    for i in range(len(labels_true)):
         result = metric.evaluate(labels_true[i], labels_pred[i])
         results.append(result)
 
