@@ -143,7 +143,7 @@ class XmlParser(AbstractDatasetParser):
                     except AttributeError:
                         confidence = 1.0
 
-                    label = ObjectLabel(poly, ObjectLabel.one_hot_encoding(name, confidence), pose)
+                    label = ObjectLabel(name, confidence,poly, pose)
                     objects.append(label)
 
                 return ImgLabel(objects)

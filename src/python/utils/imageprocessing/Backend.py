@@ -41,7 +41,7 @@ def replace_background(img: Image, background: Image, background_color=(0, 0, 0)
 
 def draw_gate_corners(img: Image, label: ObjectLabel) -> Image:
     annotated_img = img.array.copy()
-    corners = label.poly.points
+    corners = label.poly.points.copy()
 
     corners[:, 1] = img.shape[0] - corners[:, 1]
 
