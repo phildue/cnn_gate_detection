@@ -3,6 +3,9 @@ import numpy as np
 
 from utils.BoundingBox import BoundingBox
 
+from utils.Polygon import Polygon
+from utils.labels.ObjectLabel import ObjectLabel
+
 
 def iou_np(box_a, box_b):
     """
@@ -47,9 +50,9 @@ def iou_np(box_a, box_b):
     return area_intersect / union
 
 
-def non_max_suppression(boxes: [BoundingBox], iou_thresh=0.4, n_max=50):
-    coord_t = BoundingBox.to_tensor_minmax(boxes)
-    confs = [b.c for b in boxes]
+def non_max_suppression(boxes: [ObjectLabel], iou_thresh=0.4, n_max=50):
+    coord_t = Polygon.to_tensor_minmax([b.poly for b in boxes])
+    confs = [b.confidence for b in boxes]
     conf_t = np.array(confs).flatten()
 
     idx = K.get_session().run(non_max_suppression_tf(K.constant(coord_t), K.constant(conf_t), iou_thresh, n_max))

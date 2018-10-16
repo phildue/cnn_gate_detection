@@ -4,8 +4,6 @@ from modelzoo.backend.tensor.metrics.Loss import Loss
 from modelzoo.models.Decoder import Decoder
 from modelzoo.models.Encoder import Encoder
 from modelzoo.models.Net import Net
-from utils.BoundingBox import BoundingBox
-from utils.imageprocessing.Image import Image
 
 
 class Predictor:
@@ -31,25 +29,6 @@ class Predictor:
         self.net.compile(params, metrics)
 
     def predict(self, sample):
-        if isinstance(sample, list):
-            predictions = self._predict_batch(sample)
-            labels = [BoundingBox.to_label(b) for b in predictions]
-            return labels
-        else:
-            prediction = self._predict_sample(sample)
-            label = BoundingBox.to_label(prediction)
-            return label
-
-    def _predict_sample(self, sample: Image):
-
-        sample_t = self.preprocessor.preprocess(sample)
-        netout = self._model.predict(sample_t)
-
-        predictions = self.postprocessor.postprocess(netout)[0]
-
-        return predictions
-
-    def _predict_batch(self, sample: [Image]):
         sample_t = self.preprocessor.preprocess_batch(sample)
 
         netout = self._model.predict(sample_t)

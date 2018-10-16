@@ -34,6 +34,7 @@ class Preprocessor:
                 raise ValueError("Invalid Color Format")
 
             if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
+                print("Preprocessor:: Image Size does not match")
                 img, label = self.crop_to_input(img, label)
                 img, label = resize(img, (self.img_height, self.img_width), label=label)
             #

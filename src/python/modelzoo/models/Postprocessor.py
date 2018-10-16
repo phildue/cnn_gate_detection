@@ -1,6 +1,7 @@
 from modelzoo.backend.tensor.iou import non_max_suppression
 from modelzoo.models.Decoder import Decoder
-from utils.BoundingBox import BoundingBox
+
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 class Postprocessor:
@@ -14,15 +15,22 @@ class Postprocessor:
         self.iou_thresh = iou_thresh
 
     def postprocess(self, netout):
-        boxes = self.decoder.decode_netout_to_boxes_batch(netout)
-        boxes = [self.non_max_suppression(b, self.iou_thresh) for b in boxes]
-        boxes = [self.filter(b, self.conf_thresh) for b in boxes]
-        return boxes
+        labels = []
+        for i in range(netout.shape[0]):
+            label = self.decoder.decode_netout(netout)
+            objs = [self.non_max_suppression(b, self.iou_thresh) for b in label.objects]
+            objs = [self.filter(b, self.conf_thresh) for b in objs]
+            label.objects = objs
+            labels.append(label)
+        if len(labels) > 1:
+            return labels
+        else:
+            return labels[0]
 
     @staticmethod
-    def filter(predictions, conf_thresh):
-        return [box for box in predictions if box.c >= conf_thresh]
+    def filter(predictions: [ObjectLabel], conf_thresh):
+        return [box for box in predictions if box.confidence >= conf_thresh]
 
     @staticmethod
-    def non_max_suppression(boxes: [BoundingBox], iou_thresh):
+    def non_max_suppression(boxes: [ObjectLabel], iou_thresh):
         return non_max_suppression(boxes, iou_thresh, n_max=100)

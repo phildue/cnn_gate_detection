@@ -1,7 +1,9 @@
 import numpy as np
 
 from modelzoo.models.Decoder import Decoder
-from utils.BoundingBox import BoundingBox
+
+from utils.Polygon import Polygon
+from utils.labels.ObjectLabel import ObjectLabel
 
 
 class GateNetDecoder(Decoder):
@@ -17,7 +19,7 @@ class GateNetDecoder(Decoder):
     def sigmoid(x):
         return 1 / (1 + np.exp(-x))
 
-    def decode_netout_to_boxes(self, label_t):
+    def decode_netout(self, label_t):
         """
         Convert label tensor to objects of type Box.
         :param label_t: y as fed for learning
@@ -28,9 +30,14 @@ class GateNetDecoder(Decoder):
         coord_t_dec = self.decode_coord(coord_t)
         coord_t_dec = np.reshape(coord_t_dec, (-1, self.n_polygon))
         class_t = np.reshape(class_t, (-1, 1))
-        boxes = BoundingBox.from_tensor_centroid(class_t, coord_t_dec)
+        boxes = Polygon.from_tensor_centroid(coord_t_dec)
 
-        return boxes
+        labels = []
+        for i, b in enumerate(boxes):
+            label = ObjectLabel(b, class_t)
+            labels.append(label)
+
+        return labels
 
     def decode_coord(self, coord_t):
         """
@@ -51,11 +58,3 @@ class GateNetDecoder(Decoder):
 
         return coord_t_dec[:, :self.n_polygon]
 
-    def decode_netout_to_label(self, label_t):
-        """
-        Convert label tensor to an object of class ImgLabel
-        :param label_t: label-tensor as fed for learning
-        :return: label containing objects bounding box and names
-        """
-        boxes = self.decode_netout_to_boxes(label_t)
-        return BoundingBox.to_label(boxes)

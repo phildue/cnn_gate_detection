@@ -2,30 +2,22 @@ import numpy as np
 
 from modelzoo.models.Encoder import Encoder
 from utils.BoundingBox import BoundingBox
+
+from utils.Polygon import Polygon
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
 
 
 class GateNetEncoder(Encoder):
-    def __init__(self, anchor_dims=None, img_norm=(416, 416), grids=None, n_boxes=5, n_polygon=4,
-                 color_format='yuv'):
-        if anchor_dims is None:
-            anchor_dims = [np.array([[1.08, 1.19],
-                                     [3.42, 4.41],
-                                     [6.63, 11.38],
-                                     [9.42, 5.11],
-                                     [16.62, 10.52]])]
-        if grids is None:
-            grids = [(13, 13)]
+    def __init__(self, anchor_dims, img_norm, grids, n_polygon=4):
 
         self.anchor_dims = anchor_dims
         self.n_polygon = n_polygon
-        self.color_format = color_format
-        self.n_boxes = n_boxes
         self.grids = grids
         self.norm = img_norm
 
+        self.n_boxes = [len(a) for a in anchor_dims]
 
 
     @staticmethod
@@ -60,12 +52,13 @@ class GateNetEncoder(Encoder):
 
         return anchor_t
 
-    def _assign_true_boxes(self, anchors, true_boxes):
-        coords = anchors.copy()
+    def _assign_true_boxes(self, anchors, label:ImgLabel):
         confidences = np.zeros((anchors.shape[0], 1)) * np.nan
-        anchor_boxes = BoundingBox.from_tensor_centroid(confidences, coords)
+        coords = anchors.copy()
+        anchor_boxes = Polygon.from_tensor_centroid(anchors)
+        boxes_true = [o.poly for o in label.objects]
 
-        for b in true_boxes:
+        for b in boxes_true:
             max_iou = 0.0
             match_idx = np.nan
             b.cy = self.norm[0] - b.cy
@@ -79,7 +72,7 @@ class GateNetEncoder(Encoder):
                 print("\nGateEncoder::No matching anchor box found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                coords[match_idx] = b.cx, b.cy, b.w1, b.h1
+                coords[match_idx] = b.coords_centroid
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords
@@ -103,7 +96,7 @@ class GateNetEncoder(Encoder):
 
         """
         anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, self.n_polygon)
-        confidences, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
+        confidences, coords = self._assign_true_boxes(anchors,label)
         coords = self._encode_coords(coords, anchors)
         label_t = np.hstack((confidences, coords, anchors))
         label_t = np.reshape(label_t, (-1, 1 + self.n_polygon + 4))
