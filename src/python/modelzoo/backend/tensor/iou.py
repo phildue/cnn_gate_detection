@@ -1,8 +1,6 @@
 import keras.backend as K
 import numpy as np
 
-from utils.BoundingBox import BoundingBox
-
 from utils.Polygon import Polygon
 from utils.labels.ObjectLabel import ObjectLabel
 

@@ -5,8 +5,6 @@ import numpy as np
 from PIL.Image import frombytes, FLIP_TOP_BOTTOM
 
 from utils.imageprocessing.Image import Image
-from utils.labels.GateCorners import GateCorners
-from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.utils import resize_label
@@ -41,9 +39,9 @@ def replace_background(img: Image, background: Image, background_color=(0, 0, 0)
     return Image(merged, img.format)
 
 
-def draw_gate_corners(img: Image, label: GateLabel) -> Image:
+def draw_gate_corners(img: Image, label: ObjectLabel) -> Image:
     annotated_img = img.array.copy()
-    corners = label.gate_corners.mat
+    corners = label.poly.points
 
     corners[:, 1] = img.shape[0] - corners[:, 1]
 
@@ -112,17 +110,10 @@ def flip(img: Image, label: ImgLabel = None, flip_code=1) -> (Image, ImgLabel):
     if label is not None:
         objs_flipped = []
         for obj in label.objects:
-            if isinstance(obj, GateLabel):
-                mat = obj.gate_corners.mat
-                mat[:, 0] = img.array.shape[1] - mat[:, 0]
-                obj.gate_corners = GateCorners.from_mat(mat)
-                objs_flipped.append(obj)
-            else:
-                mat = np.array([[obj.x_min, obj.y_min],
-                                [obj.x_max, obj.y_max]])
-                mat[:, 0] = img.array.shape[1] - mat[:, 0]
-                label_flipped = ObjectLabel(obj.class_name, mat, obj.confidence)
-                objs_flipped.append(label_flipped)
+            mat = obj.points
+            mat[:, 0] = img.array.shape[1] - mat[:, 0]
+            obj_flipped = obj.copy()
+            objs_flipped.append(obj_flipped)
         label_flipped = ImgLabel(objs_flipped)
     else:
         label_flipped = None
@@ -145,7 +136,7 @@ def translate(img: Image, shift_x, shift_y, label: ImgLabel) -> (Image, ImgLabel
         for obj in label_translated.objects:
             mat = obj.gate_corners.mat
             mat[:, 0] -= shift_x
-            obj.gate_corners = GateCorners.from_mat(mat)
+            obj.points = mat
     else:
         label_translated = None
     return Image(content, img.format), label_translated
@@ -348,26 +339,16 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
         for obj in label_crop.objects:
             delta_x = x_min
             delta_y = y_min
-
-            if isinstance(obj, GateLabel):
-                points = obj.gate_corners.mat
-            elif isinstance(obj, ObjectLabel):
-                points = np.array([[obj.x_min, obj.y_min],
-                                   [obj.x_max, obj.y_max]])
-            else:
-                raise ValueError('Unknown Type')
+            points = obj.points
 
             points -= np.array([delta_x, delta_y]).astype(points.dtype)
 
             points[:, 0] = np.maximum(0, np.minimum(points[:, 0], img_crop.shape[1]))
             points[:, 1] = np.maximum(0, np.minimum(points[:, 1], img_crop.shape[0]))
 
-            if isinstance(obj, GateLabel):
-                obj.gate_corners = GateCorners.from_mat(points)
-            elif isinstance(obj, ObjectLabel):
-                obj = ObjectLabel(obj.class_name, points, obj.confidence)
+            obj.points = points
 
-            if obj.area >= 20 and (0.33 < obj.width / obj.height < 3):
+            if obj.poly.area >= 20 and (0.33 < obj.poly.width / obj.poly.height < 3):
                 objs_crop.append(obj)
         label_crop = ImgLabel(objs_crop)
         return img_crop, label_crop

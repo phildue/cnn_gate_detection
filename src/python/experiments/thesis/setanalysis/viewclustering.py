@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from modelzoo.evaluation.MetricDetection import DetectionEvaluator
 
-from modelzoo.evaluation.MetricDetection import MetricDetection
 from utils.SetAnalysis import SetAnalysis
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread
@@ -55,8 +55,8 @@ plt.ylabel("Relative Distance")
 
 poses_2 = []
 for i in range(len(labels_true)):
-    m = MetricDetection(show_=True, min_box_area=0.0 * 416 * 416, max_box_area=2.0 * 416 * 416, min_aspect_ratio=0,
-                        max_aspect_ratio=100.0,iou_thresh=0.6)
+    m = DetectionEvaluator(show_=True, min_box_area=0.0 * 416 * 416, max_box_area=2.0 * 416 * 416, min_aspect_ratio=0,
+                           max_aspect_ratio=100.0, iou_thresh=0.6)
     label_pred = ImgLabel([obj for obj in labels_pred[i].objects if obj.confidence > conf_thresh])
     label_true = labels_true[i]
     img = imread(img_files[i], 'bgr')

@@ -1,13 +1,10 @@
 import pprint as pp
 
-import numpy as np
-
 from modelzoo.backend.tensor.Training import Training
 from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
-from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
@@ -64,18 +61,14 @@ def train(architecture,
     def filter(label):
 
         objs_in_size = [obj for obj in label.objects if
-                        min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
+                        min_obj_size < (obj.poly.height * obj.poly.width) / (img_res[0] * img_res[1]) < max_obj_size]
 
         objs_within_angle = [obj for obj in objs_in_size if
-                             min_aspect_ratio < obj.height / obj.width < max_aspect_ratio]
+                             min_aspect_ratio < obj.poly.height / obj.poly.width < max_aspect_ratio]
 
         objs_in_view = []
         for obj in objs_within_angle:
-            if isinstance(obj, GateLabel):
-                mat = obj.gate_corners.mat
-            else:
-                mat = np.array([[obj.x_min, obj.y_min],
-                                [obj.x_max, obj.y_max]])
+            mat = obj.poly.points
             if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
                 len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
                 continue

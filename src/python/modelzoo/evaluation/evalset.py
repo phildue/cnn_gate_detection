@@ -1,7 +1,7 @@
-from modelzoo.evaluation import evaluate_generator
 from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file, load_file
+from utils.timing import tic, toc
 
 
 def evalset(
@@ -66,5 +66,32 @@ def evalset(
 
     save_file(exp_params, exp_param_file + '.pkl', result_path)
     save_file(exp_params, exp_param_file + '.txt', result_path)
+    n_batches = int(generator.n_samples / generator.batch_size)
+    it = iter(generator.generate())
+    labels_true = []
+    labels_pred = []
+    image_files = []
+    for i in range(n_batches):
+        batch = next(it)
+        images = [b[0] for b in batch]
+        labels = [b[1] for b in batch]
+        image_files_batch = [b[2] for b in batch]
 
-    evaluate_generator(model, generator, verbose=True, out_file_labels=result_path + result_file)
+        tic()
+        predictions = model.predict(images)
+        if image_files[0].shape[:2] != model.input_shape:
+            print("Evaluator:: Labels have different size")
+
+        # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
+        # for j in range(len(batch)):
+        #     show(batch[j][0], labels=[predictions[j], labels[j]])
+
+        labels_true.extend(labels)
+        labels_pred.extend(predictions)
+        image_files.extend(image_files_batch)
+        toc("Evaluated batch {0:d}/{1:d} in ".format(i, n_batches))
+
+        content = {'labels_true': labels_true,
+                   'labels_pred': labels_pred,
+                   'image_files': image_files}
+        save_file(content, result_file,result_path)

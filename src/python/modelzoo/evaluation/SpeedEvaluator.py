@@ -1,18 +1,18 @@
 from pprint import pprint
 
+import keras.backend as K
 import numpy as np
 
-from modelzoo.evaluation.ModelEvaluator import ModelEvaluator
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.fileaccess.utils import save_file
 from utils.timing import toc, tic
-import keras.backend as K
 
 
-class SpeedEvaluator(ModelEvaluator):
+class SpeedEvaluator:
     def __init__(self, model: Predictor, out_file=None, verbose=True):
-        super().__init__(model, out_file, verbose)
+        self.verbose = verbose
+        self.out_file = out_file
         self.predict = K.function([model.net.backend.input, K.learning_phase()], [model.net.backend.output])
 
     def evaluate_generator(self, generator: DatasetGenerator, n_batches=10):

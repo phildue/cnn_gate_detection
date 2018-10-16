@@ -259,7 +259,6 @@ class GateNet(Predictor):
         encoder = GateNetEncoder(img_norm=norm,
                                  anchor_dims=anchors,
                                  grids=grid,
-                                 n_boxes=self.n_boxes,
                                  n_polygon=n_polygon)
         preprocessor = Preprocessor(augmenter=augmenter,
                                     encoder=encoder,

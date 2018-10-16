@@ -1,14 +1,15 @@
+from modelzoo.evaluation.MetricDetection import DetectionEvaluator
+from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+
 from modelzoo.backend.tensor.callbacks.Evaluator import Evaluator
 from modelzoo.evaluation import evaluate_generator
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 
 
 class MeanAveragePrecision(Evaluator):
     def __init__(self, predictor: Predictor, test_set: DatasetGenerator, out_file=None, period=2):
-        super().__init__(predictor, test_set, [MetricDetection()], out_file, period)
+        super().__init__(predictor, test_set, [DetectionEvaluator()], out_file, period)
 
     def on_epoch_end(self, epoch, logs={}):
         if epoch % self.period == 0:

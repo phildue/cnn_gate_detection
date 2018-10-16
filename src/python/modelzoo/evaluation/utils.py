@@ -1,11 +1,10 @@
 import numpy as np
 
 from modelzoo.evaluation.DetectionResult import DetectionResult
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.fileaccess.utils import load_file
 
 
-def sum_results(detection_results: [ResultByConfidence]):
+def sum_results(detection_results: [DetectionResult]):
     """
     Sums list
     :param detection_results: list of results per image
@@ -18,25 +17,7 @@ def sum_results(detection_results: [ResultByConfidence]):
     return result_sum
 
 
-def mean_results(detection_results: [ResultByConfidence]):
-    confidence = np.round(np.linspace(0, 1.0, 11), 2)
-
-    mean_r = {}
-    for j, c in enumerate(confidence):
-        result_mat = np.zeros((len(detection_results), 3))
-
-        for i, result in enumerate(detection_results):
-            result_mat[i, 0] = result.results[c].true_positives
-            result_mat[i, 1] = result.results[c].false_positives
-            result_mat[i, 2] = result.results[c].false_negatives
-
-        mean = np.mean(result_mat, 0)
-        mean_r[c] = DetectionResult(mean[0], mean[1], mean[2])
-
-    return ResultByConfidence(mean_r)
-
-
-def average_precision_recall(detection_results: [ResultByConfidence], recall_levels=None):
+def average_precision_recall(detection_results: [DetectionResult], recall_levels=None):
     """
     Calculates average precision recall with interpolation. According to mAP of Pascal VOC metric.
     :param detection_results: list of results for each image
@@ -47,15 +28,10 @@ def average_precision_recall(detection_results: [ResultByConfidence], recall_lev
     precision = np.zeros((len(detection_results), len(recall_levels)))
     recall = np.zeros((len(detection_results), len(recall_levels)))
     for i, result in enumerate(detection_results):
-        skip = False
-        for c in result.results.keys():
-            if (result.results[c].false_positives < 0 or
-                    result.results[c].true_positives < 0 or
-                    result.results[c].false_negatives < 0):
-                skip = True
-                print('Warning weird numbers')
-        if skip: continue
-        precision[i], recall[i] = interpolate(result, recall_levels)
+        precision_raw = result.precision_conf
+        recall_raw = result.recall_conf
+
+        precision[i], recall[i] = interpolate(precision_raw, recall_raw, recall_levels)
 
     mean_pr = np.mean(precision, 0)
     std_pr = np.std(precision, 0)
@@ -65,16 +41,9 @@ def average_precision_recall(detection_results: [ResultByConfidence], recall_lev
     return mean_pr, mean_rec, std_pr, std_rec
 
 
-def interpolate(results: ResultByConfidence, recall_levels=None):
+def interpolate(precision_raw, recall_raw, recall_levels=None):
     if recall_levels is None:
         recall_levels = np.linspace(0, 1.0, 11)
-
-    sorted_results = results.values
-    precision_raw = np.zeros((1, len(sorted_results)))
-    recall_raw = np.zeros((1, len(sorted_results)))
-    for i, r in enumerate(sorted_results):
-        precision_raw[0, i] = r.precision
-        recall_raw[0, i] = r.recall
 
     precision = np.zeros(shape=(len(recall_levels)))
     for i, r in enumerate(recall_levels):
@@ -99,9 +68,4 @@ def load_result(netname, img_res, grid, layers, filters, old=True, filename='res
     return load_file('out/2606/' + folder_name + '/results/' + filename)
 
 
-def avg_pr_per_image_file(src_file):
-    results = load_file(src_file)
-    detection_result = results['results']['MetricDetection']
-    detection_result = [ResultByConfidence(d) for d in detection_result]
-    mean_pr, mean_rec = average_precision_recall(detection_result)
-    return mean_pr, mean_rec
+
