@@ -1,11 +1,11 @@
-from modelzoo.models.yolo.Yolo import Yolo
+import numpy as np
+
+from modelzoo.models.yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show, COLOR_BLUE
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 batch_size = 20

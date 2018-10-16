@@ -1,7 +1,7 @@
 import numpy as np
 
 from modelzoo.models.Decoder import Decoder
-from modelzoo.models.cropnet.CropNetAnchorDecoder import CropNetAnchorDecoder
+from modelzoo.models.cropnet import CropNetAnchorDecoder
 
 
 class CropNetDecoder(Decoder):

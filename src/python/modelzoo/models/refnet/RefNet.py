@@ -1,14 +1,12 @@
 import numpy as np
 
-from modelzoo.backend.tensor.refnet.RefNetBase import RefNetBase
-from modelzoo.backend.tensor.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
-from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
-from modelzoo.models.refnet.RefNetDecoder import RefNetDecoder
-from modelzoo.models.refnet.RefNetEncoder import RefNetEncoder
-from modelzoo.models.refnet.RefNetPreprocessor import RefNetPreprocessor
+from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
+from modelzoo.models.refnet import RefNetBase
+from modelzoo.models.refnet import RefNetDecoder
+from modelzoo.models.refnet import RefNetEncoder
+from modelzoo.models.refnet import RefNetPreprocessor
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ObjectLabel import ObjectLabel
 

@@ -1,8 +1,8 @@
 import numpy as np
 
-from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
-from modelzoo.models.cropnet.CropNet import CropNet
+from modelzoo.models.cropnet import CropNet
+from modelzoo.models.cropnet import CropNetBase
+from modelzoo.models.cropnet.CropGridLoss import CropGridLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show

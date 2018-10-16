@@ -1,10 +1,9 @@
 import numpy as np
-
-from modelzoo.models.Decoder import Decoder
 from utils.BoundingBox import BoundingBox
-from utils.imageprocessing.Image import Image
 from utils.labels.GateCorners import GateCorners
 from utils.labels.GateLabel import GateLabel
+
+from modelzoo.models.Decoder import Decoder
 from utils.labels.ImgLabel import ImgLabel
 
 

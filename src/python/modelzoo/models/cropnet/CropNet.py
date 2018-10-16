@@ -1,10 +1,10 @@
-from modelzoo.backend.tensor.cropnet.CropGridLoss import CropGridLoss
-from modelzoo.backend.tensor.cropnet.CropNetBase import CropNetBase
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.cropnet.CropNetDecoder import CropNetDecoder
-from modelzoo.models.cropnet.CropNetEncoder import CropNetEncoder
+from modelzoo.models.cropnet import CropNetBase
+from modelzoo.models.cropnet import CropNetDecoder
+from modelzoo.models.cropnet import CropNetEncoder
+from modelzoo.models.cropnet.CropGridLoss import CropGridLoss
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 
 

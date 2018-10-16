@@ -1,8 +1,8 @@
 import numpy as np
 
 from modelzoo.models.Decoder import Decoder
-from utils.Polygon import Polygon
 from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Polygon import Polygon
 
 
 class GateNetDecoder(Decoder):

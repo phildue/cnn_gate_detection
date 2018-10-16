@@ -1,7 +1,7 @@
 import numpy as np
+from utils.BoundingBox import BoundingBox
 
 from modelzoo.models.Encoder import Encoder
-from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
 

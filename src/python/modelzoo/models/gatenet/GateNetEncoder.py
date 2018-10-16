@@ -1,10 +1,10 @@
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
-from utils.Polygon import Polygon
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
+from utils.labels.Polygon import Polygon
 
 
 class GateNetEncoder(Encoder):

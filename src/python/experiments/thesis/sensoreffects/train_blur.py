@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from train import train
+from modelzoo.train import train
 from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
@@ -73,7 +73,6 @@ if __name__ == '__main__':
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
-              weight_file='out/thesis/datagen/yolov3_gate_mixed416x416_i00/model.h5',
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,
@@ -87,4 +86,18 @@ if __name__ == '__main__':
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
               initial_epoch=0,
-              color_format='bgr')
+              color_format='bgr',
+              subsets=[
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.25,
+                  0.25
+              ])
+

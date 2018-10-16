@@ -1,15 +1,13 @@
 import random
 
 import keras.backend as K
+import numpy as np
 
-from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.refnet.RefNet import RefNet
-from utils.fileaccess.CropGenerator import CropGenerator
+from modelzoo.models.refnet import RefNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import annotate_text, resize
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 batch_size = 4

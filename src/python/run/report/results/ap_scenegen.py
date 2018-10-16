@@ -1,9 +1,9 @@
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
+import numpy as np
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
+
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 models = ['datagen/yolov3_gate_realbg416x416',

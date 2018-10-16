@@ -1,4 +1,4 @@
-from modelzoo.backend.visuals.video.videomaker import make_video
+from modelzoo.visuals.video import make_video
 from utils.workdir import cd_work
 
 cd_work()

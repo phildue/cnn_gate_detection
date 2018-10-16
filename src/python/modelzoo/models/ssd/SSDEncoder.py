@@ -1,12 +1,12 @@
 from enum import Enum
 
 import numpy as np
+from utils.BoundingBox import centroid_to_minmax, BoundingBox
 
 # noinspection PyDefaultArgument
 # noinspection PyDefaultArgument
-from modelzoo.backend.tensor.iou import iou_np
+from modelzoo.iou import iou_np
 from modelzoo.models.Encoder import Encoder
-from utils.BoundingBox import centroid_to_minmax, BoundingBox
 from utils.imageprocessing import Image
 from utils.labels.ImgLabel import ImgLabel
 

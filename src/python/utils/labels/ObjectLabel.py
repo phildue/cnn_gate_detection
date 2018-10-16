@@ -1,6 +1,6 @@
 import copy
 
-from utils.Polygon import Polygon
+from utils.labels.Polygon import Polygon
 from utils.labels.Pose import Pose
 
 

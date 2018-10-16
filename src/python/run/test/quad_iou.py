@@ -1,9 +1,9 @@
-from utils.Polygon import Quadrangle
-from utils.fileaccess.GateGenerator import GateGenerator
-from utils.imageprocessing.Image import Image
 import numpy as np
 
-from utils.imageprocessing.Imageprocessing import show, COLOR_RED, COLOR_GREEN, COLOR_BLUE, LEGEND_CORNERS
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import show, COLOR_RED, COLOR_BLUE
+from utils.labels.Polygon import Quadrangle
 from utils.workdir import cd_work
 
 cd_work()

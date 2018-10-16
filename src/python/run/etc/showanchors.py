@@ -1,13 +1,11 @@
+import numpy as np
+from utils.BoundingBox import BoundingBox
+
 from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
-from modelzoo.models.yolo.Yolo import Yolo
-from utils.BoundingBox import BoundingBox
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX, LEGEND_CORNERS
-from utils.labels.ImgLabel import ImgLabel
-from utils.fileaccess.utils import load_file
+from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 

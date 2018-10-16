@@ -3,12 +3,12 @@ import xml.etree.ElementTree as ET
 
 import numpy as np
 
-from utils.Polygon import Polygon
 from utils.fileaccess.labelparser.AbstractDatasetParser import AbstractDatasetParser
 from utils.imageprocessing import Image
 from utils.imageprocessing.Backend import imread
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Polygon import Polygon
 from utils.labels.Pose import Pose
 
 

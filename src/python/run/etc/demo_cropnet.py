@@ -1,16 +1,13 @@
-from modelzoo.backend.tensor.cropnet.CropNet2L import CropNetBase
-from modelzoo.models.ModelFactory import ModelFactory
-from modelzoo.models.cropnet.CropNet import CropNet
-from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.visualization.demo import demo_generator
-from utils.fileaccess.CropGenerator import CropGenerator
+import numpy as np
+
+from modelzoo.models.cropnet import CropNet
+from modelzoo.models.cropnet import CropNetBase
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 

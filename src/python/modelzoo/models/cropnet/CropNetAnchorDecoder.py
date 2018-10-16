@@ -1,7 +1,7 @@
 import numpy as np
+from utils.BoundingBox import BoundingBox
 
 from modelzoo.models.Decoder import Decoder
-from utils.BoundingBox import BoundingBox
 
 
 class CropNetAnchorDecoder(Decoder):

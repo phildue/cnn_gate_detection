@@ -1,10 +1,9 @@
+import numpy as np
+
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
-import numpy as np
-
-from utils.labels.utils import resize_label
 
 
 class CropNetGridEncoder(Encoder):

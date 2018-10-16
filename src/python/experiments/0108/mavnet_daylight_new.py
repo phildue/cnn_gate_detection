@@ -1,6 +1,6 @@
 import numpy as np
 
-from train import train
+from modelzoo.train import train
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.labels.ObjectLabel import ObjectLabel
 

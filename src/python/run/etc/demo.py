@@ -1,8 +1,8 @@
 from pprint import pprint
 
-from build_model import build_detector
+from modelzoo.build_model import build_detector
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.visualization.demo import demo_generator
+from modelzoo.visuals.demo import demo_generator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work

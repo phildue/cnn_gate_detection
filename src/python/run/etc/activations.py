@@ -1,8 +1,8 @@
 import numpy as np
 from keras import Input, Model
 
-from build_model import build_detector
-from modelzoo.backend.tensor.layers import create_layer
+from modelzoo.build_model import build_detector
+from modelzoo.layers import create_layer
 from utils.imageprocessing.Backend import imread, imshow, resize
 from utils.imageprocessing.Image import Image
 from utils.workdir import cd_work

@@ -1,12 +1,9 @@
-import cv2
 import numpy as np
 
-from modelzoo.models.Encoder import Encoder
 from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.refnet.RefNetEncoder import RefNetEncoder
+from modelzoo.models.refnet import RefNetEncoder
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 

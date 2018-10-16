@@ -1,4 +1,4 @@
-from modelzoo.backend.tensor.iou import non_max_suppression
+from modelzoo.iou import non_max_suppression
 from modelzoo.models.Decoder import Decoder
 
 from utils.labels.ObjectLabel import ObjectLabel

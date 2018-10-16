@@ -5,7 +5,7 @@ from keras.layers import Conv2D, BatchNormalization
 from keras.optimizers import Adam
 
 from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.cornernet.CornerNetEncoder import CornerNetEncoder
+from modelzoo.models.cornernet import CornerNetEncoder
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs
 from utils.workdir import cd_work

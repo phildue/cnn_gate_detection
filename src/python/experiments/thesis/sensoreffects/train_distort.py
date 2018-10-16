@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from train import train
+from modelzoo.train import train
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
