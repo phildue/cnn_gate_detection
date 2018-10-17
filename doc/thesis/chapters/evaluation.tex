@@ -3,7 +3,7 @@
 
 This chapter describes background knowledge required to understand the remaining parts of the thesis. It introduces the target system for this work as well as datasets and metrics used for evaluation. Furthermore, it discusses related work in Object Detection and Data Generation.
 
-\section{System Environment}
+\section{System Overview}
 
 A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
 
@@ -115,7 +115,7 @@ On a high level Object Detection can be described by two individual goals: the d
 	
 	\centering
 	\includegraphics[width=\linewidth]{fig/ObjectDetection}
-	\caption{Object Detection Pipeline.where $B_n$ describes an area, $C_1$ a class label, $I$ the image and $f$ the object detection function.}
+	\caption{Object Detection Pipeline.}
 	\label{fig:obj_pipeline}
 \end{figure}
 \begin{enumerate}
@@ -137,9 +137,11 @@ In contrast \ac{HOG} \cite{Dalal} and \ac{SIFT} \cite{Lowe2004} use the image gr
 
 A general challenge in Computer Vision is the combination of local image features such as corners and edges to a more global detection of an object. Especially, when parts of the object can be occluded or deformed and thus undergo large variations in appearance. In order to cope with these issues \citeauthor{Felzenszwalb} \cite{Felzenszwalb} model pedestrians in individual parts and combine them in their proposed \ac{DPM}.
 
+Traditional methods have in common that the individual steps of the detection pipeline are optimized separately. Furthermore, often the feature extractors are designed manually. Hence, designing such a detector can result in cumbersome application dependent work. Furthermore, the methods seem to have reached a limit in performance in the years of \todo{XX} where almost no improvement in performance was achieved.
+
 \subsubsection{\acp{CNN}-based Feature Extraction}
 
-In recent years \acp{CNN} emerged from Deep Learning research and became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches in sliding window fashion. The outputs of the initial local operations (first layer) are further processed by higher layers until the desired output size is reached. The model parameters (weights) are trained using a loss function and the back-propagation algorithm.
+A breakthrough in detection performance came with \acp{CNN} which emerged from Deep Learning research and subsequently became a popular feature extractor. \acp{CNN} can be seen as small neural networks that are applied locally on image patches in sliding window fashion. The outputs of the initial local operations (first layer) are further processed by higher layers until the desired output size is reached. The model parameters (weights) are trained using a loss function and the back-propagation algorithm.
 
 The modular structure of \acp{CNN} allows to create highly non-linear models that can represent any function. However, this flexibility also introduces the challenge of choosing a suitable architecture. On a fundamental level design parameters can be summarized in depth, width and kernel size. 
 
@@ -284,7 +286,7 @@ The use of CAD-models in combination with real backgrounds allows to generate to
 
 A more realistic placement of objects can be achieved when fully synthesizing environments.  The object of interest can be placed according to physical laws, shadows fall correctly and geometric properties of an image are followed. However, if the graphical models do not fully capture the details of real world objects, the generated data might look too artificial.
 
-\citeauthor{Johnson-Roberson2016} \cite{Johnson-Roberson2016} use a powerful graphical engine and a highly detailed environment to train an Object Detection model entirely in simulation. The results show an improvement towards data annotated by humans especially when using vast amounts of simulated data. \todo{There should be more examples for this} 
+\citeauthor{Johnson-Roberson2016} \cite{Johnson-Roberson2016} use a powerful graphical engine and a highly detailed environment to train an Object Detection model entirely in simulation. The results show an improvement towards data annotated by humans especially when using vast amounts of simulated data. 
 
 In order to create realistic environments intense manual work is required for the design. In contrast \cite{Sadeghi2016, Tobin2017, Tremblay2018a} use a relatively simple environment but a high degree of randomization to address the reality gap. The aim is to learn an abstract representation by strongly varying textures, light conditions and object locations. \citeauthor{Tobin2017} introduced this technique as \ac{DR}. The drawback of the approach is that a too high degree of randomization may omit pattern in the target domain that could otherwise be exploited by the model. 
 
