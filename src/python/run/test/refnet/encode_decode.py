@@ -1,12 +1,11 @@
-from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.refnet.RefNet import RefNet
-from utils.fileaccess.CropGenerator import CropGenerator
+import numpy as np
+
+from modelzoo.models.refnet import RefNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 batch_size = 1

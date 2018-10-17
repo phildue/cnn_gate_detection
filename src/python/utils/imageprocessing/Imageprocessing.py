@@ -2,10 +2,7 @@ import numpy as np
 
 from utils.imageprocessing.Backend import draw_gate_corners, draw_bounding_box, annotate_text, imshow, imwrite
 from utils.imageprocessing.Image import Image
-from utils.labels.GateCorners import GateCorners
-from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
-from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Pose import Pose
 
 LEGEND_BOX = 0
@@ -16,18 +13,6 @@ LEGEND_POSITION = 3
 COLOR_RED = (0, 0, 255)
 COLOR_GREEN = (0, 255, 0)
 COLOR_BLUE = (255, 0, 0)
-
-
-def get_bounding_box(gate_corners: GateCorners):
-    x_min = min([gate_corners.top_left[0], gate_corners.top_right[0], gate_corners.bottom_left[0],
-                 gate_corners.bottom_right[0], gate_corners.center[0]])
-    y_min = min([gate_corners.top_left[1], gate_corners.top_right[1], gate_corners.bottom_left[1],
-                 gate_corners.bottom_right[1], gate_corners.center[1]])
-    x_max = max([gate_corners.top_left[0], gate_corners.top_right[0], gate_corners.bottom_left[0],
-                 gate_corners.bottom_right[0], gate_corners.center[0]])
-    y_max = max([gate_corners.top_left[1], gate_corners.top_right[1], gate_corners.bottom_left[1],
-                 gate_corners.bottom_right[1], gate_corners.center[1]])
-    return (x_min, y_min), (x_max, y_max)
 
 
 def annotate_gate(img: Image, label: ImgLabel, bounding_box=False) -> Image:
@@ -60,24 +45,23 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
         if obj is None: continue
         confidence = obj.confidence
 
-        if isinstance(obj, GateLabel):
-            if legend >= LEGEND_CORNERS:
-                img_ann = draw_gate_corners(img_ann, obj)
-            if legend >= LEGEND_POSITION:
-                if obj.pose:
-                    img_ann = annotate_position(img_ann, obj.pose, obj.x_min, obj.y_max + 5, color)
-        if isinstance(obj, ObjectLabel) and legend >= LEGEND_BOX:
+        if legend >= LEGEND_CORNERS:
+            img_ann = draw_gate_corners(img_ann, obj)
+        if legend >= LEGEND_POSITION:
+            if obj.pose:
+                img_ann = annotate_position(img_ann, obj.pose, obj.poly.x_min, obj.poly.y_max + 5, color)
+        if legend >= LEGEND_BOX:
             if thickness is None:
                 thickness_obj = int(np.ceil(confidence * 4))
             else:
                 thickness_obj = thickness
 
-            img_ann = draw_bounding_box(img_ann, (int(obj.x_max), int(obj.y_max)), (int(obj.x_min), int(obj.y_min)),
+            img_ann = draw_bounding_box(img_ann, (int(obj.poly.x_max), int(obj.poly.y_max)), (int(obj.poly.x_min), int(obj.poly.y_min)),
                                         color=color, thickness=thickness_obj)
 
         if legend >= LEGEND_TEXT:
-            img_ann = annotate_text(obj.class_name + ' - ' + str(np.round(confidence,2)), img_ann,
-                                    (int(obj.x_min), int(obj.y_max + 5)),
+            img_ann = annotate_text(obj.name + ' - ' + str(np.round(confidence, 2)), img_ann,
+                                    (int(obj.poly.x_min), int(obj.poly.y_max + 5)),
                                     color)
     return img_ann
 

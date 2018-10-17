@@ -10,7 +10,7 @@ for work_dir in WORK_DIRS:
     sys.path.insert(0, work_dir)
 os.chdir(PROJECT_ROOT)
 
-from src.python.modelzoo.models.yolo import Yolo
+from modelzoo.models.yolo import Yolo
 from src.python.modelzoo.models import YoloPreprocessor
 from src.python.utils.fileaccess import VocGenerator
 import keras.backend as K

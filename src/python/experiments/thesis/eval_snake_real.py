@@ -1,7 +1,8 @@
 import glob
 
+from modelzoo.evaluation.MetricDetection import DetectionEvaluator
+
 from modelzoo.evaluation import ConfidenceEvaluator
-from modelzoo.evaluation.MetricDetection import MetricDetection
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.workdir import cd_work
 
@@ -39,8 +40,8 @@ for i, d in enumerate(datasets):
 
             box_min = box_sizes[0]
             box_max = box_sizes[-1]
-            metric = MetricDetection(False, iou_thresh=iou, min_box_area=box_min * img_area,
-                                     max_box_area=img_area * box_max, store=False)
+            metric = DetectionEvaluator(False, iou_thresh=iou, min_box_area=box_min * img_area,
+                                        max_box_area=img_area * box_max, store=False)
             ConfidenceEvaluator(None, metrics=[metric],
                                 out_file='out/thesis/snake/{}_boxes{}-{}_iou{}_i{}.pkl'.format(d, box_min,
                                                                                                box_max,
@@ -50,8 +51,8 @@ for i, d in enumerate(datasets):
             for j in range(len(box_sizes) - 1):
                 box_min = box_sizes[j]
                 box_max = box_sizes[j + 1]
-                metric = MetricDetection(False, iou_thresh=iou, min_box_area=box_min * img_area,
-                                         max_box_area=img_area * box_max, store=False)
+                metric = DetectionEvaluator(False, iou_thresh=iou, min_box_area=box_min * img_area,
+                                            max_box_area=img_area * box_max, store=False)
                 ConfidenceEvaluator(None, metrics=[metric],
                                     out_file='out/thesis/snake/{}_boxes{}-{}_iou{}_i{}.pkl'.format(d, box_min, box_max,
                                                                                                    iou, n)).evaluate(

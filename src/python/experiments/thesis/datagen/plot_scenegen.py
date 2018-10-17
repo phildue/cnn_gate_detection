@@ -1,31 +1,30 @@
 import numpy as np
 
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
+from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
 models = [
     'datagen/yolov3_gate_realbg416x416',
-#           'datagen/yolov3_gate416x416',
-          'datagen/yolov3_gate_varioussim416x416',
-          # 'datagen/yolov3_gate_dronemodel416x416',
-          # 'snake/',
-          'datagen/yolov3_gate_uniform416x416',
-          'datagen/yolov3_gate_mixed416x416',
-          # 'datagen/yolov3_gate_pp416x416'
-          ]
+    #           'datagen/yolov3_gate416x416',
+    'datagen/yolov3_gate_varioussim416x416',
+    'datagen/yolov3_gate_dronemodel416x416',
+    # 'snake/',
+    'datagen/yolov3_gate_uniform416x416',
+    'datagen/yolov3_gate_mixed416x416',
+    # 'datagen/yolov3_gate_pp416x416'
+]
 
 work_dir = 'out/thesis/'
-n_iterations = 5
+n_iterations = 1
 
 names = [
     'Real Backgrounds',
     # 'Basement Environment',
     'Various Environments',
-    # 'Drone Model',
+    'Drone Model',
     # 'Snake Gate',
     'Uniform',
     'Real + Sim',
@@ -34,8 +33,8 @@ names = [
 testset = 'iros2018_course_final_simple_17gates'
 # testset = 'jevois_hallway'
 legends = []
-linestyles = ['x--']*len(names)
-iou_thresh = 0.4
+linestyles = ['x--'] * len(names)
+iou_thresh = 0.6
 min_box_area = 0.01
 max_box_area = 2.0
 ar = [4.0]
@@ -52,8 +51,7 @@ for model in models:
             result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(testset, 0, 2.0, iou_thresh, i)
         try:
             results = load_file(result_file)
-            resultsByConf = [ResultByConfidence(r) for r in results['results']['MetricDetection']]
-            total_detections.append(sum_results(resultsByConf))
+            total_detections.append(sum_results(results['results']))
         except FileNotFoundError:
             continue
 

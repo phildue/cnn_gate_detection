@@ -1,17 +1,14 @@
-from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.backend.tensor.gatenet.DetectionCountGateNet import DetectionCountGateNet
-from modelzoo.evaluation import evaluate_generator, evaluate_file
+import keras.backend as K
+import numpy as np
+from modelzoo.ModelFactory import ModelFactory
+from modelzoo.evaluation.MetricDetection import DetectionEvaluator
+
 from modelzoo.evaluation.DetectionResult import DetectionResult
-from modelzoo.evaluation.MetricDetection import MetricDetection
-from modelzoo.models.ModelFactory import ModelFactory
-from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.gatenet.DetectionCountGateNet import DetectionCountGateNet
 from utils.fileaccess.GateGenerator import GateGenerator
-from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_BLUE
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
-import keras.backend as K
-import numpy as np
 
 cd_work()
 
@@ -66,12 +63,12 @@ with K.get_session() as sess:
                                        false_negatives=int(fn[0][j]))
             label_pred = ImgLabel([b for b in label_pred.objects if b.confidence > c])
             print('Tensor:' + str(result_t))
-            result = MetricDetection().evaluate(label_true, label_pred)
+            result = DetectionEvaluator().evaluate(label_true, label_pred)
             print('MetricDetection: ' + str(result))
 
-            if result_t.false_negatives != result.false_negatives or \
-                    result_t.true_positives != result.true_positives or \
-                    result_t.false_positives != result.false_positives:
+            if result_t.n_fn != result.false_negatives or \
+                    result_t.n_tp != result.true_positives or \
+                    result_t.n_fp != result.false_positives:
                 print('Mismatch!')
                 t = 0
             else:

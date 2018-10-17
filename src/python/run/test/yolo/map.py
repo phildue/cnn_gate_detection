@@ -1,10 +1,9 @@
 import keras.backend as K
-from modelzoo.backend.tensor.yolo.AveragePrecisionYolo import AveragePrecisionYolo
-from modelzoo.backend.tensor.yolo.DetectionCountYolo import DetectionCountYolo
-from modelzoo.backend.tensor.yolo.PrecisionRecallYolo import PrecisionRecallYolo
-
-from modelzoo.models.yolo.Yolo import Yolo
 from utils.BoundingBox import BoundingBox
+
+from modelzoo.models.yolo import AveragePrecisionYolo, DetectionCountYolo
+from modelzoo.models.yolo import PrecisionRecallYolo
+from modelzoo.models.yolo import Yolo
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED

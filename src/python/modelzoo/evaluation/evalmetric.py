@@ -1,5 +1,4 @@
-from modelzoo.evaluation import evaluate_file
-from modelzoo.evaluation.MetricDetection import MetricDetection
+from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
 from utils.fileaccess.utils import create_dirs, save_file, load_file
 
 
@@ -9,17 +8,16 @@ def evalmetric(
         label_file,
         img_res=None,
         min_box_area=0,
-        max_box_area=1.0,
+        max_box_area=2.0,
         iou_thresh=0.4,
         show=False,
         result_path=None,
         result_file=None,
-        min_aspect_ratio=None,
-        max_aspect_ratio=None):
+        min_aspect_ratio=0.0,
+        max_aspect_ratio=100.0):
     # Model
     conf_thresh = 0
     summary = load_file(model_src + '/summary.pkl')
-
 
     if img_res is None:
         img_res = summary['img_res']
@@ -46,11 +44,31 @@ def evalmetric(
     save_file(exp_params, exp_param_file + '.txt', result_path)
     save_file(exp_params, exp_param_file + '.pkl', result_path)
 
-    evaluate_file(label_file,
-                  metrics=[MetricDetection(iou_thresh=iou_thresh, show_=show,
-                                           min_aspect_ratio=min_aspect_ratio,
-                                           max_aspect_ratio=max_aspect_ratio,
-                                           min_box_area=min_box_area * img_res[0] * img_res[1],
-                                           max_box_area=max_box_area * img_res[0] * img_res[1])],
-                  verbose=True,
-                  out_file_metric=result_path + result_file)
+    metric = DetectionEvaluator(
+        iou_thresh=iou_thresh,
+        min_box_area=min_box_area*img_res[0]*img_res[1],
+        max_box_area=max_box_area*img_res[0]*img_res[1],
+        min_aspect_ratio=min_aspect_ratio,
+        max_aspect_ratio=max_aspect_ratio,
+        show_= show
+    )
+
+    content = load_file(label_file)
+    labels_true = content['labels_true']
+    labels_pred = content['labels_pred']
+    image_files = content['image_files']
+    results = []
+    for i in range(len(labels_true)):
+        result = metric.evaluate(labels_true[i], labels_pred[i])
+        results.append(result)
+
+    output = {
+        'results': results,
+        'labels_true': labels_true,
+        'labels_pred': labels_pred,
+        'image_files': image_files
+    }
+
+    save_file(output, result_file, result_path)
+
+

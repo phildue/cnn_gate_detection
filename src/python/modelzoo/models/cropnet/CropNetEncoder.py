@@ -1,12 +1,10 @@
-from modelzoo.models.Encoder import Encoder
-from modelzoo.models.cropnet.CropNetAnchorEncoder import CropNetAnchorEncoder
-from modelzoo.models.cropnet.CropNetGridEncoder import CropNetGridEncoder
-from utils.imageprocessing.Backend import resize
-from utils.imageprocessing.Image import Image
-from utils.labels.ImgLabel import ImgLabel
 import numpy as np
 
-from utils.labels.utils import resize_label
+from modelzoo.models.Encoder import Encoder
+from modelzoo.models.cropnet import CropNetAnchorEncoder
+from modelzoo.models.cropnet import CropNetGridEncoder
+from utils.imageprocessing.Image import Image
+from utils.labels.ImgLabel import ImgLabel
 
 
 class CropNetEncoder(Encoder):

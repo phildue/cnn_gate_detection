@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from train import train
+from modelzoo.train import train
 
 if __name__ == '__main__':
     start_idx = 0

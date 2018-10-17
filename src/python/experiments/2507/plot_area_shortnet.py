@@ -1,12 +1,10 @@
-import os
-
-from modelzoo.backend.visuals.plots.BaseBarPlot import BaseBarPlot
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
+import numpy as np
 from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
-from modelzoo.evaluation.utils import average_precision_recall, sum_results
+
+from modelzoo.evaluation.utils import sum_results
+from modelzoo.visuals.plots.BaseBarPlot import BaseBarPlot
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
-import numpy as np
 
 cd_work()
 

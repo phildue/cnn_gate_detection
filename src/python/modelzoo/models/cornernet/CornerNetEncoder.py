@@ -1,8 +1,8 @@
 import numpy as np
+from utils.labels.GateLabel import GateLabel
 
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Image import Image
-from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 
 

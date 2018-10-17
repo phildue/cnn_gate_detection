@@ -1,18 +1,14 @@
-import numpy as np
 import keras.backend as K
-from keras.models import load_model
+import numpy as np
 
-from modelzoo.backend.tensor.ConcatMeta import ConcatMeta
-from modelzoo.backend.tensor.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.backend.tensor.gatenet.Netout import Netout
-from modelzoo.backend.tensor.gatenet.PrecisionRecallGateNet import PrecisionRecallGateNet
+from modelzoo.models.gatenet import AveragePrecisionGateNet
 from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.models.gatenet.PrecisionRecallGateNet import PrecisionRecallGateNet
 from utils.fileaccess.CropGenerator import CropGenerator
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import COLOR_BLUE, COLOR_GREEN, show
-from utils.labels.utils import resize_label
 from utils.workdir import cd_work
 
 cd_work()

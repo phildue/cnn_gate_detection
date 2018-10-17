@@ -1,12 +1,11 @@
 from markdown.preprocessors import Preprocessor
 
-import modelzoo
-from modelzoo.backend.tensor.cornernet.PolygonLoss import PolygonLoss
-from modelzoo.backend.tensor.cornernet.PolygonNet import PolygonNet
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
-from modelzoo.models.cornernet.CornerNetDecoder import CornerNetDecoder
-from modelzoo.models.cornernet.CornerNetEncoder import CornerNetEncoder
+from modelzoo.models.cornernet import CornerNetDecoder
+from modelzoo.models.cornernet import CornerNetEncoder
+from modelzoo.models.cornernet import PolygonLoss
+from modelzoo.models.cornernet import PolygonNet
 
 
 class CornerNet(Predictor):

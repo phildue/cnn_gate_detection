@@ -1,5 +1,6 @@
+from modelzoo.evaluation.MetricDetection import DetectionEvaluator
+
 from modelzoo.evaluation import evaluate_generator, evaluate_file
-from modelzoo.evaluation.MetricDetection import MetricDetection
 from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, load_file
@@ -49,4 +50,4 @@ generator = GateGenerator(directories=image_source, batch_size=batch_size, img_f
 evaluate_generator(model, generator, n_batches=n_batches, verbose=True, out_file_labels=result_path + result_file)
 
 evaluate_file(model, result_path + result_file + '.pkl',
-              metrics=[MetricDetection(show_=True, min_box_area=0, max_box_area=img_res[0] * img_res[1])], verbose=True)
+              metrics=[DetectionEvaluator(show_=True, min_box_area=0, max_box_area=img_res[0] * img_res[1])], verbose=True)

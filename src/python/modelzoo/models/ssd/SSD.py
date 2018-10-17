@@ -1,13 +1,11 @@
 import numpy as np
 
-from modelzoo.backend.tensor.ssd.MultiboxLoss import MultiboxLoss
-from modelzoo.backend.tensor.ssd.SSD300 import SSD300
-from modelzoo.backend.tensor.ssd.SSD7 import SSD7
-from modelzoo.backend.tensor.ssd.SSDNet import SSDNet
-from modelzoo.backend.tensor.ssd.SSDTestNet import SSDTestNet
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
+from modelzoo.models.ssd import SSDNet, SSD7, SSD300
+from modelzoo.models.ssd import SSDTestNet
+from modelzoo.models.ssd.MultiboxLoss import MultiboxLoss
 from modelzoo.models.ssd.SSDDecoder import SSDDecoder
 from modelzoo.models.ssd.SSDEncoder import SSDEncoder
 # noinspection PyDefaultArgument

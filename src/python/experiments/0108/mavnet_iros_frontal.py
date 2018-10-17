@@ -1,4 +1,4 @@
-from train import train
+from modelzoo.train import train
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 from utils.imageprocessing.transform.TransformFlip import TransformFlip
 from utils.imageprocessing.transform.TransfromGray import TransformGray

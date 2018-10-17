@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from train import train
+from modelzoo.train import train
 from utils.imageprocessing.BarrelDistortion import BarrelDistortion
 from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
@@ -12,6 +12,7 @@ from utils.imageprocessing.transform.RandomHSV import RandomHSV
 from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.TransformDistort import TransformDistort
 from utils.imageprocessing.transform.TransformRaw import TransformRaw
+from utils.labels.ObjectLabel import ObjectLabel
 
 if __name__ == '__main__':
     start_idx = 0
@@ -89,7 +90,7 @@ if __name__ == '__main__':
                     'resource/ext/samples/various_environments',
                     'resource/ext/samples/real_bg'
                     ]
-
+    ObjectLabel.classes = ['gate']
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               # weight_file='out/thesis/datagen/yolov3_gate_mixed416x416_i00/model.h5',

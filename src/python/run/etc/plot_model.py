@@ -1,7 +1,8 @@
 import argparse
 
-from modelzoo.backend.tensor.ModelPlot import ModelPlot
-from modelzoo.models.ModelFactory import ModelFactory
+from modelzoo.ModelFactory import ModelFactory
+from modelzoo.ModelPlot import ModelPlot
+
 from utils.workdir import cd_work
 
 cd_work()

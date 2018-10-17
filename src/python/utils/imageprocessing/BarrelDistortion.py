@@ -5,8 +5,6 @@ from cv2.cv2 import remap
 from utils.fileaccess.utils import load_file, save_file
 from utils.imageprocessing.DistortionModel import DistortionModel
 from utils.imageprocessing.Image import Image
-from utils.labels.GateCorners import GateCorners
-from utils.labels.GateLabel import GateLabel
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic
 
@@ -57,11 +55,11 @@ class BarrelDistortion(DistortionModel):
         if self.map_d is None:
             self.map_d = self._create_dmapping()
 
-        map_scaled = self._scale(self.map_d, center, 1/scale)
+        map_scaled = self._scale(self.map_d, center, 1 / scale)
 
         mat_undistorted = self._apply_mapping(mat, map_scaled)
         if label is not None:
-            label_undistorted = self._undistort_label(label,scale)
+            label_undistorted = self._undistort_label(label, scale)
             return Image(mat_undistorted, img.format), label_undistorted
         else:
             return Image(mat_undistorted, img.format)
@@ -79,11 +77,11 @@ class BarrelDistortion(DistortionModel):
         if self.map_u is None:
             self.map_u = self._create_umapping()
 
-        map_scaled = self._scale(self.map_u, center, 1/scale)
+        map_scaled = self._scale(self.map_u, center, 1 / scale)
 
         mat_undistorted = self._apply_mapping(mat, map_scaled)
         if label is not None:
-            label_distorted = self._distort_label(label,scale)
+            label_distorted = self._distort_label(label, scale)
             return Image(mat_undistorted, img.format), label_distorted
         else:
             return Image(mat_undistorted, img.format)
@@ -94,24 +92,17 @@ class BarrelDistortion(DistortionModel):
         map += center
         return map
 
-    def _undistort_label(self, label: ImgLabel,scale=1.0):
+    def _undistort_label(self, label: ImgLabel, scale=1.0):
         objects_u = []
         for obj in label.objects:
-            if isinstance(obj, GateLabel):
-                corners = obj.gate_corners.mat
-            else:
-                corners = obj.mat
+            corners = obj.points
             corners = np.expand_dims(corners, 0)
             corners_norm = self._normalize(corners.astype(np.float))
             corners_norm *= scale
             corners_u = self._model(corners_norm)
             corners_u = self._denormalize(corners_u)[0]
-            if isinstance(obj, GateLabel):
-                obj_u = obj.copy()
-                obj_u.gate_corners = GateCorners.from_mat(corners_u)
-            else:
-                obj_u = obj.copy()
-                obj_u.mat = corners_u
+            obj_u = obj.copy()
+            obj_u.points = corners_u
 
             if (len(corners_u[(corners_u[:, 0] < 0) | (corners_u[:, 0] > self.img_shape[1])]) +
                 len(corners_u[(corners_u[:, 1] < 0) | (corners_u[:, 1] > self.img_shape[0])])) > 2:
@@ -131,22 +122,15 @@ class BarrelDistortion(DistortionModel):
 
         objects_distorted = []
         for obj in label.objects:
-            if isinstance(obj, GateLabel):
-                corners = obj.gate_corners.mat
-            else:
-                corners = obj.mat
+            corners = obj.poly.points
             corners = np.expand_dims(corners, 0)
             corners_norm = self._normalize(corners.astype(np.float))
             corners_norm *= scale
             corners_d = self._inverse_model_approx(corners_norm, np.zeros_like(corners))
             corners_d = self._denormalize(corners_d)[0]
 
-            if isinstance(obj, GateLabel):
-                obj_d = obj.copy()
-                obj_d.gate_corners = GateCorners.from_mat(corners_d)
-            else:
-                obj_d = obj.copy()
-                obj_d.mat = corners_d
+            obj_d = obj.copy()
+            obj_d.points = corners_d
 
             if (len(corners_d[(corners_d[:, 0] < 0) | (corners_d[:, 0] > self.img_shape[1])]) +
                 len(corners_d[(corners_d[:, 1] < 0) | (corners_d[:, 1] > self.img_shape[0])])) > 2:

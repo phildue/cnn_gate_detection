@@ -1,14 +1,8 @@
-from matplotlib.pyplot import boxplot, show
+import numpy as np
+from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from sklearn.cluster import KMeans
 
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
-from modelzoo.backend.visuals.plots.BasePlot import BasePlot
-from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
-from utils.BoundingBox import BoundingBox
-from utils.fileaccess.GateGenerator import GateGenerator
-import numpy as np
-from utils.imageprocessing.Backend import resize
-from utils.fileaccess.utils import save_file
+from modelzoo.visuals.plots.BasePlot import BasePlot
 from utils.workdir import cd_work
 
 

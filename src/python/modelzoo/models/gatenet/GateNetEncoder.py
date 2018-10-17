@@ -1,12 +1,10 @@
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
-from utils.BoundingBox import BoundingBox
-
-from utils.Polygon import Polygon
 from utils.imageprocessing.Backend import normalize
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
+from utils.labels.Polygon import Polygon
 
 
 class GateNetEncoder(Encoder):
@@ -18,7 +16,6 @@ class GateNetEncoder(Encoder):
         self.norm = img_norm
 
         self.n_boxes = [len(a) for a in anchor_dims]
-
 
     @staticmethod
     def generate_anchors(norm, grids, anchor_dims, n_polygon):
@@ -52,16 +49,16 @@ class GateNetEncoder(Encoder):
 
         return anchor_t
 
-    def _assign_true_boxes(self, anchors, label:ImgLabel):
+    def _assign_true_boxes(self, anchors, label: ImgLabel):
         confidences = np.zeros((anchors.shape[0], 1)) * np.nan
         coords = anchors.copy()
-        anchor_boxes = Polygon.from_tensor_centroid(anchors)
+        anchor_boxes = Polygon.from_quad_t_centroid(anchors)
         boxes_true = [o.poly for o in label.objects]
 
         for b in boxes_true:
             max_iou = 0.0
             match_idx = np.nan
-            b.cy = self.norm[0] - b.cy
+            b.points[:, 1] = self.norm[0] - b.points[:, 1]
             for i, b_anchor in enumerate(anchor_boxes):
                 iou = b.iou(b_anchor)
                 if iou > max_iou and np.isnan(confidences[i]):
@@ -72,7 +69,7 @@ class GateNetEncoder(Encoder):
                 print("\nGateEncoder::No matching anchor box found!::{}".format(b))
             else:
                 confidences[match_idx] = 1.0
-                coords[match_idx] = b.coords_centroid
+                coords[match_idx] = b.to_quad_t_centroid
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords
@@ -96,7 +93,7 @@ class GateNetEncoder(Encoder):
 
         """
         anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, self.n_polygon)
-        confidences, coords = self._assign_true_boxes(anchors,label)
+        confidences, coords = self._assign_true_boxes(anchors, label)
         coords = self._encode_coords(coords, anchors)
         label_t = np.hstack((confidences, coords, anchors))
         label_t = np.reshape(label_t, (-1, 1 + self.n_polygon + 4))

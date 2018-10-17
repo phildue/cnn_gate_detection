@@ -1,8 +1,8 @@
 from keras import Model
-
-from modelzoo.backend.tensor.gatenet.PostprocessLayer import PostprocessLayer
-from modelzoo.models.ModelFactory import ModelFactory
+from modelzoo.ModelFactory import ModelFactory
 from utils.BoundingBox import BoundingBox
+
+from modelzoo.models.gatenet.PostprocessLayer import PostprocessLayer
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show

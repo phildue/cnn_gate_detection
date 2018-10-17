@@ -1,7 +1,7 @@
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
-from utils.fileaccess.utils import load_file
 import numpy as np
 
+from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()

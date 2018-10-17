@@ -1,9 +1,10 @@
-from modelzoo.models.cornernet.CornerNet import CornerNet
+import keras.backend as K
+
+from modelzoo.models.cornernet import CornerNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Backend import resize, crop
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED, LEGEND_CORNERS, COLOR_BLUE
 from utils.workdir import cd_work
-import keras.backend as K
 
 cd_work()
 batch_size = 4

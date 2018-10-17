@@ -2,11 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 
-from modelzoo.backend.visuals.plots.BaseHist import BaseHist
-from modelzoo.backend.visuals.plots.BaseMultiPlot import BaseMultiPlot
-from modelzoo.backend.visuals.plots.BoxPlot import BoxPlot
-from modelzoo.backend.visuals.plots.Heatmap import Heatmap
-from utils.BoundingBox import BoundingBox
+from modelzoo.visuals.plots import BaseHist
+from modelzoo.visuals.plots import Heatmap
+from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from modelzoo.visuals.plots.BoxPlot import BoxPlot
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.labels.Pose import Pose
 
@@ -66,9 +65,8 @@ class SetAnalysis:
         wh = []
         for label in self.labels:
             h, w = self.img_shape
-            boxes = BoundingBox.from_label(label)
-            for b in boxes:
-                box_dim = np.array([b.w1, b.h1]) / np.array([w, h])
+            for b in label.objects:
+                box_dim = np.array([b.width, b.height]) / np.array([w, h])
                 box_dim = np.expand_dims(box_dim, 0)
                 wh.append(box_dim)
         box_dims = np.concatenate(wh, 0)

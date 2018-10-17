@@ -1,10 +1,8 @@
 import keras.backend as K
-
-from modelzoo.backend.tensor.ssd.AveragePrecisionSSD import AveragePrecisionSSD
-from modelzoo.backend.tensor.ssd.DetectionCountSSD import DetectionCountSSD
-from modelzoo.backend.tensor.ssd.PrecisionRecallSSD import PrecisionRecallSSD
-from modelzoo.models.ssd.SSD import SSD
 from utils.BoundingBox import BoundingBox
+
+from modelzoo.models.ssd import PrecisionRecallSSD, AveragePrecisionSSD, DetectionCountSSD
+from modelzoo.models.ssd.SSD import SSD
 from utils.fileaccess.VocGenerator import VocGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED

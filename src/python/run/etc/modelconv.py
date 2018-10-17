@@ -1,4 +1,4 @@
-from modelzoo.backend.tensor.ModelConverter import ModelConverter
+from modelzoo.ModelConverter import ModelConverter
 from utils.workdir import cd_work
 
 cd_work()

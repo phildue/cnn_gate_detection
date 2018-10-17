@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from modelzoo.backend.tensor.metrics.Loss import Loss
+from modelzoo.metrics.Loss import Loss
 from modelzoo.models.Decoder import Decoder
 from modelzoo.models.Encoder import Encoder
 from modelzoo.models.Net import Net

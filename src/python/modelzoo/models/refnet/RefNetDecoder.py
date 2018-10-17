@@ -1,8 +1,8 @@
 import numpy as np
+from utils.BoundingBox import BoundingBox
 
 from modelzoo.models.Decoder import Decoder
-from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
-from utils.BoundingBox import BoundingBox
+from modelzoo.models.gatenet import GateNetDecoder
 
 
 class RefNetDecoder(Decoder):

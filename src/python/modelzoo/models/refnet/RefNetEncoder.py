@@ -1,13 +1,9 @@
-from random import randint
-
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
-from utils.BoundingBox import BoundingBox
-from utils.imageprocessing.Backend import normalize, crop
+from utils.imageprocessing.Backend import crop
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.utils import resize_label
 
