@@ -125,6 +125,25 @@ When following the race track, the camera focuses the next object frontally most
 
 \acp{CNN} are translation invariant by design but cannot inherently handle variation in rotation and scale. We hypothesize that the generation of samples with only one of the two methods can miss important object appearances. Random placement does not cover most common appearances such as when flying through the racing gate. On the other hand, only training on racing tracks might lead to a bias towards the created courses.
 
+\subsection{Experiments}
+
+In order to to evaluate this hypothesis two models are trained on 20 000 samples each. Model I is trained when placing the camera randomly, following the distribution in \Cref{eq:distroexp}. Model II is trained on varying racing courts. 
+
+For testing a dataset generated with a combination of both methods is used. That way it is ensured that similar view points as in the training sets are present. The dataset contains 1100 images and a total of XX objects. For random placement the distribution of \Cref{eq:distroexp} is used. The race court of the testset is different to the ones used for training. 
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{fig/recall_yaw}
+	\caption{Performance across clusters.}
+	\label{fig:recall_yaw}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig/recall_front}
+	\caption{Performance when facing the object frontally.}
+	\label{fig:recall_front}
+\end{figure}
+
+
 \section{Post-processing}
 
 After having created a set of 2D images, the final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
@@ -216,7 +235,7 @@ S = f^{-1}(I)
 
 An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen how lighter areas appear particularly light, while dark areas remain dark.
 
-\subsection{Color Variations}
+\paragraph{Color Variations}
 
 \todo{describe hsv scaling}
 
@@ -302,21 +321,6 @@ Several models are trained on 20 000 samples each.
 
 \subsubsection{View}
 
-In order to to evaluate this hypothesis two models are trained on 20 000 samples each. Model I is trained when placing the camera randomly, following the distribution in \Cref{eq:distroexp}. Model II is trained on varying racing courts. 
-
-For testing a dataset generated with a combination of both methods is used. That way it is ensured that similar view points as in the training sets are present. The dataset contains 1100 images and a total of XX objects. For random placement the distribution of \Cref{eq:distroexp} is used. The race court of the testset is different to the ones used for training. 
-
-\begin{figure}
-	\includegraphics[width=\textwidth]{fig/recall_yaw}
-	\caption{Performance across clusters.}
-	\label{fig:recall_yaw}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{fig/recall_front}
-	\caption{Performance when facing the object frontally.}
-	\label{fig:recall_front}
-\end{figure}
 
 \subsubsection{Discussion}
 
