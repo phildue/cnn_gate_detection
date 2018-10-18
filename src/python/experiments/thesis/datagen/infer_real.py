@@ -17,7 +17,7 @@ models = [
     'yolov3_exposure416x416',
 ]
 datasets = [
-    'jevois_cyberzoo',
+    # 'jevois_cyberzoo',
     'jevois_basement',
     'jevois_hallway',
 ]
