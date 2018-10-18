@@ -29,7 +29,10 @@ class Predictor:
         self.net.compile(params, metrics)
 
     def predict(self, sample):
-        sample_t = self.preprocessor.preprocess_batch(sample)
+        if isinstance(sample,list):
+            sample_t = self.preprocessor.preprocess_batch(sample)
+        else:
+            sample_t = self.preprocessor.preprocess(sample)
 
         netout = self._model.predict(sample_t)
 
