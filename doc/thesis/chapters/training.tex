@@ -59,6 +59,38 @@ Uniformly colored backgrounds provide little variance and do not represent a rea
 
 Finally, we also use fully synthesized environments for training. Thereby all geometric properties and environmental conditions are followed (to the extent they can be modeled by the graphical engine). However, as the detail of the graphical engine are limited and creating virtual environments is cumbersome, the created training sets provide less variance in background than when pasting the object on existing images.
 
+\subsection{Experiments}
+
+We want to evaluate the influence of context properties on the detection of \ac{EWFO}. Therefore several models are trained in different environments. Each training set contains 20 000 samples. The generated training sets are the following:
+
+\begin{itemize}
+	\item[U] Uniform. The backgrounds are either uniformly black, red, white or blue.
+	\item[SVE] Single Virtual Environment. The backgrounds come from the virtual environment \textit{Dark}.
+	\item[RB] Real Backgrounds. The backgrounds come from the Pascal VOC datasets. For each sample a background image is randomly selected.
+	\item[VVE] Various Virtual Environments. The backgrounds come from the virtual environments \textit{Dark},\textit{Daylight} and \textit{IROS}. Within each environment the textures of walls and floors are varied during dataset generation.
+	\item[BVVE] Real Backgrounds + Various Virtual Environments. The dataset contains samples from RB and VVE in equal proportion.
+\end{itemize}
+
+The models are tested on the real datasets as well as the simulated flight through the \textit{IROS} environment.
+
+
+\subsection{Results}
+
+\begin{table}[htbp]
+	\caption{}
+	\begin{tabular}{|l|l|l|l|r|r|r|l|l|l|}
+		\hline
+		& Validation Set &  &  & \multicolumn{1}{l|}{IROS2018} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & Real Data &  &  \\ \hline
+		& AP40 & AP60 & AP80 & \multicolumn{1}{l|}{AP40} & \multicolumn{1}{l|}{AP60} & \multicolumn{1}{l|}{AP80} & AP40 & AP60 & AP80 \\ \hline
+		U &  &  &  & 0.05 & 0.01 & 0 &  &  &  \\ \hline
+		SVE &  &  &  & 0.29 & 0.17 & 0.02 &  &  &  \\ \hline
+		VVE &  &  &  & 0.61 & 0.49 & 0.17 &  &  &  \\ \hline
+		RB &  &  &  & 0.42 & 0.28 & 0.04 &  &  &  \\ \hline
+	\end{tabular}
+	\label{tab:env}
+\end{table}
+
+\subsection{Conclusion}
 
 \section{View}
 
