@@ -16,6 +16,7 @@ models = [
     'yolov3_blur416x416',
     'yolov3_chromatic416x416',
     'yolov3_exposure416x416',
+    'yolov3_40k416x416',
 ]
 
 work_dir = 'out/thesis/datagen/'
@@ -31,6 +32,7 @@ names = [
     'Blur',
     'Chromatic',
     'Exposure',
+    '40k',
 ]
 datasets = [
     'jevois_cyberzoo',

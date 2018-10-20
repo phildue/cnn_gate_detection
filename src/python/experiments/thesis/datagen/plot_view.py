@@ -9,8 +9,8 @@ cd_work()
 models = [
     'yolov3_gate_varioussim416x416',
     'yolov3_gate_dronemodel416x416',
-    'yolov3_blur416x416',
-    'yolov3_chromatic416x416',
+    # 'yolov3_blur416x416',
+    # 'yolov3_chromatic416x416',
 ]
 
 work_dir = 'out/thesis/datagen/'
@@ -19,8 +19,8 @@ n_iterations = 1
 names = [
     'Random View Points',
     'Flight',
-    'Flight + Random Blur',
-    'Flight + Random Chrom',
+    # 'Flight + Random Blur',
+    # 'Flight + Random Chrom',
 ]
 testset = 'iros2018_course_final_simple_17gates'
 iou_thresh = 0.6

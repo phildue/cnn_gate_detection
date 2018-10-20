@@ -16,6 +16,8 @@ models = [
     # 'yolov3_blur416x416',
     # 'yolov3_chromatic416x416',
     # 'yolov3_exposure416x416',
+    'yolov3_40k416x416',
+
 ]
 datasets = [
     'iros2018_course_final_simple_17gates',
