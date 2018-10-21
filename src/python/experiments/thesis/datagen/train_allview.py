@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/various_environments',
+                    'resource/ext/samples/various_environments20k',
                     ]
 
     for i in range(start_idx, start_idx + n_repetitions):
@@ -71,7 +71,7 @@ if __name__ == '__main__':
               augmenter=augmenter,
               image_source=image_source,
               anchors=anchors,
-              epochs=50,
+              epochs=100,
               batch_size=16,
               n_samples=20000,
               min_obj_size=0.01,

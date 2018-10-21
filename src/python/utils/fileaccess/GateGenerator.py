@@ -42,8 +42,7 @@ class GateGenerator(DatasetGenerator):
         for i, d in enumerate(directories):
             files_dir = sorted(glob.glob(d + "/*." + img_format))
             if len(files_dir) == 0:
-                print("No files found in: ", d)
-                continue
+                raise ValueError("No files found in: ", d)
             files_dir = [os.path.abspath(f) for f in files_dir]
 
             if subsets is not None:
