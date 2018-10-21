@@ -54,7 +54,6 @@ if __name__ == '__main__':
 
     image_source = ['resource/ext/samples/realbg20k']
 
-
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/' + model_name + '_i{0:02d}'.format(i),
@@ -71,4 +70,3 @@ if __name__ == '__main__':
               max_aspect_ratio=4.0,
               initial_epoch=0,
               color_format='bgr')
-

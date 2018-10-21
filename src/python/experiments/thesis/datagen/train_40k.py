@@ -62,7 +62,7 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
                     'resource/ext/samples/various_environments',
-                    'resource/ext/samples/real_bg'
+                    'resource/ext/samples/realbg20k'
                     ]
 
     for i in range(start_idx, start_idx + n_repetitions):
