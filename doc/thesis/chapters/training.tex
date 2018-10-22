@@ -85,6 +85,7 @@ Using real backgrounds performs poorer than using a fully synthesized environmen
 
 Combining both methods does achieve at most the performance of using fully synthesized data. However, in most cases the performance is worse.   
 
+\if false
 \begin{table}[htbp]
 	\caption{Results of different ways to generate context.}
 \begin{tabular}{lrrrrrr}
@@ -99,7 +100,7 @@ Combining both methods does achieve at most the performance of using fully synth
 \end{tabular}
 	\label{tab:context}
 \end{table}
-
+\fi
 \begin{figure}[htbp]
 	\includegraphics[width=\textwidth]{fig/context_bar}
 	\caption{Results of different ways to generate context. Synthesizing more parts of the environment improves performance on both test sets. However, this only holds for weakly localized predictions.}
@@ -151,7 +152,7 @@ The models are tested on the real datasets as well as the simulated flight throu
 
 \begin{figure}[htbp]
 	\includegraphics[width=\textwidth]{fig/view_bar}
-	\caption{Performance across clusters.}
+	\caption{Average Precision for the three different models.}
 	\label{fig:view_bar}
 \end{figure}
 
@@ -164,29 +165,33 @@ Combining both datasets improves the performance mainly on lower quality detecti
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/recall_front}
-	\caption{Performance when facing the object frontally.}
+	\caption{Recall when facing the object frontally.}
 	\label{fig:recall_front}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/recall_angle}
-	\caption{Performance when facing the object frontally.}
+	\caption{Recall when facing from a higher angle.}
 	\label{fig:recall_angle}
 \end{figure}
 
-\Cref{fig:recall_front} and \Cref{fig:recall_angle} show the performance of different models in terms of recall. It can be seen how for a lower quality detections the performance of the model trained on random view points is slightly better than when training the network on simulated flight images. However, for high quality detections the model trained on flight images achieves a higher recall for objects that are close to the camera. This holds even for objects that are not faced frontally. Yet for higher distances the model trained on random view points achieves a higher recall. Generally, it can be seen that the recall first increases when moving the object away from the camera before it decreases again.
+\Cref{fig:recall_front} and \Cref{fig:recall_angle} show the performance of different models in terms of recall. It can be seen how for a lower quality detections the performance of the model trained on random view points is slightly better than when training the network on simulated flight images. However, for high quality detections the model trained on flight images achieves a higher recall for objects that are close to the camera. This holds even for objects that are not faced frontally. Yet for higher distances the model trained on random view points achieves a higher recall. 
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/view_scatter}
-	\caption{Performance when facing the object frontally.}
+	\caption{Detections on the real data shown with respect to width and height of the bounding box.}
 	\label{fig:view_scatter}
 \end{figure}
 
+\Cref{fig:view_scatter} shows true positives at different \ac{IoU} thresholds as well as false negatives of the real data. It can be seen how the models that cover more relative view angles in their training data have a broader range of detections when it comes to detections with a low \ac{IoU}. For higher quality detections however, the model trained on race tracks performs better. It is also apparent how the model trained on a combination of both datasets not only detects the same objects as the other two models but also new objects that not been detected by on of the other models.
+
+On the real as well as on the simulated data it can be seen that there is some distance were the model performs best. Objects that are very close or too far are not detected by any of the models.
+
 \subsection{Discussion}
 
-Even though one model is trained on various race courts it cannot be said it also performs better when applied on a race court. It looks like the recall for high quality predictions increases for the view points that are more present in the training domain. However, an significant difference in the overall performance cannot be identified. The reason could be the model trained on racing tracks is biased towards the respective view points. Hence, it performs very well when objects appear at the same location. Yet this performance comes at cost of generalization, the recall for other objects decreases. The models trained on random view points or a combined dataset have to cover a large variance in object appearance. While this leads to more detections, the bounding boxes for these detections are less accurate. 
+Even though one model is trained on various race courts, containing many samples with objects close to the camera there is no significant performance increase for those samples. Instead it seems that this model produces higher quality bounding boxes. However, overall it detects less objects. The model trained on random view points seems to detect more objects but the predicted bounding boxes are poorer. It can also be seen that the combined model learns to detect not only the same objects as the individual models but also totally new objects. Hence, it can be assumed covering more angles in the training set helps to generalize. Generally there seems to be a trade-off between detecting angles at more view points and the quality of the respected bounding boxes.
 
 It can also be observed that the performance for objects that are close to the camera are quite poor. This is potentially explained by the fact that less object context is available. For example the pole for closer objects is less visible. Also, the probability of having a part of the object out of view increases as the camera comes closer. Another issue could be the limited receptive field of the detection model. YoloV3 assigns the responsibility of an output node based on the \ac{IoU} with the ground truth. However, when \ac{EWFO} are empty and spread over a large area, thus it is possible that the responsible node does not see a feature of the object it is assigned to detect.
 
