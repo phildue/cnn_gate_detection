@@ -176,7 +176,7 @@ However, \ac{FCN} in combination with a small amount of layers introduce a limit
 
 \paragraph{Depthwise Separable Convolutions.}
 
-Another line of research to reduce the number of computations in \acp{CNN} address the convolution operation. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. \Cref{fig:dsc} illustrates the concept. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations.
+Another line of research to reduce the number of computations in \acp{CNN} address the convolution operation. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. This reduces the total number of operations from $N = k_w \cdot k_h \cdot w_n \cdot w_{n+1}$ to $N=(k_w \cdot k_h + w_n)+w_n \cdot w_{n+1}$. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations. These are convolutions with a 1by1 kernel and linear activation.
 
 \paragraph{Channel Shuffling.}
 
@@ -228,14 +228,13 @@ Each of the described group of methods has strengths and weaknesses. While shall
 
 \subsubsection{Attention Models}
 
-The sliding window scheme used by
+The methods described so far share the sliding window paradigm. The whole input image is processed and subsequent pooling operations reduce the spatial dimension. Hence, the computational complexity scales linearly with the number of pixels. In contrast attention based models only process subregions of the image. For example XX use a recurrent neural network to process a certain amount of patches of the input image. Which patches are evaluated is decided by the model based on the patches seen until then. This enables to deploy a method where computational complexity can be controlled independently of the image size. \todoref{google deep mind}
 
 Guido proposes a neural network to learn an attention model.
 
-X propose a recurrent neural network architecture to model the attention process.
+Other attention mechanisms aim to increase performance by ..
 
-
-\todoref{Wire detection}
+Attention mechanism can not yet compete with state-of-the art \ac{CNN} based object detectors.
 
 
 Using Time domain:

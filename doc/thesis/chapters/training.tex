@@ -226,7 +226,36 @@ An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen 
 
 
 
-\subsection{Experiments}
+
+\subsection{Hypothesis}
+\label{sec:training:hypothesis}
+
+This chapter summarizes the hypotheses formulated in the previous chapters:
+
+\begin{enumerate}
+	\item[$\mathcal{H}_1$] An object that is not empty and provides a more distinctive structure is less background dependent than an \ac{EWFO}.
+	
+	\item[$\mathcal{H}_2$] The incorporation of correct placement/light conditions improves the performance of a model trained to detect \acp{EWFO}.
+	
+	\item[$\mathcal{H}_3$] The incorporation of a camera motion model resembling the target domain improves the performance of a model trained to detect \acp{EWFO}. 
+	
+	\item[$\mathcal{H}_3$] Including sensor effects present in the target domain, improves the performance of a model trained to detect \acp{EWFO}. 
+	
+\end{enumerate}
+
+
+
+\section{Experiments}
+\label{sec:training:experiments}
+In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}. The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 5 runs are reported.
+
+For the random view point generation the following parameters are used:
+
+
+Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+
+The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
+
 
 \subsubsection{Background}
 
@@ -286,39 +315,6 @@ For testing a dataset generated with a combination of both methods is used. That
 	\label{fig:recall_front}
 \end{figure}
 
-\subsubsection{Discussion}
-
-\subsubsection{Conclusion}
-
-
-\subsection{Hypothesis}
-\label{sec:training:hypothesis}
-
-This chapter summarizes the hypotheses formulated in the previous chapters:
-
-\begin{enumerate}
-	\item[$\mathcal{H}_1$] An object that is not empty and provides a more distinctive structure is less background dependent than an \ac{EWFO}.
-	
-	\item[$\mathcal{H}_2$] The incorporation of correct placement/light conditions improves the performance of a model trained to detect \acp{EWFO}.
-	
-	\item[$\mathcal{H}_3$] The incorporation of a camera motion model resembling the target domain improves the performance of a model trained to detect \acp{EWFO}. 
-	
-	\item[$\mathcal{H}_3$] Including sensor effects present in the target domain, improves the performance of a model trained to detect \acp{EWFO}. 
-	
-\end{enumerate}
-
-
-
-\section{Experiments}
-\label{sec:training:experiments}
-In order to evaluate the formulated hypotheses several experiments are conducted. The model used is the TinyYoloV3-Architecture, further described in \Cref{sec:object_detection}. The reported metrics are described in \Cref{sec:metrics}. For all experiments mean and standard deviation of 5 runs are reported.
-
-For the random view point generation the following parameters are used:
-
-
-Where $ \mathcal{U}(a,b)$ is a uniform distribution between $a,b$ and $\mathcal{N}(\mu,\sigma^2)$ is a Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
-
-The parameters are chosen experimentally aiming to resemble common view points of a person standing in the room.
 
 \subsubsection{Experiment I}
 
