@@ -157,6 +157,8 @@ The models are tested on the real datasets as well as the simulated flight throu
 
 \Cref{fig:view_bar} shows the average precision of the different models. It should be noted that \textit{Random View Points} is the same model as \textit{Various Environments} of \Cref{fig:context}. It can be seen how Model I and Model II perform comparable on the simulated dataset. In contrast on the real dataset the performance in high quality detections is significantly better when training the network on flight images.
 
+Combining both datasets improves the performance mainly on lower quality detections. This holds particularly for low detections with lower bounding box accuracy.
+
 \todo{combined}
 
 \begin{figure}[htbp]
@@ -175,7 +177,12 @@ The models are tested on the real datasets as well as the simulated flight throu
 
 \Cref{fig:recall_front} and \Cref{fig:recall_angle} show the performance of different models in terms of recall. It can be seen how for a lower quality detections the performance of the model trained on random view points is slightly better than when training the network on simulated flight images. However, for high quality detections the model trained on flight images achieves a higher recall for objects that are close to the camera. This holds even for objects that are not faced frontally. Yet for higher distances the model trained on random view points achieves a higher recall. Generally, it can be seen that the recall first increases when moving the object away from the camera before it decreases again.
 
-\todo{Eval on Real}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{fig/view_scatter}
+	\caption{Performance when facing the object frontally.}
+	\label{fig:view_scatter}
+\end{figure}
 
 \subsection{Discussion}
 

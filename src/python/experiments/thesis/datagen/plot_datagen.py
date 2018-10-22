@@ -19,6 +19,7 @@ models = [
     'yolov3_chromatic416x416',
     'yolov3_exposure416x416',
     'yolov3_40k416x416',
+    'yolov3_allview416x416',
 ]
 
 work_dir = 'out/thesis/datagen/'
@@ -35,7 +36,8 @@ names = [
     'Blur',
     'Chromatic',
     'Exposure',
-    '40k'
+    '40k',
+    'AllView'
 ]
 
 frame = pd.DataFrame()

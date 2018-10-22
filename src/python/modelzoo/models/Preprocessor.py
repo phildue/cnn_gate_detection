@@ -3,6 +3,7 @@ import numpy as np
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import resize, crop
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
@@ -38,7 +39,7 @@ class Preprocessor:
                 img, label = self.crop_to_input(img, label)
                 img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
-            # show(img.bgr,labels=label, t=0)
+            show(img,labels=label, t=0)
 
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)
