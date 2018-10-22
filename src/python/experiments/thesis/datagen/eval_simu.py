@@ -6,22 +6,21 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'yolov3_gate_realbg416x416',
-    'yolov3_gate_uniform416x416',
-    'yolov3_gate_dronemodel416x416',
-    'yolov3_gate_varioussim416x416',
-    'yolov3_gate_mixed416x416'
-    # 'yolov3_pp416x416'
-    # 'iros_nocats'
+    # 'yolov3_gate_realbg416x416',
+    # 'yolov3_gate_uniform416x416',
+    # 'yolov3_gate_dronemodel416x416',
+    # 'yolov3_gate_varioussim416x416',
+    # 'yolov3_gate_mixed416x416',
+    # 'yolov3_allgen416x416',
+    # 'yolov3_hsv416x416',
+    # 'yolov3_blur416x416',
+    # 'yolov3_chromatic416x416',
+    # 'yolov3_exposure416x416',
+    'yolov3_allview416x416',
+
 ]
 datasets = [
-    # 'real_test_labeled',
-    # 'jevois_cyberzoo',
-    # 'jevois_basement',
-    # 'jevois_hallway',
     'iros2018_course_final_simple_17gates',
-    # 'iros_nocats'
-    # 'basement_white100'
 ]
 
 work_dir = 'out/thesis/datagen/'
@@ -37,10 +36,10 @@ for d in datasets:
             for iou_thresh in [0.4, 0.6, 0.8]:
                 try:
                     evalmetric(name='results_iou{}'.format(iou_thresh),
-                               # min_box_area=0.01,
-                               # max_box_area=2.0,
-                               # min_aspect_ratio=0.3,
-                               # max_aspect_ratio=3.0,
+                               min_box_area=0.01,
+                               max_box_area=2.0,
+                               min_aspect_ratio=0.33,
+                               max_aspect_ratio=3.0,
                                iou_thresh=iou_thresh,
                                model_src=work_dir + model_folder,
                                label_file=label_file,

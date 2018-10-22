@@ -3,8 +3,6 @@ import argparse
 import numpy as np
 
 from modelzoo.train import train
-from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 
 if __name__ == '__main__':
     start_idx = 0
@@ -50,11 +48,9 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_chromatic{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_allview{}x{}'.format(img_res[0], img_res[1])
 
-    augmenter = RandomEnsemble([
-        (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))
-         )])
+    augmenter = None
 
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
@@ -66,7 +62,6 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
                     'resource/ext/samples/various_environments20k',
-                    # 'resource/ext/samples/realbg20k'
                     ]
 
     for i in range(start_idx, start_idx + n_repetitions):
@@ -96,6 +91,4 @@ if __name__ == '__main__':
                   0.5,
                   0.5,
                   0.5,
-                  0.25
               ])
-

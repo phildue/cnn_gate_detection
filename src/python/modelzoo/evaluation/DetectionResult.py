@@ -20,10 +20,11 @@ class DetectionResult:
         self.n_tp = len(true_positives)
         self.n_tn = len(true_negatives) if true_negatives is not None else 0
 
-    @property
-    def recall(self):
+    def recall(self, c):
+        n_tp = len([o for o in self.true_positives if o.confidence > c])
+        n_fn = len(self.true_positives + self.false_negatives) - n_tp
         try:
-            return self.n_tp / (self.n_fn + self.n_tp)
+            return n_tp / (n_fn + n_tp)
         except ZeroDivisionError:
             return 0.0
 

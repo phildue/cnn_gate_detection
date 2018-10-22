@@ -3,8 +3,6 @@ import argparse
 import numpy as np
 
 from modelzoo.train import train
-from utils.imageprocessing.transform.RandomChromatic import RandomChromatic
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 
 if __name__ == '__main__':
     start_idx = 0
@@ -50,11 +48,9 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_chromatic{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_40k{}x{}'.format(img_res[0], img_res[1])
 
-    augmenter = RandomEnsemble([
-        (1.0, RandomChromatic((-2, 2), (0.99, 1.01), (-2, 2))
-         )])
+    augmenter = None
 
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
@@ -65,37 +61,36 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/various_environments20k',
-                    # 'resource/ext/samples/realbg20k'
+                    'resource/ext/samples/various_environments',
+                    'resource/ext/samples/realbg20k'
                     ]
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
+              weight_file='thesis/datagen/{0:s}_i{1:02d}/model.h5'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
               anchors=anchors,
               epochs=100,
               batch_size=16,
-              n_samples=20000,
               min_obj_size=0.01,
               max_obj_size=2.0,
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
-              initial_epoch=0,
+              initial_epoch=1,
               color_format='bgr',
               subsets=[
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0,
                   0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.25
+                  0.5
               ])
-

@@ -96,3 +96,35 @@ def evalcluster_height_width(labels_true, labels_pred, conf_thresh, n_bins, iou_
             tp[i_h, i_h] += 1
 
     return tp, fp, fn
+
+
+def evalscatter_wh(labels_true, labels_pred, conf_thresh, iou_thresh=0.6):
+    evaluator = DetectionEvaluator(show_=True, min_box_area=0.01 * 416 * 416, max_box_area=1.0 * 416 * 416,
+                                   min_aspect_ratio=0,
+                                   max_aspect_ratio=100.0, iou_thresh=iou_thresh)
+    fn = []
+    fp = []
+    tp = []
+    for i in range(len(labels_true)):
+
+        label_pred = ImgLabel([obj for obj in labels_pred[i].objects if obj.confidence > conf_thresh])
+        label_true = labels_true[i]
+        evaluator.evaluate(label_true, label_pred)
+
+        for b in evaluator.boxes_fn:
+            w = b.poly.width
+            h = b.poly.height
+            fn.append((w,h))
+
+        for b in evaluator.boxes_fp:
+            w = b.poly.width
+            h = b.poly.height
+            fp.append((w,h))
+
+        for i_b, b in enumerate(evaluator.boxes_true):
+            if i_b not in evaluator.false_negatives_idx:
+                w = b.poly.width
+                h = b.poly.height
+                tp.append((w,h))
+
+    return tp, fp, fn

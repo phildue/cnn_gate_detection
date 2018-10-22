@@ -1,6 +1,7 @@
 from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file, load_file
+from utils.imageprocessing.Imageprocessing import show
 from utils.timing import tic, toc
 
 
@@ -79,9 +80,13 @@ def evalset(
         tic()
         predictions = model.predict(images)
         if images[0].shape[0] != model.input_shape[0] or \
-            images[0].shape[1] != model.input_shape[1]:
+                images[0].shape[1] != model.input_shape[1]:
             raise ValueError("Evaluator:: Labels have different size")
 
+        for j, p in enumerate(predictions):
+            l = p.copy()
+            l.objects = [o for o in l.objects if o.confidence > 0.01]
+            show(images[j], labels=l, t=1)
         # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
         # for j in range(len(batch)):
         #     show(batch[j][0], labels=[predictions[j], labels[j]])

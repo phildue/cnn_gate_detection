@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 
-from modelzoo.visuals.plots import BaseHist
-from modelzoo.visuals.plots import Heatmap
+from modelzoo.visuals.plots.BaseHist import BaseHist
 from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
 from modelzoo.visuals.plots.BoxPlot import BoxPlot
+from modelzoo.visuals.plots.Heatmap import Heatmap
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.labels.Pose import Pose
 
@@ -29,9 +29,9 @@ class SetAnalysis:
         for l in self.labels:
             label_map = np.zeros(self.img_shape)
             for o in l.objects:
-                y_max = y_limit - o.y_min
-                y_min = y_limit - o.y_max
-                label_map[int(min((y_max, y_min))):int(max((y_max, y_min))), int(o.x_min): int(o.x_max)] = 1
+                y_max = y_limit - o.poly.y_min
+                y_min = y_limit - o.poly.y_max
+                label_map[int(min((y_max, y_min))):int(max((y_max, y_min))), int(o.poly.x_min): int(o.poly.x_max)] = 1
             label_sum += label_map
         return label_sum
 
@@ -66,7 +66,7 @@ class SetAnalysis:
         for label in self.labels:
             h, w = self.img_shape
             for b in label.objects:
-                box_dim = np.array([b.width, b.height]) / np.array([w, h])
+                box_dim = np.array([b.poly.width, b.poly.height]) / np.array([w, h])
                 box_dim = np.expand_dims(box_dim, 0)
                 wh.append(box_dim)
         box_dims = np.concatenate(wh, 0)

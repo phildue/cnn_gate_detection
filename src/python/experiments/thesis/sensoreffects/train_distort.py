@@ -66,19 +66,18 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/various_environments',
-                    'resource/ext/samples/real_bg'
+                    'resource/ext/samples/various_environments20k',
+                    # 'resource/ext/samples/realbg20k'
                     ]
 
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
-              weight_file='out/thesis/datagen/yolov3_gate_mixed416x416_i00/model.h5',
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
               anchors=anchors,
-              epochs=50,
+              epochs=100,
               batch_size=16,
               n_samples=20000,
               min_obj_size=0.01,

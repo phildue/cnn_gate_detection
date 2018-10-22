@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from modelzoo.visuals.plots import PyPlot
+from modelzoo.visuals.plots.PyPlot import PyPlot
 
 
 class Heatmap(PyPlot):

@@ -120,7 +120,11 @@ class XmlParser(AbstractDatasetParser):
                 objects = []
                 for element in tree.findall('object'):
                     name = element.find('name').text
-
+                    try:
+                        confidence_field = element.find('conf').text
+                        confidence = float(confidence_field)
+                    except AttributeError:
+                        confidence = 1.0
                     try:
                         pose_xml = element.find('pose')
                         pose = XmlParser._parse_pose(pose_xml)
@@ -137,11 +141,7 @@ class XmlParser(AbstractDatasetParser):
                         box = element.find('bndbox')
                         poly = XmlParser._parse_bndbox(box)
 
-                    try:
-                        confidence_field = element.find('confidence')
-                        confidence = float(confidence_field.text)
-                    except AttributeError:
-                        confidence = 1.0
+
 
                     label = ObjectLabel(name, confidence,poly, pose)
                     objects.append(label)

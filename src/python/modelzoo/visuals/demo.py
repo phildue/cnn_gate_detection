@@ -1,9 +1,9 @@
-from utils.BoundingBox import BoundingBox
 
 from modelzoo.models.Predictor import Predictor
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.imageprocessing.Backend import resize
 from utils.imageprocessing.Imageprocessing import show, LEGEND_TEXT, save_labeled, LEGEND_POSITION
+from utils.labels.ImgLabel import ImgLabel
 
 
 def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4, t_show=-1, out_file=None,
@@ -27,8 +27,8 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
                 img, label = resize(img, model.input_shape, label=label)
             #            print(BoundingBox.from_label(label_pred))
 
-            boxes_pred = BoundingBox.from_label(label_pred)
-            boxes_true = BoundingBox.from_label(label)
+            boxes_pred =label_pred.objects
+            boxes_true = label.objects
 
             false_negatives = []
             false_positives = boxes_pred.copy()
@@ -38,7 +38,7 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
                 box_true = boxes_true[j]
                 for k in range(len(false_positives)):
                     box_pred = false_positives[k]
-                    match = box_pred.iou(box_true) > iou_thresh and box_pred.prediction == box_true.prediction
+                    match = box_pred.poly.iou(box_true) > iou_thresh and box_pred.class_id == box_true.class_id
                     if match:
                         true_positives.append(box_pred)
                         false_positives.remove(box_pred)
@@ -46,9 +46,9 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
                 if not match:
                     false_negatives.append(box_true)
 
-            label_tp = BoundingBox.to_label(true_positives)
-            label_fp = BoundingBox.to_label(false_positives)
-            label_fn = BoundingBox.to_label(false_negatives)
+            label_tp = ImgLabel(true_positives)
+            label_fp = ImgLabel(false_positives)
+            label_fn = ImgLabel(false_negatives)
             show(img, 'demo', labels=[label_tp, label_fp, label],
                  colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
                  legend=LEGEND_POSITION, t=t_show)

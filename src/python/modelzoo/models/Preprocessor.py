@@ -38,7 +38,7 @@ class Preprocessor:
                 img, label = self.crop_to_input(img, label)
                 img, label = resize(img, (self.img_height, self.img_width), label=label)
             #
-            # show(img.bgr,labels=label, t=0)
+            # show(img,labels=label, t=0)
 
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)
