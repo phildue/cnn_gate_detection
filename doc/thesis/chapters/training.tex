@@ -210,15 +210,17 @@ In this section we investigated what role view plays for the detection of \ac{EW
 \todo{concl}
 
 \fi
-\section{Post-processing}
+\section{Image Augmentation}
 
-After having created a set of 2D images, the final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
+The final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
 
-In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of image augmentation is a common tool to improve the detection performance. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. In the \ac{MAV} domain sensor and lens effects have a significant influence on the obtained sample. Hence, we hypothesize that the incorporation of these effects is particularly useful for the \ac{MAV} domain.
+In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of image augmentation is a common tool to improve the detection performance. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. In the \ac{MAV} domain sensor and lens effects have a significant influence on the obtained sample. Hence, we hypothesize that the incorporation of these effects will improve the performance of the trained models. A total of  five image augmentation techniques are investigated.
 
 \paragraph{Lens Distortion}
 
 Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. For \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
+
+For this work a 120 wide angle lens is used. Especially, close objects undergo a strong variation in appearance. Hence, we hypothesize including this effect in the training process will improve the performance on the real world dataset. 
 
 The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
 \todo{double check formula is (y in first line?)}
@@ -249,6 +251,8 @@ An example with $\kappa_1 = 0.5, \kappa_2 = 0.5$ is displayed in \Cref{fig:disto
 
 Chromatic Aberration is caused when different wavelengths of light do not end up in the same locations of the visual sensor. This leads to a shift in the colour channels of the image.
 
+In \cite{Carlson2018} including chromatic aberration significantly improves the performance of models that are trained on fully synthesized data. Hence, we hypothesizes this will also help for our work.
+
 Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
 
 \begin{equation}
@@ -269,16 +273,12 @@ An example is displayed in \Cref{fig:chromatic}. It can be seen how the red and 
 
 \paragraph{Blur}
 
-Motion noise is caused when light falls in different locations of the images sensor due to a fast movement of the camera. It leads to blurry images based on the sensor motion.
+Fast movement and sensor noise can lead to blurry images. This is particularly present in the domain of \ac{MAV}/Autonomous Drone Racing. Hence, we hypothesize including this effect will improve the detection in the real world. 
 
-The phenomenon depends on camera properties as well as the motion of camera and objects. Although a full modelling of this process might benefit the learning process, it requires a complex pipeline and is computationally expensive. Therefore a strong simplification is used, namely a one-dimensional Gaussian filter:
-
-An example for vertical blur is displayed in \Cref{fig:motionblur}. It can be seen how particularly horizontal lines appear softer.
-
-Next to motion, sensor noise can lead to blurry images. For the blur operation a 2D Gaussian kernel is applied on the input image with:
+The effect is modelled using a Gaussian-filter with:
 
 \begin{equation}
-k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\sqrt{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
+k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
 \end{equation}
 \todo{double check notation}
 \paragraph{Exposure.}
@@ -348,7 +348,7 @@ An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen 
 
 
 \subsection{Experiments}
-
+\todo{Distortion}
 \subsection{Results}
 
 \begin{figure}[htbp]
@@ -358,20 +358,19 @@ An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen 
 	\label{fig:pp_bar}
 \end{figure}
 
-\Cref{fig:pp_bar} shows the results in terms of average precision in the training domain. On the simulated data the models with image augmentation general perform a bit better than without the augmentation. Between the models using augmentation there is no method that clearly performs better.
-
-On the real data two methods lead to significant improvement. Especially blurring improves the detection. In contrast image augmentation with chromatic aberration or variations in exposure leads to worse results than using no image augmentation at all.
+\Cref{fig:pp_bar} shows the results in terms of average precision in the training domain. On the simulated data there is only a minor influence on the data augmentation. On the real data blurring improves the detection significantly. In contrast image augmentation with chromatic aberration or variations in exposure/hsv leads to worse results than using no image augmentation at all.
 
 \subsection{Discussion}
-\if false
+
 In simulation where the colours are similar to the training data and no blurring is present, the image augmentation has only little influence. Hence, it seems instead of getting confused by the added noise, the models actually learn to generalize and achieve similar performance.
 
-In contrast on the real data some methods lead to a deterioration in performance, while others improve the detection. The scaling in HSV space improves the detection. Hence, it can be assumed that there was not sufficient variation of colours in the training domain. Also blurring improves the detection. This was a pattern also observed visually and incorporating it in the training domain helped the detection.
+On the real data there is a stronger effect measurable. In contrast to our hypothesis including more sensor noise in the training does only improve the detection in one case. For the variations in HSV the result is especially surprising as the object colour in training and test data are slightly different. Yet, including more variation in colour and illumination does not help the prediction. Chromatic Aberration led to a significant improvement in \cite{Carlson2018} however, we cannot confirm these results. It is possible that our camera suffers only little from  chromatic aberration and thus including the effect in the training does not further help the prediction. The same holds for variations in exposure. Motion and sensor blur are effects that are clearly visible in the dataset. Here we can confirm that including the effect in the training process improves the performance in the real world.
 
-Modelling other sensor effects such as variation in exposure and chromatic aberration made the detection worse. Hence it seems that these patterns are not present in the test domain.
-\fi
 \subsection{Conclusion}
 
+We investigated whether including sensor effects present in the target domain in the data generation process can improve the detection. Therefore we modelled several effects that were observed when working with the camera or that improved the detection in experiments conducted in literature. Finally, only image blurring improved the detection. Other effects led to a deterioration in performance.
+
+We also investigated image augmentation by adding variations in HSV-space to evaluated whether this improves the robustness of the model, improving the performance on the real world dataset. However, the image augmentation did not lead to an improvement.
 
 \section{Discussion}
 \label{sec:training:discussion}

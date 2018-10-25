@@ -20,14 +20,14 @@ if __name__ == '__main__':
 
     start_idx = args.start_idx
     n_repetitions = args.n_reps
-    anchors = np.array([
+    anchors = np.array([[
         [330, 340],
         [235, 240],
         [160, 165]],
         [[25,  40],
-         [[65, 70],
-          [100, 110]]
-         ])
+         [65, 70],
+          [100, 110]]]
+         )
 
     architecture = [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
