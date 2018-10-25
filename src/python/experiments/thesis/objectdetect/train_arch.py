@@ -21,13 +21,14 @@ if __name__ == '__main__':
     start_idx = args.start_idx
     n_repetitions = args.n_reps
     anchors = np.array([
-        [[81, 82],
-         [135, 169],
-         [344, 319]],
-        [[10, 14],
-         [23, 27],
-         [37, 58]],
-    ])
+        [330, 340],
+        [235, 240],
+        [160, 165]],
+        [[25,  40],
+         [[65, 70],
+          [100, 110]]
+         ])
+
     architecture = [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
@@ -39,19 +40,15 @@ if __name__ == '__main__':
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (11, 11), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [-4]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'upsample', 'size': 2},
-        {'name': 'route', 'index': [-1, 8]},
+        {'name': 'route', 'index': [8]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_w0_{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_arch{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
         (0.2, RandomMotionBlur(1.0, 2.0, 15)),
@@ -74,7 +71,6 @@ if __name__ == '__main__':
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
-              weight_file='out/thesis/datagen/{0:s}_i{1:02d}/model.h5'.format(model_name, i),
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
@@ -86,7 +82,7 @@ if __name__ == '__main__':
               max_obj_size=2.0,
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
-              initial_epoch=1,
+              initial_epoch=0,
               color_format='bgr',
               subsets=[
                   0.5,
@@ -101,4 +97,3 @@ if __name__ == '__main__':
                   0.5,
                   0.25
               ])
-

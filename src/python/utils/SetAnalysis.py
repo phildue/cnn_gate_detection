@@ -66,9 +66,11 @@ class SetAnalysis:
         for label in self.labels:
             h, w = self.img_shape
             for b in label.objects:
-                box_dim = np.array([b.poly.width, b.poly.height]) / np.array([w, h])
-                box_dim = np.expand_dims(box_dim, 0)
-                wh.append(box_dim)
+                if 0 < b.poly.width < w\
+                    and 0 < b.poly.height < h:
+                    box_dim = np.array([b.poly.width, b.poly.height])
+                    box_dim = np.expand_dims(box_dim, 0)
+                    wh.append(box_dim)
         box_dims = np.concatenate(wh, 0)
         return box_dims
 
@@ -79,7 +81,7 @@ class SetAnalysis:
         centers = kmeans.cluster_centers_
         scatter = BaseMultiPlot(x_data=[box_dims[:, 0], centers[:, 0]], y_data=[box_dims[:, 1], centers[:, 1]],
                                 line_style=['bx', 'ro'],
-                                x_label='width', y_label='height', y_lim=(0, 1))
+                                x_label='width', y_label='height',y_lim=(0, self.img_shape[0]))
         return scatter, kmeans
 
     def show_summary(self):

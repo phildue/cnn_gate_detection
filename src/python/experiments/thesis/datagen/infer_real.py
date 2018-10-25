@@ -17,10 +17,10 @@ models = [
     'yolov3_chromatic416x416',
     'yolov3_exposure416x416',
     # 'yolov3_40k416x416',
-    'yolov3_allview416x416',
+    # 'yolov3_allview416x416',
 ]
 datasets = [
-    'jevois_cyberzoo',
+    # 'jevois_cyberzoo',
     'jevois_basement',
     'jevois_hallway',
 ]

@@ -23,17 +23,17 @@ architecture = [
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (14, 14), 'strides': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'},
+    {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+    # {'name': 'conv_leaky', 'kernel_size': (11, 11), 'filters': 1024, 'strides': (2, 2), 'alpha': 0.1},
+    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'predict'},
     # {'name': 'route', 'index': [-4]},
     # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
     # {'name': 'upsample', 'size': 2},
     # {'name': 'route', 'index': [-1, 8]},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'predict'}
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'}
 ]
 
 

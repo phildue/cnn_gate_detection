@@ -1,8 +1,8 @@
 import numpy as np
-from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
 from sklearn.cluster import KMeans
 
 from modelzoo.visuals.plots.BasePlot import BasePlot
+from utils.SetAnalysis import SetAnalysis
 from utils.workdir import cd_work
 
 
@@ -45,9 +45,20 @@ def plot_iou_vs_center(box_dims, range_anchors):
 
 
 cd_work()
-path = 'resource/ext/samples/crop20k/'
-set_analyzer = SetAnalyzer((52, 52), path)
-scatter, kmeans = set_analyzer.kmeans_anchors(5)
+path = ['resource/ext/samples/daylight_course1',
+                    # 'resource/ext/samples/daylight_course5',
+                    # 'resource/ext/samples/daylight_course3',
+                    # 'resource/ext/samples/iros2018_course1',
+                    'resource/ext/samples/iros2018_course5',
+                    # 'resource/ext/samples/iros2018_flights',
+                    'resource/ext/samples/basement_course3',
+                    'resource/ext/samples/basement_course1',
+                    'resource/ext/samples/iros2018_course3_test',
+                    'resource/ext/samples/iros_random',
+                    # 'resource/ext/samples/realbg20k'
+                    ]
+set_analyzer = SetAnalysis((416, 416), path)
+scatter, kmeans = set_analyzer.kmeans_anchors(6)
 print(kmeans.cluster_centers_)
 scatter.show()
 #plot_iou_vs_center(set_analyzer.get_box_dims(), 15).show()
