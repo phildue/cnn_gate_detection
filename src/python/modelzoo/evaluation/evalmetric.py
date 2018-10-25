@@ -22,16 +22,8 @@ def evalmetric(
     if img_res is None:
         img_res = summary['img_res']
 
-    # Result Paths
-    if result_path is None:
-        result_path = model_src + '/test/'
-
-    if result_file is None:
-        result_file = name + '.pkl'
-
     exp_param_file = name + '_evalmetric'
 
-    create_dirs([result_path])
 
     exp_params = {'name': name,
                   'model': model_src,
@@ -41,8 +33,7 @@ def evalmetric(
                   'min_box_area': min_box_area,
                   'max_box_area': max_box_area}
 
-    save_file(exp_params, exp_param_file + '.txt', result_path)
-    save_file(exp_params, exp_param_file + '.pkl', result_path)
+
 
     metric = DetectionEvaluator(
         iou_thresh=iou_thresh,
@@ -69,6 +60,13 @@ def evalmetric(
         'image_files': image_files
     }
 
-    save_file(output, result_file, result_path)
+    if result_path:
+        create_dirs([result_path])
+        if result_file is None:
+            result_file = name
+        save_file(output, result_file, result_path)
+        save_file(exp_params, exp_param_file + '.txt', result_path)
+        save_file(exp_params, exp_param_file + '.pkl', result_path)
 
+    return output
 

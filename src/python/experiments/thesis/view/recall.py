@@ -39,7 +39,7 @@ for iou in ious:
         labels_pred = result_file['labels_pred']
         labels_true = result_file['labels_true']
         img_files = result_file['image_files']
-        fn, tp = evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh=0.99, n_bins_angle=angle_bins,
+        fn, tp = evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh=0.9, n_bins_angle=angle_bins,
                                       n_bins_dist=dist_bins,
                                       iou_thresh=iou)
 
@@ -91,12 +91,18 @@ for i, tp in enumerate(tps):
         r = tp_sum / (tp_sum + fn_sum)
         r[np.isnan(r)] = 0.0
         r_front_iou.append(r)
-
+        fn_total = fn_sum
+        tp_total = tp_sum
         fn_sum = np.sum(fns[i][j][:, 1:-1], 1)
         tp_sum = np.sum(tp[j][:, 1:-1], 1)
         r = tp_sum / (tp_sum + fn_sum)
         r[np.isnan(r)] = 0.0
         r_yaw_iou.append(r)
+        fn_total += fn_sum
+        tp_total += tp_sum
+        fn_total = np.sum(fn_total)
+        tp_total = np.sum(tp_total)
+        print("{}: IoU={} Total {}/{} [{}]: r={}".format(titles[j],ious[i],tp_total,fn_total,tp_total + fn_total,tp_total/(tp_total+fn_total)))
     recall_yaw.append(r_yaw_iou)
     recall_front.append(r_front_iou)
 
