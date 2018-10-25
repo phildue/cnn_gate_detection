@@ -162,11 +162,7 @@ The models are tested on the real datasets described in \Cref{sec:datasets} as w
 	\label{fig:view_bar}
 \end{figure}
 
-\Cref{fig:view_bar} shows the average precision of the different models. It should be noted that \textit{Random View Points} is the same model as \textit{Various Environments} of \Cref{fig:context}. It can be seen how Model I and Model II perform comparable on the simulated dataset. In contrast on the real dataset the performance in high quality detections is significantly better when training the network on flight images.
-
-Combining both datasets improves the performance mainly on lower quality detections. This holds particularly for low detections with lower bounding box accuracy.
-
-\todo{combined}
+\Cref{fig:view_bar} shows the average precision of the different models. It should be noted that \textit{Random View Points} is the same model as \textit{Various Environments} of \Cref{fig:context}. On the simulated dataset there is only a minor difference between the three models in terms of average precision. In contrast on the real world dataset it can be seen how the models that include flight images perform better for higher quality detections. The best performance is achieved by the model that was trained on a combination of both datasets.
 
 \begin{figure}[htbp]
 	\centering
@@ -175,41 +171,35 @@ Combining both datasets improves the performance mainly on lower quality detecti
 	\label{fig:recall_yaw}
 \end{figure}
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig/view_pr}
-	\caption{Precision - Recall at IoU 0.6.}
-	\label{fig:view_pr}
-\end{figure}
+\Cref{fig:recall_yaw} shows the performance of the different models in terms of recall on the simulated dataset at a confidence threshold of 0.5. It can be seen that the recall of the model only trained on racing tracks is lower than the recall of the other models. This holds particularly when the object is not faced frontally. Between the combined dataset and random placement only minor differences can be identified.
 
-\if false
-\Cref{fig:recall_yaw} shows the performance of different models in terms of recall. It can be seen how for a lower quality detections the performance of the model trained on random view points is slightly better than when training the network on simulated flight images. However, for high quality detections the model trained on flight images achieves a higher recall for objects that are close to the camera. This holds even for objects that are not faced frontally. Yet for higher distances the model trained on random view points achieves a higher recall. 
-\fi 
+Despite the lower recall the model trained on racing tracks achieves comparable performance in terms of AP. This is explained by the higher precision achieved by the model.
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig/view_scatter}
 	\caption{Detections on the real data shown with respect to width and height of the bounding box. The more top left a sample is located the closer it is to the camera. When Height > Width the object mostly has a yaw angle unequal to zero.}
 	\label{fig:view_scatter}
 \end{figure}
-\if false
-\Cref{fig:view_scatter} shows true positives at different \ac{IoU} thresholds as well as false negatives of the real data. It can be seen how the models that cover more relative view angles in their training data have a broader range of detections when it comes to detections with a low \ac{IoU}. For higher quality detections however, the model trained on race tracks performs better. It is also apparent how the model trained on a combination of both datasets not only detects the same objects as the other two models but also new objects that not been detected by on of the other models.
+
+\Cref{fig:view_scatter} shows true positives at different \ac{IoU} thresholds as well as false negatives of the real data. It can be seen how the models that cover more relative view angles in their training data have a broader range of detections. The model trained on racing tracks only detects objects at quite narrow field. It is also apparent how the model trained on a combination of both datasets not only detects the same objects as the other two models but also objects.
 
 On the real as well as on the simulated data it can be seen that there is some distance were the model performs best. Objects that are very close or too far are not detected by any of the models.
-\fi
+
 \subsection{Discussion}
-\if false
-Even though one model is trained on various race courts, containing many samples with objects close to the camera there is no significant performance increase for those samples. Instead it seems that this model produces higher quality bounding boxes. However, overall it detects less objects. The model trained on random view points seems to detect more objects but the predicted bounding boxes are poorer. It can also be seen that the combined model learns to detect not only the same objects as the individual models but also totally new objects. Hence, it can be assumed covering more angles in the training set helps to generalize. Generally there seems to be a trade-off between detecting angles at more view points and the quality of the respected bounding boxes.
+
+Even though one model is trained on various race courts, containing many samples with objects close to the camera there is no significant performance increase for those samples. Instead this model produces higher quality bounding boxes while overall detecting less objects. The model trained on random view points seems to detect more objects but the predicted bounding boxes are poorer. Hence, there seems to be a trade-off between detecting angles at more view points and the quality of the respected bounding boxes. 
+
+It can also be seen that the combined model learns to detect not only the same objects as the individual models but also totally new objects. Hence, it can be assumed covering more angles in the training set helps to generalize. 
 
 It can also be observed that the performance for objects that are close to the camera are quite poor for all models. This is potentially explained by the fact that less object context is available. For example the pole for closer objects is less visible. Also, the probability of having a part of the object out of view increases as the camera comes closer. Another issue could be the limited receptive field of the detection model. As the last node of the model cannot see the whole image and the object is empty, it is possible that the node responsible to predict the object does not see any of the object parts. This is further addressed in \Cref{sec:object_detection}.
 
 For larger distances the performance decreases again. This is explained by the fact that less details of the objects are visible as the camera moves further away.
-\fi
-\subsection{Conclusion}
-\if false
-In this section we investigated what role view plays for the detection of \ac{EWFO}. We hypothesized that having a higher variance in view points will improve the detection. This hypothesis could be confirmed as the model trained with a combination of both datasets has
-\todo{concl}
 
-\fi
+\subsection{Conclusion}
+
+We investigated the influence of the relative view for the detection of \ac{EWFO} on \ac{MAV}. We hypothesized that having a higher variance in view points will improve the detection and that including samples obtained from racing tracks is crucial for detecting close objects. However, we could not observe a direct relation between the view angles present during training and the model performance on different angles. Instead we observe that the model containing less angles in the training set produces less but higher quality bounding boxes. Furthermore, we observe that including the racing track images helps the model to generalize and improves performance on the real world dataset.
+
 \section{Image Augmentation}
 
 The final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
@@ -278,16 +268,16 @@ Fast movement and sensor noise can lead to blurry images. This is particularly p
 The effect is modelled using a Gaussian-filter. The image is convolved with a 2D-kernel build from:
 
 \begin{equation}
-k(\mu,\sigma) = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{(x-\mu_x)^2 + (y-\mu_y)^2}{2\sigma_x\sigma_y}}} 
+k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
 \end{equation}
 
-Where the ke $\sigma_x$ and $\sigma_y$ are the variance in direction x and y
+Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y and used to model directional (motion) blur. An example can be seen in \Cref{fig:focusblur}.
 
 \paragraph{Exposure.}
 
 Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
 
-Following the model from \cite{Carlson2018}:
+Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. Hence, we hypothesize incorporating the effect in the data generation will improve the performance of the trained model. The effect is modelled following \cite{Carlson2018}:
 
 \begin{equation}
 f(S) = \frac{255}{1 + e^{-A S}}
@@ -307,9 +297,15 @@ S = f^{-1}(I)
 
 An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen how lighter areas appear particularly light, while dark areas remain dark.
 
-\paragraph{Color Variations}
+\paragraph{Colour Variations}
 
-\todo{describe hsv scaling}
+The 3D-models and textures used in the simulator are limited and creating a large variation in environments or objects requires manual effort. An alternative method to increase the variation in colour and illumination is a scaling in HSV space. The objects in the real world dataset have a slightly different shape and different colour to the 3D-models of the data generation tool. We hypothesize including variations in HSV space will improve the performance on the real world dataset.
+
+The variations are including with:
+\begin{equation}
+	I^* = f(I) = S I
+\end{equation}
+Where \textbf{S} is a 3D-vector where each element stems from a uniform distribution. The distributions are:
 
 
 \begin{figure}[htbp]
@@ -374,8 +370,27 @@ We investigated whether including sensor effects present in the target domain in
 
 We also investigated image augmentation by adding variations in HSV-space to evaluated whether this improves the robustness of the model, improving the performance on the real world dataset. However, the image augmentation did not lead to an improvement.
 
-\section{Discussion}
-\label{sec:training:discussion}
 
 \section{Conclusion}
 \label{sec:training:conclusion}
+
+In this chapter the generation of data for the detection of \acp{EWFO} on \acp{MAV} was investigated. Finally, the initially formulated research questions can be answered:
+
+\begin{enumerate}
+	\item[\textbf{RQ1.1}] What role does context play for the detection \acp{EWFO} on \acp{MAV}?
+	
+	Without providing some variation in background, the trained model could not detect objects in simulation or the real world. However, when providing random images as background, the object could be detected sometimes. Hence, we conclude that at least some variation in background is required. Better results are obtained when the context is more realistic in terms of illumination and object placement even though when the environment is fully synthesized. Hence, we conclude that the model can make use of context and that creating a realistic synthesized environment can improve the detection.
+	
+	\item[\textbf{RQ1.2}] What role does the view perspective play for the detection \acp{EWFO} on \acp{MAV}?
+	
+	We observe that the models perform poorer on objects with very low and very high distance. We assume that this is because less context is present and the object parts are spread over larger distances in the image.
+	
+	We could not identify a direct relation between the view perspective in training and during testing. Instead we see a trade-off in quality of bounding boxes in terms of detection and location and overall recall. The more angles are included in the training set the more objects can be detected however, more false positives are predicted and the dimensions of the bounding box are less accurate.
+	
+	\item[\textbf{RQ1.3}] Can the incorporation of sensor effects or image augmentation benefit the detection performance?
+	
+	Only one of the used techniques improved the performance of the models in the real world. Artificially increasing variations in HSV space led to a deterioration in performance. We assume that most of the modelled effects are of minor influence in the camera used in this work. Thus modelling the respective effects did not help. In contrast motion blur seems to be of large influence. Incorporating this effect led to a significant improvement. 
+	
+\end{enumerate}
+
+
