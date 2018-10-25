@@ -275,12 +275,14 @@ An example is displayed in \Cref{fig:chromatic}. It can be seen how the red and 
 
 Fast movement and sensor noise can lead to blurry images. This is particularly present in the domain of \ac{MAV}/Autonomous Drone Racing. Hence, we hypothesize including this effect will improve the detection in the real world. 
 
-The effect is modelled using a Gaussian-filter with:
+The effect is modelled using a Gaussian-filter. The image is convolved with a 2D-kernel build from:
 
 \begin{equation}
-k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
+k(\mu,\sigma) = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{(x-\mu_x)^2 + (y-\mu_y)^2}{2\sigma_x\sigma_y}}} 
 \end{equation}
-\todo{double check notation}
+
+Where the ke $\sigma_x$ and $\sigma_y$ are the variance in direction x and y
+
 \paragraph{Exposure.}
 
 Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.

@@ -43,7 +43,7 @@ if __name__ == '__main__':
         {'name': 'conv_leaky', 'kernel_size': (11, 11), 'filters': 64, 'strides': (2, 2), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [8]},
+        {'name': 'route', 'index': [-4]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
