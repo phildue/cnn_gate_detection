@@ -137,7 +137,7 @@ In contrast \ac{HOG} \cite{Dalal} and \ac{SIFT} \cite{Lowe2004} use the image gr
 
 A general challenge in Computer Vision is the combination of local image features such as corners and edges to a more global detection of an object. Especially, when parts of the object can be occluded or deformed and thus undergo large variations in appearance. In order to cope with these issues \citeauthor{Felzenszwalb} \cite{Felzenszwalb} model pedestrians in individual parts and combine them in their proposed \ac{DPM}.
 
-Traditional methods have in common that the individual steps of the detection pipeline are optimized separately. Furthermore, often the feature extractors are designed manually. Hence, designing such a detector can result in cumbersome application dependent work. Furthermore, the methods seem to have reached a limit in performance in the years of \todo{XX} where almost no improvement in performance was achieved.
+Traditional methods have in common that the individual steps of the detection pipeline are optimized separately. Furthermore, often the feature extractors and object models are designed manually. Hence, designing such a detector can result in cumbersome application dependent work. \ac{EWFO} have sparse features and cameras on \ac{MAV} can have a strong influence on the object appearance. Modelling this appearances manually is difficult. Also, the methods seem to have reached a limit in performance in the years of 2005-2012 where almost no improvement in performance was achieved.
 
 \subsubsection{\acp{CNN}-based Feature Extraction}
 
@@ -183,15 +183,18 @@ Another line of research to reduce the number of computations in \acp{CNN} addre
 \cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation. 
 
 \paragraph{Dense Connections.}
-\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. This enables feature reuse  and thus the reduction of the total amount of parameters \todo{is that really true since we need weights for much more filters}.
+\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. By enabling feature reuse the total amount of parameters shall be reduced.
 
 Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
 \subsubsection{\ac{CNN}-based Object Detection}
 
-After showing promising results for Classification, \acp{CNN} where quickly also applied for Object Detection. \citeauthor{Girshick2013} \cite{Girshick2013} use Selective Search \cite{Uijlings2013} to extract object candidates from an image and classify each region with a \ac{CNN}. However, this requires to run the whole network at various scales and overlapping locations. Hence, the approach contains a lot of redundant operations and is computationally intense.
+After showing promising results for Classification, \acp{CNN} where quickly also applied for Object Detection. 
 
 \paragraph{Two-Stage Detectors.}
+
+\citeauthor{Girshick2013} \cite{Girshick2013} use Selective Search \cite{Uijlings2013} to extract object candidates from an image and classify each region with a \ac{CNN}. However, this requires to run the whole network at various scales and overlapping locations. Hence, the approach contains a lot of redundant operations and is computationally intense.
+
 \citeauthor{Ren} \cite{Ren} use a \ac{RPN} to propose regions that likely contain an object. In order to define the proposal task as a regression problem, the approach introduces so called \textit{anchor boxes}(also \textit{prior boxes}, \textit{default boxes}). These are boxes of predefined size and location. The model predicts class probabilities and coordinate offsets for each of these boxes. Thereby, a certain set of output nodes is responsible for a particular box. If during training a ground truth box has sufficient overlap with a certain box the corresponding output nodes are assigned "responsible" to predict that object. That means the loss is only propagated via those nodes. 
 
 \Cref{fig:anchors} illustrates the concept. The anchor boxes are displayed as dashed lines while the ground truth is displayed solid. The ground truth box in blue has sufficient overlap with two anchor boxes. Hence, these two sets of output nodes take part in the loss calculation. In the example each of these sets predicts coordinate offsets $\Delta(cx, cy, w,h)$ and class probabilities $c_1 .. c_p$.
@@ -206,25 +209,30 @@ After showing promising results for Classification, \acp{CNN} where quickly also
 	
 \end{figure}
 
-For the classification stage an \ac{SVM}-classifier is used. The classifier is trained on the image patches extracted by the first stage. \acp{RPN} enabled to propose multiple candidate regions with a single inference of the network. Thus, the expensive feature extraction stage is run only once which results in a significant speed up \todo{how much?}. A drawback is the fact that individual stages of the method have to be optimized individually. Furthermore, the training requires to store large amounts of extracted patches on the hard drive.
+For the classification stage an \ac{SVM}-classifier is used. The classifier is trained on the image patches extracted by the first stage. \acp{RPN} enabled to propose multiple candidate regions with a single inference of the network. Thus, the expensive feature extraction stage is run only once which results in a significant 213x speed up. A drawback is the fact that individual stages of the method have to be optimized individually. Furthermore, the training requires to store large amounts of extracted patches on the hard drive.
 
-In the follow up work \cite{Ren} propose the \textit{ROI}-pooling layer. The layer uses spatial pyramid pooling in order to resize region proposals to a fixed size. This enabled the end-to-end training of the two-stage detection pipeline. \todo{And resulted in?}
+In the follow up work \cite{Ren} propose the \textit{ROI}-pooling layer. The layer uses spatial pyramid pooling in order to resize region proposals to a fixed size. This enabled the end-to-end training of the two-stage detection pipeline.
+
+Being currently the method with the best performance in terms of \ac{mAP} two stage approaches would be a valid choice for the detection of \ac{EWFO}. However, their two stage character makes the inference time relatively slow, which is not suitable for the application on a \ac{MAV}. Also, this work investigates the detection of a single object. For this application the \ac{RPN} can be used directly.
 
 \paragraph{One-Stage Detectors.}
-Another end-to-end pipeline was published by \citeauthor{Redmon} \cite{Redmon}. In contrast to aforementioned approaches, the network performs Classification and Localization in a single pass. The task is formulated by dividing the input image in a fixed grid and predicting $C$ class probabilities for each grid cell. Additional $5*B$ output nodes predict $B$ set of bounding box coordinates and $B$ object probabilities for each cell. \todo{what is good and bad?}
 
-\citeauthor{Liu} propose \ac{SSD} \cite{Liu}, one stage detector using the concept of aforementioned anchor boxes. Instead of only predicting an object score for each anchor box, the model also predicts class probabilities. Another novelty in this approach is the use of multiple predictor layers for various scales. The network does not only use its final layer for prediction but also intermediate representations. Assuming that the lower layers preserve more fine grained features, early output nodes are trained on smaller objects while later output nodes focus on predicting larger scale objects.
+An alternative approach to \ac{CNN}-based Object detection are one-stage detectors.  Here, the network performs Classification and Localization in a single pass. 
+
+The first method was published by \citeauthor{Redmon} in \cite{Redmon}. The task is formulated by dividing the input image in a fixed grid and predicting $C$ class probabilities for each grid cell. Additional $5*B$ output nodes predict $B$ set of bounding box coordinates and $B$ object probabilities for each cell. Being a breakthrough as the first one stage detector this approach was still limited as for each grid cell at most one object could be predicted.
+
+\citeauthor{Liu} propose \ac{SSD} \cite{Liu}, a one stage detector using the concept of aforementioned anchor boxes. Instead of only predicting an object score for each anchor box, the model also predicts class probabilities. Another novelty in this approach is the use of multiple predictor layers for various scales. The network does not only use its final layer for prediction but also intermediate representations. Assuming that the lower layers preserve more fine grained features, early output nodes are trained on smaller objects while later output nodes focus on predicting larger scale objects.
 
 Follow up work of \citeauthor{Redmon}\cite{Redmon, Redmona} also included the concept of anchor boxes and prediction layers at multiple scales, making \ac{SSD} and \ac{Yolo} converge to a very similar solution. A novelty in \cite{Redmona} is the use of de-convolution layers for small object prediction. In order to achieve a higher accuracy for small objects the final layers are up-sampled and combined with finer grain features from earlier layers. The aim is to enable a combination of deep semantic features at low spatial resolution with fine grain low level features at high resolution.
 
-Within the framework of \ac{SSD} and \ac{Yolo} several approaches exist that either change the base network or modify layers in between: \cite{ChengchengNing2017} propose propose a more efficient non-max-suppression method as well as to include an inception module in the network architecture to reduce computation while keeping/increasing performance. \cite{Wu} uses \textit{SqueezeNet} as base network and a mixture between the ssd and yolo loss function as training goal. \cite{Xiang} investigates the receptive fields of SSD and tries to incorporate more context, especially on lower feature maps, to increase detection rate for small objects.\cite{Linb} applies the framework for vehicle detection. They use \textit{GoogLeNet} as base network (and investigate several others).\cite{TripathiSanDiego} apply a network very similar to YoloV2 and investigate 8bit quantization of the model to make it runnable on embedded devices.
-
+\if false
 A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
-
+\fi
 \todoref{CornerNet}
 
+One stage detectors achieve generally a lower performance in terms of \ac{mAP} than two stage detectors. However, they are significantly faster to evaluate and generally more accurate than traditional methods. The TinyYoloV3 architecture is 9-layer network with a suitable size to be applied on a \ac{MAV}. This work uses this approach as the baseline model.
 
-Each of the described group of methods has strengths and weaknesses. While shallow methods are typically quite fast they require a lot of manual effort and/or are not so accurate. Two-stage detectors on the other hand are quite accurate but their computational requirements are prohibitive for the hardware to be used in this thesis. One-stage detectors offer a compromise between detection accuracy and inference speed. In addition they can be trained end-to-end which requires only little manual engineering. However, the presented methods are still too slow for the hardware used in this thesis.
+\todo{put somewhere the overview of performance vs speed gained from object detection paper}
 
 \subsubsection{Attention Models}
 
@@ -240,16 +248,14 @@ Attention mechanism can not yet compete with state-of-the art \ac{CNN} based obj
 Using Time domain:
 \cite{Chen2018}
 
-\todo{put somewhere the overview of performance vs speed gained from object detection paper}
-
-
 \subsubsection{Knowledge Distillation}
 
-\todo{Knowledge Distillation}
+\todo{write}
 
 \subsubsection{Weight Quantization}
-Operational Level - Quantization:
-\cite{TripathiSanDiego}, 
+
+The hardware of most embedded \ac{CPU} support only integer operations and thus rely on software to perform floating point operations. Hence, weight quantization is another line of research to reduce the inference time of deep networks on mobile devices. By mimicking the quantization effects during training, the network learns to deal with these kind of artefacts. However, the target platform of this work supports hardware accelerated floating point multiplications. While weight quantization could still be used to accelerate the network it would require serious low level operation optimization. This work addresses the optimization on a more high level architectural basis.
+\todoref{put some refs where this is applied \cite{TripathiSanDiego}}
 
 
 \subsection{Generating Data}
@@ -310,7 +316,7 @@ While transfer learning provides the theoretical framework as well as methods to
 
 
 
-
+\if false
 \section{Baseline}
 
 
@@ -329,3 +335,4 @@ The results in terms of precision and recall are summarized in \Cref{fig:snake_r
 	\label{fig:snake_results_real}
 \end{figure}
 
+\fi

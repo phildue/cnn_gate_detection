@@ -32,20 +32,25 @@ frame = pd.DataFrame()
 frame['Name'] = titles
 for iou in ious:
     recalls = []
+    fns = []
+    tps = []
     for i, f in enumerate(result_files):
         result_file = load_file(f)
         labels_pred = result_file['labels_pred']
         labels_true = result_file['labels_true']
         img_files = result_file['image_files']
-        fn, tp = evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh=0.5, n_bins_angle=angle_bins,
+        fn, tp = evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh=0.99, n_bins_angle=angle_bins,
                                       n_bins_dist=dist_bins,
                                       iou_thresh=iou)
 
         recall = (tp / (fn + tp))
         recall[np.isnan(recall)] = 0.0
         recalls.append(recall)
+        tps.append(tp)
+        fns.append(fn)
     frame['Recall' + str(iou)] = recalls
-
+    frame['TP' + str(iou)] = tps
+    frame['FN' + str(iou)] = fns
 print(frame.to_string())
 recalls = frame['Recall0.6']
 plt.figure(figsize=(9, 3))
@@ -66,18 +71,32 @@ for i, r in enumerate(recalls):
 plt.colorbar()
 plt.savefig('doc/thesis/fig/recall_yaw.png')
 
-recalls08 = frame['Recall0.8']
-recalls06 = frame['Recall0.6']
-recalls04 = frame['Recall0.4']
-recalls = [recalls04, recalls06, recalls08]
+tp08 = frame['TP0.8']
+tp06 = frame['TP0.6']
+tp04 = frame['TP0.4']
+tps = [tp04, tp06, tp08]
+
+fn08 = frame['FN0.8']
+fn06 = frame['FN0.6']
+fn04 = frame['FN0.4']
+fns = [fn04, fn06, fn08]
 recall_front = []
 recall_yaw = []
-for r in recalls:
+for i, tp in enumerate(tps):
     r_front_iou = []
     r_yaw_iou = []
-    for i in range(len(r)):
-        r_front_iou.append( (r[i][:, 0] + r[i][:, -1]) / 2 )
-        r_yaw_iou.append(np.mean(r[i][:, 1:-1], 1))
+    for j in range(len(tp)):
+        fn_sum = (fns[i][j][:, 0] + fns[i][j][:, -1])
+        tp_sum = (tp[j][:, 0] + tp[j][:, -1])
+        r = tp_sum / (tp_sum + fn_sum)
+        r[np.isnan(r)] = 0.0
+        r_front_iou.append(r)
+
+        fn_sum = np.sum(fns[i][j][:, 1:-1], 1)
+        tp_sum = np.sum(tp[j][:, 1:-1], 1)
+        r = tp_sum / (tp_sum + fn_sum)
+        r[np.isnan(r)] = 0.0
+        r_yaw_iou.append(r)
     recall_yaw.append(r_yaw_iou)
     recall_front.append(r_front_iou)
 
@@ -87,7 +106,7 @@ for j, r in enumerate(recall_front[1:], 1):
     plt.subplot(1, 2, j)
     plt.title('Recall at Yaw +- 20°C, IoU={}'.format(ious[j]))
     plt.xlim(-0.5, 10)
-    plt.ylim(0, 0.5)
+    plt.ylim(0, 1.0)
     w = 1 / len(result_files)
     # colors = [['#faa083', '#e04a1b', '#b33b16'], ['#ffdc8b', '#ffc12e', '#d18317'], ['#c4de8b', '#8abe17', '#466500']]
     for i in range(len(result_files)):
@@ -99,12 +118,12 @@ for j, r in enumerate(recall_front[1:], 1):
 plt.legend(titles)
 plt.savefig('doc/thesis/fig/recall_front.png')
 
-plt.figure(figsize=(8,3))
+plt.figure(figsize=(8, 3))
 for j, r in enumerate(recall_yaw[1:], 1):
     plt.subplot(1, 2, j)
     plt.title('Recall at Yaw  > 20 °C, IoU={}'.format(ious[j]))
     plt.xlim(-0.5, 10)
-    plt.ylim(0, 0.5)
+    plt.ylim(0, 1.0)
     w = 1 / len(ious)
     # colors = [['#faa083', '#e04a1b', '#b33b16'], ['#ffdc8b', '#ffc12e', '#d18317'], ['#c4de8b', '#8abe17', '#466500']]
     for i in range(len(result_files)):

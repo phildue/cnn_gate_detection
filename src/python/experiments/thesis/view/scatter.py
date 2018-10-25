@@ -59,11 +59,12 @@ plt.figure(figsize=(8, 3))
 for i, m in enumerate(result_files):
     plt.subplot(1, 3, i + 1)
     plt.title(titles[i], fontsize=12)
-    fps = frame['False Negatives0.4'][i]
+    fns = frame['False Negatives0.4'][i]
 
-    x = [fp[0] for fp in fps]
-    y = [fp[1] for fp in fps]
+    x = [fn[0] for fn in fns]
+    y = [fn[1] for fn in fns]
     plt.plot(x, y, 'xc')
+
 
     tps = frame['True Positives0.4'][i]
     x = [tp[0] for tp in tps]

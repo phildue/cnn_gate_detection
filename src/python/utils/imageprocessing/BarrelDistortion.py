@@ -6,7 +6,7 @@ from utils.fileaccess.utils import load_file, save_file
 from utils.imageprocessing.DistortionModel import DistortionModel
 from utils.imageprocessing.Image import Image
 from utils.labels.ImgLabel import ImgLabel
-from utils.timing import tic
+from utils.timing import tic, toc
 
 
 class BarrelDistortion(DistortionModel):
@@ -95,14 +95,14 @@ class BarrelDistortion(DistortionModel):
     def _undistort_label(self, label: ImgLabel, scale=1.0):
         objects_u = []
         for obj in label.objects:
-            corners = obj.points
+            corners = obj.poly.points
             corners = np.expand_dims(corners, 0)
             corners_norm = self._normalize(corners.astype(np.float))
             corners_norm *= scale
             corners_u = self._model(corners_norm)
             corners_u = self._denormalize(corners_u)[0]
             obj_u = obj.copy()
-            obj_u.points = corners_u
+            obj_u.poly.points = corners_u
 
             if (len(corners_u[(corners_u[:, 0] < 0) | (corners_u[:, 0] > self.img_shape[1])]) +
                 len(corners_u[(corners_u[:, 1] < 0) | (corners_u[:, 1] > self.img_shape[0])])) > 2:
@@ -289,7 +289,7 @@ class BarrelDistortion(DistortionModel):
             delta = np.linalg.norm(xy - xy_prev)
             if delta < self.epsilon:
                 break
-            # toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
+            toc('iteration: {} - delta: {} - time: '.format(t, np.round(delta, 2)))
         return xy
 
     def _gradient(self, coord: np.array):

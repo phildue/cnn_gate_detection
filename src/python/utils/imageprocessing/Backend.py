@@ -260,9 +260,9 @@ def yuv2yuyv(img: Image):
 
 def yuyv2yuv(img: Image):
     mat = img.array
-    mat_yuv = np.zeros((mat.shape[0], mat.shape[1], 3),dtype=np.uint8)
+    mat_yuv = np.zeros((mat.shape[0], mat.shape[1], 3), dtype=np.uint8)
     mat_yuv[:, :, 0] = mat[:, :, 0]
-    for i in range(mat.shape[1]-1):
+    for i in range(mat.shape[1] - 1):
         if i % 2 == 0:
             mat_yuv[:, i:i + 2, 1] = mat[:, i, 1:]
         else:
@@ -334,23 +334,25 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
     if label is None:
         return img_crop
     else:
-        label_crop = label.copy()
         objs_crop = []
-        for obj in label_crop.objects:
-            delta_x = x_min
-            delta_y = y_min
-            points = obj.points
+        for obj in label.objects:
+            delta_x = int(x_min)
+            delta_y = int(y_min)
+            points = obj.poly.points.copy()
 
-            points -= np.array([delta_x, delta_y]).astype(points.dtype)
+            points[:, 0] -= delta_x
+            points[:, 1] -= delta_y
 
-            points[:, 0] = np.maximum(0, np.minimum(points[:, 0], img_crop.shape[1]))
-            points[:, 1] = np.maximum(0, np.minimum(points[:, 1], img_crop.shape[0]))
+            # points[:, 0] = np.maximum(0, np.minimum(points[:, 0], img_crop.shape[1]))
+            # points[:, 1] = np.maximum(0, np.minimum(points[:, 1], img_crop.shape[0]))
+            obj_crop = obj.copy()
+            obj_crop.poly.points = points
 
-            obj.points = points
+            if obj_crop.poly.area >= 20 and (0.33 < obj_crop.poly.width / obj_crop.poly.height < 3):
+                objs_crop.append(obj_crop)
 
-            if obj.poly.area >= 20 and (0.33 < obj.poly.width / obj.poly.height < 3):
-                objs_crop.append(obj)
-        label_crop = ImgLabel(objs_crop)
+        label_crop = label.copy()
+        label_crop.objects = objs_crop
         return img_crop, label_crop
 
 

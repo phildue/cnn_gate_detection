@@ -27,11 +27,11 @@ names = [
 ]
 testset = 'iros2018_course_final_simple_17gates'
 plt.figure(figsize=(8, 3))
-# plt.title('Precision - Recall IoU:{}'.format(iou))
-# plt.subplot(1, 2, 1)
-# plt.xlabel('Recall')
-# plt.ylabel('Precision')
-# plt.title("Results in Virtual Environment")
+plt.title('Precision - Recall IoU:{}'.format(0.6))
+plt.subplot(1, 2, 1)
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title("Results in Virtual Environment")
 frame = pd.DataFrame()
 frame['Name'] = pd.Series(names)
 plt.ylim(0.0, 1.1)
@@ -56,7 +56,8 @@ for iou in ious:
         m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
         print(m_p)
         print('{}:  map{}: {}'.format(model, iou, np.mean(m_p)))
-        # plt.plot(m_r, m_p, 'x--')
+        if iou == 0.6:
+            plt.plot(m_r, m_p, 'x--')
         ap.append(np.mean(m_p))
     frame['Sim Data' + str(iou)] = pd.Series(ap)
     frame['Sim Data Recall' + str(iou)] = pd.Series(recall)
@@ -72,12 +73,12 @@ datasets_names = [
     'Hallway'
 ]
 
-# plt.subplot(1, 2, 2)
-# plt.title('Results on Real World Datasets'.format(iou_thresh))
-# plt.xlabel('Recall')
-# plt.ylabel('Precision')
-
-# plt.ylim(0.0, 1.1)
+plt.subplot(1, 2, 2)
+plt.title('Results on Real World Datasets'.format(0.6))
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+#
+plt.ylim(0.0, 1.1)
 
 for iou in ious:
     ap = []
@@ -102,13 +103,17 @@ for iou in ious:
             m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
             precision[j] = m_p
             recalls[j] = m_r
-        # plt.plot(np.mean(recall, 0), np.mean(precision, 0), 'x--')
+        if iou == 0.6:
+            plt.plot(np.mean(recalls,0),np.mean(precision,0), 'x--')
         meanAp = np.mean(precision, 0)
         recall.append(r)
         ap.append(np.round(np.mean(meanAp), 2))  # , np.mean(np.mean(err_p, 0))
     frame['Real Data' + str(iou)] = pd.Series(ap)
     frame['Real Data Recall' + str(iou)] = pd.Series(recall)
 
+plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
+                    wspace=0.3, hspace=0.3)
+plt.savefig('doc/thesis/fig/view_pr.png')
 plt.legend(names)
 print(frame.to_string())
 

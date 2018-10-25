@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from samplegen.setanalysis.SetAnalyzer import SetAnalyzer
+from utils.SetAnalysis import SetAnalysis
 from utils.workdir import cd_work
 
 cd_work()
@@ -14,15 +14,16 @@ sets = [
 ]
 titles = [
     'Random Placement',
-    'Drone Motion Model',
+    'Racing Track',
 ]
 areas = []
 label_maps = []
 aspect_ratios = []
 for s in sets:
-    set_analyzer = SetAnalyzer(img_shape, path + s)
+    set_analyzer = SetAnalysis(img_shape, path + s)
     area = set_analyzer.get_area()
     area_filtered = area  [(0 < area) & (area < 2.0)]
+    print("N = {}".format(len(area_filtered)))
     print("Removed: {}".format(len(area) - len(area_filtered)))
     areas.append(area_filtered)
     label_maps.append(set_analyzer.get_label_map())

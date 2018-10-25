@@ -119,7 +119,7 @@ for i, m in enumerate(models):
     plt.xticks(np.arange(len(iou_thresh)), iou_thresh)
     plt.xlabel('Intersection Over Union')
     plt.ylabel('Average Precision')
-    plt.ylim(0, 0.5)
+    plt.ylim(0, 0.8)
 
 plt.subplot(1, 2, 2)
 plt.title('Real Data', fontsize=12)
@@ -129,7 +129,7 @@ for i, m in enumerate(models):
     plt.xticks(np.arange(len(iou_thresh)), iou_thresh)
     plt.xlabel('Intersection Over Union')
     plt.ylabel('Average Precision')
-    plt.ylim(0, 0.5)
+    plt.ylim(0, 0.8)
 
 plt.legend(names,bbox_to_anchor=(1.1, 1.05))
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,

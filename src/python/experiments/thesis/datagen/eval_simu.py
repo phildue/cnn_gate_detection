@@ -12,10 +12,10 @@ models = [
     # 'yolov3_gate_varioussim416x416',
     # 'yolov3_gate_mixed416x416',
     # 'yolov3_allgen416x416',
-    # 'yolov3_hsv416x416',
-    # 'yolov3_blur416x416',
-    # 'yolov3_chromatic416x416',
-    # 'yolov3_exposure416x416',
+    'yolov3_hsv416x416',
+    'yolov3_blur416x416',
+    'yolov3_chromatic416x416',
+    'yolov3_exposure416x416',
     'yolov3_allview416x416',
 
 ]

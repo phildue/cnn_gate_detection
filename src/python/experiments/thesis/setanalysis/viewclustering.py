@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from modelzoo.evaluation.MetricDetection import DetectionEvaluator
 
+from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
 from utils.SetAnalysis import SetAnalysis
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread
