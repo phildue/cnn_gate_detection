@@ -42,35 +42,35 @@ frame['Name'] = pd.Series(names)
 '''
 Validation mAP
 '''
-validation_map = []
-for m, model in enumerate(models):
-    val_aps = []
-    for i in range(n_iterations):
-        model_dir = model + '_i0{}'.format(i)
-        log_file = work_dir + model_dir + '/log.csv'
-        history = load_file(log_file)
-        val_ap = history[-1][-2]
-
-        val_aps.append(float(val_ap))
-    validation_map.append((np.round(np.mean(val_aps), 2), np.round(np.std(val_aps), 2)))
-
-frame['Validation mAP'] = pd.Series(validation_map)
+# validation_map = []
+# for m, model in enumerate(models):
+#     val_aps = []
+#     for i in range(n_iterations):
+#         model_dir = model + '_i0{}'.format(i)
+#         log_file = work_dir + model_dir + '/log.csv'
+#         history = load_file(log_file)
+#         val_ap = history[-1][-2]
+#
+#         val_aps.append(float(val_ap))
+#     validation_map.append((np.round(np.mean(val_aps), 2), np.round(np.std(val_aps), 2)))
+#
+# frame['Validation mAP'] = pd.Series(validation_map)
 
 '''
 Test on Simulated Data
 '''
 testset = 'iros2018_course_final_simple_17gates'
-iou_thresh = [0.4, 0.6, 0.8]
-iou_thresh = [0.6]
+ious = [0.4, 0.6, 0.8]
+# ious = [0.6]
 plt.figure(figsize=(8, 3))
-plt.title('Precision - Recall IoU:{}'.format(iou_thresh))
+plt.title('Precision - Recall IoU:{}'.format(ious))
 plt.subplot(1, 2, 1)
 plt.xlabel('Recall')
 plt.ylabel('Precision')
 plt.title("Results in Virtual Environment")
 plt.ylim(0.0, 1.1)
 
-for iou in iou_thresh:
+for iou in ious:
     results_on_sim = []
     for m, model in enumerate(models):
         total_detections = []
@@ -108,37 +108,33 @@ datasets_names = [
 ]
 
 plt.subplot(1, 2, 2)
-plt.title('Results on Real World Datasets'.format(iou_thresh))
+plt.title('Results on Real World Datasets'.format(ious))
 plt.xlabel('Recall')
 plt.ylabel('Precision')
 plt.ylim(0.0, 1.1)
-
-for iou in iou_thresh:
+for iou in ious:
     results_on_real = []
-    precision = np.zeros((3, 11))
-    recall = np.zeros((3, 11))
-    err_p = np.zeros((3, 11))
     for m, model in enumerate(models):
+        total_detections = []
+        for i in range(n_iterations):
+            detections_set = []
             for j, d in enumerate(datasets):
-                total_detections = []
-                for i in range(n_iterations):
-                    model_dir = model + '_i0{}'.format(i)
-                    result_file = work_dir + model_dir + '/test_' + d + '/' + 'results_iou{}.pkl'.format(iou)
-                    if "snake" in model:
-                        result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(d, 0, 2.0, iou_thresh, i)
-                    try:
-                        results = load_file(result_file)
-                        total_detections.append(sum_results(results['results']))
-                    except FileNotFoundError:
-                        continue
+                model_dir = model + '_i0{}'.format(i)
+                result_file = work_dir + model_dir + '/test_' + d + '/' + 'results_iou{}.pkl'.format(iou)
+                if "snake" in model:
+                    result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(d, 0, 2.0, iou, i)
+                try:
+                    results = load_file(result_file)
+                    detections_set.append(sum_results(results['results']))
+                except FileNotFoundError:
+                    continue
 
-                m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
-                precision[j] = m_p
-                recall[j] = m_r
-                err_p[j] = std_p
-            meanAp = np.mean(precision, 0)
-            plt.plot(np.mean(recall, 0), np.mean(precision, 0), 'x--')
-            results_on_real.append((np.round(np.mean(meanAp), 2), np.round(np.mean(np.mean(err_p, 0)), 2)))
+            total_detections.append(sum_results(detections_set))
+        m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
+        meanAp = np.mean(m_p, 0)
+        errAP = np.mean(std_p, 0)
+        plt.errorbar(m_r, m_p, std_p)
+        results_on_real.append((np.round(meanAp, 2), np.round(errAP, 2)))  # , errAp
 
     frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 
