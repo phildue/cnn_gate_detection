@@ -13,13 +13,15 @@ result_files = [
     'out/thesis/datagen/yolov3_gate_varioussim416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
     # 'out/thesis/datagen/yolov3_gate_varioussim416x416_i01/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/datagen/yolov3_gate_dronemodel416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/datagen/yolov3_allview416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
+    'out/thesis/datagen/yolov3_allview416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
+    'out/thesis/objectdetect/yolov3_arch416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
 ]
 
 titles = [
     'Random Placement',
     'Race Track',
     'Combined',
+    'Ours'
 ]
 
 ObjectLabel.classes = ['gate']
@@ -56,7 +58,7 @@ recalls = frame['Recall0.6']
 plt.figure(figsize=(9, 3))
 plt.title('Recall per Cluster')
 for i, r in enumerate(recalls):
-    plt.subplot(1, 3, i + 1)
+    plt.subplot(1, len(titles), i + 1)
     plt.pcolor(r, cmap=plt.cm.viridis, vmin=0, vmax=1.0)
     if i < 3:
         plt.title(titles[i], fontsize=12)
@@ -69,7 +71,7 @@ for i, r in enumerate(recalls):
                         wspace=0.4, hspace=0.4)
 
 plt.colorbar()
-plt.savefig('doc/thesis/fig/recall_yaw.png')
+# plt.savefig('doc/thesis/fig/recall_yaw.png')
 
 tp08 = frame['TP0.8']
 tp06 = frame['TP0.6']
@@ -122,7 +124,7 @@ for j, r in enumerate(recall_front[1:], 1):
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                         wspace=0.4, hspace=0.4)
 plt.legend(titles)
-plt.savefig('doc/thesis/fig/recall_front.png')
+# plt.savefig('doc/thesis/fig/recall_front.png')
 
 plt.figure(figsize=(8, 3))
 for j, r in enumerate(recall_yaw[1:], 1):
@@ -139,6 +141,6 @@ for j, r in enumerate(recall_yaw[1:], 1):
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                         wspace=0.4, hspace=0.4)
 plt.legend(titles)
-plt.savefig('doc/thesis/fig/recall_angle.png')
+# plt.savefig('doc/thesis/fig/recall_angle.png')
 
 plt.show(True)
