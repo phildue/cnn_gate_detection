@@ -106,6 +106,6 @@ class GateNetBase(Net):
         model = Model(netin, netout)
 
         if weight_file is not None:
-            model.load_weights(weight_file)
+            model.load_weights(weight_file,by_name=True,skip_mismatch=True)
 
         self._model = model

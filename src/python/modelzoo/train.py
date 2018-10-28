@@ -34,7 +34,7 @@ def train(architecture,
           max_obj_size=5,
           min_obj_size=0,
           validation_set=None,
-          subsets:[float]=None
+          subsets: [float] = None,
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -54,6 +54,7 @@ def train(architecture,
     predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
                                        norm=img_res, input_channels=input_channels, weight_file=weight_file,
                                        n_polygon=n_polygon, color_format=color_format)
+
 
     """
     Datasets
@@ -86,7 +87,7 @@ def train(architecture,
 
     train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_frac,
                               color_format='bgr', label_format='xml', n_samples=n_samples,
-                              remove_filtered=False, max_empty=0, filter=filter,subsets=subsets)
+                              remove_filtered=False, max_empty=0, filter=filter, subsets=subsets)
 
     """
     Paths
