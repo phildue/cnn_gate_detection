@@ -53,29 +53,17 @@
 	\end{equation}
 	where $x$,$y$ are the center coordinates and $w$,$h$ are the bounding box width and height. $\mathbb{1}_{ij}^{obj}$ is 1 if the set of output nodes at $i$,$j$ is responsible to predict a certain object and 0 otherwise. 
 	
+	\section{Depth and Width}
+	
+	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that are thinner and shallower counterpart can detect the object with equal performance.
+	
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/perf_width}
+	\end{figure}
+	
+	\section{Receptive Field}
+	
+		
 	\section{Reducing Inference Time}
 	
-	A major drawback of \acp{CNN} is their huge computational requirements. For example a state-of-the-art Computer Vision model \cite{He2015} requires 11.3 billion floating point operations \cite{Tschannen2017}. For a device with computational limitations like an \ac{MAV} this is prohibitive. Furthermore, a perception system on a \ac{MAV} usually contains of multiple subsystems. Hence, a fast reaction time can be more important than an accurate detection/outbalanced by the filter etc.
-	
-	This
-	
-	The research question of this chapter is stated as:
-	
-	\begin{center}
-		\textbf{What are the trade-off's between detection performance $m$ and inference time $t$ when a detection model is integrated on a embedded computing platform?}
-	\end{center}
-	
-	The question is answered on a theoretical level by using the total number of \ac{Multiply-Adds} $N_O$ as an indication for the inference time of the model. However, as also stated by \todoref{others} $N_O$ is not necessarily directly related to $t$. On a computing platform $t$ also depends on:
-	
-	\begin{enumerate}
-		\item whether several operations can be executed in parallel,
-		\item the memory usage of the operations, the kind of operation e.g. floating point or integer
-		\item the particular low level implementation of the model
-	\end{enumerate} 
-	
-	Hence, in addition to $N_0$ also the actual inference time of the model is measured on a particular computing platform.
-	
-	The chosen hardware is a Jevois Smart Camera \todoref{jevois}. The platform is developed for vision applications and provides a 4 Core CPU, as well as a small GPU \todo{more info}. That's why it is perfectly suitable for integrating in lightweight \acp{MAV} or other robotic applications.
-	
-	The rest of the chapter is organized as follows: \autoref{sec:tradeoff:related} discusses relevant related work. Based on the gained insights \autoref{sec:tradeoff:hypothesis} formulates several hypotheses to be investigated. \autoref{sec:tradeoff:experiments} outlines the experiments conducted to evaluate the formulated hypotheses. \autoref{sec:tradeoff:results} describes the obtained results. \autoref{sec:tradeoff:conclusion} discusses the results and answers the research question.
-	
+	\section{title}

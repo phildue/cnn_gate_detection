@@ -20,13 +20,14 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
 
     plt.figure(figsize=(8, 3))
     for i_iou, iou in enumerate(ious):
-        plt.subplot(1, len(ious), i_iou+1)
+        plt.subplot(1, len(ious), i_iou + 1)
         plt.title('VE IoU:{}'.format(iou))
         plt.xlabel('Recall')
         plt.ylabel('Precision')
         plt.title("Results in ")
         plt.ylim(0.0, 1.1)
-        results_on_sim = []
+        aps = []
+        errs = []
         for m, model in enumerate(models):
             total_detections = []
             for i in range(n_iterations):
@@ -41,19 +42,22 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
             m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
             meanAp = np.mean(m_p)
             errAp = np.mean(std_p)
-            results_on_sim.append((np.round(meanAp, 2), np.round(errAp, 2)))  # , errAp
+            aps.append(np.round(meanAp, 2))  # , errAp
+            errs.append(np.round(errAp, 2))
             plt.errorbar(m_r, m_p, std_p)
-        frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
+        frame['Sim Data' + str(iou)] = pd.Series(aps)
+        frame['Sim Data' + str(iou) + ' Err'] = pd.Series(errs)
 
     plt.figure(figsize=(8, 3))
 
     for i_iou, iou in enumerate(ious):
-        plt.subplot(1, len(ious), i_iou+1)
+        plt.subplot(1, len(ious), i_iou + 1)
         plt.title('RW IoU:{}'.format(iou))
         plt.xlabel('Recall')
         plt.ylabel('Precision')
         plt.ylim(0.0, 1.1)
-        results_on_real = []
+        aps = []
+        errs = []
         for m, model in enumerate(models):
             total_detections = []
             for i in range(n_iterations):
@@ -67,16 +71,19 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
                         results = load_file(result_file)
                         detections_set.append(sum_results(results['results']))
                     except FileNotFoundError:
-                        continue
+                        print("Not Found: {}".format(model_dir))
                 if len(detections_set) > 0:
                     total_detections.append(sum_results(detections_set))
             m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
             meanAp = np.mean(m_p, 0)
             errAP = np.mean(std_p, 0)
             plt.errorbar(m_r, m_p, std_p)
-            results_on_real.append((np.round(meanAp, 2), np.round(errAP, 2)))  # , errAp
+            aps.append(np.round(meanAp, 2))  # , errAp
+            errs.append(np.round(errAP, 2))
 
-        frame['Real Data' + str(iou)] = pd.Series(results_on_real)
+        frame['Real Data' + str(iou)] = pd.Series(aps)
+        frame['Real Data' + str(iou) + ' Err'] = pd.Series(errs)
+
     frame.set_index('Name')
     plt.legend(names)
 
@@ -90,10 +97,8 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
         bars = []
         errs = []
         for iou in ious:
-            bar = frame['Sim Data' + str(iou)][i][0]
-            err = frame['Sim Data' + str(iou)][i][1]
-            bars.append(bar)
-            errs.append(err)
+            bars.append(frame['Sim Data' + str(iou)][i])
+            errs.append(frame['Sim Data' + str(iou) + ' Err'][i])
 
         plt.bar(np.arange(len(ious)) - w + i * w,
                 bars, width=w, yerr=errs)
@@ -108,10 +113,8 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
         bars = []
         errs = []
         for iou in ious:
-            bar = frame['Real Data' + str(iou)][i][0]
-            err = frame['Real Data' + str(iou)][i][1]
-            bars.append(bar)
-            errs.append(err)
+            bars.append(frame['Real Data' + str(iou)][i])
+            errs.append(frame['Real Data' + str(iou) + ' Err'][i])
 
         plt.bar(np.arange(len(ious)) - w + i * w,
                 bars, width=w, yerr=errs)

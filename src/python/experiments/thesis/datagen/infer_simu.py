@@ -6,19 +6,20 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'yolov3_gate_realbg416x416',
-    'yolov3_gate_uniform416x416',
-    'yolov3_gate_dronemodel416x416',
-    'yolov3_gate_varioussim416x416',
-    'yolov3_gate_mixed416x416',
-    'yolov3_allgen416x416',
-    'yolov3_hsv416x416',
-    'yolov3_blur416x416',
-    'yolov3_chromatic416x416',
-    'yolov3_exposure416x416',
-    'yolov3_40k416x416',
+    # 'yolov3_gate_realbg416x416',
+    # 'yolov3_gate_uniform416x416',
+    # 'yolov3_gate_dronemodel416x416',
+    # 'yolov3_gate_varioussim416x416',
+    # 'yolov3_gate_mixed416x416',
+    # 'yolov3_allgen416x416',
+    # 'yolov3_hsv416x416',
+    # 'yolov3_blur416x416',
+    # 'yolov3_chromatic416x416',
+    # 'yolov3_exposure416x416',
+    # 'yolov3_40k416x416',
     'yolov3_allview416x416',
-    'yolov3_gate416x416',
+    # 'yolov3_gate416x416',
+
 
 ]
 datasets = [
@@ -31,7 +32,7 @@ ObjectLabel.classes = ['gate']
 exp_name = 'datagen'
 for d in datasets:
     for model in models:
-        for i in range(1, n_iterations):
+        for i in range(0, n_iterations):
             model_folder = model + '_i0{}'.format(i)
             prediction_file = 'predictions'.format(d)
             try:

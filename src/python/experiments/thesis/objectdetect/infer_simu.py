@@ -6,9 +6,9 @@ cd_work()
 
 models = [
     'yolov3_w0_416x416',
-    # 'yolov3_w1_416x416',
-    # 'yolov3_w2_416x416',
-    'yolov3_allview416x416',
+    'yolov3_w1_416x416',
+    'yolov3_w2_416x416',
+    'yolov3_w3_416x416',
     'yolov3_arch416x416',
 ]
 datasets = [
