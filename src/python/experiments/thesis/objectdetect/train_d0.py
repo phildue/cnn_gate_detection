@@ -75,7 +75,7 @@ if __name__ == '__main__':
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
-              weight_file='out/thesis/objectdetect/yolov3_w0_416x416_i00/model.h5',
+              weight_file='out/thesis/datagen/yolov3_w0_416x416_i00/model.h5',
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
