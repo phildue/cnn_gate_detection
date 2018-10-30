@@ -12,7 +12,7 @@ models = [
     'objectdetect/yolov3_w0_416x416',
     'objectdetect/yolov3_w1_416x416',
     'objectdetect/yolov3_w2_416x416',
-    # 'objectdetect/yolov3_w3_416x416',
+    'objectdetect/yolov3_w3_416x416',
     'datagen/yolov3_allview416x416',
     'datagen/yolov3_arch2416x416',
 
@@ -25,7 +25,7 @@ names = [
     'w0',
     'w1',
     'w2',
-    # 'w3'
+    'w3'
     'w4',
     'arch'
 ]

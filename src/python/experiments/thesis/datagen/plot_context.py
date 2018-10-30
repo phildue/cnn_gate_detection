@@ -26,8 +26,8 @@ names = [
     'Real + Various',
     'Single Background'
 ]
-frame = plot_result(models=models, names=names, work_dir=work_dir, n_iterations=n_iterations)
+frame = plot_result(models=models, names=names, work_dir=work_dir, n_iterations=n_iterations,validation_set=True)
 print(frame.to_string())
 print(frame.to_latex())
-plt.savefig('doc/thesis/fig/context_bar.png')
+# plt.savefig('doc/thesis/fig/context_bar.png')
 plt.show(True)

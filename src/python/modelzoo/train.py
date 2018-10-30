@@ -35,6 +35,7 @@ def train(architecture,
           min_obj_size=0,
           validation_set=None,
           subsets: [float] = None,
+          resume_training=False
           ):
     def learning_rate_schedule(epoch):
         if epoch > 50:
@@ -53,7 +54,7 @@ def train(architecture,
 
     predictor = GateNet.create_by_arch(architecture, anchors=anchors, batch_size=batch_size, augmenter=augmenter,
                                        norm=img_res, input_channels=input_channels, weight_file=weight_file,
-                                       n_polygon=n_polygon, color_format=color_format)
+                                       n_polygon=n_polygon, color_format=color_format,resume_training=resume_training)
 
 
     """

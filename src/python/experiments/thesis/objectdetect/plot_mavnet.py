@@ -12,8 +12,8 @@ models = [
     'objectdetect/yolov3_w0_416x416',
     'objectdetect/yolov3_w1_416x416',
     'objectdetect/yolov3_w2_416x416',
-    # 'objectdetect/yolov3_w3_416x416',
-    'datagen/yolov3_allview416x416',
+    'objectdetect/yolov3_w3_416x416',
+    'datagen/yolov3_blur416x416',
     'datagen/yolov3_arch2416x416',
 
 ]
@@ -25,7 +25,8 @@ names = [
     'W0',
     'W1',
     'W2',
-    'AllView',
+    'W3',
+    'TinyYoloV3',
     'Arch2'
 ]
 frame = plot_result(models=models, names=names, work_dir=work_dir, n_iterations=n_iterations)

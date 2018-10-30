@@ -54,7 +54,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_arch2{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_arch_random{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
     image_source = [

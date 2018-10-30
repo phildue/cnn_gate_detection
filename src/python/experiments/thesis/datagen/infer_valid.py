@@ -10,8 +10,8 @@ models = [
     # 'yolov3_gate_realbg416x416',
     # 'yolov3_gate_uniform416x416',
     # 'yolov3_gate_dronemodel416x416',
-    # 'yolov3_gate416x416',
-    # 'yolov3_gate_varioussim416x416',
+    'yolov3_gate416x416',
+    'yolov3_gate_varioussim416x416',
     'yolov3_gate_mixed416x416',
     # 'yolov3_allgen416x416',
     # 'yolov3_hsv416x416',
@@ -22,11 +22,11 @@ models = [
 ]
 
 work_dir = 'out/thesis/datagen/'
-n_iterations = 1
+n_iterations = 2
 ObjectLabel.classes = ['gate']
 exp_name = 'datagen'
 for model in models:
-    for i in range(0, n_iterations):
+    for i in range(1, n_iterations):
         model_folder = model + '_i0{}'.format(i)
         prediction_file = 'predictions'
         training_set = load_file(work_dir + model_folder + '/summary.pkl')['image_source']

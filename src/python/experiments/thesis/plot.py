@@ -6,7 +6,7 @@ from modelzoo.evaluation.utils import sum_results, average_precision_recall
 from utils.fileaccess.utils import load_file
 
 
-def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir='out/thesis/'):
+def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir='out/thesis/', validation_set=False):
     if ious is None:
         ious = [0.4, 0.6, 0.8]
     simset = 'iros2018_course_final_simple_17gates'
@@ -17,6 +17,32 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
     ]
     frame = pd.DataFrame()
     frame['Name'] = pd.Series(names)
+
+    '''
+    Validation mAP
+    '''
+    if validation_set:
+        for i_iou, iou in enumerate(ious):
+            aps = []
+            errs = []
+            for m, model in enumerate(models):
+                total_detections = []
+                for i in range(n_iterations):
+                    model_dir = model + '_i0{}'.format(i)
+                    result_file = work_dir + model_dir + '/test_valid/' + 'results_iou{}.pkl'.format(iou)
+                    try:
+                        results = load_file(result_file)
+                        total_detections.append(sum_results(results['results']))
+                    except FileNotFoundError:
+                        print("Not found: {}".format(model_dir))
+
+                m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
+                meanAp = np.mean(m_p)
+                errAp = np.mean(std_p)
+                aps.append(np.round(meanAp, 2))  # , errAp
+                errs.append(np.round(errAp, 2))
+            frame['Val Data' + str(iou)] = pd.Series(aps)
+            frame['Val Data' + str(iou)+' Err'] = pd.Series(errs)
 
     plt.figure(figsize=(8, 3))
     for i_iou, iou in enumerate(ious):
@@ -91,7 +117,29 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
 
     w = 1 / len(models)
     w -= w * 0.1
-    plt.subplot(1, 2, 1)
+    subplots = 3 if validation_set else 2
+    subplots_idx = 1
+
+    if validation_set:
+        plt.subplot(1, subplots, subplots_idx)
+        subplots_idx += 1
+        plt.title('Training Set', fontsize=12)
+        for i, m in enumerate(models):
+            bars = []
+            errs = []
+            for iou in ious:
+                bars.append(frame['Val Data' + str(iou)][i])
+                errs.append(frame['Val Data' + str(iou) + ' Err'][i])
+
+            plt.bar(np.arange(len(ious)) - w + i * w,
+                    bars, width=w, yerr=errs)
+            plt.xticks(np.arange(len(ious)), ious)
+            plt.xlabel('Intersection Over Union')
+            plt.ylabel('Average Precision')
+            plt.ylim(0, 0.9)
+
+    plt.subplot(1, subplots, subplots_idx)
+    subplots_idx += 1
     plt.title('Simulated Data', fontsize=12)
     for i, m in enumerate(models):
         bars = []
@@ -105,9 +153,10 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
         plt.xticks(np.arange(len(ious)), ious)
         plt.xlabel('Intersection Over Union')
         plt.ylabel('Average Precision')
-        plt.ylim(0, 0.8)
+        plt.ylim(0, 0.9)
 
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, subplots, subplots_idx)
+    subplots_idx += 1
     plt.title('Real Data', fontsize=12)
     for i, m in enumerate(models):
         bars = []
@@ -121,7 +170,7 @@ def plot_result(models: [str], names: [str], n_iterations=1, ious=None, work_dir
         plt.xticks(np.arange(len(ious)), ious)
         plt.xlabel('Intersection Over Union')
         plt.ylabel('Average Precision')
-        plt.ylim(0, 0.8)
+        plt.ylim(0, 0.9)
 
     plt.legend(names, bbox_to_anchor=(1.1, 1.05))
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,

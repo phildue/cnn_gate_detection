@@ -105,6 +105,7 @@ if __name__ == '__main__':
               max_aspect_ratio=4.0,
               initial_epoch=0,
               color_format='bgr',
+              resume_training=True,
               subsets=[
                   0.5,
                   0.5,
