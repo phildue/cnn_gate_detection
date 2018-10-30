@@ -20,43 +20,44 @@ if __name__ == '__main__':
 
     start_idx = args.start_idx
     n_repetitions = args.n_reps
-    anchors = np.array([[
-        [330, 340],
-        [235, 240],
-        [160, 165]],
-        [[25, 40],
-         [65, 70],
-         [100, 110]]]
-    )
-
+    anchors = np.array([
+        [[81, 82],
+         [135, 169],
+         [344, 319]],
+        [[10, 14],
+         [23, 27],
+         [37, 58]],
+    ])
     architecture = [
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 2, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 12, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [-6]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'route', 'index': [-4]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_arch2{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_w02_{}x{}'.format(img_res[0], img_res[1])
 
-    augmenter = None
+    augmenter = RandomEnsemble([
+        (0.2, RandomMotionBlur(1.0, 2.0, 15)),
+        (0.2, RandomBlur((5, 5))),
+    ])
+
     image_source = ['resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
                     'resource/ext/samples/daylight_course3',
@@ -99,3 +100,4 @@ if __name__ == '__main__':
                   0.5,
                   0.25
               ])
+

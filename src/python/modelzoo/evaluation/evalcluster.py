@@ -12,7 +12,7 @@ def evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh, n_bins_angle=10,
     fn = np.zeros((n_bins_dist, n_bins_angle))
 
     for i in range(len(labels_true)):
-        m = DetectionEvaluator(show_=True, min_box_area=0.01 * 416 * 416, max_box_area=2.0 * 416 * 416,
+        m = DetectionEvaluator(min_box_area=0.01 * 416 * 416, max_box_area=2.0 * 416 * 416,
                                min_aspect_ratio=0.3,
                                max_aspect_ratio=3.0, iou_thresh=iou_thresh)
         label_pred = ImgLabel([obj for obj in labels_pred[i].objects if obj.confidence > conf_thresh])
@@ -50,7 +50,7 @@ def evalcluster_height_width(labels_true, labels_pred, conf_thresh, n_bins, iou_
     tp = np.zeros((n_bins, n_bins))
     fp = np.zeros((n_bins, n_bins))
     fn = np.zeros((n_bins, n_bins))
-    evaluator = DetectionEvaluator(show_=True, min_box_area=0.0 * 416 * 416, max_box_area=2.0 * 416 * 416,
+    evaluator = DetectionEvaluator(min_box_area=0.0 * 416 * 416, max_box_area=2.0 * 416 * 416,
                                    min_aspect_ratio=0,
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
     for i in range(len(labels_true)):

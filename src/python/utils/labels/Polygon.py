@@ -50,8 +50,7 @@ class Polygon:
 
     def iou(self, box):
         intersection = self.intersect(box)
-        union = (self.x_max - self.x_min) * (self.y_max - self.y_min) + (box.x_max - box.x_min) * (
-                box.y_max - box.y_min) - intersection
+        union = self.area + box.area - intersection
         if union == 0:
             return 1
         else:

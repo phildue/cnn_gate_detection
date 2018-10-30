@@ -49,7 +49,7 @@ class GateNetBase(Net):
                  weight_file=None,
                  n_polygon=4,
                  input_channels=3,
-                 ):
+                 resume_training=False):
 
         self.loss = loss
         self.norm = img_shape
@@ -106,6 +106,9 @@ class GateNetBase(Net):
         model = Model(netin, netout)
 
         if weight_file is not None:
-            model.load_weights(weight_file,by_name=True,skip_mismatch=True)
+            if resume_training:
+                model.load_weights(weight_file, by_name=True, skip_mismatch=True)
+            else:
+                model.load_weights(weight_file)
 
         self._model = model

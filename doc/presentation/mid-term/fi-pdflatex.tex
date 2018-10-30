@@ -77,10 +77,19 @@
 
 	\subsection{Research Question}    
 	\begin{frame}	
-	\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?}
-	
+	\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?\\}
+	\bigskip
 
+	\centering
+   	%\includegraphics[width=0.8\textwidth]{fig/triangle_white}
 	\end{frame}
+\begin{frame}	
+\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?\\}
+\bigskip
+
+\centering
+\includegraphics[width=0.8\textwidth]{fig/triangle_white}
+\end{frame}
  % Since it needs to run on a drone it should be fast and the faster it gets the better for the control, the faster we can fly/ a smaller drone we can use. The wire frame objects we refer to as the objects we want to detect consists only out of a thin frame but I will get back to that later. So I will look at some background in object detection.   
     \section{Background}
     \begin{frame}{Outline for Section \thesection}
@@ -112,42 +121,67 @@
     \tableofcontents[currentsection]
 \end{frame}
   \subsection{Data Generation}
-    \begin{frame}{Approach}
-  Hypothesis: A much smaller network should be able to learn the task.
-  \\ \bigskip \bigskip
-	\includegraphics[width=\textwidth]{fig/approach}
+    \begin{frame}{Data Properties}
+\begin{itemize}
+	\item \textbf{Background/Environment} \\Illumination, Background Texture, Other Objects
+	\item \textbf{View} \\Appearance of the object relative to the camera
+	\item \textbf{Sensor Effects} \\Motion Blur, Chromatic/Geometric Distortion
+\end{itemize}
     \end{frame}
-% Our hypothesis is a much small network should be able to learn the task. So we take a well performing deep object detector and try to scale it down. For now we took the yolo object detector with 23 layers, like you can see here exemplified. And our goal is to make the model smaller and thus also faster. To this end we use an intuitive approach by just modifying the architecture and train the network again.
-    
-    \subsection{Results}
-    \begin{frame}{Results}
-    	\includegraphics[width=\textwidth]{fig/params_perf}
+    \begin{frame}{Background/Environment}
+    \centering
+		\includegraphics[width=0.3\textwidth]{fig/example_uniform}
+		\includegraphics[width=0.3\textwidth]{fig/example_real}	\includegraphics[width=0.3\textwidth]{fig/example_virt}\\
+		\includegraphics[width=0.3\textwidth]{fig/example_uniform2}
+			\includegraphics[width=0.3\textwidth]{fig/example_real2}
+			\includegraphics[width=0.3\textwidth]{fig/example_virt2}
     \end{frame}
-% Here you can see some results we see, mean average precision which is a metric for object detection over the number of weights. We see the original detector as a dot and several of our architectures with different hyperparameters as crosses. And you can see how the performance stays the same although the number of weights is reduced quite a lot. Now of course this is not only because we have a simpler object but also because we only want to detect one class while the original detector detected up to 20 classes.
+    \begin{frame}{Background/Environment}
+    \includegraphics[width=\textwidth]{../../thesis/fig/context_bar}
+    \end{frame}
 
-    \begin{frame}{Results}
-\includegraphics[width=\textwidth]{fig/params_perf_close}
-\end{frame}
-
-    \begin{frame}{Results}
-	\includegraphics[width=\textwidth]{fig/params_speed}
+    \begin{frame}{View}
+	\includegraphics[width=\textwidth]{../../thesis/fig/hist2d_camplace}
 	\end{frame}
 
-% In the next step we also analyze speed. So these measurements are taken out on the INSY cluster with quite a big GPU. On the drone these values will probably still vary. In total you can see again a huge drop in weights and a boost in performance.
-
-    \begin{frame}{Results}
-\includegraphics[width=\textwidth]{fig/params_speed_close}
-\end{frame}
-% However, if we look closer we also see how the boost in speed gets smaller at some point. So reducing the number of weights further does not increase to such a significant speed up anymore. Hence, the bottleneck seems to be somewhere else now.
-
-
-    \begin{frame}{Results - Examples}
-    	\includegraphics[width=\textwidth]{fig/examples}
+    \begin{frame}{View}
+    \includegraphics[width=\textwidth]{../../thesis/fig/recall_yaw}
 	\end{frame}
-% Here you see some results, on the left the original yolo model on the right our model with 9 layers. White are correct detections, blue are missed gates and red are false detections. We see how the bigger model produces more accurate bounding boxes and can handle the difficult angles better.
+
+    \begin{frame}{Sensor Effects}
+\begin{itemize}
+	\item Motion Blur 
+	\item Chromatic Distortion
+	\item Exposure
+	\item HSV variations
+\end{itemize}
+\end{frame}
+    \begin{frame}{Sensor Effects}
+    \includegraphics[width=\textwidth]{../../thesis/fig/pp_bar}
+	\end{frame}
+
+  \subsection{Network Optimization}
+	  
+	\begin{frame}{Design Parameters}
+	\begin{itemize}
+		\item Depth
+		\item Width
+	\end{itemize}
+	\end{frame}
+	\begin{frame}{Results}
+	\includegraphics[width=\textwidth]{../../thesis/fig/perf_width}
+	\end{frame}
+
+
+\begin{frame}{Results}
+
+\end{frame}
+
+  \subsection{Comparison to Baseline}
 
     
-    \section{Conclusion}
+    \section{Summary}
+       \subsection{Conclusion}
             \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 \end{frame}
@@ -160,14 +194,14 @@
     \end{itemize}
     \end{frame}
 
-    \begin{frame}{Next Steps}
-    	\begin{itemize}
-    		\item Analysing where most performance/time gets lost
-    		\item Investigating further methods to reduce model size/ speed up computations while maintaining accuracy.
-    	\end{itemize}
-    \end{frame}
-    
-
+   \subsection{Open Questions}
+       \begin{frame}{Open Questions}
+\begin{itemize}
+	\item Reality Gap
+	\item Bounding Boxes can be more accurate
+	\item 
+  \end{itemize} 
+\end{frame}
     \begin{frame}{Questions}
     \centering
 \huge ?

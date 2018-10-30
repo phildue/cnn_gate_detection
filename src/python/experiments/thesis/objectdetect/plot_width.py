@@ -14,7 +14,7 @@ models = [
     'objectdetect/yolov3_w2_416x416',
     # 'objectdetect/yolov3_w3_416x416',
     'datagen/yolov3_allview416x416',
-    # 'objectdetect/yolov3_arch416x416',
+    'datagen/yolov3_arch2416x416',
 
 ]
 
@@ -95,9 +95,9 @@ plt.figure(figsize=(8, 3))
 w = 1 / len(models)
 w -= w * 0.1
 plt.title('Performance Across Width', fontsize=12)
-plt.plot(frame['Weights'], frame['Sim Data' + str(iou)])
+plt.plot(frame['Weights'], frame['Sim Data' + str(iou)],'x')
 
-plt.plot(frame['Weights'], frame['Real Data' + str(iou)])
+plt.plot(frame['Weights'], frame['Real Data' + str(iou)],'x')
 plt.xlabel('Weights')
 plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)

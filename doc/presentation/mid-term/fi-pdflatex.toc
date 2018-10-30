@@ -3,10 +3,13 @@
 \beamer@subsectionintoc {1}{1}{Application}{3}{0}{1}
 \beamer@subsectionintoc {1}{2}{Challenges}{4}{0}{1}
 \beamer@subsectionintoc {1}{3}{Research Question}{5}{0}{1}
-\beamer@sectionintoc {2}{Background}{6}{0}{2}
-\beamer@subsectionintoc {2}{1}{Object Detection}{7}{0}{2}
-\beamer@subsectionintoc {2}{2}{Convolutional Neural Networks}{8}{0}{2}
-\beamer@sectionintoc {3}{Approach}{9}{0}{3}
-\beamer@subsectionintoc {3}{1}{Method}{10}{0}{3}
-\beamer@subsectionintoc {3}{2}{Results}{11}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{16}{0}{4}
+\beamer@sectionintoc {2}{Background}{7}{0}{2}
+\beamer@subsectionintoc {2}{1}{Object Detection}{8}{0}{2}
+\beamer@subsectionintoc {2}{2}{Convolutional Neural Networks}{9}{0}{2}
+\beamer@sectionintoc {3}{Experiments}{10}{0}{3}
+\beamer@subsectionintoc {3}{1}{Data Generation}{11}{0}{3}
+\beamer@subsectionintoc {3}{2}{Network Optimization}{18}{0}{3}
+\beamer@subsectionintoc {3}{3}{Comparison to Baseline}{21}{0}{3}
+\beamer@sectionintoc {4}{Summary}{21}{0}{4}
+\beamer@subsectionintoc {4}{1}{Conclusion}{21}{0}{4}
+\beamer@subsectionintoc {4}{2}{Open Questions}{23}{0}{4}

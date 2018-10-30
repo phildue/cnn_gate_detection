@@ -57,7 +57,8 @@ if __name__ == '__main__':
     model_name = 'yolov3_arch2{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
-    image_source = ['resource/ext/samples/daylight_course1',
+    image_source = [
+                    'resource/ext/samples/daylight_course1',
                     'resource/ext/samples/daylight_course5',
                     'resource/ext/samples/daylight_course3',
                     'resource/ext/samples/iros2018_course1',
@@ -66,7 +67,7 @@ if __name__ == '__main__':
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/various_environments20k',
+                    # 'resource/ext/samples/various_environments20k',
                     # 'resource/ext/samples/realbg20k'
                     ]
 
@@ -85,17 +86,4 @@ if __name__ == '__main__':
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
               initial_epoch=0,
-              color_format='bgr',
-              subsets=[
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.25
-              ])
+              color_format='bgr')

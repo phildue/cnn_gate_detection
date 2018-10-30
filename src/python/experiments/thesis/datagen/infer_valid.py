@@ -7,17 +7,18 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'yolov3_gate_realbg416x416',
+    # 'yolov3_gate_realbg416x416',
     # 'yolov3_gate_uniform416x416',
-    'yolov3_gate_dronemodel416x416',
-    'yolov3_gate_varioussim416x416',
+    # 'yolov3_gate_dronemodel416x416',
+    # 'yolov3_gate416x416',
+    # 'yolov3_gate_varioussim416x416',
     'yolov3_gate_mixed416x416',
-    'yolov3_allgen416x416',
-    'yolov3_hsv416x416',
-    'yolov3_blur416x416',
-    'yolov3_chromatic416x416',
-    'yolov3_exposure416x416',
-    'yolov3_40k416x416',
+    # 'yolov3_allgen416x416',
+    # 'yolov3_hsv416x416',
+    # 'yolov3_blur416x416',
+    # 'yolov3_chromatic416x416',
+    # 'yolov3_exposure416x416',
+    # 'yolov3_40k416x416',
 ]
 
 work_dir = 'out/thesis/datagen/'

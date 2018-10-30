@@ -5,17 +5,17 @@ from utils.workdir import cd_work
 cd_work()
 
 models = [
-    'yolov3_w0_416x416',
-    'yolov3_w1_416x416',
-    'yolov3_w2_416x416',
-    'yolov3_w3_416x416',
-    'yolov3_arch416x416',
+    'objectdetect/yolov3_w0_416x416',
+    'objectdetect/yolov3_w1_416x416',
+    'objectdetect/yolov3_w2_416x416',
+    'objectdetect/yolov3_w3_416x416',
+    'datagen/yolov3_arch2416x416',
 ]
 datasets = [
     'iros2018_course_final_simple_17gates',
 ]
 
-work_dir = 'out/thesis/objectdetect/'
+work_dir = 'out/thesis/'
 n_iterations = 2
 ObjectLabel.classes = ['gate']
 exp_name = 'datagen'

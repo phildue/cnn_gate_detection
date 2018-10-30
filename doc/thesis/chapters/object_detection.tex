@@ -63,7 +63,12 @@
 	
 	\section{Receptive Field}
 	
+	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that an anchor gets assigned responsible which does not see any feature of the object.
+	
+	A deeper network is one way to increase receptive field but comes at cost of computation. An alternative is the use of a larger kernel size, dilated convolutions or pooling. We compare these methods in terms of computational efficiency and performance.
 		
 	\section{Reducing Inference Time}
+	
+	Reducing the inference time can be done on an architectural basis. We compare depthwise separable convolutions and bottleneck layers.
 	
 	\section{title}

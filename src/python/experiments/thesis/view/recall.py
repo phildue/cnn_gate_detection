@@ -14,7 +14,7 @@ result_files = [
     # 'out/thesis/datagen/yolov3_gate_varioussim416x416_i01/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/datagen/yolov3_gate_dronemodel416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/datagen/yolov3_allview416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/objectdetect/yolov3_arch416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
+    'out/thesis/datagen/yolov3_arch2416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
 ]
 
 titles = [

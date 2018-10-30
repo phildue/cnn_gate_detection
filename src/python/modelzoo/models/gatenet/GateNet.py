@@ -145,7 +145,7 @@ class GateNet(Predictor):
                        augmenter: ImgTransform = None,
                        n_polygon=4,
                        preprocessor=None,
-                       ):
+                       resume_training=False):
         n_boxes = [len(a) for a in anchors]
 
         loss = GateDetectionLoss(
@@ -163,6 +163,7 @@ class GateNet(Predictor):
                           n_boxes=n_boxes,
                           n_polygon=n_polygon,
                           input_channels=input_channels,
+                          resume_training=resume_training
                           )
 
         return GateNet(net,
