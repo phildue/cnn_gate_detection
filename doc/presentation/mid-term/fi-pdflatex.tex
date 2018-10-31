@@ -58,9 +58,16 @@
 
 %Now currently we have a very basic computer vision method that basically looks for orange pixels and if it finds a square it extracts the corners and together with the known geometry of the gate we can estimate our own position.
 %As you can imagine this method is purely colour based and very brittle. You need to tune the colour values depending on the light conditions of the room. And even then if you have strong shadows the method fails. Also it can happend that you are quite far away from the gate and then you don't see the square anymore but only the pole. In this case the method also doesnt work. So we want to improve this by using a learning based approach. As we hope this results in a more robust and flexible method. For example a learning based method you can train if the shapes of the gate change. So this brings me to the underlying research problem. Which can be formulated as follows.
+
+\begin{frame}{Pipeline}
+\includegraphics[width=\textwidth]{fig/control_loop_inv}
+\end{frame}
 \subsection{Challenges}    
 \begin{frame}
-
+\centering
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/real_cyberzoo1.png}
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/basement}
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/hallway}
 \begin{block}{Challenges}
 	\begin{enumerate}
 		\item Objects consist of thin structures that are spread over large parts of the image.
@@ -83,13 +90,13 @@
 	\centering
    	%\includegraphics[width=0.8\textwidth]{fig/triangle_white}
 	\end{frame}
-\begin{frame}	
-\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?\\}
-\bigskip
+%\begin{frame}	
+%\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects %on a micro-air vehicle?\\}
+%\bigskip
 
-\centering
-\includegraphics[width=0.8\textwidth]{fig/triangle_white}
-\end{frame}
+%\centering
+%\includegraphics[width=0.8\textwidth]{fig/triangle_white}
+%\end{frame}
  % Since it needs to run on a drone it should be fast and the faster it gets the better for the control, the faster we can fly/ a smaller drone we can use. The wire frame objects we refer to as the objects we want to detect consists only out of a thin frame but I will get back to that later. So I will look at some background in object detection.   
     \section{Background}
     \begin{frame}{Outline for Section \thesection}
@@ -112,6 +119,13 @@
 	\includegraphics[width=\textwidth]{fig/cnn_mine}
 \end{frame}
 
+%\begin{frame}{One Stage Detectors}
+%$$
+%\mathcal{L} = \sum_{i=0}^{S^2}\sum_{j=0}^B\mathbf{1}_{ij}^{obj}(\lambda_{loc}\mathcal{L}_{loc} %+ \lambda_{obj}\mathcal{L}_{obj} + \lambda_{class}\mathcal{L}_{class}) + %\mathbf{1}_{ij}^{noobj}(\lambda_{noobj}\mathcal{L}_{noobj})
+%$$
+%
+%\end{frame}
+
 % So now we can look at an example for a convolutional network and at the different layers. So typically you apply per layer a certain amount of filters, then you apply pooling and non-linearity and you stack several of these filters and at the end you have your output.
 % And typically the performance improves the deeper you go. One reason is that the flexibility of the model increases but you can also look at it from another perspective and see what the different layers are responsible for. So when you visualize these filters you usually see how these early layers look for edges, corner and blobs, while higher layers then combine these low level features to more complex parts like eyes, noses and so on.
 % Now the draw back of these deep networks is their computational effort, especially the deep one is their huge consumption in energy, computations and memory which makes them not applicable for micro air vehicles.
@@ -120,38 +134,37 @@
         \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 \end{frame}
+\begin{frame}{Virtual Environment}
+\centering
+\includegraphics[width=0.45\textwidth]{../../thesis/fig/basement_perspective}\\
+\includegraphics[width=0.45\textwidth]{../../thesis/fig/daylight_perspective}
+\includegraphics[width=0.45\textwidth]{../../thesis/fig/iros_perspective}
+
+\end{frame}
+
+  \subsection{Network Design}
+
+\begin{frame}{Results}
+\includegraphics[width=\textwidth]{../../thesis/fig/perf_width}
+\end{frame}
+
+\begin{frame}{Results}
+\includegraphics[width=\textwidth]{../../thesis/fig/perf_depth}
+\end{frame}
   \subsection{Data Generation}
-    \begin{frame}{Data Properties}
-\begin{itemize}
-	\item \textbf{Background/Environment} \\Illumination, Background Texture, Other Objects
-	\item \textbf{View} \\Appearance of the object relative to the camera
-	\item \textbf{Sensor Effects} \\Motion Blur, Chromatic/Geometric Distortion
-\end{itemize}
-    \end{frame}
-    \begin{frame}{Background/Environment}
-    \centering
-		\includegraphics[width=0.3\textwidth]{fig/example_uniform}
-		\includegraphics[width=0.3\textwidth]{fig/example_real}	\includegraphics[width=0.3\textwidth]{fig/example_virt}\\
-		\includegraphics[width=0.3\textwidth]{fig/example_uniform2}
-			\includegraphics[width=0.3\textwidth]{fig/example_real2}
-			\includegraphics[width=0.3\textwidth]{fig/example_virt2}
-    \end{frame}
-    \begin{frame}{Background/Environment}
-    \includegraphics[width=\textwidth]{../../thesis/fig/context_bar}
-    \end{frame}
+%    \begin{frame}{Data Properties}
+%\begin{itemize}
+%	\item \textbf{Background/Environment} \\Illumination, Background Texture, Other Objects
+%	\item \textbf{View} \\Appearance of the object relative to the camera
+%	\item \textbf{Sensor Effects} \\Motion Blur, Chromatic/Geometric Distortion
+%\end{itemize}
+%    \end{frame}
 
-    \begin{frame}{View}
-	\includegraphics[width=\textwidth]{../../thesis/fig/hist2d_camplace}
-	\end{frame}
-
-    \begin{frame}{View}
-    \includegraphics[width=\textwidth]{../../thesis/fig/recall_yaw}
-	\end{frame}
 
     \begin{frame}{Sensor Effects}
 \begin{itemize}
 	\item Motion Blur 
-	\item Chromatic Distortion
+	\item Chromatic Aberration
 	\item Exposure
 	\item HSV variations
 \end{itemize}
@@ -160,24 +173,11 @@
     \includegraphics[width=\textwidth]{../../thesis/fig/pp_bar}
 	\end{frame}
 
-  \subsection{Network Optimization}
-	  
-	\begin{frame}{Design Parameters}
-	\begin{itemize}
-		\item Depth
-		\item Width
-	\end{itemize}
-	\end{frame}
-	\begin{frame}{Results}
-	\includegraphics[width=\textwidth]{../../thesis/fig/perf_width}
-	\end{frame}
-
-
-\begin{frame}{Results}
-
-\end{frame}
 
   \subsection{Comparison to Baseline}
+      \begin{frame}{Comparison to Baseline}
+    \includegraphics[width=0.8\textwidth]{../../thesis/fig/comp_baseline}
+\end{frame}
 
     
     \section{Summary}
@@ -188,9 +188,9 @@
     \begin{frame}{Conclusion}
 
     \begin{itemize}
-    	\item Initial assumption confirmed. Much less layers are necessary. However, with less then 9 layers the performance starts dropping.
-    	\item Deeper network handles objects in difficult poses better.
-    	\item Number of weights is much smaller, however reduction in parameters does not lead equal speed up.
+    	\item Small Network is able to learn the task equally well than bigger network
+    	\item Image Augmentation by applying image blur and variations in HSV improve the localization on the real data
+    	\item Chromatic Aberration and variations in Exposure have small influence or lead to a deterioration in performance 
     \end{itemize}
     \end{frame}
 
@@ -198,8 +198,7 @@
        \begin{frame}{Open Questions}
 \begin{itemize}
 	\item Reality Gap
-	\item Bounding Boxes can be more accurate
-	\item 
+	\item Localization Error still high
   \end{itemize} 
 \end{frame}
     \begin{frame}{Questions}

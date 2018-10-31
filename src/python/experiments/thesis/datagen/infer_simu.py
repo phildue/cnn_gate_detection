@@ -12,14 +12,16 @@ models = [
     # 'yolov3_gate_varioussim416x416',
     # 'yolov3_gate_mixed416x416',
     # 'yolov3_allgen416x416',
-    'yolov3_hsv416x416',
-    'yolov3_blur416x416',
-    'yolov3_chromatic416x416',
-    'yolov3_exposure416x416',
+    # 'yolov3_hsv416x416',
+    # 'yolov3_blur416x416',
+    # 'yolov3_chromatic416x416',
+    # 'yolov3_exposure416x416',
     # 'yolov3_40k416x416',
     # 'yolov3_allview416x416',
     # 'yolov3_gate416x416',
     # 'yolov3_arch2416x416',
+    'yolov3_arch_random416x416',
+    # 'yolov3_arch_race416x416',
 
 ]
 datasets = [

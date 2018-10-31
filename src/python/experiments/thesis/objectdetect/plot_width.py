@@ -13,8 +13,8 @@ models = [
     'objectdetect/yolov3_w1_416x416',
     'objectdetect/yolov3_w2_416x416',
     'objectdetect/yolov3_w3_416x416',
-    'datagen/yolov3_allview416x416',
-    'datagen/yolov3_arch2416x416',
+    'datagen/yolov3_blur416x416',
+    # 'datagen/yolov3_arch2416x416',
 
 ]
 
@@ -25,9 +25,9 @@ names = [
     'w0',
     'w1',
     'w2',
-    'w3'
+    'w3',
     'w4',
-    'arch'
+    # 'arch'
 ]
 iou = 0.6
 simset = 'iros2018_course_final_simple_17gates'
@@ -93,16 +93,17 @@ frame.set_index('Name')
 plt.figure(figsize=(8, 3))
 
 w = 1 / len(models)
-w -= w * 0.1
+maxw = 1000000
 plt.title('Performance Across Width', fontsize=12)
-plt.plot(frame['Weights'], frame['Sim Data' + str(iou)],'x')
+plt.bar(frame['Weights']/maxw, frame['Sim Data' + str(iou)],width=w)
 
-plt.plot(frame['Weights'], frame['Real Data' + str(iou)],'x')
-plt.xlabel('Weights')
+# plt.bar(frame['Weights']/maxw, frame['Real Data' + str(iou)],width=w)
+plt.xlabel('Weights * {}'.format(maxw))
 plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)
-plt.legend(['Sim Data', 'Real Data'], bbox_to_anchor=(1.1, 1.05))
-
+# plt.legend(['Sim Data', 'Real Data'], bbox_to_anchor=(1.1, 1.05))
+plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
+                        wspace=0.3, hspace=0.3)
 print(frame.to_string())
 print(frame.to_latex())
 plt.savefig('doc/thesis/fig/perf_width.png')

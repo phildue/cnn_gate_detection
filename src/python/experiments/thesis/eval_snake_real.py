@@ -31,8 +31,9 @@ for i, d in enumerate(datasets):
     image_files = list(sorted(glob.glob(image_root + d + "/*.jpg")))
 
     for iou in [0.4, 0.6, 0.8]:
-        eval = DetectionEvaluator(False, iou_thresh=iou, min_box_area=0 * img_area,
-                                  max_box_area=img_area * 4.0, store=False,min_aspect_ratio=0,max_aspect_ratio=100.0)
+        eval = DetectionEvaluator(min_box_area=0 * img_area,
+                                  max_box_area=img_area * 4.0, store=False, min_aspect_ratio=0, max_aspect_ratio=100.0,
+                                  iou_thresh=iou)
         for n in range(5):
             prediction_files = list(
                 sorted(glob.glob(results_root + "test/" + prediction_folders[i] + "/" + str(n) + '/*.xml')))
@@ -50,4 +51,4 @@ for i, d in enumerate(datasets):
                 'image_files': image_files
             }
 
-            save_file(output, 'test_' + d + '_results_iou' + str(iou) +'_' + str(n)+ '.pkl', results_root)
+            save_file(output, 'test_' + d + '_results_iou' + str(iou) + '_' + str(n) + '.pkl', results_root)
