@@ -3,9 +3,6 @@ import argparse
 import numpy as np
 
 from modelzoo.train import train
-from utils.imageprocessing.transform.RandomBlur import RandomBlur
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 
 if __name__ == '__main__':
     start_idx = 0
@@ -85,5 +82,5 @@ if __name__ == '__main__':
               max_obj_size=2.0,
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
-              initial_epoch=0,
+              initial_epoch=3,
               color_format='bgr')
