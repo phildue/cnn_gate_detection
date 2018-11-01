@@ -3,10 +3,6 @@ import argparse
 import numpy as np
 
 from modelzoo.train import train
-from utils.fileaccess.utils import load_file
-from utils.imageprocessing.transform.RandomBlur import RandomBlur
-from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.workdir import cd_work
 
 if __name__ == '__main__':
@@ -75,7 +71,7 @@ if __name__ == '__main__':
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
-              weight_file='out/thesis/datagen/yolov3_w0_416x416_i00/model.h5',
+              weight_file='out/thesis/datagen/yolov3_d0_416x416_i00/model.h5',
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
