@@ -27,6 +27,7 @@ names = [
     'w2',
     'w3',
     'w4',
+    'w02',
     # 'arch'
 ]
 iou = 0.6
@@ -61,6 +62,8 @@ for m, model in enumerate(models):
     w = load_file(work_dir+model+'_i00/summary.pkl')['weights']
     weights.append(w)
 
+results_on_sim.append(0.35)
+weights.append(24.132)
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
 
@@ -87,6 +90,7 @@ for m, model in enumerate(models):
     errAP = np.mean(std_p, 0)
     results_on_real.append(np.round(meanAp, 2))  # , errAp
 
+results_on_real.append(0.1)
 frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 frame.set_index('Name')
 

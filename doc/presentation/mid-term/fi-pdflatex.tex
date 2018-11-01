@@ -50,7 +50,7 @@
   		\tableofcontents
   	\end{frame}
 	\section{Introduction}
-	\subsection{Application}
+%	\subsection{Application}
     \begin{frame}{Application}
     	\includegraphics[width=\textwidth]{fig/application}
     \end{frame}
@@ -62,7 +62,7 @@
 \begin{frame}{Pipeline}
 \includegraphics[width=\textwidth]{fig/control_loop_inv}
 \end{frame}
-\subsection{Challenges}    
+%\subsection{Challenges}    
 \begin{frame}
 \centering
 \includegraphics[width=0.31\textwidth]{../../thesis/fig/real_cyberzoo1.png}
@@ -82,7 +82,7 @@
 \end{block}
 \end{frame}
 
-	\subsection{Research Question}    
+%	\subsection{Research Question}    
 	\begin{frame}	
 	\textbf{How can we use synthetic data to learn an object detector for empty wireframe objects on a micro-air vehicle?\\}
 	\bigskip
@@ -102,7 +102,7 @@
     \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 	\end{frame}
-\subsection{Object Detection}
+%\subsection{Object Detection}
 	\begin{frame}{Object Detection}
 	\includegraphics[width=\textwidth]{fig/ObjectDetection}
 	\end{frame}
@@ -114,7 +114,7 @@
 % then you do two tasks and that is classification and localization so determining the object and the bounding box coordinates
 % Now there are different ways for each of these steps but thats it from a high level perspective
 % State of the art methods all use convolutional neural networks and the reason that is beliefed to be responsible for that performance is the fact that you can combine all these steps in one model and train it end to end on the task so instead of manually enginnering and training models you combine it all in one.
-	\subsection{Convolutional Neural Networks}
+%	\subsection{Convolutional Neural Networks}
 		\begin{frame}{Convolutional Neural Networks}
 	\includegraphics[width=\textwidth]{fig/cnn_mine}
 \end{frame}
@@ -125,7 +125,14 @@
 %$$
 %
 %\end{frame}
-
+\section{Hypothesis}
+\begin{frame}{Hypothesis}
+    \begin{itemize}
+    	\item A deep network can learn more robust features
+    	\item A simple network should be able to learn the task
+    	\item Simulating the real world can improve the performance in the real world
+    \end{itemize}
+\end{frame}
 % So now we can look at an example for a convolutional network and at the different layers. So typically you apply per layer a certain amount of filters, then you apply pooling and non-linearity and you stack several of these filters and at the end you have your output.
 % And typically the performance improves the deeper you go. One reason is that the flexibility of the model increases but you can also look at it from another perspective and see what the different layers are responsible for. So when you visualize these filters you usually see how these early layers look for edges, corner and blobs, while higher layers then combine these low level features to more complex parts like eyes, noses and so on.
 % Now the draw back of these deep networks is their computational effort, especially the deep one is their huge consumption in energy, computations and memory which makes them not applicable for micro air vehicles.
@@ -134,15 +141,33 @@
         \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 \end{frame}
-\begin{frame}{Virtual Environment}
+
+\begin{frame}{Experimental Setup}
 \centering
-\includegraphics[width=0.45\textwidth]{../../thesis/fig/basement_perspective}\\
-\includegraphics[width=0.45\textwidth]{../../thesis/fig/daylight_perspective}
-\includegraphics[width=0.45\textwidth]{../../thesis/fig/iros_perspective}
+\begin{itemize}
+	\item Synthetic Trainingset 20 000 samples
+	\item Synthetic Testset 550 samples, 1361 objects
+	\item Real Dataset 300 samples, 423 objects
+	\item Metric: Average Precision
+\end{itemize}
+\includegraphics[width=0.3\textwidth]{fig/iou_example}
 
 \end{frame}
 
-  \subsection{Network Design}
+\begin{frame}{Synthetic Data}
+\centering
+\includegraphics[width=0.45\textwidth]{../../thesis/fig/daylight_perspective}
+\includegraphics[width=0.45\textwidth]{../../thesis/fig/iros_perspective}
+\end{frame}
+
+\begin{frame}{Real Dataset}
+\centering
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/real_cyberzoo1.png}
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/basement}
+\includegraphics[width=0.31\textwidth]{../../thesis/fig/hallway}
+\end{frame}
+
+%\subsection{Network Design}
 
 \begin{frame}{Results}
 \includegraphics[width=\textwidth]{../../thesis/fig/perf_width}
@@ -151,7 +176,7 @@
 \begin{frame}{Results}
 \includegraphics[width=\textwidth]{../../thesis/fig/perf_depth}
 \end{frame}
-  \subsection{Data Generation}
+ % \subsection{Data Generation}
 %    \begin{frame}{Data Properties}
 %\begin{itemize}
 %	\item \textbf{Background/Environment} \\Illumination, Background Texture, Other Objects
@@ -174,14 +199,15 @@
 	\end{frame}
 
 
-  \subsection{Comparison to Baseline}
+%  \subsection{Comparison to Baseline}
       \begin{frame}{Comparison to Baseline}
+      \centering
     \includegraphics[width=0.8\textwidth]{../../thesis/fig/comp_baseline}
-\end{frame}
+	\end{frame}
 
     
     \section{Summary}
-       \subsection{Conclusion}
+ %      \subsection{Conclusion}
             \begin{frame}{Outline for Section \thesection}
     \tableofcontents[currentsection]
 \end{frame}
@@ -194,7 +220,7 @@
     \end{itemize}
     \end{frame}
 
-   \subsection{Open Questions}
+ %  \subsection{Open Questions}
        \begin{frame}{Open Questions}
 \begin{itemize}
 	\item Reality Gap
