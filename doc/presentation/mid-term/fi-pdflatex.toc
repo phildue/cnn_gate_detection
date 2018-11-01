@@ -3,4 +3,4 @@
 \beamer@sectionintoc {2}{Background}{7}{0}{2}
 \beamer@sectionintoc {3}{Hypothesis}{10}{0}{3}
 \beamer@sectionintoc {4}{Experiments}{11}{0}{4}
-\beamer@sectionintoc {5}{Summary}{20}{0}{5}
+\beamer@sectionintoc {5}{Conclusion}{20}{0}{5}
