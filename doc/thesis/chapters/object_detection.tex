@@ -55,10 +55,25 @@
 	
 	\section{Depth and Width}
 	
-	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that are thinner and shallower counterpart can detect the object with equal performance.
+	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that a thinner and shallower counterpart can detect the object with equal performance.
+	
+	\section{Experiment}
+	
+	In order to evaluate our hypothesis we conduct a experiment. We train the network with different architectures and evaluate the performance. For training we use the 20 000 from the dataset created in \Cref{sec:training}. For testing we use the test set described in \Cref{sec:training:methodology}.
+	
+	In a first experiment we use the TinyYoloV3 architecture as a baseline and incrementally decrease the number of filters per layer by a factor of 2. The number of layers is held constant at 8.
+	
+	In a second experiment we use the following amount of filters per layer ... We remove and increase layers as shown in the following: 
+	
+	
+	\section{Results}
 	
 	\begin{figure}
 		\includegraphics[width=\textwidth]{fig/perf_width}
+	\end{figure}
+
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/perf_depth}
 	\end{figure}
 	
 	\section{Receptive Field}

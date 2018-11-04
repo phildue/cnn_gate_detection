@@ -2,17 +2,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from experiments.thesis.plot import plot_result
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'datagen/yolov3_d0_416x416',
+    'objectdetect/yolov3_d0_416x416',
     'objectdetect/yolov3_w0_416x416',
-    'datagen/yolov3_d1_416x416',
-    'datagen/yolov3_d2_416x416',
+    'objectdetect/yolov3_d1_416x416',
+    'objectdetect/yolov3_d2_416x416',
+    'objectdetect/yolov3_d02_416x416',
+    'objectdetect/yolov3_d01_416x416',
     # 'objectdetect/yolov3_w3_416x416',
     # 'datagen/yolov3_blur416x416',
     # 'datagen/yolov3_arch2416x416',
@@ -28,6 +29,7 @@ names = [
     'd1',
     'd2',
     'd01'
+    'd02'
     # 'arch'
 ]
 iou = 0.6

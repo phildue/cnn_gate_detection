@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from experiments.thesis.plot import plot_result
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
@@ -14,6 +13,7 @@ models = [
     'objectdetect/yolov3_w2_416x416',
     'objectdetect/yolov3_w3_416x416',
     'datagen/yolov3_blur416x416',
+    'objectdetect/yolov3_w01_416x416',
     # 'datagen/yolov3_arch2416x416',
 
 ]
@@ -59,14 +59,11 @@ for m, model in enumerate(models):
     errAp = np.mean(std_p)
     results_on_sim.append(np.round(meanAp, 2))  # , errAp
 
-    w = load_file(work_dir+model+'_i00/summary.pkl')['weights']
+    w = load_file(work_dir + model + '_i00/summary.pkl')['weights']
     weights.append(w)
 
-results_on_sim.append(0.35)
-weights.append(24.132)
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
-
 
 results_on_real = []
 for m, model in enumerate(models):
@@ -90,16 +87,15 @@ for m, model in enumerate(models):
     errAP = np.mean(std_p, 0)
     results_on_real.append(np.round(meanAp, 2))  # , errAp
 
-results_on_real.append(0.1)
 frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 frame.set_index('Name')
 
 plt.figure(figsize=(8, 3))
 
-w = 1 / len(models)
+w = 0.5 / len(models)
 maxw = 1000000
 plt.title('Performance Across Width', fontsize=12)
-plt.bar(frame['Weights']/maxw, frame['Sim Data' + str(iou)],width=w)
+plt.bar(frame['Weights'] / maxw, frame['Sim Data' + str(iou)], width=w)
 
 # plt.bar(frame['Weights']/maxw, frame['Real Data' + str(iou)],width=w)
 plt.xlabel('Weights * {}'.format(maxw))
@@ -107,7 +103,7 @@ plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)
 # plt.legend(['Sim Data', 'Real Data'], bbox_to_anchor=(1.1, 1.05))
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-                        wspace=0.3, hspace=0.3)
+                    wspace=0.3, hspace=0.3)
 print(frame.to_string())
 print(frame.to_latex())
 plt.savefig('doc/thesis/fig/perf_width.png')
