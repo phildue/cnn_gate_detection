@@ -66,7 +66,7 @@ print(frame.to_string())
 
 plt.figure(figsize=(8, 3))
 plt.title('AveragePrecision')
-w = 1 / len(titles)
+w = (max_size/bins) / len(titles)
 for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
     plt.bar(np.arange(bins) - w + i * w, r, width=w)
 

@@ -51,7 +51,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_w02_{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_w03_{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = RandomEnsemble([
         (0.2, RandomMotionBlur(1.0, 2.0, 15)),
