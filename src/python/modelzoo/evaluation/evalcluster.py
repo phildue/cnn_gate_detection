@@ -221,16 +221,20 @@ def evalcluster_size_ap(labels_true, labels_pred, n_bins, iou_thresh=0.6, min_si
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
 
     aps = []
+    n_true = []
     for i_s in range(len(size) - 1):
         results_bin = []
+        n_true_bin = 0
         for i, l_true in enumerate(labels_true):
             l_true_bin = ImgLabel([o for o in l_true.objects if size[i_s] < o.poly.area < size[i_s + 1]])
             l_pred_bin = ImgLabel([o for o in labels_pred[i].objects if size[i_s] < o.poly.area < size[i_s + 1]])
             result = evaluator.evaluate(l_true_bin, l_pred_bin)
             results_bin.append(result)
+            n_true_bin += len(l_true_bin.objects)
         r = sum_results(results_bin)
         mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([r])
         ap = np.mean(mean_pr)
         aps.append(ap)
+        n_true.append(n_true_bin)
 
-    return aps
+    return aps, n_true

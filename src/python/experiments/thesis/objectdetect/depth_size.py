@@ -11,13 +11,10 @@ cd_work()
 
 result_files = [
     'out/thesis/objectdetect/yolov3_d0_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/datagen/yolov3_gate_varioussim416x416_i01/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/objectdetect/yolov3_d1_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/objectdetect/yolov3_d2_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/objectdetect/yolov3_d02_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
     'out/thesis/objectdetect/yolov3_d01_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/objectdetect/yolov3_w01_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/datagen/yolov3_arch2416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
 ]
 titles = [
     'd0',
@@ -25,8 +22,6 @@ titles = [
     'd2',
     'd02',
     'd01',
-    # 'w01',
-    # 'arch'
 ]
 ObjectLabel.classes = ['gate']
 bins = 10
@@ -84,19 +79,6 @@ legend = ['N_Objects']
 legend.extend(titles)
 plt.legend(legend)
 
-# plt.savefig('doc/thesis/fig/precision_hw.png')
-
-# plt.figure(figsize=(5, 3))
-# plt.title('Recall at Yaw +- 20°c')
-# plt.xlim(-0.5, 10)
-# plt.bar(distances - .33, (recalls[0][:, 0] + recalls[0][:, -1] / 2), width=0.33, align='center')
-# plt.bar(distances, (recalls[1][:, 0] + recalls[1][:, -1] / 2), width=0.33, align='center')
-# plt.bar(distances + .33, (recalls[2][:, 0] + recalls[2][:, -1] / 2), width=0.33, align='center')
-# plt.legend(titles, bbox_to_anchor=(0.4, 0.6))
-# plt.xlabel('Relative Distance [m]')
-# plt.ylabel('Recall')
-# plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-#                     wspace=0.4, hspace=0.4)
-# plt.savefig('doc/thesis/fig/recall_front.png')
+plt.savefig('doc/thesis/fig/depth_ap_size.png')
 
 plt.show(True)
