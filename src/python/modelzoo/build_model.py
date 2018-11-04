@@ -77,7 +77,7 @@ def avg_pool_creator(netin, config):
 
 
 def avg_pool(netin, size, strides):
-    return AveragePooling2D(size, strides)(netin)
+    return AveragePooling2D(size, strides,padding='same')(netin)
 
 
 def max_pool_creator(netin, config):
@@ -89,7 +89,7 @@ def max_pool_creator(netin, config):
 
 
 def max_pool(netin, size, strides):
-    return MaxPooling2D(size, strides)(netin)
+    return MaxPooling2D(size, strides,padding='same')(netin)
 
 
 def time_dist_conv_leaky_creator(netin, config):

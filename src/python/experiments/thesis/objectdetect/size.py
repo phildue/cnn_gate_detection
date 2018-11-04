@@ -9,25 +9,36 @@ from utils.workdir import cd_work
 
 cd_work()
 
-result_files = [
-    'out/thesis/objectdetect/yolov3_d0_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/datagen/yolov3_gate_varioussim416x416_i01/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/objectdetect/yolov3_d1_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/objectdetect/yolov3_d2_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/objectdetect/yolov3_d02_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    'out/thesis/objectdetect/yolov3_d01_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/objectdetect/yolov3_w01_416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl',
-    # 'out/thesis/datagen/yolov3_arch2416x416_i00/test_iros2018_course_final_simple_17gates/predictions.pkl'
+models = [
+    'out/thesis/objectdetect/yolov3_d02_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d01_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d0_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d1_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d2_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w0_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w1_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w2_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w3_416x416_i00/',
+    'out/thesis/datagen/yolov3_blur416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w01_416x416_i00/',
+    'out/thesis/datagen/yolov3_arch2416x416_i00/',
+
 ]
 titles = [
+    'd02',
+    'd01',
     'd0',
     'd1',
     'd2',
-    'd02',
-    'd01',
-    # 'w01',
-    # 'arch'
+    'w0',
+    'w1',
+    'w2',
+    'w3',
+    'w4',
+    'w01',
+    'arch',
 ]
+
 ObjectLabel.classes = ['gate']
 bins = 10
 iou = 0.6
@@ -53,50 +64,53 @@ min_size = 0.01
 
 sizes = np.linspace(0, max_size, bins)
 n_true = []
-for i, f in enumerate(result_files):
-    result_file = load_file(f)
+n_layers = []
+ap_totals = []
+for i, m in enumerate(models):
+    result_file = load_file(m + 'test_iros2018_course_final_simple_17gates/predictions.pkl')
     labels_pred = result_file['labels_pred']
     labels_true = result_file['labels_true']
     img_files = result_file['image_files']
 
-    ap, true = evalcluster_size_ap(labels_true, labels_pred, n_bins=bins,
-                                   iou_thresh=iou, min_size=min_size, max_size=max_size)
-    aps.append(ap)
+    ap_size, true = evalcluster_size_ap(labels_true, labels_pred, n_bins=bins,
+                                        iou_thresh=iou, min_size=min_size, max_size=max_size)
+
+    aps.append(ap_size)
     n_true.append(true)
+
+    # sum_r, tp, fp, fn, boxes_true = evalset(labels_true, labels_pred, iou_thresh=iou)
+    # mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([sum_r])
+    # ap_totals.append(np.mean(mean_pr))
+
+    summary = load_file(m + 'summary.pkl')
+    d = 0
+    for layer in summary['architecture']:
+        if 'conv' in layer['name']:
+            d += 1
+    n_layers.append(d)
+
 frame['AveragePrecision' + str(iou)] = aps
 frame['Objects'] = n_true
+frame['Layers'] = n_layers
+# frame['AP Total' + str(iou)] = ap_totals
 
 print(frame.to_string())
 
 plt.figure(figsize=(8, 3))
-plt.title('AveragePrecision')
+plt.title('AveragePrecision across Size Bins')
 w = 1.0 / len(titles)
-plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.max(np.max(frame['Objects'])), width=1.0, color='gray')
+# plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
+legend = []
 for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
-    plt.bar(np.arange(bins) - w + i * w, r, width=w)
-
+    plt.bar(np.arange(bins) - len(titles)*w + i * w, r, width=w)
+    legend.append(str(frame['Layers'][i])+' Layers')
     plt.xlabel('Size')
     plt.ylabel('Average Precision')
     plt.xticks(np.arange(bins), np.round(sizes, 2))
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                         wspace=0.4, hspace=0.4)
-legend = ['N_Objects']
-legend.extend(titles)
 plt.legend(legend)
 
-# plt.savefig('doc/thesis/fig/precision_hw.png')
 
-# plt.figure(figsize=(5, 3))
-# plt.title('Recall at Yaw +- 20°c')
-# plt.xlim(-0.5, 10)
-# plt.bar(distances - .33, (recalls[0][:, 0] + recalls[0][:, -1] / 2), width=0.33, align='center')
-# plt.bar(distances, (recalls[1][:, 0] + recalls[1][:, -1] / 2), width=0.33, align='center')
-# plt.bar(distances + .33, (recalls[2][:, 0] + recalls[2][:, -1] / 2), width=0.33, align='center')
-# plt.legend(titles, bbox_to_anchor=(0.4, 0.6))
-# plt.xlabel('Relative Distance [m]')
-# plt.ylabel('Recall')
-# plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-#                     wspace=0.4, hspace=0.4)
-# plt.savefig('doc/thesis/fig/recall_front.png')
 
 plt.show(True)

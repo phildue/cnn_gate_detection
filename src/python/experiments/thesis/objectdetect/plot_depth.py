@@ -28,7 +28,7 @@ names = [
     'w0',
     'd1',
     'd2',
-    'd01'
+    'd01',
     'd02'
     # 'arch'
 ]
@@ -70,14 +70,9 @@ for m, model in enumerate(models):
             l += 1
     layers.append(l)
 
-results_on_sim.append(0.39)
-weights.append(51.994)
-layers.append(7)
-
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
 frame['Layers'] = pd.Series(layers)
-
 results_on_real = []
 for m, model in enumerate(models):
     total_detections = []
@@ -98,7 +93,6 @@ for m, model in enumerate(models):
     errAP = np.mean(std_p, 0)
     results_on_real.append(np.round(meanAp, 2))  # , errAp
 
-results_on_real.append(0.39)
 frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 frame.set_index('Name')
 

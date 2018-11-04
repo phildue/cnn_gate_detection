@@ -195,21 +195,24 @@ def evalscatter_wh(labels_true, labels_pred, conf_thresh, iou_thresh=0.6):
     return tp, fp, fn
 
 
-def eval(labels_true, labels_pred, iou_thresh=0.6):
-    evaluator = DetectionEvaluator(show_=True, min_box_area=0.01 * 416 * 416, max_box_area=1.0 * 416 * 416,
+def evalset(labels_true, labels_pred, iou_thresh=0.6):
+    evaluator = DetectionEvaluator(min_box_area=0.01 * 416 * 416, max_box_area=1.0 * 416 * 416,
                                    min_aspect_ratio=0.3,
                                    max_aspect_ratio=3.0, iou_thresh=iou_thresh)
     tp = []
     fp = []
     fn = []
     boxes_true = []
+    results = []
     for i in range(len(labels_true)):
         evaluator.evaluate(labels_true[i], labels_pred[i])
         tp.extend(evaluator.boxes_tp)
         fp.extend(evaluator.boxes_fp)
         fn.extend(evaluator.boxes_fn)
         boxes_true.extend(evaluator.boxes_true)
-    return tp, fp, fn, boxes_true
+        results.append(evaluator.result)
+    sum_r = sum_results(results)
+    return sum_r,tp, fp, fn, boxes_true
 
 
 def evalcluster_size_ap(labels_true, labels_pred, n_bins, iou_thresh=0.6, min_size=0, max_size=2.0, img_res=(416, 416)):
