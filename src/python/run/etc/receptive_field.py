@@ -14,24 +14,26 @@
 import math
 
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 2, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 12, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 6, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'predict'},
-    # {'name': 'route', 'index': [6]},
-    {'name': 'max_pool', 'size': (32, 32), 'strides': (8, 8)},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 6, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'}
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2),'strides': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (9, 9), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'},
+    # {'name': 'route', 'index': [-4]},
+    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'upsample', 'size': 2},
+    # {'name': 'route', 'index': [-1, 8]},
+    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    # {'name': 'predict'}
 ]
 
 

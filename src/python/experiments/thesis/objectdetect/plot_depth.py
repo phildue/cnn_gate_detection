@@ -3,12 +3,13 @@ import numpy as np
 import pandas as pd
 
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
+from utils.ModelSummary import ModelSummary
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'objectdetect/yolov3_d0_416x416',
+    # 'objectdetect/yolov3_d0_416x416',
     'objectdetect/yolov3_w0_416x416',
     'objectdetect/yolov3_d1_416x416',
     'objectdetect/yolov3_d2_416x416',
@@ -24,7 +25,7 @@ work_dir = 'out/thesis/'
 n_iterations = 2
 
 names = [
-    'd0',
+    # 'd0',
     'w0',
     'd1',
     'd2',
@@ -61,15 +62,10 @@ for m, model in enumerate(models):
     meanAp = np.mean(m_p)
     errAp = np.mean(std_p)
     results_on_sim.append(np.round(meanAp, 2))  # , errAp
-    summary = load_file(work_dir + model + '_i00/summary.pkl')
-    w = summary['weights']
-    weights.append(w)
-    l = 0
-    for layer in summary['architecture']:
-        if 'conv' in layer['name']:
-            l += 1
-    layers.append(l)
+    summary = ModelSummary.from_file(work_dir + model + '_i00/summary.pkl')
 
+    layers.append(summary.max_depth)
+    weights.append(summary.weights)
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
 frame['Layers'] = pd.Series(layers)

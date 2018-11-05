@@ -22,6 +22,7 @@ models = [
     'out/thesis/datagen/yolov3_blur416x416_i00/',
     'out/thesis/objectdetect/yolov3_w01_416x416_i00/',
     'out/thesis/datagen/yolov3_arch2416x416_i00/',
+    'out/thesis/datagen/yolov3_grid416x416_i00/',
 
 ]
 titles = [
@@ -37,6 +38,7 @@ titles = [
     'w4',
     'w01',
     'arch',
+    'grid'
 ]
 
 ObjectLabel.classes = ['gate']

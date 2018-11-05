@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from modelzoo.evaluation.evalcluster import evalcluster_size_ap
+from utils.ModelSummary import ModelSummary
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
@@ -11,15 +12,16 @@ cd_work()
 models = [
     'out/thesis/objectdetect/yolov3_d02_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d01_416x416_i00/',
-    'out/thesis/objectdetect/yolov3_d0_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_w0_416x416_i00/',
+    # 'out/thesis/objectdetect/yolov3_d0_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d1_416x416_i00/',
-    'out/thesis/objectdetect/yolov3_d2_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d2_416x416_i00/',
 ]
 titles = [
     'd02',
     'd01',
-    'd0',
+    'w0',
+    # 'd0',
     'd1',
     'd2',
 ]
@@ -66,12 +68,9 @@ for i, m in enumerate(models):
     # mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([sum_r])
     # ap_totals.append(np.mean(mean_pr))
 
-    summary = load_file(m + 'summary.pkl')
-    d = 0
-    for layer in summary['architecture']:
-        if 'conv' in layer['name']:
-            d += 1
-    n_layers.append(d)
+    summary = ModelSummary.from_file(m + 'summary.pkl')
+
+    n_layers.append(summary.max_depth)
 
 frame['AveragePrecision' + str(iou)] = aps
 frame['Objects'] = n_true
@@ -81,13 +80,13 @@ frame['Layers'] = n_layers
 print(frame.to_string())
 
 plt.figure(figsize=(8, 3))
-plt.title('AveragePrecision across Size Bins')
+plt.title('Performance by Bounding Box Size')
 w = 1.0 / len(titles)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 legend = []
 for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
-    plt.bar(np.arange(bins) - len(titles)*w + i * w, r, width=w)
-    legend.append(str(frame['Layers'][i])+' Layers')
+    plt.bar(np.arange(bins) - len(titles) * w + i * w, r, width=w)
+    legend.append(str(frame['Layers'][i]) + ' Layers')
     plt.xlabel('Size')
     plt.ylabel('Average Precision')
     plt.xticks(np.arange(bins), np.round(sizes, 2))
@@ -96,6 +95,17 @@ for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
 plt.legend(legend)
 
 plt.savefig('doc/thesis/fig/depth_ap_size.png')
+
+plt.figure(figsize=(8, 3))
+plt.title('Label Distribution in Terms of Bounding Box Sizes')
+plt.bar(np.arange(bins), frame['Objects'][0], width=1.0, color='gray')
+plt.xlabel('Size')
+plt.ylabel('Number of Objects')
+plt.xticks(np.arange(bins), np.round(sizes, 2))
+plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
+                    wspace=0.4, hspace=0.4)
+
+plt.savefig('doc/thesis/fig/distr_size.png')
 
 # plt.figure(figsize=(8, 3))
 # plt.title('AveragePrecision')
