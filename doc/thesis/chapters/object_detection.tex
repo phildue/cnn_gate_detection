@@ -55,13 +55,66 @@
 	
 	\section{Depth and Width}
 	
-	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that are thinner and shallower counterpart can detect the object with equal performance.
+	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that a thinner and shallower counterpart can detect the object with equal performance.
+	
+	\subsection{Experiment}
+	
+	In order to evaluate our hypothesis we conduct a experiment. We train the network with different architectures and evaluate the performance. For training we use the 20 000 from the dataset created in \Cref{sec:training}. For testing we use the test set described in \Cref{sec:training:methodology}.
+	
+	In a first experiment we use the TinyYoloV3 architecture as a baseline and incrementally decrease the number of filters per layer by a factor of 2. The number of layers is held constant at 8.
+	
+	In a second experiment we use the following amount of filters per layer ... We remove and increase layers as shown in the following: 
+	
+	
+	\section{Results}
+	
+	\Cref{fig:perf_width} shows the performance for thinner and wider networks. It is apparent how the performance only undergoes slight variations despite reducing the total number of weights by a factor 1000.
+	
 	
 	\begin{figure}
 		\includegraphics[width=\textwidth]{fig/perf_width}
+		\caption{Performance in simulation when varying the amount of filters per layer. Starting from the baseline architecture with approximately 9 Mio. weights, the amount of filters per layer are decreased stepwise by a factor of 2. Only minor effects on performance can be seen, despite reducing the flexibility of the model.}
+		\label{fig:perf_width}
 	\end{figure}
 	
-	\section{Architecture Fine Tuning}
+	\Cref{fig:perf_depth} shows the performance for different amount of layers. It can be seen how the performance increases until 8 layers, whereas afterwards no further performance is gained.
+	
+	\Cref{fig:depth_ap_size} shows the performance for bins of different object sizes. It can be seen how the deeper models perform better at larger object sizes. The deepest model however looses on performance for the smaller object sizes.
+
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/perf_depth}
+		\caption{Performance in simulation when varying the amount of layers. The exact architectures are shown in TODO. The performance does not increase further with more than 8 layers.}
+		\label{fig:perf_depth}
+	\end{figure}
+
+
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/depth_ap_size}
+		\caption{Performance in simulation of models with varying depth and for bins of different size. It can be seen that the performance for larger objects increases with the amount of layers.}
+		\label{fig:depth_ap_size}
+	\end{figure}
+	
+	\Cref{fig:size_bins} shows the distribution of object sizes in the bins used for evaluation. It can be seen that most objects in the test set are further away.
+	
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/distr_size}
+		\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
+		\label{fig:size_bins}
+	\end{figure}
+	
+	\subsection{Discussion}
+	
+	The overall performance is only slightly affected when reducing the number of weights in terms of width and height. We can assume that this is because the objects we investigate are of quite simple structure. Intuitively the features to be considered are color, lines and edges in certain combinations. Hence, it seems logical that only a few filters are necessary to represent these shapes.
+	
+	The performance in terms of different object varies significantly for models with varying depth. Only deeper networks are able to detect larger objects. However, the complexity of the object does not increase for closer objects. In contrary the closer the objects are the less context is visible. Hence, it is unlikely that increased flexibility is the reason for the increase in performance. Instead, it is more likely that the increased receptive field is the reason.
+	
+	\subsection{Conclusion}
+	
+	We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
+	
+	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can confirm this hypothesis for smaller objects as the performance does not increase anymore after the receptive field covers the whole object. Hence, we assume that depth only improves the performance because it increases the receptive field rather than because it increases flexibility. We investigate alternatives to increase the receptive field in further experiments. 
+	
+	\section{Receptive Field}
 	
 	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that an anchor gets assigned responsible which does not see any feature of the object.
 	

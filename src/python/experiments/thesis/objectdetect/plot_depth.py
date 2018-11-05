@@ -2,17 +2,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from experiments.thesis.plot import plot_result
 from modelzoo.evaluation.utils import average_precision_recall, sum_results
+from utils.ModelSummary import ModelSummary
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'datagen/yolov3_d0_416x416',
+    # 'objectdetect/yolov3_d0_416x416',
     'objectdetect/yolov3_w0_416x416',
-    'datagen/yolov3_d1_416x416',
-    'datagen/yolov3_d2_416x416',
+    'objectdetect/yolov3_d1_416x416',
+    'objectdetect/yolov3_d2_416x416',
+    'objectdetect/yolov3_d02_416x416',
+    'objectdetect/yolov3_d01_416x416',
     # 'objectdetect/yolov3_w3_416x416',
     # 'datagen/yolov3_blur416x416',
     # 'datagen/yolov3_arch2416x416',
@@ -23,11 +25,12 @@ work_dir = 'out/thesis/'
 n_iterations = 2
 
 names = [
-    'd0',
+    # 'd0',
     'w0',
     'd1',
     'd2',
-    'd01'
+    'd01',
+    'd02'
     # 'arch'
 ]
 iou = 0.6
@@ -59,23 +62,13 @@ for m, model in enumerate(models):
     meanAp = np.mean(m_p)
     errAp = np.mean(std_p)
     results_on_sim.append(np.round(meanAp, 2))  # , errAp
-    summary = load_file(work_dir + model + '_i00/summary.pkl')
-    w = summary['weights']
-    weights.append(w)
-    l = 0
-    for layer in summary['architecture']:
-        if 'conv' in layer['name']:
-            l += 1
-    layers.append(l)
+    summary = ModelSummary.from_file(work_dir + model + '_i00/summary.pkl')
 
-results_on_sim.append(0.39)
-weights.append(51.994)
-layers.append(7)
-
+    layers.append(summary.max_depth)
+    weights.append(summary.weights)
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
 frame['Layers'] = pd.Series(layers)
-
 results_on_real = []
 for m, model in enumerate(models):
     total_detections = []
@@ -96,7 +89,6 @@ for m, model in enumerate(models):
     errAP = np.mean(std_p, 0)
     results_on_real.append(np.round(meanAp, 2))  # , errAp
 
-results_on_real.append(0.39)
 frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 frame.set_index('Name')
 

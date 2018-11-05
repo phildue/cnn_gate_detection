@@ -7,15 +7,17 @@ cd_work()
 # models = [name for name in os.listdir('out/0108/')]
 
 models = [
+    # 'objectdetect/yolov3_w01_416x416',
+    'datagen/yolov3_grid416x416',
     # 'objectdetect/yolov3_w0_416x416',
     # 'objectdetect/yolov3_w1_416x416',
     # 'objectdetect/yolov3_w2_416x416',
     # 'objectdetect/yolov3_w3_416x416',
-    'datagen/yolov3_d01_416x416',
-    'datagen/yolov3_d0_416x416',
-    'datagen/yolov3_d1_416x416',
-    'datagen/yolov3_d2_416x416',
-    # 'objectdetect/yolov3_d4_416x416',
+    # 'objectdetect/yolov3_d02_416x416',
+    # 'objectdetect/yolov3_d01_416x416',
+    # 'objectdetect/yolov3_d0_416x416',
+    # 'objectdetect/yolov3_d1_416x416',
+    # 'objectdetect/yolov3_d2_416x416',
     # 'datagen/yolov3_arch2416x416',
 ]
 datasets = [
