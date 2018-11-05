@@ -61,7 +61,7 @@
 		\includegraphics[width=\textwidth]{fig/perf_width}
 	\end{figure}
 	
-	\section{Receptive Field}
+	\section{Architecture Fine Tuning}
 	
 	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that an anchor gets assigned responsible which does not see any feature of the object.
 	
@@ -69,6 +69,9 @@
 		
 	\section{Reducing Inference Time}
 	
-	Reducing the inference time can be done on an architectural basis. We compare depthwise separable convolutions and bottleneck layers.
+	To this end we investigated how to incorporate 
+	Next to performance, inference time is a crucial parameter for the detection of \ac{EWFO} on \ac{MAV}. 
+	
+	 It is determined by the number of computations but also how these computations can be executed. Theoretically the convolutions of one layer in a \acp{CNN} can be executed fully in parallel, however this operation has to be supported by the computational platform. The execution time further depends on how fast a computational platform can execute multiplications, how large the memory is and how fast it can be accessed, but also on the particular low level software implementation. So far we created a model that is 
 	
 	\section{title}

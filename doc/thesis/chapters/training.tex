@@ -264,10 +264,10 @@ Fast movement and sensor noise can lead to blurry images. This is particularly p
 The effect is modelled using a Gaussian-filter. The image is convolved with a 2D-kernel build from:
 
 \begin{equation}
-k = \frac{1}{2\sigma_x\sigma_y\pi}e^{-{\frac{x^2 + y^2}{2\sigma_x\sigma_y}}} 
+k(x,y) = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\frac{1}{2}({\frac{(x-\mu_x)^2}{\sigma_x^2} + \frac{(y-\mu_y)^2}{\sigma_y^2}})}
 \end{equation}
 
-Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y and used to model directional (motion) blur. An example can be seen in \Cref{fig:focusblur}.
+Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to model directional (motion) blur and $\mu_x$, $\mu_y$ are at the kernel center. An example can be seen in \Cref{fig:focusblur}.
 
 \paragraph{Exposure.}
 
