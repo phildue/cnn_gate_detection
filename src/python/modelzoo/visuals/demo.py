@@ -38,7 +38,7 @@ def demo_generator(model: Predictor, generator: DatasetGenerator, iou_thresh=0.4
                 box_true = boxes_true[j]
                 for k in range(len(false_positives)):
                     box_pred = false_positives[k]
-                    match = box_pred.poly.iou(box_true) > iou_thresh and box_pred.class_id == box_true.class_id
+                    match = box_pred.poly.iou(box_true.poly) > iou_thresh and box_pred.class_id == box_true.class_id
                     if match:
                         true_positives.append(box_pred)
                         false_positives.remove(box_pred)

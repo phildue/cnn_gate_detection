@@ -10,7 +10,7 @@ cd_work()
 # 'resource/ext/samples/iros2018_course_final_simple_17gates'
 generator = GateGenerator(directories=['resource/ext/samples/iros2018_course_final_simple_17gates'],
                           batch_size=8, color_format='bgr',
-                          shuffle=False, start_idx=400, valid_frac=1.0,
+                          shuffle=False, start_idx=0, valid_frac=1.0,
                           label_format='xml',
                           img_format='jpg'
                           )

@@ -15,6 +15,7 @@ models = [
     'objectdetect/yolov3_d2_416x416',
     'objectdetect/yolov3_d02_416x416',
     'objectdetect/yolov3_d01_416x416',
+    'objectdetect/yolov3_d3_416x416',
     # 'objectdetect/yolov3_w3_416x416',
     # 'datagen/yolov3_blur416x416',
     # 'datagen/yolov3_arch2416x416',
@@ -29,6 +30,7 @@ names = [
     'w0',
     'd1',
     'd2',
+    'd3',
     'd01',
     'd02'
     # 'arch'

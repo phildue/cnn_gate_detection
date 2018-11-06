@@ -16,6 +16,8 @@ models = [
     # 'out/thesis/objectdetect/yolov3_d0_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d1_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d2_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d3_416x416_i00/',
+
 ]
 titles = [
     'd02',
@@ -24,6 +26,7 @@ titles = [
     # 'd0',
     'd1',
     'd2',
+    'd3',
 ]
 ObjectLabel.classes = ['gate']
 bins = 10
@@ -45,7 +48,7 @@ aps = []
 #             areas.append(obj.poly.area)
 # max_size = max(areas)
 # min_size = min(areas)
-max_size = 1.05
+max_size = 0.75
 min_size = 0.01
 
 sizes = np.linspace(0, max_size, bins)
@@ -80,14 +83,14 @@ frame['Layers'] = n_layers
 print(frame.to_string())
 
 plt.figure(figsize=(8, 3))
-plt.title('Performance by Bounding Box Size')
+plt.title('Performance for Bins of Different Object Areas')
 w = 1.0 / len(titles)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 legend = []
 for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
     plt.bar(np.arange(bins) - len(titles) * w + i * w, r, width=w)
     legend.append(str(frame['Layers'][i]) + ' Layers')
-    plt.xlabel('Size')
+    plt.xlabel('Area Relative to Image Size')
     plt.ylabel('Average Precision')
     plt.xticks(np.arange(bins), np.round(sizes, 2))
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
@@ -97,9 +100,11 @@ plt.legend(legend)
 plt.savefig('doc/thesis/fig/depth_ap_size.png')
 
 plt.figure(figsize=(8, 3))
-plt.title('Label Distribution in Terms of Bounding Box Sizes')
+plt.title('Label Distribution in Terms of Bounding Box Area')
 plt.bar(np.arange(bins), frame['Objects'][0], width=1.0, color='gray')
-plt.xlabel('Size')
+for x, y in enumerate(frame['Objects'][0]):
+    plt.text(x, y+5, str(y), color='gray', fontweight='bold')
+plt.xlabel('Area Relative to Image Size')
 plt.ylabel('Number of Objects')
 plt.xticks(np.arange(bins), np.round(sizes, 2))
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,

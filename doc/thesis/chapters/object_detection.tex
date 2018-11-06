@@ -1,7 +1,7 @@
 	\chapter{Detecting \ac{EWFO} on \ac{MAV}}
 	\label{sec:object_detection}
 	
-	\ac{CNN}-based Object Detectors offer the advantage that they can be trained on any object given labeled training data is available. However, the networks are typically optimized for solid feature rich objects, such as planes, cars or faces. Furthermore, \acp{CNN} architectures are typically optimized for detection performance rather than inference speed. \acp{EWFO} differ substantially from objects usually used in Object Detection. In addition, this thesis investigates the detection of \ac{EWFO} on \acp{MAV}. Hence, inference speed is of high importance. In control it can be better to have a faster detector with less precision/recall rather than a slow but accurate detector. Furthermore, a more lightweight detector requires less energy and is therefore deployable on smaller hardware/lighter drones and/or requires less energy. Therefore in this chapter the detection of \acp{EWFO} with a \acp{CNN} is studied. An off-the-shelve \acp{CNN}-based detector is optimized for the detection of \acp{EWFO}. Furthermore, the trade-off in detection performance and inference speed is studied in the example of this work. The research questions are summarized in the following:
+	\ac{CNN}-based Object Detectors offer the advantage that they can be trained on any object given labelled training data is available. However, typically the architectures of \acp{CNN} are optimized for solid feature rich objects, such as planes, cars or faces. The predominant metrics optimized are precision and recall rather than inference speed. This work investigates the detection of \ac{EWFO} on \acp{MAV} as part of a control loop. Hence, inference speed and computational requirements can be more important than detection performance. Furthermore, \acp{EWFO} differ substantially from objects usually used in Object Detection. This chapter investigates the detection of \acp{EWFO} with a \acp{CNN}. An off-the-shelve \acp{CNN}-based detector is optimized for the detection of \acp{EWFO}. Furthermore, the trade-off in detection performance and inference speed is studied in the example of the hardware used in this thesis. The research questions are summarized in the following:
 	
 \begin{enumerate}
 	\item[\textbf{RQ2}]How can the architecture be optimized to detect \acp{EWFO} more efficiently?
@@ -10,10 +10,8 @@
 \end{enumerate}
 
 	\section{Methodology}
-	
-	A literature review is conducted in order to find a suitable approach for the detection of \ac{EWFO} on \acp{MAV}. \acp{CNN} achieve currently the best performance however, a drawback is their computational requirements and large amount of required examples. We hypothesize that due to the simplicity of \acp{EWFO} it is possible to synthetically generate training data and to simplify the \acp{CNN} architecture to speed up the inference time.
-	
-	A trade-off between accuracy and inference speed are One-Stage Object Detectors such as \ac{Yolo} and \ac{SSD}. With YoloV3\cite{Redmona} these two approaches differ mainly in their network architectures and training strategy. YoloV3 offers an optimized architecture with 8 layers which is more suitable for the deployment on a \ac{MAV} than the VGG architecture used by \ac{SSD}. Furthermore, the only framework that allows to use hardware accelerated floating point/matrix operations on the target hardware of this thesis is Darknet. As the full low level implementation of a \ac{CNN} on the hardware is beyond the scope of this work we decide to use TinyYoloV3 as our baseline model.
+		
+	This work uses the TinyYoloV3 model as baseline. The model is implemented using \textit{keras} with \textit{tensorflow} backend. In the following the architecture and training goal are summarized.
 	
 	\subsection{Training Goal}
 	The original training goal is defined as follows:
@@ -39,18 +37,18 @@
 	The object loss is defined as:
 	
 	\begin{equation}
-		\mathcal{L}_{obj} = \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}(\log(1+\exp(-o_{ij} \cdot \hat o_{ij}))
+		\mathcal{L}_{obj} = \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}(-(c_{ij}\log(\hat c_{ij}) + (1 - c_{ij})\log(1 - \hat c_{ij})))
 	\end{equation}
-	where $o_{ij}$ is a softmax activation assigned to anchor box $i$,$j$,$\hat o_{ij}$ the ground truth label assigned to that box, 1 for object and -1 for no object.  $\mathbb{1}_{ij}^{obj}$ is 1 if the anchor box at $i$,$j$ is responsible to predict a certain object and 0 otherwise. The responsibility is determined by \ac{IoU} with a ground truth box. The box with the highest \ac{IoU} with the ground truth box gets assigned responsible.\todo{double check}
+	where $\hat c_{ij}$ is an output node with softmax activation assigned to anchor box $i$,$j$, $ c_{ij}$ the ground truth label assigned to that box, 1 for an object and 0 for no object.  $\mathbb{1}_{ij}^{obj}$ is 1 if the anchor box at $i$,$j$ is responsible to predict a certain object and 0 otherwise. The responsibility is determined by \ac{IoU} with a ground truth box. The box with the highest \ac{IoU} with the ground truth box gets assigned responsible.
 	
-	The noobject loss is defined vice versa but triggered by the $\mathbb{1}_{ij}^{noobj}$ binary variable.
+	$\mathcal{L}_{obj}$ is defined vice versa but triggered by the $\mathbb{1}_{ij}^{noobj}$ binary variable.
 
 	The localization target is defined as:
 	
 	\begin{equation}
 		\mathcal{L}_{loc} = \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}[(x_{ij}-\hat{x}_{ij})^2 + (y_i-\hat{y}_{ij})^2  + (\sqrt{w_{ij}}-\sqrt{\hat{w}_{ij}})^2 +(\sqrt{h_{ij}}-\sqrt{\hat{h}_{ij}})^2 ]
 	\end{equation}
-	where $x$,$y$ are the center coordinates and $w$,$h$ are the bounding box width and height. $\mathbb{1}_{ij}^{obj}$ is 1 if the set of output nodes at $i$,$j$ is responsible to predict a certain object and 0 otherwise. 
+	where $x_{ij}$,$y_{ij}$ are the ground truth center coordinates of anchor box $i,j$ and $w_{ij}$,$h_{ij}$ the corresponding width and height. $\hat x_{ij}$,$\hat y_{ij}, \hat w_{ij}$,$\hat h_{ij}$ are the predicted bounding box coordinates. $\mathbb{1}_{ij}^{obj}$ is 1 if the set of output nodes at $i$,$j$ is responsible to predict a certain object and 0 otherwise. 
 	
 	\subsection{Baseline Architecture}
 	
@@ -62,18 +60,20 @@
 		\caption{The architecture of the baseline TinyYoloV3. In the common part the spatial resolution decreases each layer down to 26x26, while the width increases from 16 to 512. From layer 5 two branches focus on objects corresponding to different scales. }
 		\label{fig:tinyyolov3_arch}
 	\end{figure}
+
+	\subsection{Datasets}
+	
+	Throughout the experiments the same training and test set is used. For training 20 000 samples from the dataset created in \Cref{sec:datagen} are used. For testing we use the test set described in \Cref{sec:datagen:method}.
+
+	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
 	
 	\section{Depth and Width}
 	
-	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain very complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, current feature extractors are designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that a thinner and shallower counterpart can detect the object with equal performance.
+	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain particularly complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, the baseline architecture is designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that a thinner and shallower counterpart can detect the object with equal performance.
 	
 	\subsection{Experiment}
 	
-	In order to evaluate our hypothesis we conduct a experiment. We train the network with different architectures and evaluate the performance. For training we use the 20 000 from the dataset created in \Cref{sec:training}. For testing we use the test set described in \Cref{sec:training:methodology}.
-	
-	In a first experiment the TinyYoloV3 architecture is used as baseline and the number of filters is decreased stepwise by a factor of 2. The number of layers is held constant.
-	
-	In a second experiment the width is held constant and the depth is varied. The exact scheme to change depth is visualized in \Cref{fig:depth_changes}. In order to remove layers the convolutional layers are removed while the pooling layers are kept. For the increase of depth 2 layers are inserted stepwise at the end of both branches.  
+	In order to evaluate our hypothesis an experiment is conducted. The network is trained with different architectures and the performance is evaluated. In a first experiment the TinyYoloV3 architecture is used as baseline and the number of filters is decreased stepwise by a factor of 2. The number of layers is held constant. In a second experiment the width is held constant and the depth is varied. The exact scheme to change depth is visualized in \Cref{fig:depth_changes}. In order to remove layers the convolutional layers are removed while the pooling layers are kept. For the increase of depth 2 layers are inserted stepwise at the end of both branches.  
 	
 		\begin{figure}[hbtp]
 			\centering
@@ -82,7 +82,7 @@
 			\label{fig:depth_changes}
 		\end{figure}
 	
-	\section{Results}
+	\subsection{Results}
 	
 	\Cref{fig:perf_width} shows the performance for thinner and wider networks. It is apparent how the performance only undergoes slight variations despite reducing the total number of weights by a factor 1000. \todo{retrain one in the middle to get variance, it should be more linear}
 	
@@ -94,14 +94,12 @@
 		\label{fig:perf_width}
 	\end{figure}
 	
-	\Cref{fig:perf_depth} shows the performance for different amount of layers. It can be seen how the performance increases until 8 layers, whereas afterwards no further performance is gained.
-	
-	\Cref{fig:depth_ap_size} shows the performance for bins of different object sizes. It can be seen how the deeper models perform better at larger object sizes. The deepest model however looses performance for the smaller object sizes.
+	\Cref{fig:perf_depth} shows the performance for different amount of layers. It can be seen how the performance increases significantly up to a depth of 8. Further increase in depth does not lead to better overall performance. However, depth has a larger influence on the performance for different object sizes as displayed in \Cref{fig:depth_ap_size}. It can be seen how the deeper models perform better at larger object sizes. The deepest model however looses performance for the smaller object sizes.
 
 	\begin{figure}[hbtp]
 		\centering
 		\includegraphics[width=\textwidth]{fig/perf_depth}
-		\caption{Performance in simulation when varying the amount of layers. The exact architectures are shown in TODO. The performance does not increase further with more than 8 layers.}
+		\caption{Performance in simulation when varying the amount of layers. The exact architectures are shown in \Cref{fig:depth_changes}. The overall performance does not increase further with more than 8 layers.}
 		\label{fig:perf_depth}
 	\end{figure}
 

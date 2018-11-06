@@ -1,5 +1,5 @@
 \chapter{Synthesizing Data for the Detection of \ac{EWFO} on \acp{MAV}}
-
+\label{sec:datagen}
 This chapter addresses the generation of data for the detection of \ac{EWFO}. In particular the following research question is addressed:\\
 \begin{centering}
 \textbf{How can data be generated to train a detection model for \ac{EWFO} detection on a \acp{MAV}?}
@@ -50,7 +50,7 @@ Within the pipeline environments for training and testing are created. A black e
 	\label{fig:environments}
 \end{figure}
 
-The data generation pipeline is used to generate a test set in simulation. The test set is set up in the \textit{IROS} environment and inspired by the race court of the \ac{IROS} Autonomous Drone Race. The AirSim flight controller is used to simulate a flight of an \ac{MAV} through the race court. The test set contains 550 images with a total of 1361 objects.
+The data generation pipeline is used to generate a test set in simulation. The test set is set up in the \textit{IROS} environment and inspired by the race court of the \ac{IROS} Autonomous Drone Race. The AirSim flight controller is used to simulate a flight of an \ac{MAV} through the race court. The test set contains 550 images with a total of 1361\todo{recount with filtered} objects.
 
 It should be noted that when generating data with the described methods it is likely that samples appear in which only a corner of the object is visible or the view angle is in such a way that the object appears only as a thin line. In initial experiments these corner cases led to unstable training. Hence, some minimum requirements for the labels are set and samples/labels are removed if these are not met. Objects have to have a minimum size of 1\% of the image area as well as an aspect ratio between 1/3 and 3/1. Furthermore, at least three corners have to be visible.
 
