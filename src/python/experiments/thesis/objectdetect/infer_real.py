@@ -9,6 +9,7 @@ cd_work()
 models = [
     # 'objectdetect/yolov3_w01_416x416',
     'datagen/yolov3_grid416x416',
+    'datagen/yolov3_pool416x416',
     # 'objectdetect/yolov3_w0_416x416',
     # 'objectdetect/yolov3_w1_416x416',
     # 'objectdetect/yolov3_w2_416x416',

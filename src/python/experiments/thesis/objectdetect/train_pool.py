@@ -18,33 +18,35 @@ if __name__ == '__main__':
     start_idx = args.start_idx
     n_repetitions = args.n_reps
     anchors = np.array([
-        [[25, 40],
-         [65, 70],
-         [100, 110]],
-        [[330, 340],
-         [235, 240],
-         [160, 165]],
-    ]
-    )
+        [[81, 82],
+         [135, 169],
+         [344, 319]],
+        [[10, 14],
+         [23, 27],
+         [37, 58]],
+    ])
 
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 2, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 12, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 6, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+        {'name': 'max_pool', 'size': (7, 7), 'strides': (1, 1)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [4]},
-        {'name': 'max_pool', 'size': (32, 32), 'strides': (10, 10)},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 6, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'route', 'index': [-5]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 2},
+        {'name': 'route', 'index': [-1, 8]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
