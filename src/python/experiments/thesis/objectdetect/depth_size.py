@@ -48,7 +48,7 @@ aps = []
 #             areas.append(obj.poly.area)
 # max_size = max(areas)
 # min_size = min(areas)
-max_size = 0.75
+max_size = 1.0
 min_size = 0.01
 
 sizes = np.linspace(0, max_size, bins)
