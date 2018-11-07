@@ -78,7 +78,7 @@
 		\begin{figure}[hbtp]
 			\centering
 			\includegraphics[width=0.8\textwidth]{fig/depth_changes}
-			\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. }
+			\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
 			\label{fig:depth_changes}
 		\end{figure}
 	
@@ -111,7 +111,7 @@
 		\label{fig:depth_ap_size}
 	\end{figure}
 	
-	\Cref{fig:size_bins} shows the distribution of object sizes in the bins used for evaluation. It can be seen that most objects in the test set are further away.
+	\Cref{fig:size_bins} shows the distribution of object sizes in the bins used for evaluation. It can be seen that most objects in the test set are further away. \todo{put some examples to show what each size actuall means}
 	
 	\begin{figure}[hbtp]
 		\centering
@@ -124,19 +124,29 @@
 	
 	The overall performance is only slightly affected when reducing the number of weights in terms of width and height. We can assume that this is because the objects we investigate are of quite simple structure. Intuitively the features to be considered are color, lines and edges in certain combinations. Hence, it seems logical that only a few filters are necessary to represent these shapes.
 	
-	The performance in terms of different object varies significantly for models with varying depth. Only deeper networks are able to detect larger objects. However, the complexity of the object does not increase for closer objects. In contrary the closer the objects are the less context is visible. Hence, it is unlikely that increased flexibility is the reason for the increase in performance. Instead, it is more likely that the increased receptive field is the reason.
+	The performance in terms of different object sizes varies significantly for models with varying depth. Only deeper networks are able to detect larger objects. However, the complexity of the object does not increase for closer objects. In contrary the closer the objects are, the less context is visible. A very close object consists "only" of an orange square. Hence, it is unlikely that increased flexibility is the reason for the increase in performance. 
+	
+	Instead it is more likely that the increased receptive field is the reason for the improved performance. In fact only the network with 14 layers has a receptive field of 414 an thus covers the whole image. Yet even this network cannot detect the largest objects. Thus the receptive field can not be the only reason for the lower performance on larger objects.
+	
+	 The current structure combines features distributed across space in a pyramid fashion. So 3-by-3 convolutions are performed layer by layer such until the whole image is covered. For \acp{EWFO} many of these steps are unnecessary as the objects are empty and the network should learn to ignore the empty part in the centre. It is possible that this structure gets confused by the parts that are present in the image centre.
 	
 	\subsection{Conclusion}
 	
 	We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
 	
-	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can confirm this hypothesis for smaller objects as the performance does not increase anymore after the receptive field covers the whole object. Hence, we assume that depth only improves the performance because it increases the receptive field rather than because it increases flexibility. We investigate alternatives to increase the receptive field in further experiments. 
+	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
 	
 	\section{Receptive Field}
 	
-	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that an anchor gets assigned responsible which does not see any feature of the object.
+	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that the output layer which gets assigned responsible to predict the object does not see any feature of its parts.
 	
-	A deeper network is one way to increase receptive field but comes at cost of computation. An alternative is the use of a larger kernel size, dilated convolutions or pooling. We compare these methods in terms of computational efficiency and performance.
+	A deeper network is one way to increase receptive field but comes at cost of computation. In this section we investigate whether the same performance can be reached by using alternative ways to increase the receptive field.
+	
+	\subsection{Experiment}
+	
+	 A 7-by-7 max-pooling layer is inserted on the lower branch after layer 6. The model is compared to the architecture with 14 layers and a model where we replace the 3-by-3 kernel of layer 6 with a 9-by-9 kernel.
+	 
+	 \subsection{Results}
 		
 	\section{Reducing Inference Time}
 	
