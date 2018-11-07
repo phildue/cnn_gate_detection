@@ -99,7 +99,7 @@ $$ ap = \int_{r}p_{interp}(r) dr$$
 
 \todoref{There should be a source for this}
 
-We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60},r_{60} and ap_{60}$.
+We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60}$,$r_{60}$ and $ap_{60}$.
 
 \section{Related Work}
 
@@ -115,7 +115,7 @@ On a high level Object Detection can be described by two individual goals: the d
 	
 	\centering
 	\includegraphics[width=\linewidth]{fig/ObjectDetection}
-	\caption{Object Detection Pipeline.}
+	\caption{Object Detection Pipeline. An initial step extracts task relevant features of the input signal and derives an internal representation. Consecutively, classification determines what kind of object is present in the image, while localization determines where the object is located. The output consists of area(s) with class annotation.}
 	\label{fig:obj_pipeline}
 \end{figure}
 \begin{enumerate}
@@ -151,7 +151,7 @@ The modular structure of \acp{CNN} allows to create highly non-linear models tha
 	\centering
 	\includegraphics[width=0.8\textwidth]{fig/model_design}
 	\label{fig:model_design}
-	\caption{Example Architecture of a \ac{CNN}}
+	\caption{Notation in \acp{CNN}. The input image is convolved with a layer. One layer contains multiple kernels that are convolved in sliding window fashion with certain step size. The responses of the convolutions are collected and processed by the next layer. The receptive field is determined by which parts of the input image are part of the kernel response at layer x. The total amount of layers is also referred to as depth.}
 \end{figure}
 
 Among these parameters depth is considered one of the preliminary parameters to improve performance \cite{He}. \citeauthor{Simonyan2014} \cite{Simonyan2014} achieve first places in the 2014 ImageNet Classification challenge using a network that only contained filters of size 3-by-3 but up to 19 layers. \citeauthor{Szegedy2014} \cite{Szegedy2014} achieve similar performance using a network with 22 layers. The proposed network included an \textit{Inception}-module, an architectural element that allows deeper networks at a constant computational budget. 
@@ -189,13 +189,13 @@ Despite a large amount of research conducted in finding suitable architectures t
 
 \subsubsection{\ac{CNN}-based Object Detection}
 
-After showing promising results for Classification, \acp{CNN} where quickly also applied for Object Detection. 
+After showing promising results for Classification, \acp{CNN} where also applied for Object Detection. \acp{CNN}-based Object Detectors can broadly be grouped in two categories. The categories are introduced and finally compared in relevance to this work.
 
 \paragraph{Two-Stage Detectors.}
 
 \citeauthor{Girshick2013} \cite{Girshick2013} use Selective Search \cite{Uijlings2013} to extract object candidates from an image and classify each region with a \ac{CNN}. However, this requires to run the whole network at various scales and overlapping locations. Hence, the approach contains a lot of redundant operations and is computationally intense.
 
-\citeauthor{Ren} \cite{Ren} use a \ac{RPN} to propose regions that likely contain an object. In order to define the proposal task as a regression problem, the approach introduces so called \textit{anchor boxes}(also \textit{prior boxes}, \textit{default boxes}). These are boxes of predefined size and location. The model predicts class probabilities and coordinate offsets for each of these boxes. Thereby, a certain set of output nodes is responsible for a particular box. If during training a ground truth box has sufficient overlap with a certain box the corresponding output nodes are assigned "responsible" to predict that object. That means the loss is only propagated via those nodes. 
+\citeauthor{Ren} \cite{Ren} use a \ac{RPN} to propose regions that likely contain an object. In order to define the proposal task as a regression problem, the approach contains so called \textit{anchor boxes}(also \textit{prior boxes}, \textit{default boxes}). These are boxes of predefined size and location. The model predicts class probabilities and coordinate offsets for each of these boxes. Thereby, a certain set of output nodes is responsible for a particular box. If during training a ground truth box has sufficient overlap with a certain box the corresponding output nodes are assigned "responsible" to predict that object. That means the loss is only propagated via those nodes. 
 
 \Cref{fig:anchors} illustrates the concept. The anchor boxes are displayed as dashed lines while the ground truth is displayed solid. The ground truth box in blue has sufficient overlap with two anchor boxes. Hence, these two sets of output nodes take part in the loss calculation. In the example each of these sets predicts coordinate offsets $\Delta(cx, cy, w,h)$ and class probabilities $c_1 .. c_p$.
 
@@ -204,7 +204,7 @@ After showing promising results for Classification, \acp{CNN} where quickly also
 	\centering
 	\captionsetup{justification=raggedright,singlelinecheck=false}
 	\includegraphics[width=0.8\linewidth]{fig/anchors}
-	\caption{Visualization of the anchor box concept \cite{Liu}.}
+	\caption{Visualization of the anchor box concept \cite{Liu}. The ground truth label in blue is assigned to two output units. The ground truth label in red is assigned to one output unit. Each output unit predicts class confidences and bounding box dimensions. These dimensions are interpreted as offset to the predetermined size of the respective anchor.}
 	\label{fig:anchors}
 	
 \end{figure}
@@ -228,37 +228,31 @@ Follow up work of \citeauthor{Redmon}\cite{Redmon, Redmona} also included the co
 \if false
 A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
 \fi
-\todoref{CornerNet}
 
-One stage detectors achieve generally a lower performance in terms of \ac{mAP} than two stage detectors. However, they are significantly faster to evaluate and generally more accurate than traditional methods. The TinyYoloV3 architecture is 9-layer network with a suitable size to be applied on a \ac{MAV}. This work uses this approach as the baseline model.
+In \cite{Huang} one and two stage detectors are compared in terms of accuracy as well as memory requirements and inference time. While two stage detectors with very deep networks tend to achieve the best performance, one stage detectors are generally faster. The experiments also show how two stage detectors the inference time of two stage detectors can be reduced without loosing too much accuracy when the amount of bounding box proposals is limited. However, single shot detectors are still the fastest method with the lowest memory profile. Furthermore, for the single class case the region proposal stage of a two stage detector can be used directly. Hence, in this work we investigate the the detection of a \ac{EWFO} with a one stage detector. The \textit{TinyYoloV3} architecture is 9-layer network with a suitable size to be applied on a \ac{MAV}. This work uses this approach as the baseline model.
 
-\todo{put somewhere the overview of performance vs speed gained from object detection paper}
+The more recently published \textit{CornerNet}\cite{Law2018} avoids the anchor box concept by defining objects as paired key points. Each bounding box is defined as two corners. The network predicts a heatmap with potential corner locations as well as which corners belong together. This would be an interesting approach for the detection of \ac{EWFO}. However, as the publication was quite recent the approach could not be taken into account. 
 
 \subsubsection{Attention Models}
 
-The methods described so far share the sliding window paradigm. The whole input image is processed and subsequent pooling operations reduce the spatial dimension. Hence, the computational complexity scales linearly with the number of pixels. In contrast attention based models only process subregions of the image. For example XX use a recurrent neural network to process a certain amount of patches of the input image. Which patches are evaluated is decided by the model based on the patches seen until then. This enables to deploy a method where computational complexity can be controlled independently of the image size. \todoref{google deep mind}
+A research direction which is fundamentally different to the approaches seen so far are models based on visual attention. Instead of processing the whole input image at once, the aim is to process only relevant image patches. Typically a model processes an image crop and decides which location to evaluate next until enough information is gathered for the final prediction. Examples for the approach can be found in \cite{Itti1998,Ba2014,Ablavatski2017a}.
 
-Guido proposes a neural network to learn an attention model.
+Attention models are promising as their computational complexity can be controlled independently from the number of pixels in the input image. However, to this end successes have mostly been demonstrated on digit recognition like the MNIST dataset. Scaling the approach to real world problems proves to be difficult. Furthermore, the features of an \acp{EWFO} are sparse, while most part of the image does not provide hints where to look for an object. Therefore, we assume the approach less applicable for the detection of \acp{EWFO}.
 
-Other attention mechanisms aim to increase performance by ..
+\subsection{Reducing Inference Time}
 
-Attention mechanism can not yet compete with state-of-the art \ac{CNN} based object detectors.
-
-
-Using Time domain:
-\cite{Chen2018}
-
-\subsubsection{Knowledge Distillation}
-
-Knowledge Distillation \cite{Hinton2006} is way to create a smaller network based on a trained bigger network. Thereby the smaller student-network is trained to mimic the output of the final and intermediate activations of the teacher-network. The aim is to decrease the complexity and inference time of the model without loosing performance. 
-
-The line of research investigated how to decrease the width of a network or how to
+Computer Vision research typically focuses on detection accuracy rather than inference speed. However, for the deployment on a \ac{MAV} resource consumption is an important parameter. The following describes research topics that concern the reduction of inference time.
 
 \subsubsection{Weight Quantization}
 
 The hardware of most embedded \ac{CPU} support only integer operations and thus rely on software to perform floating point operations. Hence, weight quantization is another line of research to reduce the inference time of deep networks on mobile devices. By mimicking the quantization effects during training, the network learns to deal with these kind of artefacts. However, the target platform of this work supports hardware accelerated floating point multiplications. While weight quantization could still be used to accelerate the network it would require serious low level operation optimization. This work addresses the optimization on a more high level architectural basis.
 \todoref{put some refs where this is applied \cite{TripathiSanDiego}}
 
+\subsubsection{Knowledge Distillation}
+
+Knowledge Distillation \cite{Hinton2006} is way to create a smaller model based on a trained bigger model or an ensemble of models. Thereby the smaller student-network is trained to mimic the output of the final and intermediate activations of the teacher-network. \textit{FitNet} extends the approach to create a thinner/deeper network based on a trained network thereby reducing parameters without loosing performance. In \cite{Li2017c} the approach is applied to the task of Object Detection. In \cite{Wei2018a} knowledge distillation is combined with weight quantization in order to obtain a faster and more efficient model.
+
+The approaches have in common that a very complex function learned from a deep model is aimed to be compressed in a more efficient model. Training the smaller model directly leads to a lower performance than using the distillation approach. We assume this is successfully as the network architectures used are generally deep. Even \cite{Wei2018a} which speaks of very tiny networks uses the VGG-architecture with 23 layers. These architectures are prohibitive to be deployed on small scale \acp{MAV}. We investigate a network size of around 10 layers. Such networks are easier to train and our experiments how we can reduce the width of the model by simply training the network on the task. Therefore we do not investigate this approach further.
 
 \subsection{Generating Data}
 \label{sec:training:related}
@@ -310,11 +304,9 @@ While the aforementioned approaches require labelled samples from the target dom
 
 While transfer learning provides the theoretical framework as well as methods to deal with domain shifts, it does not allow to generate data. Furthermore, it often requires samples of the target domain. This work addresses the case when no real data is used for training. The field is interesting to be incorporated in the data generation pipeline investigated in this thesis but it can not be used as a start off point. Hence, the use of transfer learning in the modelling process is denoted as future work.
 
-\subsubsection{Generative Adversarial Networks}
+\subsection{Generative Adversarial Networks}
 
-\cite{Inoue} 
-\todo{write}
-
+\acp{GAN} \cite{Goodfellow2014} are a learning technique to generate new samples. The method uses two models a generator and a discriminator. While the generator generates samples the discriminator aims to distinguish the generated samples from a real dataset. Thereby the training goal of the generator is to maximize the error of the discriminator. Both models are updated with back propagation. The method shows promising results for image transformation or image synthesises but also for audio signals \cite{Creswell2017}. Yet to the authors knowledge \acp{GAN} have not yet been applied to generate samples for Object Detection. Furthermore, the discriminator needs a training set for initialization. As for this work only a small amount of training samples are available, we do not investigate this approach for generating samples to detect \acp{EWFO}.
 
 
 
