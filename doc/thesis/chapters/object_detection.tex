@@ -142,6 +142,13 @@
 	
 	A deeper network is one way to increase receptive field but comes at cost of computation. In this section we investigate whether the same performance can be reached by using alternative ways to increase the receptive field.
 	
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=\textwidth]{fig/rf_ap_size}
+		\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
+		\label{fig:size_bins}
+	\end{figure}
+	
 	\subsection{Experiment}
 	
 	 A 7-by-7 max-pooling layer is inserted on the lower branch after layer 6. The model is compared to the architecture with 14 layers and a model where we replace the 3-by-3 kernel of layer 6 with a 9-by-9 kernel.

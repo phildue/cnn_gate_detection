@@ -88,7 +88,7 @@ w = 1.0 / len(titles)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 legend = []
 for i, r in enumerate(frame['AveragePrecision' + str(iou)]):
-    plt.bar(np.arange(bins) - len(titles) * w + i * w, r, width=w)
+    plt.bar(np.arange(bins) - 0.5*len(titles) * w + i * w, r, width=w)
     legend.append(str(frame['Layers'][i]) + ' Layers')
     plt.xlabel('Area Relative to Image Size')
     plt.ylabel('Average Precision')
