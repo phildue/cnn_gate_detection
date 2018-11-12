@@ -58,7 +58,7 @@ path = ['resource/ext/samples/daylight_course1',
                     # 'resource/ext/samples/realbg20k'
                     ]
 set_analyzer = SetAnalysis((416, 416), path)
-scatter, kmeans = set_analyzer.kmeans_anchors(6)
+scatter, kmeans = set_analyzer.kmeans_anchors(8)
 print(kmeans.cluster_centers_)
 scatter.show()
 #plot_iou_vs_center(set_analyzer.get_box_dims(), 15).show()

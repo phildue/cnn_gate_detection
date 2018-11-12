@@ -8,13 +8,17 @@ from utils.labels.Polygon import Polygon
 
 
 class GateNetEncoder(Encoder):
-    def __init__(self, anchor_dims, img_norm, grids, n_polygon=4):
 
+    def __init__(self, anchor_dims, img_norm, grids, n_polygon=4, iou_min=0.4):
+
+        self.iou_min = iou_min
         self.anchor_dims = anchor_dims
         self.n_polygon = n_polygon
         self.grids = grids
         self.norm = img_norm
-
+        self.unmatched = 0
+        self.unmatched_boxes = []
+        self.matched = 0
         self.n_boxes = [len(a) for a in anchor_dims]
 
     @staticmethod
@@ -64,12 +68,17 @@ class GateNetEncoder(Encoder):
                 if iou > max_iou and np.isnan(confidences[i]):
                     max_iou = iou
                     match_idx = i
-            if max_iou > 0.5 and not np.isnan(match_idx):
+            if max_iou > self.iou_min and not np.isnan(match_idx):
                 confidences[match_idx] = 1.0
                 coords[match_idx] = b.to_quad_t_centroid
+                self.matched += 1
             else:
-                print("\nGateEncoder::No matching anchor box found!::{}, max iou: {}".format(b,max_iou))
-
+                self.unmatched += 1
+                if self.unmatched % 50 == 0:
+                    for b in self.unmatched_boxes:
+                        print("{}, max iou: {}".format(b, max_iou))
+                    print("Un/matched boxes: {}/{}".format(self.unmatched, self.matched))
+                    self.unmatched_boxes = []
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords
