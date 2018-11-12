@@ -36,6 +36,9 @@ def save_file(file, name: str, path: str = './', verbose=True):
     elif name.endswith('.yml'):
         with open(path + name, 'w') as f:
             yaml.dump(file)
+    elif name.endswith('.cfg'):
+        with open(path + name,'w') as f:
+            f.write(file)
     else:
         name += '.pkl'
         with open(path + name, 'wb') as f:

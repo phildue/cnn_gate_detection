@@ -11,22 +11,44 @@
 
 	\section{Methodology}
 		
-	This work uses the TinyYoloV3 model as baseline. The model is implemented using \textit{keras} with \textit{tensorflow} backend. In the following the architecture and training goal are summarized.
+	This work uses a typical one-stage detector with anchor boxes as baseline, namely the \textit{YoloV3} detector with the \textit{TinyYoloV3} network. The fundamental concept of one-stage detectors with anchor boxes is illustrated in \Cref{fig:anchors}. In this section the concrete implementation with the \textit{TinyYoloV3} network and its training goal are explained.
 	
+	On a high level basis \textit{YoloV3} maps the input image to a predefined set of bounding boxes. For each box the network predicts an object probability $\hat o$  and a class probability $\hat c$. $\hat o$ expresses how likely the box contains an object, $\hat c$ expresses what kind of object it contains. This way a box can be either background or object but the object can have multiple classes. For example a box can be a human and face but not a face and background. As this work considers the single class case, we remove $\hat c$ from the prediction.
+	
+	Defining a set of boxes that covers only approximately the full range of possible object locations and bounding box dimensions would lead to an intractable amount of parameters/computations. Instead \textit{YoloV3} defines anchor boxes that contain the most common aspect ratios and predicts how to adapt these anchor boxes to better fit the predicted object. These are the bounding box center $\hat x,\hat y$, its width $w$ and height $h$. In total this leads to 5 output nodes for each bounding box.
+	
+	In an image objects can appear at different scales. For small objects more fine grain features are relevant and it is important to predict locations at a high resolution. However, for larger objects a too fine discretization is not only unnecessary but can even confuse the detector. Hence, \textit{TinyYoloV3} uses $G=2$ output grids with $S_1=13$ and $S_2=26$ grid cells to predict objects at various scales. For each grid cell $B_1 = B_2 = 3$ bounding boxes are predicted. In total this leads to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.
+	
+	The predicted outputs are interpreted as offset to the predefined anchor box dimensions. Hence, the output for the anchor at grid $i$, cell $j$, anchor $k$  is decoded as follows:
+	
+	\begin{equation}
+	b_x = \hat x_{i,j,k} + t^x_{i,j,k}\quad
+	b_y = \hat y_{i,j,k} + t^y_{i,j,k}\quad
+	b_w = \hat w_{i,j,k} \cdot t^w_{i,j,k}\quad
+	b_h = \hat h_{i,j,k} \cdot t^h_{i,j,k}
+	\end{equation}
+	
+	where $t^x$,$t^y$,$t^w$,$t^h$ are the coordinates of the predefined anchor boxes and $b_x,b_y,b_w,b_h$ are the final bounding box coordinates normalized to the image resolution.
+		
+	This mapping is implemented with a \acp{CNN} that contains 10 convolutional, 6 pooling and 1 deconvolutional layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
+	
+	The architecture is illustrated in \Cref{fig:tinyyolov3_arch}. The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch extracts features for larger objects leading to a final grid of 13x13. The higher branch extracts features for smaller objects leading to a grid of 26x26. For each grid cell 15 output nodes predict 3 bounding boxes. Thereby the nodes responsible for $\hat o$ have a sigmoid-activation such that the response gets squashed into a value between zero and one and can be interpreted as a probability. Similarly the nodes responsible for $\hat x$ and $\hat y$ have a sigmoid activation such that the output can be interpreted as coordinate normalized to the image size. For the output nodes of $w$ and $h$ \textit{YoloV3} uses $e^x$-activation. This way the output is always larger than one while no adaption in bounding box width/height ($w=1$) corresponds to no activation. Furthermore, the network can predict a large range of scales in a small range of activation.
+			
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{fig/tinyyolov3_arch}
+		\caption{The architecture of the baseline \textit{TinyYoloV3}. For each layer the amount of filters are displayed. The height of the boxes correspond to their spatial dimension. Arrows correspond to the forward pass in a network inference. In the common part the spatial resolution decreases each layer down to 26x26, while the width increases from 16 to 512. From layer 5 two branches focus on objects corresponding to different scales. }
+		\label{fig:tinyyolov3_arch}
+	\end{figure}
+	
+
 	\subsection{Training Goal}
-	The original training goal is defined as follows:
-	\if false
-	\begin{align}
-	&\lambda_{coord} \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}[(x_i-\hat{x}_i)^2 + (y_i-\hat{y}_i)^2 ] \\&+ \lambda_{coord} \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w}_i})^2 +(\sqrt{h_i}-\sqrt{\hat{h}_i})^2 ]\\
-	&+ \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}(C_i - \hat{C}_i)^2 + \lambda_{noobj}\sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{noobj}(C_i - \hat{C}_i)^2 \\
-	&+ \sum_{i=0}^{S^2} \mathbb{1}_{i}^{obj}\sum_{c \in classes}(p_i(c) - \hat{p}_i(c))^2 \\
-	\end{align}
-	\fi
 	
+	In order to train a \ac{CNN} to predict the desired properties \textit{YoloV3} quantifies the Object Detection task as the combined goal between localization and a classification:
 	\begin{equation}
 	\mathcal{L} = \lambda_{loc}\mathcal{L}_{loc} + \lambda_{obj}\mathcal{L}_{obj} + \lambda_{noobj}\mathcal{L}_{noobj} + \lambda_{class}\mathcal{L}_{class}
 	\end{equation}
-	where $\mathcal{L}_{loc}$ is the target for bounding box regression, $\mathcal{L}_{obj}$ the loss where a object is present, $\mathcal{L}_{noobj}$ the loss where there is no object and $\mathcal{L}_{class}$ the classification loss. $\lambda$ are trade-off parameters between the multiple targets.
+	where $\mathcal{L}_{loc}$ is the loss for bounding box dimensions, $\mathcal{L}_{obj}$ the loss where a object is present, $\mathcal{L}_{noobj}$ the loss where there is no object and $\mathcal{L}_{class}$ the classification loss. $\lambda$ are trade-off parameters between the multiple targets.
 	
 	For a single class prediction this can be simplified to:
 	
@@ -34,33 +56,29 @@
 	\mathcal{L} = \lambda_{loc}\mathcal{L}_{loc} + \lambda_{obj}\mathcal{L}_{obj} + \lambda_{noobj}\mathcal{L}_{noobj}
 	\end{equation}
 	
-	The object loss is defined as:
+	The object loss quantifies a binary classification loss. Hence, it is the difference between a predicted probability $\hat o$ and an actual class label $c$. Where $o \in {0,1}$ and $\hat o \in (0,1)$. In order to learn such a goal it is desirable that the weights of the network get updated significantly when the difference between truth and prediction are high. However, when prediction and truth are already close to each other the updates to the weights should be smaller otherwise the training might miss the optimal solution. A loss function that contains the desired properties and is used by \textit{YoloV3} is the logarithmic loss which can be formulated as follows:
 	
 	\begin{equation}
-		\mathcal{L}_{obj} = \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}(-(c_{ij}\log(\hat c_{ij}) + (1 - c_{ij})\log(1 - \hat c_{ij})))
+		\mathcal{L}_{log} = -(o_{ij}\log(\hat o_{ijk}) + (1 - o_{ij})\log(1 - \hat o_{ijk}))
 	\end{equation}
-	where $\hat c_{ij}$ is an output node with softmax activation assigned to anchor box $i$,$j$, $ c_{ij}$ the ground truth label assigned to that box, 1 for an object and 0 for no object.  $\mathbb{1}_{ij}^{obj}$ is 1 if the anchor box at $i$,$j$ is responsible to predict a certain object and 0 otherwise. The responsibility is determined by \ac{IoU} with a ground truth box. The box with the highest \ac{IoU} with the ground truth box gets assigned responsible.
 	
-	$\mathcal{L}_{obj}$ is defined vice versa but triggered by the $\mathbb{1}_{ij}^{noobj}$ binary variable.
-
-	The localization target is defined as:
+	where $\hat o_{ij}$ is an output node with sigmoid activation assigned to anchor box $i$,$j$,$k$ and $ o_{ij}$ the ground truth label assigned to that box. The logarithmic loss is calculated for each output grid $G_i$, for each grid cell $S_j$ and each anchor box $B_k$. However, only the loss of the responsible anchor boxes are summed in the total loss calculation:
 	
 	\begin{equation}
-		\mathcal{L}_{loc} = \sum_{i=0}^{S^2}\sum_{j=0}^B \mathbb{1}_{ij}^{obj}[(x_{ij}-\hat{x}_{ij})^2 + (y_i-\hat{y}_{ij})^2  + (\sqrt{w_{ij}}-\sqrt{\hat{w}_{ij}})^2 +(\sqrt{h_{ij}}-\sqrt{\hat{h}_{ij}})^2 ]
+		\mathcal{L}_{obj} = \sum_{i=0}^{G}\sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}(-(c_{ijk}\log(\hat c_{ijk}) + (1 - c_{ijk})\log(1 - \hat c_{ijk})))
 	\end{equation}
-	where $x_{ij}$,$y_{ij}$ are the ground truth center coordinates of anchor box $i,j$ and $w_{ij}$,$h_{ij}$ the corresponding width and height. $\hat x_{ij}$,$\hat y_{ij}, \hat w_{ij}$,$\hat h_{ij}$ are the predicted bounding box coordinates. $\mathbb{1}_{ij}^{obj}$ is 1 if the set of output nodes at $i$,$j$ is responsible to predict a certain object and 0 otherwise. 
 	
-	\subsection{Baseline Architecture}
-	
-	\Cref{fig:tinyyolov3_arch} shows the a diagram of the baseline TinyYoloV3- architecture. The input image of 416x416 is processed by 5 common layers that decrease the spatial resolution stepwise (max pooling) down to 26x26. Thereby the number of filters per layer increases up to 512. From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch predicts larger objects at a grid of 13x13. The higher branch predicts smaller objects at a grid of 26x26.
-	
-	\begin{figure}[hbtp]
-			\centering
-		\includegraphics[width=0.8\textwidth]{fig/tinyyolov3_arch}
-		\caption{The architecture of the baseline TinyYoloV3. In the common part the spatial resolution decreases each layer down to 26x26, while the width increases from 16 to 512. From layer 5 two branches focus on objects corresponding to different scales. }
-		\label{fig:tinyyolov3_arch}
-	\end{figure}
+	Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if anchor at $i,j,k$ is responsible to predict an object and 0 otherwise. The responsibility is determined by the \ac{IoU} of an anchor box with a ground truth box. The box with the highest \ac{IoU} with the ground truth box gets assigned responsible. $\mathcal{L}_{obj}$ is defined vice versa but controlled by the $\mathbb{1}_{ijk}^{noobj}$ binary variable.
 
+	For the localization loss, similar to the classification loss, the weights should be updated significantly when the difference is high but less strongly when the difference is small. Furthermore, the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. However the squared distance does not make a difference between large and small boxes. For example, a deviation of 5 px for a small ground truth box with a width of 1 is treated equally to a deviation from a ground truth box with width 100. Therefore \textit{YoloV3}, applies the square root on width and height to scale down very large box dimensions and thus balance the loss calculation. The localization loss is summarized in:
+	
+	\begin{equation}
+		\mathcal{L}_{loc} = \sum_{i=0}^{G} \sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}[(x_{ijk}-\hat{x}_{ijk})^2 + (y_{ijk}-\hat{y}_{ijk})^2  + (\sqrt{w_{ijk}}-\sqrt{\hat{w}_{ijk}})^2 +(\sqrt{h_{ijk}}-\sqrt{\hat{h}_{ijk}})^2 ]
+	\end{equation}
+	where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. $\mathbb{1}_{ijk}^{obj}$ is 1 if the set of output nodes at $i$,$j$,$k$ is responsible to predict a certain object and 0 otherwise. 
+	
+	The model is implemented using \textit{keras} with \textit{tensorflow} backend. 
+	
 	\subsection{Datasets}
 	
 	Throughout the experiments the same training and test set is used. For training 20 000 samples from the dataset created in \Cref{sec:datagen} are used. For testing we use the test set described in \Cref{sec:datagen:method}.
