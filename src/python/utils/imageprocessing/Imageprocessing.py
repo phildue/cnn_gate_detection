@@ -60,7 +60,7 @@ def annotate_label(img: Image, label: ImgLabel, color=None, legend=LEGEND_POSITI
                                         color=color, thickness=thickness_obj)
 
         if legend >= LEGEND_TEXT:
-            img_ann = annotate_text(obj.name + ' - ' + str(np.round(confidence, 2)), img_ann,
+            img_ann = annotate_text(obj.name + ' - ' + str(np.round(confidence, 2)) + ' - ' + str(np.round(obj.poly.area/(img.shape[0]*img.shape[1]),2)), img_ann,
                                     (int(obj.poly.x_min), int(obj.poly.y_max + 5)),
                                     color)
     return img_ann

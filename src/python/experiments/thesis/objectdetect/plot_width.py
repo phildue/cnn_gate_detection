@@ -30,6 +30,14 @@ names = [
     'w02',
     # 'arch'
 ]
+d_width = [
+    5,
+    4,
+    3,
+    2,
+    1,
+    6,
+]
 iou = 0.6
 simset = 'iros2018_course_final_simple_17gates'
 realsets = [
@@ -92,13 +100,13 @@ frame.set_index('Name')
 
 plt.figure(figsize=(8, 3))
 
-w = 0.5 / len(models)
+w = 0.1 / len(models)
 maxw = 1000000
 plt.title('Performance Across Width', fontsize=12)
-plt.bar(frame['Weights'] / maxw, frame['Sim Data' + str(iou)], width=w)
+plt.bar(1/np.array(d_width), frame['Sim Data' + str(iou)], width=w)
 
 # plt.bar(frame['Weights']/maxw, frame['Real Data' + str(iou)],width=w)
-plt.xlabel('Weights * {}'.format(maxw))
+plt.xlabel('Width Multiplier')
 plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)
 # plt.legend(['Sim Data', 'Real Data'], bbox_to_anchor=(1.1, 1.05))

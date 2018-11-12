@@ -17,14 +17,15 @@ if __name__ == '__main__':
 
     start_idx = args.start_idx
     n_repetitions = args.n_reps
-    anchors = np.array([
-        [[81, 82],
-         [135, 169],
-         [344, 319]],
-        [[10, 14],
-         [23, 27],
-         [37, 58]],
-    ])
+    anchors = np.array([[
+        [330, 340],
+        [235, 240],
+        [160, 165]],
+        [[25, 40],
+         [65, 70],
+         [100, 110]]]
+    )
+
 
     architecture = [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
@@ -50,7 +51,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_avg_pool{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_avg_pool_anchors{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
     image_source = ['resource/ext/samples/daylight_course1',

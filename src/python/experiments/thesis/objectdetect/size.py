@@ -15,32 +15,36 @@ models = [
     'out/thesis/objectdetect/yolov3_d0_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d1_416x416_i00/',
     'out/thesis/objectdetect/yolov3_d2_416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d3_416x416_i00/',
     # 'out/thesis/objectdetect/yolov3_w0_416x416_i00/',
     # 'out/thesis/objectdetect/yolov3_w1_416x416_i00/',
     # 'out/thesis/objectdetect/yolov3_w2_416x416_i00/',
     # 'out/thesis/objectdetect/yolov3_w3_416x416_i00/',
     'out/thesis/datagen/yolov3_blur416x416_i00/',
     # 'out/thesis/objectdetect/yolov3_w01_416x416_i00/',
-    # 'out/thesis/datagen/yolov3_arch2416x416_i00/',
-    'out/thesis/datagen/yolov3_grid416x416_i00/',
-    'out/thesis/datagen/yolov3_pool416x416_i00/',
+    'out/thesis/datagen/yolov3_arch2416x416_i00/',
+    # 'out/thesis/objectdetect/yolov3_grid416x416_i00/',
+    'out/thesis/objectdetect/yolov3_pool416x416_i00/',
+    'out/thesis/objectdetect/yolov3_avg_pool416x416_i00/',
 
 ]
 titles = [
-    'd02',
-    'd01',
-    'd0',
+    # 'd02',
+    # 'd01',
+    # 'd0',
     'd1',
     'd2',
+    'd3',
     # 'w0',
     # 'w1',
     # 'w2',
     # 'w3',
     'w4',
     # 'w01',
-    # 'arch',
-    'grid',
-    'pool'
+    'arch',
+    # 'grid',
+    'pool',
+    'avg_pool'
 ]
 
 ObjectLabel.classes = ['gate']
