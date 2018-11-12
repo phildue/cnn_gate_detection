@@ -50,7 +50,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'yolov3_pool{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'yolov3_max_pool_anchors{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
     image_source = ['resource/ext/samples/daylight_course1',
