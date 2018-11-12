@@ -64,12 +64,12 @@ class GateNetEncoder(Encoder):
                 if iou > max_iou and np.isnan(confidences[i]):
                     max_iou = iou
                     match_idx = i
-
-            if np.isnan(match_idx):
-                print("\nGateEncoder::No matching anchor box found!::{}".format(b))
-            else:
+            if max_iou > 0.5 and not np.isnan(match_idx):
                 confidences[match_idx] = 1.0
                 coords[match_idx] = b.to_quad_t_centroid
+            else:
+                print("\nGateEncoder::No matching anchor box found!::{}, max iou: {}".format(b,max_iou))
+
 
         confidences[np.isnan(confidences)] = 0.0
         return confidences, coords
