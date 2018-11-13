@@ -1,13 +1,16 @@
 import random
 
+import numpy as np
+
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.labelparser.YoloParser import YoloParser
 from utils.fileaccess.utils import create_dirs
+from utils.imageprocessing.Backend import crop
 from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
 from utils.workdir import cd_work
-import numpy as np
+
 
 def filter(label):
     min_obj_size = 0.01
@@ -15,15 +18,15 @@ def filter(label):
     img_res = (416, 416)
     max_angle = 30
     objs_in_size = [obj for obj in label.objects if
-                    min_obj_size < (obj.height * obj.width) / (img_res[0] * img_res[1]) < max_obj_size]
+                    min_obj_size < (obj.poly.height * obj.poly.width) / (img_res[0] * img_res[1]) < max_obj_size]
 
     max_aspect_ratio = 1.05 / (max_angle / 90)
-    objs_within_angle = [obj for obj in objs_in_size if obj.height / obj.width < max_aspect_ratio]
+    objs_within_angle = [obj for obj in objs_in_size if obj.poly.height / obj.poly.width < max_aspect_ratio]
 
     objs_in_view = []
     for obj in objs_within_angle:
-        mat = np.array([[obj.x_min, obj.y_max],
-                        [obj.x_max, obj.y_max]])
+        mat = np.array([[obj.poly.x_min, obj.poly.y_max],
+                        [obj.poly.x_max, obj.poly.y_max]])
         if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
             len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
             continue
@@ -33,12 +36,23 @@ def filter(label):
 
 
 project_dir = cd_work()
-set_name = 'yolo_refine'
+set_name = 'yolo_43'
 out_dir = 'resource/ext/samples/' + set_name
 src_dir = 'resource/ext/samples/'
 
-sets = ['white_bg',
-        'real_iros']
+sets = [
+    'daylight_course1',
+    'daylight_course5',
+    'daylight_course3',
+    'iros2018_course1',
+    'iros2018_course5',
+    'iros2018_flights',
+    'basement_course3',
+    'basement_course1',
+    'iros2018_course3_test',
+    'various_environments20k',
+    # 'resource/ext/samples/realbg20k'
+]
 
 sample_dir = out_dir + '/samples'
 create_dirs([out_dir, sample_dir])
@@ -63,8 +77,14 @@ for i in range(0, n_images, batch_size):
     tic()
     try:
         batch = next(reader)
-        imgs = [b[0] for b in batch]
-        labels = [b[1] for b in batch]
+        imgs = []
+        labels = []
+        for img, label, _ in batch:
+            img_, label_ = crop(img, (0, 52), (416, 416 - 52), label=label)
+            show(img_,labels=label_)
+            imgs.append(img_)
+            labels.append(label_)
+
         writer.write(imgs, labels)
         toc(str(i) + '/' + str(n_images) + ' samples processed in ')
         n_images_filtered += batch_size

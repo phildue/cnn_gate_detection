@@ -12,32 +12,36 @@
 # - r_i: receptive field of a feature in layer i
 # - start_i: position of the first feature's receptive field in layer i (idx start from 0, negative means the center fall into padding)
 import math
+imsize = 160
 
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'route', 'index': [3]},
-    {'name': 'max_pool', 'size': (16, 16), 'strides': (16, 16)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'},
-    # {'name': 'route', 'index': [-6]},
-    # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'upsample', 'size': 2},
-    # {'name': 'route', 'index': [-1, 8]},
-    # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'predict'}
-]
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        #{'name': 'max_pool', 'size': (2, 2), 'strides': (2, 2)},
+        # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'predict'},
+        # {'name': 'route', 'index': [-10]},
+        # {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'upsample', 'size': 2},
+        # {'name': 'route', 'index': [-1, 8]},
+        #  {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'predict'}
+    ]
 
 
 def arch2dict(arch, upto=None):
@@ -46,8 +50,12 @@ def arch2dict(arch, upto=None):
         if layer['name'] == 'conv_leaky':
             param_dict['{0:02d}'.format(j)] = [layer['kernel_size'][0], layer['strides'][0],
                                                (layer['kernel_size'][0] - 1) / 2]
-        elif layer['name'] == 'max_pool':
-            param_dict['{0:02d}'.format(j)] = [layer['size'][0], layer['strides'][1], layer['size'][0] / 2]
+        elif layer['name'] == 'max_pool' or layer['name'] == 'avg_pool':
+            try :
+                s = layer['strides'][1]
+            except KeyError:
+                s = layer['size'][1]
+            param_dict['{0:02d}'.format(j)] = [layer['size'][0], s, layer['size'][0] / 2]
         elif layer['name'] == 'upsample' or layer['name'] == 'route':
             raise ValueError('Unknown Layer')
         else:
@@ -62,7 +70,6 @@ net = arch2dict(architecture)
 # layers = list(net.values())
 # layer_names = list(net.keys())
 
-imsize = 416
 
 
 def outFromIn(conv, layerIn):

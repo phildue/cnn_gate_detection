@@ -59,20 +59,18 @@ class YoloParser(AbstractDatasetParser):
         # [category number] [object center in X] [object center in Y] [object width in X] [object width in Y]
         with open(path + '.txt', "w+") as f:
             for obj in label.objects:
-                cy = self.img_norm[0] - obj.cy
-                f.write('{} {} {} {} {}\n'.format(obj.class_id-1, obj.cx / self.img_norm[1], cy / self.img_norm[0],
-                                                  obj.width / self.img_norm[1], obj.height / self.img_norm[0]))
+                cy = self.img_norm[0] - obj.poly.cy
+                f.write('{} {} {} {} {}\n'.format(obj.class_id-1, obj.poly.cx / self.img_norm[1], cy / self.img_norm[0],
+                                                  obj.poly.width / self.img_norm[1], obj.poly.height / self.img_norm[0]))
 
     def write(self, images: [Image], labels: [ImgLabel]):
         for i, l in enumerate(labels):
             filename = '{0:s}/{1:05d}'.format(self.directory, self.idx)
             img, label = resize(images[i], self.img_norm, label=l)
 
-            if self.color_format is 'yuv':
-                self.write_img(img.yuv, filename + '.' + self.image_format)
-            elif self.color_format is 'bgr':
-                self.write_img(img.bgr, filename + '.' + self.image_format)
+            if self.color_format == img.format:
+                self.write_img(img, filename + '.' + self.image_format)
+                self.write_label(label, filename)
+                self.idx += 1
             else:
-                raise ValueError('Unknown color format')
-            self.write_label(label, filename)
-            self.idx += 1
+                raise ValueError('Color Format!')
