@@ -4,28 +4,66 @@ from utils.fileaccess.utils import save_file, create_dirs
 from utils.workdir import cd_work
 
 cd_work()
-name = 'd3_arch160'
-img_res = (160, 120)
+name = 'd3_arch320_strides'
+img_res = (320, 240)
 f_out = ['../dronerace2018/target/jevois/share/darknet/yolo/cfg/', 'lib/darknet/cfg/']
 # f_out =
-anchors = np.array([[[150.72115385, 155.28846154],
-                     [107.33173077, 109.61538462],
-                     [73.07692308, 75.36057692]],
-                    [[11.41826923, 18.26923077],
-                     [29.6875, 31.97115385],
-                     [45.67307692, 50.24038462]]])
+# anchors = np.array([[[150.72115385, 155.28846154],
+#                      [107.33173077, 109.61538462],
+#                      [73.07692308, 75.36057692]],
+#                     [[11.41826923, 18.26923077],
+#                      [29.6875, 31.97115385],
+#                      [45.67307692, 50.24038462]]])
+#
+# architecture = [
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'max_pool', 'size': (2, 2)},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'max_pool', 'size': (2, 2)},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'max_pool', 'size': (2, 2)},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'max_pool', 'size': (2, 2)},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     # {'name': 'max_pool', 'size': (2, 2)},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'predict'},
+#     {'name': 'route', 'index': [8]},
+#     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+#     {'name': 'predict'}
+# ]
+
+img_res = (320, 240)
+
+anchors = np.array([[
+        [330, 340],
+        [235, 240],
+        [160, 165]],
+        [[25, 40],
+         [65, 70],
+         [100, 110]]]
+    )*280/416
 
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (2, 2), 'alpha': 0.1},
     # {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (2, 2), 'alpha': 0.1},
+    # {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
+    # {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1},
+    # {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
@@ -36,11 +74,12 @@ architecture = [
     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'},
-    {'name': 'route', 'index': [8]},
+    {'name': 'route', 'index': [4]},
     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ]
+
 n_anchors = 6
 
 mask = ['0,1,2',
