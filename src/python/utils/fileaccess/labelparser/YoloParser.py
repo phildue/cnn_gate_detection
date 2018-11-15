@@ -6,6 +6,7 @@ from utils.imageprocessing.Backend import resize, imread
 from utils.labels.ImgLabel import ImgLabel
 import numpy as np
 from utils.labels.ObjectLabel import ObjectLabel
+from utils.labels.Polygon import Polygon
 
 
 class YoloParser(AbstractDatasetParser):
@@ -50,7 +51,7 @@ class YoloParser(AbstractDatasetParser):
                                          [x_max, y_max]])
                 bounding_box *= np.array(img_norm)
                 bounding_box[:, 1] = img_norm[0] - bounding_box[:, 1]
-                obj = ObjectLabel(ObjectLabel.id_to_name(class_id), bounding_box, 1.0)
+                obj = ObjectLabel(ObjectLabel.id_to_name(class_id),1.0, Polygon.from_quad_t_centroid(bounding_box))
                 objs.append(obj)
 
         return ImgLabel(objs)

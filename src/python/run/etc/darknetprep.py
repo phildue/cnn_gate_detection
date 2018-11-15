@@ -5,7 +5,7 @@ import numpy as np
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.labelparser.YoloParser import YoloParser
 from utils.fileaccess.utils import create_dirs
-from utils.imageprocessing.Backend import crop
+from utils.imageprocessing.Backend import crop, resize
 from utils.imageprocessing.Imageprocessing import show
 from utils.labels.ImgLabel import ImgLabel
 from utils.timing import tic, toc
@@ -70,7 +70,7 @@ generator = GateGenerator([src_dir + s for s in sets], batch_size,
 reader = generator.generate()
 n_images = generator.n_samples
 
-writer = YoloParser(out_dir + '/samples', color_format='bgr', image_format='jpg', img_norm=(208, 208))
+writer = YoloParser(out_dir + '/samples', color_format='bgr', image_format='jpg', img_norm=(416, 416))
 n_images_filtered = 0
 
 for i in range(0, n_images, batch_size):
@@ -81,7 +81,8 @@ for i in range(0, n_images, batch_size):
         labels = []
         for img, label, _ in batch:
             img_, label_ = crop(img, (0, 52), (416, 416 - 52), label=label)
-            show(img_,labels=label_)
+            img_, label_ = resize(img_, (240, 320), label=label_)
+            show(img_, labels=label_)
             imgs.append(img_)
             labels.append(label_)
 
