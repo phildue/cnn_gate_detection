@@ -11,15 +11,13 @@
 
 	\section{Methodology}
 		
-	This work uses a typical one-stage detector with anchor boxes as baseline, namely the \textit{YoloV3} detector with the \textit{TinyYoloV3} network. The fundamental concept of one-stage detectors with anchor boxes is illustrated in \Cref{fig:anchors}. In this section the concrete implementation with the \textit{TinyYoloV3} network and its training goal are explained.
+	This work uses a typical one-stage detector with anchor boxes as baseline, namely the \textit{YoloV3} detector with the \textit{TinyYoloV3} network. The fundamental concept of one-stage detectors with anchor boxes is illustrated in \Cref{sec:related}. In this section the implementation with the \textit{TinyYoloV3} network and its training goal are explained.
 	
-	On a high level basis \textit{YoloV3} maps the input image to a predefined set of bounding boxes. For each box the network predicts an object probability $\hat o$  and a class probability $\hat c$. $\hat o$ expresses how likely the box contains an object, $\hat c$ expresses what kind of object it contains. This way a box can be either background or object but the object can have multiple classes. For example a box can be a human and face but not a face and background. As this work considers the single class case, we remove $\hat c$ from the prediction.
+	On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $t_w$, height $t_h$ and center location $c_x$, $c_y$. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
 	
-	Defining a set of boxes that covers only approximately the full range of possible object locations and bounding box dimensions would lead to an intractable amount of parameters/computations. Instead \textit{YoloV3} defines anchor boxes that contain the most common aspect ratios and predicts how to adapt these anchor boxes to better fit the predicted object. These are the bounding box center $\hat x,\hat y$, its width $w$ and height $h$. In total this leads to 5 output nodes for each bounding box.
+	For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
 	
-	In an image objects can appear at different scales. For small objects more fine grain features are relevant and it is important to predict locations at a high resolution. However, for larger objects a too fine discretization is not only unnecessary but can even confuse the detector. Hence, \textit{TinyYoloV3} uses $G=2$ output grids with $S_1=13$ and $S_2=26$ grid cells to predict objects at various scales. For each grid cell $B_1 = B_2 = 3$ bounding boxes are predicted. In total this leads to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.
-	
-	The predicted outputs are interpreted as offset to the predefined anchor box dimensions. Hence, the output for the anchor at grid $i$, cell $j$, anchor $k$  is decoded as follows:
+	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to better adapt the anchor box to better fit the predicted object. These are the bounding box center $\hat x,\hat y$, its width $w$ and height $h$. The predicted outputs are interpreted as offset to the predefined anchor box dimensions. Hence, the output for the anchor at grid $i$, cell $j$, anchor $k$  is decoded as follows:
 	
 	\begin{equation}
 	b_x = \hat x_{i,j,k} + t^x_{i,j,k}\quad
@@ -30,9 +28,15 @@
 	
 	where $t^x$,$t^y$,$t^w$,$t^h$ are the coordinates of the predefined anchor boxes and $b_x,b_y,b_w,b_h$ are the final bounding box coordinates normalized to the image resolution.
 		
-	This mapping is implemented with a \acp{CNN} that contains 10 convolutional, 6 pooling and 1 deconvolutional layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
+	In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
+			
+	This mapping is implemented with a \acp{CNN} as illustrated in  \Cref{fig:tinyyolov3_arch}. It contains 10 convolutional, 6 pooling and 1 unpooling layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
+	The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. 
 	
-	The architecture is illustrated in \Cref{fig:tinyyolov3_arch}. The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch extracts features for larger objects leading to a final grid of 13x13. The higher branch extracts features for smaller objects leading to a grid of 26x26. For each grid cell 15 output nodes predict 3 bounding boxes. Thereby the nodes responsible for $\hat o$ have a sigmoid-activation such that the response gets squashed into a value between zero and one and can be interpreted as a probability. Similarly the nodes responsible for $\hat x$ and $\hat y$ have a sigmoid activation such that the output can be interpreted as coordinate normalized to the image size. For the output nodes of $w$ and $h$ \textit{YoloV3} uses $e^x$-activation. This way the output is always larger than one while no adaption in bounding box width/height ($w=1$) corresponds to no activation. Furthermore, the network can predict a large range of scales in a small range of activation.
+	From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch extracts features for larger objects leading to a final grid of 13x13. The higher branch extracts features for smaller objects leading to a grid of 26x26. Research has shown \todoref{vgg} that 3x3 kernels stacked in multiple layers lead to very performant architectures. This can also be seen in \textit{TinyYoloV3} that uses mostly 3x3 kernels. The only exception are layer 6-1 and 7-2 where 1x1 kernels are applied. Although not stated explicitly by the authors this is likely to compress the feature response of the previous layer and thus save computations.
+	
+	In the final layer 15 output nodes are responsible to predict 3 bounding boxes for each grid cell. Thereby the nodes responsible for $\hat o$ have a sigmoid-activation such that the response gets squashed between 0 and 1 thus can be interpreted as a probability. Similarly the nodes responsible for $\hat x$ and $\hat y$ have a sigmoid activation such that the output can be interpreted as coordinate normalized to the image size. For the output nodes of $w$ and $h$ \textit{YoloV3} uses $e^x$-activation. This way the output is always larger than one while no adaption in bounding box width/height ($w=1$) corresponds to no activation. Furthermore, the network can predict a large range of scales in a small range of activation which aims to simplify the learning process.
+	
 			
 	\begin{figure}[hbtp]
 		\centering
@@ -85,20 +89,39 @@
 
 	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
 	
-	\section{Depth and Width}
+	\section{Refining the architecture}
 	
-	State of the art results of Computer Vision benchmarks are achieved by particularly deep/wide models. The vast amount of parameters and layers enables to model highly non-linear functions and complex image features. However, \acp{EWFO} do not contain particularly complex shapes. Instead the object parts are of thin structure and are spread across large parts of the image. Hence, we hypothesize that a very deep/wide network will not perform better than a shallower and thinner counterpart. Also, the baseline architecture is designed to detect complex objects of multiple classes. In this work we investigate the single class case. We hypothesize that this requires less filters and thus that a thinner and shallower counterpart can detect the object with equal performance.
+	\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. This led to an architecture with 9 layers and a final width of 1024. Thereby the receptive field is of the last layer is 223 pixels. For solid objects this is of minor impact as even if the network only sees an object part it can still learn to recognize it. However, this does not apply for \acp{EWFO} which are empty and do not contain any information in the object centre. Instead it can confuse an output layer that is assigned responsible to detect such an object. We hypothesize that a larger receptive field will benefit the performance for objects of higher scale. Furthermore, \acp{EWFO} consist only of simple features. Hence we hypothesize that less filters are required to represent such an object and a thinner model can perform equally well than its wider counterpart. Finally, \acp{EWFO} are not very complex. Hence, we hypothesize that a shallower model should be able to learn the task equally well.
 	
-	\subsection{Experiment}
+	The anchor box concept introduces additional hyperparameters. By choosing the anchor box dimensions close to objects that appear in training/test set prior knowledge can be included. The better the anchor boxes fit the appearing object the less work has to be done by the network and hence performance can potentially be improved. Hence, we evaluate whether redesigned anchor boxes improve the network performance. 
 	
-	In order to evaluate our hypothesis an experiment is conducted. The network is trained with different architectures and the performance is evaluated. In a first experiment the TinyYoloV3 architecture is used as baseline and the number of filters is decreased stepwise by a factor of 2. The number of layers is held constant. In a second experiment the width is held constant and the depth is varied. The exact scheme to change depth is visualized in \Cref{fig:depth_changes}. In order to remove layers the convolutional layers are removed while the pooling layers are kept. For the increase of depth 2 layers are inserted stepwise at the end of both branches.  
+	\begin{figure}[hbtp]
+		\centering
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/yolov3_anchors}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/gate_anchors}
+		\end{minipage}
+		\caption{ Visualization of the anchor parametrization. It can be seen the two output grids, where the grid for larger scale objects is drawn thicker. For both output grids the anchor at the center location is displayed. The anchor for smaller objects in blue, the anchors for larger objects in red. The left image shows the baseline \textit{TinyYoloV3} anchors. The right image the anchors based on a k-means clustering of the training set. }
+		\label{fig:anchors}
+	\end{figure}
+	
+	\subsection{Experiments}
+	
+	Initially an architecture evaluation is performed. Therefore different architectures are trained and evaluated in terms of \ac{ap60}. As an architecture contains many parameters we can not simply vary each of them independently. Hence, three experiments are performed iteratively. We first describe them on a high level basis before explaining the exact changes. In a first step the width is decreased until a drop in performance is noticeable. In a second step the architecture with the lowest width but without performance drop is chosen and the depth is varied. Based on the results of this step we create a final model that combines the gained insights and tune the anchor boxes.
+	
+	The scheme in which the architecture is changed is visualized in \Cref{fig:depth_changes}. The width of the baseline model is decreased stepwise by a factor of two. When decreasing depth only convolutional layers are removed while the pooling layers are kept such that the spatial resolution stays the same. When increasing depth 2 layers are inserted stepwise at the end of both branches. The results show how depth is mainly relevant to detect objects of larger scale. Hence, the final model consist of 5 common layers, 15 layers on the branch to detect larger objects and 2 layers on the branch to detect small objects.
+	
 	
 		\begin{figure}[hbtp]
 			\centering
-			\includegraphics[width=0.8\textwidth]{fig/depth_changes}
+			\includegraphics[width=0.9\textwidth]{fig/depth_changes}
 			\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
 			\label{fig:depth_changes}
 		\end{figure}
+	
+	
 	
 	\subsection{Results}
 	
@@ -112,16 +135,6 @@
 		\label{fig:perf_width}
 	\end{figure}
 	
-	\Cref{fig:perf_depth} shows the performance for different amount of layers. It can be seen how the performance increases significantly up to a depth of 8. Further increase in depth does not lead to better overall performance. However, depth has a larger influence on the performance for different object sizes as displayed in \Cref{fig:depth_ap_size}. It can be seen how the deeper models perform better at larger object sizes. The deepest model however looses performance for the smaller object sizes.
-
-	\begin{figure}[hbtp]
-		\centering
-		\includegraphics[width=\textwidth]{fig/perf_depth}
-		\caption{Performance in simulation when varying the amount of layers. The exact architectures are shown in \Cref{fig:depth_changes}. The overall performance does not increase further with more than 8 layers.}
-		\label{fig:perf_depth}
-	\end{figure}
-
-
 	\begin{figure}[hbtp]
 		\centering
 		\includegraphics[width=\textwidth]{fig/depth_ap_size}
@@ -133,10 +146,17 @@
 	
 	\begin{figure}[hbtp]
 		\centering
-		\includegraphics[width=\textwidth]{fig/distr_size}
-		\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
-		\label{fig:size_bins}
+		\includegraphics[width=0.8\textwidth]{fig/hyperparam_size}
+		\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
+		\label{fig:hyp}
 	\end{figure}
+
+	\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=\textwidth]{fig/rf_ap_size}
+	\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
+	\label{fig:size_bins}
+\end{figure}
 	
 	\subsection{Discussion}
 	
@@ -154,18 +174,9 @@
 	
 	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
 	
-	\section{Receptive Field}
+	\section{Empty Objects}
 	
-	In shallow fully convolutional networks the receptive field of the last layer might not cover the whole image. This is of particular effect for \ac{EWFO} as thus it is possible that the output layer which gets assigned responsible to predict the object does not see any feature of its parts.
-	
-	A deeper network is one way to increase receptive field but comes at cost of computation. In this section we investigate whether the same performance can be reached by using alternative ways to increase the receptive field.
-	
-	\begin{figure}[hbtp]
-		\centering
-		\includegraphics[width=\textwidth]{fig/rf_ap_size}
-		\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
-		\label{fig:size_bins}
-	\end{figure}
+	The experiments show how the performance of the network drops for larger objects while even a few layers are enough for small objects. This is the opposite as reported for example by \todoref{Objectdetect}. We hypothesize that this is due to the emptiness of \ac{EWFO}. As the object gets larger, the features are spread further and further a part while more and more noise is present in the receptive field of the detector.
 	
 	\subsection{Experiment}
 	
@@ -173,15 +184,5 @@
 	 
 	 \subsection{Results}
 	 
-	\section{Anchors and Output Grid}
-		
-	\section{Reducing Inference Time}
-	
-	To this end we investigated how to incorporate 
-	Next to performance, inference time is a crucial parameter for the detection of \ac{EWFO} on \ac{MAV}. 
-	
-	 It is determined by the number of computations but also how these computations can be executed. Theoretically the convolutions of one layer in a \acp{CNN} can be executed fully in parallel, however this operation has to be supported by the computational platform. The execution time further depends on how fast a computational platform can execute multiplications, how large the memory is and how fast it can be accessed, but also on the particular low level software implementation. So far we created a model that is 
-	 
-	 \section{What did we learn?}
 	
 	\section{Implementation on the \ac{MAV}}

@@ -6,7 +6,7 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.labels.Pose import Pose
 
 LEGEND_BOX = 0
-LEGEND_CORNERS = -1
+LEGEND_CORNERS = 1
 LEGEND_TEXT = 2
 LEGEND_POSITION = 3
 

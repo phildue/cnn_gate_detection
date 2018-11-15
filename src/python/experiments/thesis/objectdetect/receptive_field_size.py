@@ -14,13 +14,18 @@ models = [
     'out/thesis/objectdetect/yolov3_pool416x416_i00/',
     'out/thesis/objectdetect/yolov3_avg_pool416x416_i00/',
     'out/thesis/objectdetect/yolov3_d3_416x416_i00/',
-
+    'out/thesis/objectdetect/yolov3_max_pool_anchors416x416_i00/',
+    'out/thesis/objectdetect/yolov3_avg_pool_anchors416x416_i00/',
+    'out/thesis/objectdetect/yolov3_d3_anchors416x416_i00/',
 ]
 titles = [
     'k9',
-    'pool',
+    'max_pool',
     'avg_pool',
     'd3',
+    'max_pool_anchors',
+    'avg_pool_anchors',
+    'd3_anchors',
 ]
 ObjectLabel.classes = ['gate']
 bins = 10
