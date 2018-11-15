@@ -51,7 +51,7 @@ sets = [
     'basement_course1',
     'iros2018_course3_test',
     'various_environments20k',
-    # 'resource/ext/samples/realbg20k'
+    'resource/ext/samples/realbg20k'
 ]
 
 sample_dir = out_dir + '/samples'
