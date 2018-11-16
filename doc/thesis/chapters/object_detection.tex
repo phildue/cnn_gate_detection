@@ -53,14 +53,16 @@
 	
 	In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each of the 12675 output nodes. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with the backpropagation.
 	
-	A ground truth label can simply be encoded by inverting the equations in \Cref{sec:encoding}. Yet the question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause instable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. This results in a matrix of dimension (2535,5) where each line corresponds to one of the 
+	A ground truth label can simply be encoded by inverting the equations in \Cref{sec:encoding}. Yet the question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause instable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. 
 	
+	Hence the ground truth for one image is defined as a matrix with dimension (2535,5) where each line corresponds to one anchor at one grid cell. Anchors that have assigned a ground truth object contain the respective coordinate offsets while other anchors are zero.
 	
-	In order to train a \ac{CNN} to predict the desired properties \textit{YoloV3} quantifies the Object Detection task as the combined goal between localization and a classification:
+	With the true label and the predicted label the training goal can be formulated. The loss needs to capture the localization and the classification goal. In a typical ground truth image only a small subset of anchors is assigned responsible to predict an object. All the other anchors see only background. Hence, there is a class imbalance between the "object" class and the "background" class. Treating both losses equally would lead the model to simply assign "background" for all anchors. The weight terms $\lambda_{obj}$ and $\lambda_{noobj}$ compensate for this class imbalance. Furthermore, $\lambda_{loc}$ trades-off the localization goal and the classification goal. The abstract training loss is summarized in: 
+
 	\begin{equation}
 	\mathcal{L} = \lambda_{loc}\mathcal{L}_{loc} + \lambda_{obj}\mathcal{L}_{obj} + \lambda_{noobj}\mathcal{L}_{noobj} + \lambda_{class}\mathcal{L}_{class}
 	\end{equation}
-	where $\mathcal{L}_{loc}$ is the loss for bounding box dimensions, $\mathcal{L}_{obj}$ the loss where a object is present, $\mathcal{L}_{noobj}$ the loss where there is no object and $\mathcal{L}_{class}$ the classification loss. $\lambda$ are trade-off parameters between the multiple targets.
+	where $\mathcal{L}_{loc}$ is the loss for bounding box dimensions, $\mathcal{L}_{obj}$ the loss where a object is present, $\mathcal{L}_{noobj}$ the loss where there is no object. The weights are kept to the default value of $\lambda_{loc} = 5$,$\lambda_{obj} = 5$ and $\lambda_{noobj} = 0.5$.
 	
 	For a single class prediction this can be simplified to:
 	
