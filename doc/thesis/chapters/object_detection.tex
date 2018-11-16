@@ -20,6 +20,7 @@
 	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to better adapt the anchor box to better fit the predicted object. These are the bounding box center $\hat x,\hat y$, its width $w$ and height $h$. The predicted outputs are interpreted as offset to the predefined anchor box dimensions. Hence, the output for the anchor at grid $i$, cell $j$, anchor $k$  is decoded as follows:
 	
 	\begin{equation}
+	\label{sec:encoding}
 	b_x = \hat x_{i,j,k} + t^x_{i,j,k}\quad
 	b_y = \hat y_{i,j,k} + t^y_{i,j,k}\quad
 	b_w = \hat w_{i,j,k} \cdot t^w_{i,j,k}\quad
@@ -28,7 +29,7 @@
 	
 	where $t^x$,$t^y$,$t^w$,$t^h$ are the coordinates of the predefined anchor boxes and $b_x,b_y,b_w,b_h$ are the final bounding box coordinates normalized to the image resolution.
 		
-	In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
+	In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. A final reshape operation leads to a predicted matrix of dimension (2535,5), where each line corresponds to a predicted box. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
 			
 	This mapping is implemented with a \acp{CNN} as illustrated in  \Cref{fig:tinyyolov3_arch}. It contains 10 convolutional, 6 pooling and 1 unpooling layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
 	The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. The architecture is a typical example of current \acp{CNN}. In the early layers the receptive field of the filters is small. Hence, the patterns that can be represented are not very complex and only a small amount of filters is used. As the network gets deeper more complex patterns can be present and more weights are required to encode these features. Hence, the width is increased. Research has shown that fixing kernels to a size of 3x3 and stacking them in deep layers is particularly efficient\todoref{vgg}. This can also be seen in the \textit{TinyYoloV3} architecture. 
@@ -49,6 +50,11 @@
 	
 
 	\subsection{Training Goal}
+	
+	In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each of the 12675 output nodes. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with the backpropagation.
+	
+	A ground truth label can simply be encoded by inverting the equations in \Cref{sec:encoding}. Yet the question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause instable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. This results in a matrix of dimension (2535,5) where each line corresponds to one of the 
+	
 	
 	In order to train a \ac{CNN} to predict the desired properties \textit{YoloV3} quantifies the Object Detection task as the combined goal between localization and a classification:
 	\begin{equation}

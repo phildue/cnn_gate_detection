@@ -58,7 +58,7 @@ sample_dir = out_dir + '/samples'
 create_dirs([out_dir, sample_dir])
 batch_size = 8
 generator = GateGenerator([src_dir + s for s in sets], batch_size,
-                          color_format='bgr', shuffle=True,
+                          color_format='bgr', shuffle=False,
                           label_format='xml',
                           img_format='jpg',
                           start_idx=0,
