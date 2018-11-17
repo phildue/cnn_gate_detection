@@ -3,13 +3,15 @@ import numpy as np
 from modelzoo.models.Encoder import Encoder
 from utils.imageprocessing.Backend import crop
 from utils.imageprocessing.Image import Image
+from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
 
 class Preprocessor:
     def __init__(self, encoder: Encoder, n_classes, img_shape, color_format, augmentation: [ImgTransform]=None,
-                 preprocessing: [ImgTransform] = None):
+                 preprocessing: [ImgTransform] = None, show_t=-1):
+        self.show_t = show_t
         self.preprocessing = preprocessing
         self.color_format = color_format
         self.img_height, self.img_width = img_shape[:2]
@@ -39,8 +41,9 @@ class Preprocessor:
 
             if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
                 raise ValueError('Invalid Input Size')
-            #
-            # show(img,labels=label, t=0)
+
+            if self.show_t > -1:
+                show(img,labels=label, t=0)
 
             img_enc = self.encoder.encode_img(img)
             label_enc = self.encoder.encode_label(label)

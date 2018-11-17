@@ -348,8 +348,8 @@ def crop(img: Image, min_xy=(0, 0), max_xy=None, label: ImgLabel = None):
             obj_crop = obj.copy()
             obj_crop.poly.points = points
 
-            if obj_crop.poly.area >= 20 and (0.33 < obj_crop.poly.width / obj_crop.poly.height < 3):
-                objs_crop.append(obj_crop)
+            # if obj_crop.poly.area >= 20 and (0.33 < obj_crop.poly.width / obj_crop.poly.height < 3):
+            objs_crop.append(obj_crop)
 
         label_crop = label.copy()
         label_crop.objects = objs_crop

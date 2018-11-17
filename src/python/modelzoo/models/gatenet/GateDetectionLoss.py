@@ -39,12 +39,12 @@ class GateDetectionLoss(Loss):
         coord_pred = y_pred[:, :, 1:5]
 
         xy_true = coord_true[:, :, :2]
-        xy_true = K.clip(xy_true, K.epsilon(), 1 - K.epsilon())
-        xy_true = K.log(xy_true / (1 - xy_true))
+        # xy_true = K.clip(xy_true, K.epsilon(), 1 - K.epsilon())
+        # xy_true = K.log(xy_true / (1 - xy_true))
         # xy_pred = K.sigmoid(coord_pred[:, :, :2])
         xy_pred = coord_pred[:, :, :2]
-        xy_loss = 0.5*K.square(xy_true - xy_pred)
-        # xy_loss = K.binary_crossentropy(target=xy_true, output=xy_pred, from_logits=True)
+        # xy_loss = 0.5*K.square(xy_true - xy_pred)
+        xy_loss = K.binary_crossentropy(target=xy_true, output=xy_pred, from_logits=True)
         wh_true = K.log(coord_true[:, :, 2:])
         wh_pred = coord_pred[:, :, 2:]
         wh_loss = K.square(wh_true - wh_pred)
