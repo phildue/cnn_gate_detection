@@ -13,23 +13,13 @@
 		
 	This work uses a typical one-stage detector with anchor boxes as baseline, namely the \textit{YoloV3} detector with the \textit{TinyYoloV3} network. The fundamental concept of one-stage detectors with anchor boxes is illustrated in \Cref{sec:related}. In this section the implementation with the \textit{TinyYoloV3} network and its training goal are explained.
 	
-	On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $t_w$, height $t_h$ and center location $c_x$, $c_y$. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
+	On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $p_w$, height $p_h$ and are arranged in grids corresponding to the spatial resolution of the output layers. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
 	
 	For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
 	
-	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to better adapt the anchor box to better fit the predicted object. These are the bounding box center $\hat x,\hat y$, its width $w$ and height $h$. The predicted outputs are interpreted as offset to the predefined anchor box dimensions. Hence, the output for the anchor at grid $i$, cell $j$, anchor $k$  is decoded as follows:
-	
-	\begin{equation}
-	\label{sec:encoding}
-	b_x = \hat x_{i,j,k} + t^x_{i,j,k}\quad
-	b_y = \hat y_{i,j,k} + t^y_{i,j,k}\quad
-	b_w = \hat w_{i,j,k} \cdot t^w_{i,j,k}\quad
-	b_h = \hat h_{i,j,k} \cdot t^h_{i,j,k}
-	\end{equation}
-	
-	where $t^x$,$t^y$,$t^w$,$t^h$ are the coordinates of the predefined anchor boxes and $b_x,b_y,b_w,b_h$ are the final bounding box coordinates normalized to the image resolution.
+	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are  the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
 		
-	In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. A final reshape operation leads to a predicted matrix of dimension (2535,5), where each line corresponds to a predicted box. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
+	In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
 			
 	This mapping is implemented with a \acp{CNN} as illustrated in  \Cref{fig:tinyyolov3_arch}. It contains 10 convolutional, 6 pooling and 1 unpooling layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
 	The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. The architecture is a typical example of current \acp{CNN}. In the early layers the receptive field of the filters is small. Hence, the patterns that can be represented are not very complex and only a small amount of filters is used. As the network gets deeper more complex patterns can be present and more weights are required to encode these features. Hence, the width is increased. Research has shown that fixing kernels to a size of 3x3 and stacking them in deep layers is particularly efficient\todoref{vgg}. This can also be seen in the \textit{TinyYoloV3} architecture. 
@@ -51,11 +41,22 @@
 
 	\subsection{Training Goal}
 	
-	In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each of the 12675 output nodes. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with the backpropagation.
+	In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each of the 12675 output nodes. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with backpropagation.
 	
-	A ground truth label can simply be encoded by inverting the equations in \Cref{sec:encoding}. Yet the question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause instable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. 
+	Thereby it is desirable that a network output of zero corresponds to no network activation and henceforth to keep all predicted bounding boxes in the default shape. Therefore, \textit{YoloV3} encodes the ground true coordinates as follows:
+	 
 	
-	Hence the ground truth for one image is defined as a matrix with dimension (2535,5) where each line corresponds to one anchor at one grid cell. Anchors that have assigned a ground truth object contain the respective coordinate offsets while other anchors are zero.
+	\begin{equation}
+	\label{sec:encoding}
+	b_x = \sigma(\hat x_{i,j,k}) + g^x_{i,j}\quad
+	b_y = \sigma(\hat y_{i,j,k}) + g^y_{i,j}\quad
+	b_w = e^{\hat w_{i,j,k}} \cdot p^w_{i,j,k}\quad
+	b_h = e^{\hat h_{i,j,k}} \cdot p^h_{i,j,k}
+	\end{equation}
+	
+	where $\hat{x}$,$\hat{y}$,$\hat w_{i,j,k}$ and $\hat h_{i,j,k}$ correspond to output nodes of anchor box at grid $i$, cell $j$, anchor $k$; $g^x_{i,j,k}$, $g^y_{i,j}$ is the top left coordinate of the respective grid cell; $\sigma$ is the sigmoid-function.
+	
+	The question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause unstable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. 
 	
 	With the true label and the predicted label the training goal can be formulated. The loss needs to capture the localization and the classification goal. In a typical ground truth image only a small subset of anchors is assigned responsible to predict an object. All the other anchors see only background. Hence, there is a class imbalance between the "object" class and the "background" class. Treating both losses equally would lead the model to simply assign "background" for all anchors. The weight terms $\lambda_{obj}$ and $\lambda_{noobj}$ compensate for this class imbalance. Furthermore, $\lambda_{loc}$ trades-off the localization goal and the classification goal. The abstract training loss is summarized in: 
 
@@ -64,13 +65,7 @@
 	\end{equation}
 	where $\mathcal{L}_{loc}$ is the loss for bounding box dimensions, $\mathcal{L}_{obj}$ the loss where a object is present, $\mathcal{L}_{noobj}$ the loss where there is no object. The weights are kept to the default value of $\lambda_{loc} = 5$,$\lambda_{obj} = 5$ and $\lambda_{noobj} = 0.5$.
 	
-	For a single class prediction this can be simplified to:
-	
-	\begin{equation}
-	\mathcal{L} = \lambda_{loc}\mathcal{L}_{loc} + \lambda_{obj}\mathcal{L}_{obj} + \lambda_{noobj}\mathcal{L}_{noobj}
-	\end{equation}
-	
-	The object loss quantifies a binary classification loss. Hence, it is the difference between a predicted probability $\hat o$ and an actual class label $c$. Where $o \in {0,1}$ and $\hat o \in (0,1)$. In order to learn such a goal it is desirable that the weights of the network get updated significantly when the difference between truth and prediction are high. However, when prediction and truth are already close to each other the updates to the weights should be smaller otherwise the training might miss the optimal solution. A loss function that contains the desired properties and is used by \textit{YoloV3} is the logarithmic loss which can be formulated as follows:
+	The object loss quantifies a binary classification loss. Hence, it is the difference between a predicted probability $\hat o$ and an actual class label $c$. Where $o \in \{0,1\}$ and $\hat o \in (0,1)$. In order to learn such a goal it is desirable that the weights of the network get updated significantly when the difference between truth and prediction are high. However, when prediction and truth are already close to each other, the updates to the weights should be smaller otherwise the training might miss the optimal solution. A loss function that contains the desired properties and is used by \textit{YoloV3} is the logarithmic loss which can be formulated as follows:
 	
 	\begin{equation}
 		\mathcal{L}_{log} = -(o_{ij}\log(\hat o_{ijk}) + (1 - o_{ij})\log(1 - \hat o_{ijk}))
@@ -82,14 +77,14 @@
 		\mathcal{L}_{obj} = \sum_{i=0}^{G}\sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}(-(c_{ijk}\log(\hat c_{ijk}) + (1 - c_{ijk})\log(1 - \hat c_{ijk})))
 	\end{equation}
 	
-	Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if anchor at $i,j,k$ is responsible to predict an object and 0 otherwise. The responsibility is determined by the \ac{IoU} of an anchor box with a ground truth box. The box with the highest \ac{IoU} with the ground truth box gets assigned responsible. $\mathcal{L}_{obj}$ is defined vice versa but controlled by the $\mathbb{1}_{ijk}^{noobj}$ binary variable.
+	Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if an object is present at anchor $i,j,k$. $\mathcal{L}_{obj}$ is defined vice versa but controlled by the $\mathbb{1}_{ijk}^{noobj}$ binary variable.
 
-	For the localization loss, similar to the classification loss, the weights should be updated significantly when the difference is high but less strongly when the difference is small. Furthermore, the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. However the squared distance does not make a difference between large and small boxes. For example, a deviation of 5 px for a small ground truth box with a width of 1 is treated equally to a deviation from a ground truth box with width 100. Therefore \textit{YoloV3}, applies the square root on width and height to scale down very large box dimensions and thus balance the loss calculation. The localization loss is summarized in:
+	For the localization loss, similar to the classification loss, the weights should be updated significantly when the difference is high but less strongly when the difference is small. Furthermore, the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. However, the squared distance does not make a difference between large and small boxes. For example, a deviation of 5 px for a small ground truth box with a width of 1 is treated equally to a deviation from a ground truth box with width 100. Therefore \textit{YoloV3}, applies the square root on width and height to scale down very large box dimensions and thus balance the loss calculation. The localization loss is summarized in:
 	
 	\begin{equation}
 		\mathcal{L}_{loc} = \sum_{i=0}^{G} \sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}[(x_{ijk}-\hat{x}_{ijk})^2 + (y_{ijk}-\hat{y}_{ijk})^2  + (\sqrt{w_{ijk}}-\sqrt{\hat{w}_{ijk}})^2 +(\sqrt{h_{ijk}}-\sqrt{\hat{h}_{ijk}})^2 ]
 	\end{equation}
-	where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. $\mathbb{1}_{ijk}^{obj}$ is 1 if the set of output nodes at $i$,$j$,$k$ is responsible to predict a certain object and 0 otherwise. 
+	where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. 
 	
 	The model is implemented using \textit{keras} with \textit{tensorflow} backend. 
 	

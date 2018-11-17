@@ -189,7 +189,7 @@ class SSD(Predictor):
                              iou_thresh_match=iou_thresh_match,
                              iou_thresh_background=iou_thresh_background)
 
-        preprocessor = Preprocessor(augmenter=SSDAugmenter(),
+        preprocessor = Preprocessor(augmentation=SSDAugmenter(),
                                     encoder=encoder,
                                     img_shape=img_shape,
                                     n_classes=self.n_classes,

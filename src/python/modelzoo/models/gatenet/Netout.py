@@ -13,13 +13,12 @@ class Netout(Layer):
 
     def call(self, x):
         """
-        Adapt raw network output. (Softmax, exp, sigmoid, anchors)
         :param netout: Raw network output
         :return: y as fed for learning
         """
-        pred_xy = K.sigmoid(x[:, :, :2])
-        pred_wh = K.exp(x[:, :, 2:self.polygon])
-        pred_c = x[:, :, -1:]
+        pred_xy = x[:, :, :2]
+        pred_wh = x[:, :, 2:self.polygon]
+        pred_c = K.sigmoid(x[:, :, -1:])
 
         return K.concatenate([pred_c, pred_xy, pred_wh], -1)
 

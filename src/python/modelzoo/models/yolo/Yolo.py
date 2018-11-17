@@ -148,7 +148,7 @@ class Yolo(Predictor):
             grids=grid,
             n_boxes=self.n_boxes,
             n_classes=self.n_classes)
-        preprocessor = Preprocessor(augmenter=augmenter,
+        preprocessor = Preprocessor(augmentation=augmenter,
                                     encoder=encoder,
                                     img_shape=self.norm,
                                     n_classes=self.n_classes + 1,

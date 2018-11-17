@@ -2,17 +2,20 @@ from pathlib import Path
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, History, TerminateOnNaN, LearningRateScheduler, \
     ReduceLROnPlateau, CSVLogger
+from markdown.preprocessors import Preprocessor
 
-from modelzoo.models.Predictor import Predictor
+from modelzoo.models.Encoder import Encoder
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
 
 
 class Training:
     def __init__(self,
-                 predictor: Predictor,
+                 encoder: Encoder,
+                 preprocessor: Preprocessor,
                  dataset_gen: DatasetGenerator,
                  out_file,
+                 input_shape,
                  patience_early_stop=3,
                  patience_lr_reduce=2,
                  log_dir='./logs',
@@ -24,12 +27,14 @@ class Training:
                  epochs=100,
                  callbacks=None,
                  validation_generator: DatasetGenerator = None):
+        self.input_shape = input_shape
+        self.preprocessor = preprocessor
+        self.encoder = encoder
         self.validation_generator = validation_generator if validation_generator is not None else dataset_gen.generate_valid()
         self.patience_lr_reduce = patience_lr_reduce
         self.initial_epoch = initial_epoch
         self.epochs = epochs
         self.dataset_gen = dataset_gen
-        self.predictor = predictor
         self.callbacks = []
         if patience_early_stop > -1:
             early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience_early_stop, mode='min',
@@ -70,13 +75,13 @@ class Training:
 
     def fit_generator(self):
 
-        history = self.predictor.net.backend.fit_generator(
-            generator=self.predictor.preprocessor.preprocess_train_generator(self.dataset_gen.generate()),
+        history = self.model.fit_generator(
+            generator=self.preprocessor.preprocess_train_generator(self.dataset_gen.generate()),
             steps_per_epoch=(self.dataset_gen.n_samples / self.dataset_gen.batch_size),
             epochs=self.epochs,
             initial_epoch=self.initial_epoch,
             verbose=1,
-            validation_data=self.predictor.preprocessor.preprocess_train_generator(self.validation_generator),
+            validation_data=self.preprocessor.preprocess_train_generator(self.validation_generator),
             validation_steps=100,
             callbacks=self.callbacks)
 
@@ -85,18 +90,16 @@ class Training:
     @property
     def summary(self):
 
-        if isinstance(self.predictor.preprocessor.augmenter, RandomEnsemble):
+        if isinstance(self.preprocessor.augmenter, RandomEnsemble):
             augmentation = ''
-            augmenters = self.predictor.preprocessor.augmenter.augmenters
-            probs = self.predictor.preprocessor.augmenter.probs
+            augmenters = self.preprocessor.augmenter.augmenters
+            probs = self.preprocessor.augmenter.probs
             for i in range(len(augmenters)):
                 augmentation += '\n{0:.2f} -> {1:s}'.format(probs[i], augmenters[i].__class__.__name__)
         else:
-            augmentation = self.predictor.preprocessor.augmenter.__class__.__name__
+            augmentation = self.preprocessor.augmenter.__class__.__name__
 
-        summary = {'model': self.predictor.net.__class__.__name__,
-                   'resolution': self.predictor.input_shape,
-                   'train_params': self.predictor.net.train_params,
+        summary = {'resolution': self.input_shape,
                    'image_source': self.dataset_gen.source_dir,
                    'color_format': self.dataset_gen.color_format,
                    'batch_size': self.dataset_gen.batch_size,
@@ -105,5 +108,5 @@ class Training:
                    'initial_epoch': self.initial_epoch,
                    'epochs': self.epochs,
                    # 'architecture': self.predictor.net.backend.get_config(),
-                   'weights': self.predictor.net.backend.count_params()}
+                   'weights': self.modelcount_params()}
         return summary

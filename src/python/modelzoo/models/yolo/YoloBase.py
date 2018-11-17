@@ -3,11 +3,11 @@ from keras import Input, Model
 from keras.layers import Conv2D, Reshape, Concatenate
 from keras.optimizers import Adam
 
-from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.layers import create_layer
-from modelzoo.models.yolo import Netout
+from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.models.Net import Net
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+from modelzoo.models.yolo import Netout
 
 
 class YoloBase(Net):
@@ -99,7 +99,7 @@ class YoloBase(Net):
         else:
             predictions = predictions[0]
 
-        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, 4),
+        meta_t = K.constant(GateNetEncoder.generate_encoding(self.norm, self.grid, self.anchors, 4),
                             K.tf.float32)
 
         netout = ConcatMeta(meta_t)(predictions)

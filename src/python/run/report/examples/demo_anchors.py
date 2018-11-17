@@ -3,7 +3,7 @@ import numpy as np
 from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from utils.imageprocessing.Image import Image
-from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX, COLOR_BLUE, COLOR_RED, save_labeled, COLOR_GREEN
+from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX, COLOR_BLUE, save_labeled
 from utils.labels.ImgLabel import ImgLabel
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.labels.Polygon import Polygon
@@ -64,7 +64,7 @@ architecture = [
 predictor = GateNet.create_by_arch(architecture, norm=(416, 416), anchors=anchors, n_polygon=4)
 n_boxes = predictor.n_boxes
 
-anchors_t = GateNetEncoder.generate_anchors(predictor.norm, predictor.grid, predictor.anchors, 4)
+anchors_t = GateNetEncoder.generate_encoding(predictor.norm, predictor.grid, predictor.anchors, 4)
 anchors_boxes = Polygon.from_quad_t_centroid(anchors_t)
 black_image = Image(np.ones(predictor.input_shape) * 255, 'bgr')
 for j in range(0, 416, int(416 / 13)):
@@ -108,7 +108,7 @@ anchors = np.array([[
 )
 predictor = GateNet.create_by_arch(architecture, norm=(416, 416), anchors=anchors, n_polygon=4)
 
-anchors_t = GateNetEncoder.generate_anchors(predictor.norm, predictor.grid, predictor.anchors, 4)
+anchors_t = GateNetEncoder.generate_encoding(predictor.norm, predictor.grid, predictor.anchors, 4)
 anchors_boxes = Polygon.from_quad_t_centroid(anchors_t)
 black_image = Image(np.ones(predictor.input_shape) * 255, 'bgr')
 for j in range(0, 416, int(416 / 13)):

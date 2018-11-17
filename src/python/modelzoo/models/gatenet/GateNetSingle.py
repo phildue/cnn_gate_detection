@@ -93,7 +93,7 @@ class GateNetSingle(Net):
         reshape = Reshape((-1, n_polygon + 1))(final)
         predictions = Lambda(self.net2y, (-1, n_polygon + 1))(reshape)
 
-        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
+        meta_t = K.constant(GateNetEncoder.generate_encoding(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
         out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)

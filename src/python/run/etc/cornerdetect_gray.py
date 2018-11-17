@@ -72,7 +72,7 @@ dataset_loader = GateGenerator(['resource/ext/samples/iros2018_flights/'], batch
 
 encoder = CornerNetEncoder(img_shape[:2])
 
-preprocessor = Preprocessor(augmenter=None, encoder=encoder, n_classes=1, img_shape=img_shape[:2],
+preprocessor = Preprocessor(augmentation=None, encoder=encoder, n_classes=1, img_shape=img_shape[:2],
                             color_format='gray')
 
 log_file_name = log_dir + '/log.csv'

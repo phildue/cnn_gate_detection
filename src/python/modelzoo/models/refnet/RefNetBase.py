@@ -1,15 +1,16 @@
+import keras.backend as K
+import numpy as np
 from keras import Input, Model
 from keras.layers import Conv2D, Reshape, TimeDistributed
 from keras.optimizers import SGD
 from spp.RoiPoolingConv import RoiPoolingConv
-import keras.backend as K
-from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
-from modelzoo.models.gatenet.Netout import Netout
+
 from modelzoo.layers import create_layer
-from modelzoo.models.refnet import ConcatMeta
 from modelzoo.models.Net import Net
+from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
-import numpy as np
+from modelzoo.models.gatenet.Netout import Netout
+from modelzoo.models.refnet import ConcatMeta
 
 
 class RefNetBase(Net):
@@ -81,7 +82,7 @@ class RefNetBase(Net):
         # predictions_exp = Lambda(patch_expand, output_shape=(n_rois, grid[0] * grid[1] * n_boxes, n_polygon + 1))(
         #     predictions)
 
-        meta_t = K.constant(GateNetEncoder.generate_anchors(norm, self.grid, anchors, n_polygon),
+        meta_t = K.constant(GateNetEncoder.generate_encoding(norm, self.grid, anchors, n_polygon),
                             K.tf.float32)
 
         augmented = ConcatMeta((K.shape(predictions)), meta_t, inroi)(predictions)

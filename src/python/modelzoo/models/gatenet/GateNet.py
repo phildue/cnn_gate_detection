@@ -149,10 +149,9 @@ class GateNet(Predictor):
         n_boxes = [len(a) for a in anchors]
 
         loss = GateDetectionLoss(
-            n_boxes=n_boxes,
             n_polygon=n_polygon,
             weight_loc=scale_coor,
-            weight_conf=scale_conf,
+            weight_obj=scale_conf,
             weight_prob=scale_prob,
             weight_noobj=scale_noob)
         net = GateNetBase(architecture=architecture,
@@ -202,10 +201,9 @@ class GateNet(Predictor):
 
         n_boxes = int(np.ceil(anchors.size / 2))
         loss = GateDetectionLoss(
-            n_boxes=n_boxes,
             n_polygon=n_polygon,
             weight_loc=scale_coor,
-            weight_conf=scale_conf,
+            weight_obj=scale_conf,
             weight_prob=scale_prob,
             weight_noobj=scale_noob)
         net = GateNet.architectures[model_name](loss=loss,
@@ -255,15 +253,16 @@ class GateNet(Predictor):
                                  anchor_dims=anchors,
                                  grids=grid,
                                  n_polygon=n_polygon)
-        preprocessor = Preprocessor(augmenter=augmenter,
+        preprocessor = Preprocessor(augmentation=augmenter,
                                     encoder=encoder,
                                     img_shape=self.norm,
                                     n_classes=1,
                                     color_format=color_format,
-                                    preprocess_transformer=preprocessing)
+                                    preprocessing=preprocessing)
 
         decoder = GateNetDecoder(norm=norm,
                                  grid=grid,
+                                 anchor_dims=anchors,
                                  n_polygon=n_polygon)
         postprocessor = Postprocessor(decoder=decoder,
                                       conf_thresh=self.conf_thresh,

@@ -1,36 +1,49 @@
-from modelzoo.models.gatenet.GateNet import GateNet
-from utils.fileaccess.CropGenerator import CropGenerator
-from utils.fileaccess.GateGenerator import GateGenerator
-from utils.imageprocessing.Backend import resize
-from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
-from utils.workdir import cd_work
 import numpy as np
 
+from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+from utils.fileaccess.GateGenerator import GateGenerator
+from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
+from utils.workdir import cd_work
+
 cd_work()
-batch_size = 1
+batch_size = 10
+anchor = np.array([[
+    [330, 340],
+    [235, 240],
+    [160, 165]],
+    [[25, 40],
+     [65, 70],
+     [100, 110]]])
+norm = (416, 416)
+grids = [(13, 13), (26, 26)]
+encoder = GateNetEncoder(anchor_dims=anchor, img_norm=norm, grids=grids)
 
-predictor = GateNet.create('GateNet3x3', batch_size=batch_size, norm=(52, 52), grid=[(3, 3)],
-                           anchors=np.array([[[1, 1],
-                                              #               [0.3, 0.3],
-                                              #               [0.5, 1],
-                                              #               [1, 0.5],
-                                              #               [0.7, 0.7]
-                                              ]]
-                                            ))
+decoder = GateNetDecoder(anchor_dims=anchor, norm=norm, grid=grids)
 
-dataset = CropGenerator(GateGenerator(["resource/ext/samples/industrial_new/"], batch_size=batch_size,
-                                      color_format='bgr', label_format='xml', n_samples=99)).generate()
+dataset = GateGenerator(["resource/ext/samples/iros2018_course_final_simple_17gates/"], batch_size=batch_size,
+                        color_format='bgr', label_format='xml', n_samples=99).generate()
 batch = next(dataset)
 
-batch = [resize(b[0], predictor.input_shape, label=b[1]) for b in batch]
-labels1_enc = predictor.encoder.encode_label_batch([b[1] for b in batch])
-for i in range(batch_size):
-    img = batch[i][0]
-    label_true = batch[i][1]
-    print("Objects: {}".format(len(label_true.objects)))
-    print(np.round(labels1_enc[i], 2))
+# label_t = encoder.encode_label(ImgLabel([]))
+# step = 500
+# for i in range(label_t.shape[0]-step):
+#     label_dec = decoder.decode_netout(label_t[i:i+step])
+#     show(Image(np.zeros(norm), 'bgr'), labels=[label_dec], colors=[COLOR_BLUE], name='Anchors')
+
+for img, label, _ in batch:
+    print(label)
     print('_____________________________')
-    img, label_true = resize(img, predictor.input_shape, label=label_true)
-    label_dec = predictor.postprocessor.decoder.decode_netout_to_label(labels1_enc[i])
-    show(img, labels=[label_true], colors=[COLOR_GREEN], name='True')
+    label_t = encoder.encode_label(label)
+    print(label_t)
+    print('_____________________________')
+
+    assigned = label_t[label_t[:, 0] > 0]
+    # n_assigned = len(assigned)
+    print('Assigned: {}'.format(assigned))
+    # print("N Assigned: {}".format(n_assigned))
+
+    label_dec = decoder.decode_netout(label_t)
+    label_dec.objects = [o for o in label_dec.objects if o.confidence > 0]
+    show(img, labels=[label], colors=[COLOR_GREEN], name='True')
     show(img, labels=[label_dec], colors=[COLOR_RED], name='Decoded')

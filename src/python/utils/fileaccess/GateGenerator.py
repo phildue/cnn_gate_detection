@@ -29,6 +29,7 @@ class GateGenerator(DatasetGenerator):
                  filter=None, remove_filtered=True, max_empty=1.0, forever=True, subsets: [int] = None):
         self.forever = forever
         self._filter = filter
+        self.valid_frac = valid_frac
         self.remove_filtered = remove_filtered
         self.org_aspect_ratio = org_aspect_ratio
         self._color_format = color_format

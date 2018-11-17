@@ -4,8 +4,8 @@ from modelzoo.models.gatenet.MetricGateNet import MetricGateNet
 
 
 class AveragePrecisionGateNet(MetricGateNet):
-    def __init__(self, n_boxes=5, grid=(13, 13), iou_thresh=0.4, norm=(416, 416), iou_thresh_nms=0.4,
-                 batch_size=8, confidence_levels=K.np.linspace(0, 1.0, 11)):
+    def __init__(self, n_boxes, grid, iou_thresh, norm,batch_size, iou_thresh_nms=0.4,
+                 confidence_levels=K.np.linspace(0, 1.0, 11)):
         super().__init__(n_boxes, grid, iou_thresh, norm, iou_thresh_nms, batch_size, confidence_levels)
 
     def compute(self, y_true, y_pred):

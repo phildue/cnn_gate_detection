@@ -77,13 +77,14 @@ class GateNetBase(Net):
                     inference = Conv2D(n_boxes[prediction_layer_i] * (n_polygon + 1), kernel_size=(1, 1),
                                        strides=(1, 1), name='predictor{}'.format(prediction_layer_i))(
                         net)
-                    prediction_layer_i += 1
-                    reshape = Reshape((-1, n_polygon + 1))(inference)
+                    reshape = Reshape((-1, self.n_boxes[prediction_layer_i], n_polygon + 1))(inference)
+                    reshape = Reshape((-1, n_polygon + 1))(reshape)
                     prediction = Netout(n_polygon)(reshape)
                     predictions.append(prediction)
                     layers.append(inference)
                     grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
                     self.grid.append(grid)
+                    prediction_layer_i += 1
             elif 'route' in config['name']:
                 if len(config['index']) > 1:
                     net = Concatenate()([layers[i] for i in config['index']])
@@ -99,7 +100,7 @@ class GateNetBase(Net):
         else:
             predictions = predictions[0]
 
-        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
+        meta_t = K.constant(GateNetEncoder.generate_encoding(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
         netout = ConcatMeta(meta_t)(predictions)

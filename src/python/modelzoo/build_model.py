@@ -7,7 +7,6 @@ from keras.layers import Reshape
 from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.layers.DepthwiseConv2D import DepthwiseConv2D
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
-from modelzoo.models.gatenet.Netout import Netout
 
 
 def build_detector(img_shape, architecture, anchors, n_polygon=4):
@@ -29,8 +28,7 @@ def build_detector(img_shape, architecture, anchors, n_polygon=4):
                     net)
                 prediction_layer_i += 1
                 reshape = Reshape((-1, n_polygon + 1))(inference)
-                prediction = Netout(n_polygon)(reshape)
-                predictions.append(prediction)
+                predictions.append(reshape)
                 layers.append(inference)
                 grid = K.int_shape(net)[-3], K.int_shape(net)[-2]
                 grids.append(grid)
@@ -49,12 +47,12 @@ def build_detector(img_shape, architecture, anchors, n_polygon=4):
     else:
         predictions = predictions[0]
 
-    meta_t = K.constant(GateNetEncoder.generate_anchors((h, w), grids, anchors, n_polygon),
+    meta_t = K.constant(GateNetEncoder.generate_encoding((h, w), grids, anchors, n_polygon),
                         K.tf.float32)
 
     netout = ConcatMeta(meta_t)(predictions)
     model = Model(netin, netout)
-    return model
+    return model, grids
 
 
 def create_layer(netin, config):

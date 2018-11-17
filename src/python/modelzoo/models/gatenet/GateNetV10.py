@@ -106,7 +106,7 @@ class GateNetV10(Net):
         reshape = Reshape((self.grid[0][0] * self.grid[0][1] * self.n_boxes, n_polygon + 1))(final)
         predictions = Netout(K.shape(reshape))(reshape)
 
-        meta_t = K.constant(GateNetEncoder.generate_anchors(self.norm, self.grid, self.anchors, self.n_polygon),
+        meta_t = K.constant(GateNetEncoder.generate_encoding(self.norm, self.grid, self.anchors, self.n_polygon),
                             K.tf.float32)
 
         out = ConcatMeta((K.shape(predictions)), meta_t)(predictions)

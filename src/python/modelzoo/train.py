@@ -79,7 +79,7 @@ def train(architecture,
 
         return ImgLabel(objs_in_view)
 
-    valid_frac = 0.05
+    valid_frac = 0.005
     valid_gen = None
     if validation_set is not None:
         valid_gen = GateGenerator(validation_set, batch_size=batch_size, valid_frac=1.0,
@@ -112,7 +112,7 @@ def train(architecture,
             return AveragePrecisionGateNet(batch_size=batch_size, n_boxes=predictor.n_boxes, grid=predictor.grid,
                                            norm=predictor.norm, iou_thresh=0.6).compute(y_true, y_pred)
 
-        predictor.compile(params=params, metrics=[average_precision06])
+        predictor.compile(params=params, metrics=[average_precision06, predictor.loss.localization_loss, predictor.loss.confidence_loss])
     else:
         predictor.compile(params=params)
 

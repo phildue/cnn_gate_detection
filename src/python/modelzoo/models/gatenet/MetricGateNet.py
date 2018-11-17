@@ -24,26 +24,35 @@ class MetricGateNet(Metric):
         self.map_adapter = AveragePrecision(iou_thresh, total_boxes, batch_size=batch_size)
 
     def _decode_coord(self, coord_t, anchors_t):
-        coord_t_cx = coord_t[:, :, 0] * anchors_t[:, :, 2]
-        coord_t_w = coord_t[:, :, 2] * anchors_t[:, :, 2]
-        coord_t_cy = coord_t[:, :, 1] * anchors_t[:, :, 3]
-        coord_t_h = coord_t[:, :, 3] * anchors_t[:, :, 3]
+        t_cx = coord_t[:, :, 0]
+        t_cy = coord_t[:, :, 1]
+        t_w = coord_t[:, :, 2]
+        t_h = coord_t[:, :, 3]
 
-        coord_t_cx = coord_t_cx + anchors_t[:, :, 0]
-        coord_t_cy = coord_t_cy + anchors_t[:, :, 1]
+        xoff = anchors_t[:, :, -4]
+        yoff = anchors_t[:, :, -3]
+        cw = anchors_t[:, :, -2]
+        ch = anchors_t[:, :, -1]
+        p_w = anchors_t[:, :, -2]
+        p_h = anchors_t[:, :, -1]
 
-        coord_t_cy = self.norm[0] - coord_t_cy
+        b_cx = K.sigmoid(t_cx)*cw+xoff
+        b_cy = K.sigmoid(t_cy)*ch+yoff
+        b_w = K.exp(t_w)*p_w
+        b_h = K.exp(t_h)*p_h
 
-        coord_t_xmin = coord_t_cx - coord_t_w / 2
-        coord_t_ymin = coord_t_cy - coord_t_h / 2
-        coord_t_xmax = coord_t_cx + coord_t_w / 2
-        coord_t_ymax = coord_t_cy + coord_t_h / 2
+        b_cy = self.norm[0] - b_cy
 
-        coord_t_xmin = K.expand_dims(coord_t_xmin, -1)
-        coord_t_ymin = K.expand_dims(coord_t_ymin, -1)
-        coord_t_xmax = K.expand_dims(coord_t_xmax, -1)
-        coord_t_ymax = K.expand_dims(coord_t_ymax, -1)
-        coord_dec_t = K.concatenate([coord_t_xmin, coord_t_ymin, coord_t_xmax, coord_t_ymax], -1)
+        b_xmin = b_cx - b_w / 2
+        b_ymin = b_cy - b_h / 2
+        b_xmax = b_cx + b_w / 2
+        b_max = b_cy + b_h / 2
+
+        b_xmin = K.expand_dims(b_xmin, -1)
+        b_ymin = K.expand_dims(b_ymin, -1)
+        b_xmax = K.expand_dims(b_xmax, -1)
+        b_max = K.expand_dims(b_max, -1)
+        coord_dec_t = K.concatenate([b_xmin, b_ymin, b_xmax, b_max], -1)
 
         return coord_dec_t
 
@@ -58,7 +67,7 @@ class MetricGateNet(Metric):
 
     def _postprocess_pred(self, y_pred):
         coord_pred_t = y_pred[:, :, 1:5]
-        conf_pred_t = K.sigmoid(y_pred[:, :, :1])
+        conf_pred_t = y_pred[:, :, :1]
         anchors_t = y_pred[:, :, 5:]
 
         coord_pred_dec_t = self._decode_coord(coord_pred_t, anchors_t)

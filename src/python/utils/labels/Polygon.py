@@ -1,7 +1,12 @@
+import copy
+
 import numpy as np
 
 
 class Polygon:
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     @staticmethod
     def from_quad_t_centroid(coord_t):
@@ -44,7 +49,7 @@ class Polygon:
         else:
             return boxes[0]
 
-    def __init__(self, points:np.array):
+    def __init__(self, points: np.array):
 
         self.points = points
 
@@ -122,7 +127,7 @@ class Polygon:
 
     @property
     def aspect_ratio(self):
-        return self.height/self.width
+        return self.height / self.width
 
     def __repr__(self):
         return '[({0:.2f},{1:.2f}) --> ({2:.2f},{3:.2f})]'.format(self.x_min, self.y_min, self.x_max,

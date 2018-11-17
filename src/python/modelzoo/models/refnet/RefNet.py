@@ -39,10 +39,9 @@ class RefNet(Predictor):
                        crop_size=(52, 52)):
         n_boxes = anchors.shape[1]
         loss = GateDetectionLoss(
-            n_boxes=n_boxes,
             n_polygon=n_polygon,
             weight_loc=scale_coor,
-            weight_conf=scale_conf,
+            weight_obj=scale_conf,
             weight_prob=scale_prob,
             weight_noobj=scale_noob)
         net = RefNetBase(architecture=architecture,

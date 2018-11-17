@@ -1,21 +1,21 @@
 import numpy as np
 
 from modelzoo.models.Encoder import Encoder
-from utils.imageprocessing.Backend import resize, crop
+from utils.imageprocessing.Backend import crop
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 from utils.labels.ImgLabel import ImgLabel
 
 
 class Preprocessor:
-    def __init__(self, augmenter: ImgTransform, encoder: Encoder, n_classes, img_shape, color_format,
-                 preprocess_transformer: ImgTransform = None):
-        self.preprocess_transformer = preprocess_transformer
+    def __init__(self, encoder: Encoder, n_classes, img_shape, color_format, augmentation: [ImgTransform]=None,
+                 preprocessing: [ImgTransform] = None):
+        self.preprocessing = preprocessing
         self.color_format = color_format
         self.img_height, self.img_width = img_shape[:2]
         self.n_classes = n_classes
         self.encoder = encoder
-        self.augmenter = augmenter
+        self.augmenter = augmentation
 
     def preprocess_train_generator(self, batches: [[(Image, ImgLabel)]]):
         for batch in batches:
@@ -30,13 +30,14 @@ class Preprocessor:
         x_batch = []
         for img, label, _ in dataset:
 
+            for p in self.preprocessing:
+                img, label = p.transform(img, label)
+
             if self.color_format is not img.format:
                 raise ValueError("Invalid Color Format")
 
             if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
-                print("Preprocessor:: Image Size does not match")
-                img, label = self.crop_to_input(img, label)
-                img, label = resize(img, (self.img_height, self.img_width), label=label)
+                raise ValueError('Invalid Input Size')
             #
             # show(img,labels=label, t=0)
 
@@ -55,7 +56,8 @@ class Preprocessor:
 
         if self.augmenter is not None:
             for img, label, path in dataset:
-                img, label = self.augmenter.transform(img, label)
+                for a in self.augmenter:
+                    img, label = a.transform(img, label)
                 dataset_augmented.append((img, label, path))
         else:
             dataset_augmented = dataset
@@ -64,15 +66,15 @@ class Preprocessor:
 
     def preprocess(self, img: Image):
 
-        if self.preprocess_transformer is not None:
-            img, _ = self.preprocess_transformer.transform(img, ImgLabel([]))
+        if self.preprocessing is not None:
+            img, _ = self.preprocessing.transform(img, ImgLabel([]))
 
         if self.color_format is not img.format:
             raise ValueError("Invalid Color Format")
 
         if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
-            img = self.crop_to_input(img)
-            img = resize(img, (self.img_height, self.img_width))
+            raise ValueError('Invalid Input Size')
+
         return self.encoder.encode_img(img)
 
     def preprocess_batch(self, batch: [Image]):

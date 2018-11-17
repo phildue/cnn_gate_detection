@@ -63,7 +63,7 @@ class YoloEncoder(Encoder):
         :return: label-tensor
 
         """
-        anchors = GateNetEncoder.generate_anchors(self.norm, self.grids, self.anchor_dims, 4)
+        anchors = GateNetEncoder.generate_encoding(self.norm, self.grids, self.anchor_dims, 4)
         objectness, class_prob, coords = self._assign_true_boxes(anchors, BoundingBox.from_label(label))
         coords = self._encode_coords(coords, anchors)
 
