@@ -124,7 +124,7 @@ class GateNetEncoder(Encoder):
             else:
                 self.unmatched += 1
                 self.unmatched_boxes.append(b)
-                if self.unmatched % 50 == 0:
+                if self.unmatched % 500 == 0:
                     # for b in self.unmatched_boxes:
                     #     print("{},".format(b))
                     print("Un/matched boxes: {}/{}".format(self.unmatched, self.matched))
@@ -142,7 +142,7 @@ class GateNetEncoder(Encoder):
 
         return label_t
 
-    def _encode_label(self, label_t, encoding):
+    def _normalize_label(self, label_t, encoding):
         conf = label_t[:, 0]
         b_cx = label_t[:, 1]
         b_cy = label_t[:, 2]
@@ -161,15 +161,8 @@ class GateNetEncoder(Encoder):
         if np.any(t_cx < 0) or np.any(t_cx > 1) or np.any(t_cy < 0) or np.any(t_cy > 1):
             raise ValueError('Invalid Assignment')
 
-        t_cx = np.clip(t_cx, 0.0001, 0.9999)
-        t_cy = np.clip(t_cy, 0.0001, 0.9999)
-
-        t_cx = self.logit(t_cx)
-        t_cy = self.logit(t_cy)
-
-        t_w = np.log(b_w / p_w)
-        t_h = np.log(b_h / p_h)
-
+        t_w = b_w / p_w
+        t_h = b_h / p_h
         return np.column_stack((conf, t_cx, t_cy, t_w, t_h, xoff, yoff, p_w, p_h, cw, ch))
 
     def encode_img(self, image: Image):
@@ -186,7 +179,7 @@ class GateNetEncoder(Encoder):
         """
         encoding = GateNetEncoder.generate_encoding(self.norm, self.grids, self.anchor_dims, self.n_polygon)
         y = self._assign_truth(label)
-        label_t = self._encode_label(y, encoding)
+        label_t = self._normalize_label(y, encoding)
         return label_t
 
     @staticmethod

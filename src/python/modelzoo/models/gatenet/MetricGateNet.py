@@ -66,7 +66,11 @@ class MetricGateNet(Metric):
         return coord_true_dec_t, conf_true_t
 
     def _postprocess_pred(self, y_pred):
-        coord_pred_t = y_pred[:, :, 1:5]
+        xy_pred_t = K.sigmoid(y_pred[:, :, 1:3])
+        wh_pred_t = K.exp(y_pred[:, :, 3:5])
+        # wh_pred_t = y_pred[:, :, 3:5]
+        coord_pred_t = K.concatenate((xy_pred_t, wh_pred_t), -1)
+        # coord_pred_t = y_pred[:, :, 1:5]
         conf_pred_t = y_pred[:, :, :1]
         anchors_t = y_pred[:, :, 5:]
 

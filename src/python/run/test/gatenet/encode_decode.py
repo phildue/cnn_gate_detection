@@ -17,7 +17,7 @@ anchor = np.array([[
      [100, 110]]])
 norm = (416, 416)
 grids = [(13, 13), (26, 26)]
-encoder = GateNetEncoder(anchor_dims=anchor, img_norm=norm, grids=grids)
+encoder = GateNetEncoder(anchor_dims=anchor, img_norm=norm, grids=grids,verbose=True)
 
 decoder = GateNetDecoder(anchor_dims=anchor, norm=norm, grid=grids)
 

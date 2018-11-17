@@ -22,7 +22,7 @@ class MeanAveragePrecision(Evaluator):
             detection_result = results['MetricDetection']
             mean_average_precision = 0
             for d in detection_result:
-                mean_average_precision += 1 / len(detection_result) * ResultByConfidence(d).average_precision
+                mean_average_precision += 1 / len(detection_result) * ResultByConfidence(d).mean_average_precision
 
             print("Map: {0:0.2f}".format(mean_average_precision))
             return

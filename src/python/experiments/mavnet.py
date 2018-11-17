@@ -20,45 +20,49 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-anchors = np.array([
-    [[81, 82],
-     [135, 169],
-     [344, 319]],
-    [[10, 14],
-     [23, 27],
-     [37, 58]],
-])
+model_dir = 'mavnet'
+initial_epoch = 0
+epochs = 100
+
+anchors = np.array([[
+    [330, 340],
+    [235, 240],
+    [160, 165]],
+    [[25, 40],
+     [65, 70],
+     [100, 110]]]
+)
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'predict'},
-    {'name': 'route', 'index': [3]},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    # {'name': 'upsample', 'size': 2},
-    # {'name': 'route', 'index': [-1, 8]},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'predict'},
+    {'name': 'route', 'index': [8]},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ]
 
+work_dir = 'out/' + model_dir + '/'
+create_dirs([model_dir])
 """
 Model
 """
@@ -68,7 +72,7 @@ encoder = GateNetEncoder(anchor_dims=anchors, img_norm=img_res, grids=output_gri
 decoder = GateNetDecoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
 preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()
-model.load_weights('out/testv3/model.h5')
+# model.load_weights('out/mavnet/model.h5')
 """
 Datasets
 """
@@ -129,14 +133,6 @@ train_gen = GateGenerator(image_source, batch_size=batch_size, valid_frac=valid_
                           remove_filtered=False, max_empty=0, filter=filter, subsets=subsets)
 
 """
-Paths
-"""
-work_dir = 'testv3'
-model_dir = 'out/' + work_dir + '/'
-
-create_dirs([model_dir])
-
-"""
 Training Config
 """
 optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
@@ -156,8 +152,7 @@ def tp60(y_true, y_pred):
 model.compile(optimizer=optimizer,
               loss=loss.compute,
               metrics=[ap60, tp60, loss.localization_loss, loss.confidence_loss])
-initial_epoch = 3
-epochs = 100
+
 log_file_name = model_dir + '/log.csv'
 append = Path(log_file_name).is_file() and initial_epoch > 0
 callbacks = [

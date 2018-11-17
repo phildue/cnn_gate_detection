@@ -24,7 +24,7 @@ def build_detector(img_shape, architecture, anchors, n_polygon=4):
         if 'predict' in config['name']:
             with K.name_scope('predict{}'.format(prediction_layer_i)):
                 inference = Conv2D(n_boxes[prediction_layer_i] * (n_polygon + 1), kernel_size=(1, 1),
-                                   strides=(1, 1), name='predictor{}'.format(prediction_layer_i))(
+                                   strides=(1, 1), activation='linear', name='predictor{}'.format(prediction_layer_i))(
                     net)
                 prediction_layer_i += 1
                 reshape = Reshape((-1, n_polygon + 1))(inference)
@@ -75,7 +75,7 @@ def avg_pool_creator(netin, config):
 
 
 def avg_pool(netin, size, strides):
-    return AveragePooling2D(size, strides,padding='same')(netin)
+    return AveragePooling2D(size, strides, padding='same')(netin)
 
 
 def max_pool_creator(netin, config):
@@ -87,7 +87,7 @@ def max_pool_creator(netin, config):
 
 
 def max_pool(netin, size, strides):
-    return MaxPooling2D(size, strides,padding='same')(netin)
+    return MaxPooling2D(size, strides, padding='same')(netin)
 
 
 def time_dist_conv_leaky_creator(netin, config):

@@ -35,18 +35,20 @@ class GateDetectionLoss(Loss):
 
     def localization_loss(self, y_true, y_pred):
         positives = K.cast(K.equal(y_true[:, :, 0], 1), K.dtype(y_true))
-
-        w_pos = self.scale_coor * K.stack(4 * [positives], -1)
         coord_true = y_true[:, :, 1:5]
         coord_pred = y_pred[:, :, 1:5]
 
         xy_true = coord_true[:, :, :2]
+        xy_true = K.clip(xy_true, K.epsilon(), 1 - K.epsilon())
+        xy_true = K.log(xy_true / (1 - xy_true))
+        # xy_pred = K.sigmoid(coord_pred[:, :, :2])
         xy_pred = coord_pred[:, :, :2]
-        xy_loss = K.square(xy_true - xy_pred)
-        wh_true = coord_true[:, :, 2:]
+        xy_loss = 0.5*K.square(xy_true - xy_pred)
+        # xy_loss = K.binary_crossentropy(target=xy_true, output=xy_pred, from_logits=True)
+        wh_true = K.log(coord_true[:, :, 2:])
         wh_pred = coord_pred[:, :, 2:]
-        wh_loss = K.square(K.sqrt(wh_true) - K.sqrt(wh_pred))
-        loc_loss = K.concatenate([xy_loss, wh_loss], -1) * w_pos
+        wh_loss = K.square(wh_true - wh_pred)
+        loc_loss = K.sum(K.concatenate([xy_loss, wh_loss], -1), -1) * self.scale_coor * positives
         total_loc_loss = K.sum(loc_loss) / K.cast(K.shape(y_true)[0], K.dtype(loc_loss))
 
         # loc_loss_sum = K.print_tensor(loc_loss_sum,'Loc Loss=')
@@ -62,7 +64,8 @@ class GateDetectionLoss(Loss):
 
         conf_pred = y_pred[:, :, 0:1]
 
-        conf_loss = K.binary_crossentropy(target=K.expand_dims(positives, -1), output=conf_pred,from_logits=True) * K.expand_dims(weight,-1)
+        conf_loss = K.binary_crossentropy(target=K.expand_dims(positives, -1), output=conf_pred,
+                                          from_logits=True) * K.expand_dims(weight, -1)
         total_conf_loss = K.sum(conf_loss) / K.cast(K.shape(y_true)[0], K.dtype(conf_loss))
 
         # conf_loss_total = K.print_tensor(conf_loss_total,'Conf Loss=')

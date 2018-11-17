@@ -154,8 +154,8 @@ class AveragePrecision(Metric):
         min_idx = K.argmin(conf_true, axis=-1)
         max_min_idx = K.cast(K.max(min_idx), K.tf.int32)
 
-        coord_sorted = coord_sorted[:, :max_min_idx+1]
-        class_sorted = class_sorted[:, :max_min_idx+1]
+        coord_sorted = coord_sorted[:, :max_min_idx + 1]
+        class_sorted = class_sorted[:, :max_min_idx + 1]
 
         return coord_sorted, class_sorted
 
@@ -230,7 +230,7 @@ class AveragePrecision(Metric):
 
         return precision, recall, total_predictions
 
-    def average_precision(self, coord_true, coord_pred, class_true, class_pred):
+    def mean_average_precision(self, coord_true, coord_pred, class_true, class_pred):
         """
         Calculates the average precision across all confidence levels
         :param coord_true: tensor(#boxes,4) true bounding box coordinates in minmax-format
@@ -246,3 +246,25 @@ class AveragePrecision(Metric):
         average_precision = K.mean(precision, -1)
 
         return average_precision
+
+    def total_average_precision(self, coord_true, coord_pred, class_true, class_pred,
+                                confidence_levels=K.np.linspace(0, 1.0, 11)):
+        n_true_positives, n_false_positives, n_false_negatives = self.detections(coord_true, coord_pred, class_true,
+                                                                                 class_pred, confidence_levels)
+
+        total_tp = K.sum(n_true_positives, -1)
+        total_fp = K.sum(n_false_positives, -1)
+        total_fn = K.sum(n_false_negatives, -1)
+        precision = K.switch(K.greater(total_tp, 0),
+                             total_fn / (total_fp + total_tp),
+                             K.zeros_like(total_tp))
+
+        average_precision = K.mean(precision, -1)
+
+        recall = K.switch(K.greater(total_tp, 0),
+                          total_tp / (total_tp + total_fn),
+                          K.zeros_like(total_tp))
+
+        average_recall = K.mean(recall, -1)
+
+        return average_precision, average_recall

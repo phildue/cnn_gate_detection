@@ -30,8 +30,9 @@ class Preprocessor:
         x_batch = []
         for img, label, _ in dataset:
 
-            for p in self.preprocessing:
-                img, label = p.transform(img, label)
+            if self.preprocessing is not None:
+                for p in self.preprocessing:
+                    img, label = p.transform(img, label)
 
             if self.color_format is not img.format:
                 raise ValueError("Invalid Color Format")

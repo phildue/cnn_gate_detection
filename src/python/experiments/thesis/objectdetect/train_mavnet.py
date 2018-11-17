@@ -60,7 +60,7 @@ if __name__ == '__main__':
         {'name': 'predict'}
     ]
 
-    model_name = 'mavnet{}x{}'.format(img_res[0], img_res[1])
+    model_name = 'mavnet_test{}x{}'.format(img_res[0], img_res[1])
 
     augmenter = None
         # RandomEnsemble([
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     for i in range(start_idx, start_idx + n_repetitions):
         train(architecture=architecture,
               work_dir='thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i),
-              weight_file='out/'+'thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i)+'/model.h5',
+              # weight_file='out/'+'thesis/datagen/{0:s}_i{1:02d}'.format(model_name, i)+'/model.h5',
               img_res=img_res,
               augmenter=augmenter,
               image_source=image_source,
@@ -97,7 +97,7 @@ if __name__ == '__main__':
               max_obj_size=2.0,
               min_aspect_ratio=0.3,
               max_aspect_ratio=4.0,
-              initial_epoch=2,
+              initial_epoch=0,
               color_format='bgr',
               resume_training=True,
               subsets=[
