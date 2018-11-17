@@ -49,10 +49,10 @@ for n in range(1, 4):
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         {'name': 'route', 'index': [-4]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128 / n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256 / n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
