@@ -64,7 +64,7 @@ architecture = [
 ]
 
 work_dir = 'out/' + model_dir + '/'
-create_dirs([model_dir])
+create_dirs([work_dir])
 """
 Model
 """
@@ -76,7 +76,7 @@ preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52),T
                             encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()
-# model.load_weights('out/mavnet/model.h5')
+# model.load_weights('out/mavnet_stri/model.h5')
 """
 Datasets
 """
@@ -153,16 +153,16 @@ model.compile(optimizer=optimizer,
               loss=loss.compute,
               metrics=[ap60])
 
-log_file_name = model_dir + '/log.csv'
+log_file_name = work_dir + '/log.csv'
 append = Path(log_file_name).is_file() and initial_epoch > 0
 callbacks = [
     EarlyStopping(monitor='val_loss', min_delta=0.001, patience=3, mode='min',
                   verbose=1),
-    ModelCheckpoint(model_dir + '/model.h5', monitor='val_loss', verbose=1,
+    ModelCheckpoint(work_dir + '/model.h5', monitor='val_loss', verbose=1,
                     save_best_only=True,
                     mode='min', save_weights_only=False,
                     period=1),
-    TensorBoard(batch_size=batch_size, log_dir=model_dir, write_images=True,
+    TensorBoard(batch_size=batch_size, log_dir=work_dir, write_images=True,
                 histogram_freq=0),
 
     TerminateOnNaN(),
@@ -203,8 +203,8 @@ summary = {'resolution': img_res,
            'min_aspect_ratio': min_aspect_ratio}
 
 pp.pprint(summary)
-save_file(summary, 'summary.txt', model_dir, verbose=False)
-save_file(summary, 'summary.pkl', model_dir, verbose=False)
+save_file(summary, 'summary.txt', work_dir, verbose=False)
+save_file(summary, 'summary.pkl', work_dir, verbose=False)
 model.summary()
 model.fit_generator(
     generator=preprocessor.preprocess_train_generator(train_gen.generate()),
