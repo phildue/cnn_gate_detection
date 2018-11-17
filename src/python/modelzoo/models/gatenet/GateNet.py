@@ -1,5 +1,6 @@
 import numpy as np
 
+from etc.mulitply_adds import count_operations
 from modelzoo.models.Postprocessor import Postprocessor
 from modelzoo.models.Predictor import Predictor
 from modelzoo.models.Preprocessor import Preprocessor
@@ -57,7 +58,6 @@ from modelzoo.models.gatenet.GateNetV5 import GateNetV5
 from modelzoo.models.gatenet.GateNetV6 import GateNetV6
 from modelzoo.models.gatenet.GateNetV7 import GateNetV7
 from modelzoo.models.gatenet.GateNetV8 import GateNetV8
-from run.etc.mulitply_adds import count_operations
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
 
 
