@@ -20,7 +20,7 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-for n in range(4):
+for n in range(1, 4):
     model_dir = 'yolov3_width{}'.format(n)
     initial_epoch = 0
     epochs = 100
@@ -34,25 +34,25 @@ for n in range(4):
          [100, 110]]]
     )
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024/n, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256/n, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512 / (2**n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         {'name': 'route', 'index': [-4]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128 / n, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256/n, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256 / n, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
@@ -61,7 +61,8 @@ for n in range(4):
     """
     Model
     """
-    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture, anchors=anchors,
+    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+                                         anchors=anchors,
                                          n_polygon=4)
     encoder = GateNetEncoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
     decoder = GateNetDecoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
@@ -138,6 +139,7 @@ for n in range(4):
     def ap60(y_true, y_pred):
         return metric.compute(
             y_true, y_pred)
+
 
     model.compile(optimizer=optimizer,
                   loss=loss.compute,
