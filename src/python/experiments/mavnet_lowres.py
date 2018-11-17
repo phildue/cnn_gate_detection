@@ -19,8 +19,8 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
-img_res = 416, 416
-model_dir = 'mavnet'
+img_res = 208, 208
+model_dir = 'mavnet_strides'
 initial_epoch = 0
 epochs = 100
 
@@ -138,7 +138,6 @@ Training Config
 optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
 metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
                                  norm=img_res, iou_thresh=0.6)
-
 
 def ap60(y_true, y_pred):
     return metric.compute(
