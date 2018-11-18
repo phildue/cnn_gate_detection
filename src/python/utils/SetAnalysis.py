@@ -4,10 +4,10 @@ from sklearn.cluster import KMeans
 
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.labels.Pose import Pose
-from visuals import BaseHist
-from visuals import BaseMultiPlot
-from visuals import BoxPlot
-from visuals import Heatmap
+from visuals.plots.BaseHist import BaseHist
+from visuals.plots.BaseMultiPlot import BaseMultiPlot
+from visuals.plots.BoxPlot import BoxPlot
+from visuals.plots.Heatmap import Heatmap
 
 
 class SetAnalysis:

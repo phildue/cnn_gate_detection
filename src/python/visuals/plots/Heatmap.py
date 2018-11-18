@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from visuals import PyPlot
+from visuals.plots.PyPlot import PyPlot
 
 
 class Heatmap(PyPlot):

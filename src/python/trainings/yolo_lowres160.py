@@ -21,7 +21,7 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 120, 160
-model_dir = 'yolo_lowres160'
+model_dir = 'yolo_lowres160_i01'
 initial_epoch = 0
 epochs = 100
 

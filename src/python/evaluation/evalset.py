@@ -72,8 +72,8 @@ def infer_on_set(
 
         tic()
         predictions = postproessor.postprocess(model.predict(preprocessor.preprocess_batch(images)))
-        if images[0].shape[0] != model.input_shape[0] or \
-                images[0].shape[1] != model.input_shape[1]:
+        if images[0].shape[0] != model.input_shape[1] or \
+                images[0].shape[1] != model.input_shape[2]:
             print("Evaluator:: Labels have different size")
 
         for j, p in enumerate(predictions):

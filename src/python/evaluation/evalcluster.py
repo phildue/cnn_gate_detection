@@ -215,11 +215,11 @@ def evalset(labels_true, labels_pred, iou_thresh=0.6):
     return sum_r,tp, fp, fn, boxes_true
 
 
-def evalcluster_size_ap(labels_true, labels_pred, n_bins, iou_thresh=0.6, min_size=0, max_size=2.0, img_res=(416, 416)):
-    size = np.linspace(min_size * img_res[0] * img_res[1], max_size * img_res[0] * img_res[1], n_bins + 1)
+def evalcluster_size_ap(labels_true, labels_pred, n_bins, iou_thresh=0.6, min_size=0, max_size=2.0):
+    size = np.linspace(min_size, max_size, n_bins + 1)
 
-    evaluator = DetectionEvaluator(min_box_area=min_size * img_res[0] * img_res[1],
-                                   max_box_area=max_size * img_res[0] * img_res[1],
+    evaluator = DetectionEvaluator(min_box_area=min_size,
+                                   max_box_area=max_size,
                                    min_aspect_ratio=0,
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
 

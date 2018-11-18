@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from visuals import BasePlot
+from visuals.plots.BasePlot import BasePlot
 
 
 class BaseHist(BasePlot):

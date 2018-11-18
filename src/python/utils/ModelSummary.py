@@ -8,9 +8,9 @@ class ModelSummary:
     @staticmethod
     def from_file(path):
         summary = load_file(path)
-        return ModelSummary(summary['architecture'],summary['weights'])
+        return ModelSummary(summary['architecture'],summary['weights'],summary['img_res'])
 
-    def __init__(self, arch,weights):
+    def __init__(self, arch,weights,img_res):
         # {'model': self.predictor.net.__class__.__name__,
         #  'resolution': self.predictor.input_shape,
         #  'train_params': self.predictor.net.train_params,
@@ -23,8 +23,13 @@ class ModelSummary:
         #  'epochs': self.epochs,
         #  'architecture': self.predictor.net.backend.get_config(),
          # 'weights': self.predictor.net.backend.count_params()}
+        self.img_res = img_res
         self.weights = weights
         self.arch = arch
+
+    @property
+    def img_size(self):
+        return self.img_res[0]*self.img_res[1]
 
     @property
     def max_depth(self):

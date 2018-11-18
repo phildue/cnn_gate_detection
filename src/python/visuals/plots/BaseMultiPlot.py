@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from visuals import BasePlot
+from visuals.plots.BasePlot import BasePlot
 
 
 class BaseMultiPlot(BasePlot):

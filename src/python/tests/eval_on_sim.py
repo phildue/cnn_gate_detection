@@ -16,16 +16,21 @@ models = [
     # 'mavnet_strides',
     # 'mavnet_strides3_pool2',
     # 'mavnet_strides4_pool1',
-    'yolov3_width0',
-
+    'yolo_lowres160',
+    # 'yolov3_width0',
+    # 'yolov3_width1',
+    # 'yolov3_width2',
+    # 'yolov3_width3',
 ]
-
 preprocessing = [
     # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
     [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
     # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
     # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
+    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
+    None,
+    None,
+    None,
     None,
 ]
 
