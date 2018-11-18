@@ -5,9 +5,9 @@ import numpy as np
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, TerminateOnNaN, ReduceLROnPlateau, CSVLogger, \
     History
 from keras.optimizers import Adam
-from modelzoo.GateNetDecoder import GateNetDecoder
-from modelzoo.GateNetEncoder import Encoder
 
+from modelzoo.Decoder import Decoder
+from modelzoo.Encoder import Encoder
 from modelzoo.Preprocessor import Preprocessor
 from modelzoo.build_model import build_detector
 from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
@@ -64,7 +64,7 @@ for n in range(0, 4):
                                          anchors=anchors,
                                          n_polygon=4)
     encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
-    decoder = GateNetDecoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
+    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
     preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
     loss = GateDetectionLoss()
     # model.load_weights('out/mavnet/model.h5')
