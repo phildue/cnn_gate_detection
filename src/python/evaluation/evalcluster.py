@@ -215,23 +215,24 @@ def evalset(labels_true, labels_pred, iou_thresh=0.6):
     return sum_r,tp, fp, fn, boxes_true
 
 
-def evalcluster_size_ap(labels_true, labels_pred, n_bins, iou_thresh=0.6, min_size=0, max_size=2.0):
-    size = np.linspace(min_size, max_size, n_bins + 1)
+def evalcluster_size_ap(labels_true, labels_pred, bins, iou_thresh=0.6, images=None, show_t=-1):
 
-    evaluator = DetectionEvaluator(min_box_area=min_size,
-                                   max_box_area=max_size,
+    evaluator = DetectionEvaluator(min_box_area=min(bins),
+                                   max_box_area=max(bins),
                                    min_aspect_ratio=0,
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
 
     aps = []
     n_true = []
-    for i_s in range(len(size) - 1):
+    for i_s in range(len(bins) - 1):
         results_bin = []
         n_true_bin = 0
         for i, l_true in enumerate(labels_true):
-            l_true_bin = ImgLabel([o for o in l_true.objects if size[i_s] < o.poly.area < size[i_s + 1]])
-            l_pred_bin = ImgLabel([o for o in labels_pred[i].objects if size[i_s] < o.poly.area < size[i_s + 1]])
+            l_true_bin = ImgLabel([o for o in l_true.objects if bins[i_s] < o.poly.area < bins[i_s + 1]])
+            l_pred_bin = ImgLabel([o for o in labels_pred[i].objects if bins[i_s] < o.poly.area < bins[i_s + 1]])
             result = evaluator.evaluate(l_true_bin, l_pred_bin)
+            if show_t > -1:
+                evaluator.show(images[i],show_t)
             results_bin.append(result)
             n_true_bin += len(l_true_bin.objects)
         r = sum_results(results_bin)

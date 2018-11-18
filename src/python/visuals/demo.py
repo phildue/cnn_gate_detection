@@ -1,5 +1,4 @@
 
-from modelzoo.models.Predictor import Predictor
 
 from utils.fileaccess.DatasetGenerator import DatasetGenerator
 from utils.imageprocessing.Backend import resize

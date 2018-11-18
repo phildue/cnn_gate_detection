@@ -8,11 +8,11 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'yolo_width0',
-    'yolo_width1',
-    'yolo_width2',
-    'yolo_width3',
-    'yolo_width4',
+    'yolov3_width0',
+    'yolov3_width1',
+    'yolov3_width2',
+    'yolov3_width3',
+    # 'yolo_width4',
 ]
 work_dir = 'out/'
 n_iterations = 1
@@ -23,7 +23,7 @@ width = [
     0.5,
     0.25,
     0.125,
-    0.0625
+    # 0.0625
 ]
 iou = 0.6
 simset = 'iros2018_course_final_simple_17gates'
@@ -60,29 +60,6 @@ for m, model in enumerate(models):
 frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
 frame['Weights'] = pd.Series(weights)
 
-results_on_real = []
-for m, model in enumerate(models):
-    total_detections = []
-    for i in range(n_iterations):
-        detections_set = []
-        for j, d in enumerate(realsets):
-            model_dir = model + '_i0{}'.format(i)
-            result_file = work_dir + model_dir + '/test_' + d + '/' + 'results_iou{}.pkl'.format(iou)
-            if "snake" in model:
-                result_file = work_dir + model + '{}_boxes{}-{}_iou{}_i0{}.pkl'.format(d, 0, 2.0, iou, i)
-            try:
-                results = load_file(result_file)
-                detections_set.append(sum_results(results['results']))
-            except FileNotFoundError:
-                continue
-        if len(detections_set) > 0:
-            total_detections.append(sum_results(detections_set))
-    m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
-    meanAp = np.mean(m_p, 0)
-    errAP = np.mean(std_p, 0)
-    results_on_real.append(np.round(meanAp, 2))  # , errAp
-
-frame['Real Data' + str(iou)] = pd.Series(results_on_real)
 frame.set_index('Name')
 
 plt.figure(figsize=(8, 3))

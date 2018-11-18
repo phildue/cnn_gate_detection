@@ -63,9 +63,9 @@ class DetectionEvaluator:
 
         return matches_idx_pred
 
-    def show(self, img: Image,t=0):
-        label_tp = ImgLabel(self.boxes_tp)
-        label_fp = ImgLabel(self.boxes_fp)
+    def show(self, img: Image, t=0):
+        label_tp = ImgLabel([b for b in self.boxes_tp if b.confidence > 0.5])
+        label_fp = ImgLabel([b for b in self.boxes_fp if b.confidence > 0.5])
         label_true = ImgLabel(self.boxes_true)
         print(self.result)
         # if self._result.true_positives < 0 or self._result.false_positives < 0 or self._result.false_negatives < 0:
