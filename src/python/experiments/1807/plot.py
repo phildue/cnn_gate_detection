@@ -1,5 +1,5 @@
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
-from modelzoo.evaluation.utils import average_precision_recall, sum_results
+from evaluation import ResultByConfidence
+from evaluation.utils import average_precision_recall, sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 

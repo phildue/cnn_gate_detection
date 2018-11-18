@@ -1,11 +1,11 @@
 import keras.backend as K
 import numpy as np
+from modelzoo.GateNetDecoder import GateNetDecoder
+from modelzoo.GateNetEncoder import Encoder
 
-from modelzoo.models.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.models.gatenet.DetectionCountGateNet import DetectionCountGateNet
-from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
-from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
-from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+from modelzoo.metrics.AveragePrecisionGateNet import AveragePrecisionGateNet
+from modelzoo.metrics.DetectionCountGateNet import DetectionCountGateNet
+from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show, COLOR_BLUE
 from utils.workdir import cd_work
@@ -21,7 +21,7 @@ anchor = np.array([[
      [100, 110]]])
 norm = (416, 416)
 grids = [(13, 13), (26, 26)]
-encoder = GateNetEncoder(anchor_dims=anchor, img_norm=norm, grids=grids)
+encoder = Encoder(anchor_dims=anchor, img_norm=norm, grids=grids)
 
 decoder = GateNetDecoder(anchor_dims=anchor, norm=norm, grid=grids)
 

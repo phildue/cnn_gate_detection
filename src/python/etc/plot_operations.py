@@ -1,7 +1,7 @@
 import numpy as np
 
 from etc.mulitply_adds import count_operations
-from modelzoo.visuals.plots.BaseBarPlot import BaseBarPlot
+from visuals import BaseBarPlot
 
 
 def plot_ops(architecture, volume):

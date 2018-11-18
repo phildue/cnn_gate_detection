@@ -1,10 +1,10 @@
 import numpy as np
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 
-from modelzoo.evaluation.utils import sum_results
-from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
+from evaluation import ResultByConfidence
+from evaluation.utils import sum_results
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
+from visuals import BaseMultiPlot
 
 cd_work()
 

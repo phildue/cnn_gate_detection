@@ -1,10 +1,11 @@
 from pprint import pprint
 
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.visuals.demo import demo_generator
+
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
+from visuals import demo_generator
 
 cd_work()
 # 'resource/ext/samples/iros2018_course_final_simple_17gates'

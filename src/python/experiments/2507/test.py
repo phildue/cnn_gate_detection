@@ -1,5 +1,5 @@
-from modelzoo.evaluation.evalmetric import evalmetric
-from modelzoo.evaluation.evalset import evalset
+from evaluation import evalmetric
+from evaluation.evalset import infer_on_set
 from utils.imageprocessing.transform.TransfromGray import TransformGray
 from utils.workdir import cd_work
 
@@ -10,15 +10,15 @@ work_dir = 'out/2507/'
 models = ['mavnet208x208-13x13+9layers/']
 for model in models:
     preprocessing = None if 'gray' not in model else TransformGray()
-    evalset(name='rf',
-            result_path=work_dir + model + '/test/',
-            result_file='daylight_industrial.pkl',
-            batch_size=24,
-            # n_samples=48,
-            model_src=work_dir + model,
-            preprocessing=None,
-            color_format='yuv',
-            image_source=['resource/ext/samples/daylight_test/', 'resource/ext/samples/industrial_new_test/'])
+    infer_on_set(name='rf',
+                 result_path=work_dir + model + '/test/',
+                 result_file='daylight_industrial.pkl',
+                 batch_size=24,
+                 # n_samples=48,
+                 model_src=work_dir + model,
+                 preprocessing=None,
+                 color_format='yuv',
+                 image_source=['resource/ext/samples/daylight_test/', 'resource/ext/samples/industrial_new_test/'])
 
 box_range = [0.0, 1.0]
 for model in models:

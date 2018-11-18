@@ -1,4 +1,4 @@
-from modelzoo.evaluation.evalset import evalset
+from evaluation.evalset import infer_on_set
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
@@ -30,12 +30,12 @@ for model in models:
         model_folder = model + '_i0{}'.format(i)
         prediction_file = 'predictions'
         training_set = load_file(work_dir + model_folder + '/summary.pkl')['image_source']
-        evalset(name=exp_name,
-                result_path=work_dir + model_folder + '/test_valid/',
-                result_file=prediction_file,
-                batch_size=4,
-                n_samples=100,
-                model_src=work_dir + model_folder,
-                preprocessing=None,
-                color_format='bgr',
-                image_source=training_set)
+        infer_on_set(name=exp_name,
+                     result_path=work_dir + model_folder + '/test_valid/',
+                     result_file=prediction_file,
+                     batch_size=4,
+                     n_samples=100,
+                     model_src=work_dir + model_folder,
+                     preprocessing=None,
+                     color_format='bgr',
+                     image_source=training_set)

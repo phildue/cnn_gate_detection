@@ -1,10 +1,10 @@
 import keras.backend as K
 import numpy as np
 from modelzoo.ModelFactory import ModelFactory
-from modelzoo.evaluation.MetricDetection import DetectionEvaluator
 
-from modelzoo.evaluation.DetectionResult import DetectionResult
-from modelzoo.models.gatenet.DetectionCountGateNet import DetectionCountGateNet
+from evaluation import DetectionEvaluator
+from evaluation import DetectionResult
+from modelzoo.metrics.DetectionCountGateNet import DetectionCountGateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_BLUE
 from utils.labels.ImgLabel import ImgLabel

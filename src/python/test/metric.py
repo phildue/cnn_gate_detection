@@ -1,7 +1,7 @@
-from modelzoo.evaluation.MetricDetection import DetectionEvaluator
-
-from modelzoo.evaluation import evaluate_generator, evaluate_file
 from modelzoo.models.gatenet.GateNet import GateNet
+
+from evaluation import DetectionEvaluator
+from evaluation import evaluate_generator, evaluate_file
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, load_file
 from utils.labels.ObjectLabel import ObjectLabel

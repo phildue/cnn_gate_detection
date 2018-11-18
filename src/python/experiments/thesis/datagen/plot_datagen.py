@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 from experiments.thesis.plot import plot_result
-from modelzoo.evaluation.utils import average_precision_recall, sum_results
-from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()

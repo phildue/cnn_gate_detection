@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from modelzoo.evaluation.evalcluster import evalcluster_yaw_dist
+from evaluation.evalcluster import evalcluster_yaw_dist
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work

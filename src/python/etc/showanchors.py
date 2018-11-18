@@ -1,7 +1,7 @@
 import numpy as np
-
+from modelzoo.GateNetEncoder import Encoder
 from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show, LEGEND_BOX
 from utils.labels.ImgLabel import ImgLabel
@@ -64,7 +64,7 @@ architecture = [
 predictor = GateNet.create_by_arch(architecture, norm=(416, 416), anchors=anchors, n_polygon=4)
 n_boxes = predictor.n_boxes
 
-anchors_t = GateNetEncoder.generate_encoding(predictor.norm, predictor.grid, predictor.anchors, 4)
+anchors_t = Encoder.generate_encoding(predictor.norm, predictor.grid, predictor.anchors, 4)
 anchors_boxes = Polygon.from_quad_t_centroid(anchors_t)
 black_image = Image(np.zeros(predictor.input_shape), 'bgr')
 k = 0

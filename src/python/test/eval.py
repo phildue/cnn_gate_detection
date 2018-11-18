@@ -1,10 +1,10 @@
 import keras.backend as K
 import numpy as np
+from modelzoo.models.gatenet.GateNet import GateNet
 from utils.fileaccess.CropGenerator import CropGenerator
 
-from modelzoo.models.gatenet import AveragePrecisionGateNet
-from modelzoo.models.gatenet.GateNet import GateNet
-from modelzoo.models.gatenet.PrecisionRecallGateNet import PrecisionRecallGateNet
+from modelzoo.metrics import AveragePrecisionGateNet
+from modelzoo.metrics.PrecisionRecallGateNet import PrecisionRecallGateNet
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import resize

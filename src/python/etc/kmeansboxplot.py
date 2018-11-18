@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-from modelzoo.visuals.plots.BasePlot import BasePlot
 from utils.SetAnalysis import SetAnalysis
 from utils.workdir import cd_work
+from visuals import BasePlot
 
 
 def generate_anchors(boxes_wh, n_anchors):

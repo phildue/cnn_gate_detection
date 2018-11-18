@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-from modelzoo.evaluation.evalcluster import evalcluster_height_width
+from evaluation.evalcluster import evalcluster_height_width
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
-import pandas as pd
+
 cd_work()
 
 result_files = [

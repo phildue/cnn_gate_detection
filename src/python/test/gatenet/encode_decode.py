@@ -1,7 +1,7 @@
 import numpy as np
+from modelzoo.GateNetDecoder import GateNetDecoder
+from modelzoo.GateNetEncoder import Encoder
 
-from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
-from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.imageprocessing.Imageprocessing import COLOR_GREEN, COLOR_RED, show
 from utils.workdir import cd_work
@@ -17,7 +17,7 @@ anchor = np.array([[
      [100, 110]]])
 norm = (416, 416)
 grids = [(13, 13), (26, 26)]
-encoder = GateNetEncoder(anchor_dims=anchor, img_norm=norm, grids=grids,verbose=True)
+encoder = Encoder(anchor_dims=anchor, img_norm=norm, grids=grids, verbose=True)
 
 decoder = GateNetDecoder(anchor_dims=anchor, norm=norm, grid=grids)
 

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from modelzoo.evaluation.evalcluster import evalscatter_wh
+from evaluation.evalcluster import evalscatter_wh
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 

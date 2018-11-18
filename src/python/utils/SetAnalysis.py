@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 
-from modelzoo.visuals.plots.BaseHist import BaseHist
-from modelzoo.visuals.plots.BaseMultiPlot import BaseMultiPlot
-from modelzoo.visuals.plots.BoxPlot import BoxPlot
-from modelzoo.visuals.plots.Heatmap import Heatmap
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.labels.Pose import Pose
+from visuals import BaseHist
+from visuals import BaseMultiPlot
+from visuals import BoxPlot
+from visuals import Heatmap
 
 
 class SetAnalysis:

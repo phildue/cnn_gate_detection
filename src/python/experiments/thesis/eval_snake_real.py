@@ -1,6 +1,6 @@
 import glob
 
-from modelzoo.evaluation.DetectionEvaluator import DetectionEvaluator
+from evaluation.DetectionEvaluator import DetectionEvaluator
 from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.fileaccess.utils import save_file
 from utils.workdir import cd_work

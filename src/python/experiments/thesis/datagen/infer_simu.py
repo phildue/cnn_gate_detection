@@ -1,4 +1,4 @@
-from modelzoo.evaluation.evalset import evalset
+from evaluation.evalset import infer_on_set
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
@@ -38,13 +38,13 @@ for d in datasets:
             model_folder = model + '_i0{}'.format(i)
             prediction_file = 'predictions'.format(d)
             try:
-                evalset(name=exp_name,
-                        result_path=work_dir + model_folder + '/test_' + d + '/',
-                        result_file=prediction_file,
-                        batch_size=4,
-                        model_src=work_dir + model_folder,
-                        preprocessing=None,
-                        color_format='bgr',
-                        image_source=['resource/ext/samples/{}/'.format(d)])
+                infer_on_set(name=exp_name,
+                             result_path=work_dir + model_folder + '/test_' + d + '/',
+                             result_file=prediction_file,
+                             batch_size=4,
+                             model_src=work_dir + model_folder,
+                             preprocessing=None,
+                             color_format='bgr',
+                             image_source=['resource/ext/samples/{}/'.format(d)])
             except FileNotFoundError:
                 print("Not found: {}".format(model_folder))

@@ -1,4 +1,4 @@
-from modelzoo.evaluation.evalmetric import evalmetric
+from evaluation import evalmetric
 from utils.workdir import cd_work
 
 cd_work()

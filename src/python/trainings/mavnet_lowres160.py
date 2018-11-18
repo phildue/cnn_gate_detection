@@ -5,13 +5,13 @@ import numpy as np
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, TerminateOnNaN, ReduceLROnPlateau, CSVLogger, \
     History
 from keras.optimizers import Adam
+from modelzoo.GateNetDecoder import GateNetDecoder
+from modelzoo.GateNetEncoder import Encoder
 
+from modelzoo.Preprocessor import Preprocessor
 from modelzoo.build_model import build_detector
-from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
-from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
-from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
-from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
+from modelzoo.metrics.AveragePrecisionGateNet import AveragePrecisionGateNet
+from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
@@ -70,7 +70,7 @@ Model
 """
 model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture, anchors=anchors,
                                      n_polygon=4)
-encoder = GateNetEncoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
+encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
 decoder = GateNetDecoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
 preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))], encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')

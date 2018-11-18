@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from modelzoo.evaluation.utils import sum_results, average_precision_recall
+from evaluation.utils import sum_results, average_precision_recall
 from utils.fileaccess.utils import load_file
 
 

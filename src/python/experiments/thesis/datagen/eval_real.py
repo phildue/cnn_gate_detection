@@ -1,4 +1,4 @@
-from modelzoo.evaluation.evalmetric import evalmetric
+from evaluation import evalmetric
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from modelzoo.evaluation.evalcluster import eval
+from evaluation.evalcluster import eval
 from utils.fileaccess.utils import load_file
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work

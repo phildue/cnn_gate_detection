@@ -1,4 +1,3 @@
-from modelzoo.evaluation.ResultsByConfidence import ResultByConfidence
 from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread
 from utils.imageprocessing.Imageprocessing import show, COLOR_GREEN, COLOR_RED

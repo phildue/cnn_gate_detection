@@ -1,11 +1,8 @@
 import argparse
 
 import numpy as np
-
-from modelzoo.models.gatenet.GateNet import GateNet
 from modelzoo.train import train
-from modelzoo.visuals.demo import demo_generator
-from utils.fileaccess.GateGenerator import GateGenerator
+
 from utils.workdir import cd_work
 
 if __name__ == '__main__':

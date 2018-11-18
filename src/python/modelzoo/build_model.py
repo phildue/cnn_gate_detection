@@ -4,9 +4,9 @@ from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Ti
     UpSampling2D, AveragePooling2D
 from keras.layers import Reshape
 
+from modelzoo.Encoder import Encoder
 from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.layers.DepthwiseConv2D import DepthwiseConv2D
-from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 
 
 def build_detector(img_shape, architecture, anchors, n_polygon=4):
@@ -47,7 +47,7 @@ def build_detector(img_shape, architecture, anchors, n_polygon=4):
     else:
         predictions = predictions[0]
 
-    meta_t = K.constant(GateNetEncoder.generate_encoding((h, w), grids, anchors, n_polygon),
+    meta_t = K.constant(Encoder.generate_encoding((h, w), grids, anchors, n_polygon),
                         K.tf.float32)
 
     netout = ConcatMeta(meta_t)(predictions)
