@@ -76,7 +76,7 @@ preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52),T
                             encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()
-model.load_weights('out/mavnet_strides4_pool1/model.h5')
+# model.load_weights('out/mavnet_strides4_pool1/model.h5')
 """
 Datasets
 """

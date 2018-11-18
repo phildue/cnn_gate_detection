@@ -1,4 +1,6 @@
-from modelzoo.models.gatenet.GateNet import GateNet
+from modelzoo.build_model import build_detector
+from modelzoo.models.Preprocessor import Preprocessor
+from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file, load_file
 from utils.imageprocessing.Imageprocessing import show
@@ -6,17 +8,16 @@ from utils.timing import tic, toc
 
 
 def evalset(
-        name,
-        batch_size,
         model_src,
+        image_source,
+        batch_size,
+        result_path,
+        result_file,
         img_res=None,
-        image_source=['resource/ext/samples/industrial_new_test/'],
         n_samples=None,
         color_format_dataset='bgr',
         preprocessing=None,
         color_format=None,
-        result_path=None,
-        result_file=None,
         image_format="jpg"):
     # Model
     conf_thresh = 0
@@ -29,34 +30,21 @@ def evalset(
     if img_res is None:
         img_res = summary['img_res']
 
-    model = GateNet.create_by_arch(norm=img_res,
-                                   architecture=architecture,
-                                   anchors=anchors,
-                                   batch_size=batch_size,
-                                   color_format=color_format,
-                                   conf_thresh=conf_thresh,
-                                   augmenter=None,
-                                   preprocessor=preprocessing,
-                                   weight_file=model_src + '/model.h5'
-                                   )
+    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+                                         anchors=anchors,
+                                         n_polygon=4)
+    encoder = GateNetEncoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
+    preprocessor = Preprocessor(preprocessing=preprocessing, encoder=encoder, n_classes=1, img_shape=img_res,
+                                color_format=color_format)
 
-    # Evaluator
 
-    # Result Paths
-    if result_path is None:
-        result_path = model_src + '/test/'
-    if result_file is None:
-        result_file = name + '_results.pkl'
-
-    exp_param_file = name + '_evalset'
-
-    create_dirs([result_path])
     generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format=image_format,
                               n_samples=n_samples,
                               shuffle=False, color_format=color_format_dataset, label_format='xml', start_idx=0)
 
-    exp_params = {'name': name,
-                  'model': model_src,
+    create_dirs([result_path])
+
+    exp_params = {'model': model_src,
                   'conf_thresh': conf_thresh,
                   'image_source': image_source,
                   'color_format': color_format_dataset,
@@ -64,8 +52,8 @@ def evalset(
                   'result_file': result_file,
                   'preprocessing': preprocessing}
 
-    save_file(exp_params, exp_param_file + '.pkl', result_path)
-    save_file(exp_params, exp_param_file + '.txt', result_path)
+    save_file(exp_params, 'test_summary' + '.pkl', result_path)
+    save_file(exp_params, 'test_summary' + '.txt', result_path)
     n_batches = int(generator.n_samples / generator.batch_size)
     it = iter(generator.generate())
     labels_true = []
@@ -78,7 +66,7 @@ def evalset(
         image_files_batch = [b[2] for b in batch]
 
         tic()
-        predictions = model.predict(images)
+        predictions = model.predict(preprocessor.preprocess_batch(images))
         if images[0].shape[0] != model.input_shape[0] or \
                 images[0].shape[1] != model.input_shape[1]:
             raise ValueError("Evaluator:: Labels have different size")

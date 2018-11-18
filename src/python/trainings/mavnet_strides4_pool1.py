@@ -23,7 +23,7 @@ from utils.workdir import cd_work
 cd_work()
 img_res = 240, 320
 model_dir = 'mavnet_strides4_pool1'
-initial_epoch = 0
+initial_epoch = 3
 epochs = 100
 
 anchors = np.array([[
@@ -76,7 +76,7 @@ preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52),T
                             encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()
-# model.load_weights('out/mavnet_stri/model.h5')
+model.load_weights('out/mavnet_strides4_pool1/model.h5')
 """
 Datasets
 """

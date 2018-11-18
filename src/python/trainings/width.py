@@ -8,7 +8,6 @@ from keras.optimizers import Adam
 
 from modelzoo.build_model import build_detector
 from modelzoo.models.Preprocessor import Preprocessor
-from modelzoo.models.gatenet.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.models.gatenet.GateDetectionLoss import GateDetectionLoss
 from modelzoo.models.gatenet.GateNetDecoder import GateNetDecoder
 from modelzoo.models.gatenet.GateNetEncoder import GateNetEncoder
@@ -34,25 +33,25 @@ for n in range(0, 4):
          [100, 110]]]
     )
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(16 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(16 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(64 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(64 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(128 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(128 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(1024 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(256 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(1024 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(256 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         {'name': 'route', 'index': [-4]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / (2**n)), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / (2 ** n)), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
@@ -132,18 +131,16 @@ for n in range(0, 4):
     Training Config
     """
     optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
-    metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
-                                     norm=img_res, iou_thresh=0.6)
-
-
-    def ap60(y_true, y_pred):
-        return metric.compute(
-            y_true, y_pred)
-
+    # metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
+    #                                  norm=img_res, iou_thresh=0.6)
+    #
+    #
+    # def ap60(y_true, y_pred):
+    #     return metric.compute(
+    #         y_true, y_pred)
 
     model.compile(optimizer=optimizer,
-                  loss=loss.compute,
-                  metrics=[ap60])
+                  loss=loss.compute)
 
     log_file_name = work_dir + '/log.csv'
     append = Path(log_file_name).is_file() and initial_epoch > 0
