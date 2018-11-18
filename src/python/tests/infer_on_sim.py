@@ -10,17 +10,19 @@ cd_work()
 models = [
     # 'mavnet',
     # 'mavnet_lowres160',
-    # 'mavnet_lowres320',
+    'mavnet_lowres320',
     # 'mavnet_strides',
     # 'mavnet_strides3_pool2',
-    'mavnet_strides4_pool1',
+    # 'mavnet_strides4_pool1',
+    # 'yolov3_width0',
+
 ]
 preprocessing = [
     # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
+    # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
     [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-
+    # [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
+    # None,
 ]
 dataset = 'iros2018_course_final_simple_17gates'
 

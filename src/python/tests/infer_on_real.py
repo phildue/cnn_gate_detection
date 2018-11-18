@@ -8,11 +8,12 @@ cd_work()
 # models = [name for name in os.listdir('out/0108/')]
 models = [
     # 'mavnet',
-    'mavnet_lowres160',
-    # 'mavnet_lowres320',
-    'mavnet_strides',
-    'mavnet_strides3_pool2',
-    'mavnet_strides4_pool1',
+    # 'mavnet_lowres160',
+    'mavnet_lowres320',
+    # 'mavnet_strides',
+    # 'mavnet_strides3_pool2',
+    # 'mavnet_strides4_pool1',
+    # 'yolov3_width0',
 ]
 datasets = [
     'jevois_cyberzoo',
@@ -21,16 +22,16 @@ datasets = [
 ]
 
 preprocessing = [
-    [TransformResize((120, 160))],
+    # [TransformResize((120, 160))],
     [TransformResize((240, 320))],
-    [TransformResize((240, 320))],
-    [TransformResize((240, 320))],
+    # [TransformResize((240, 320))],
+    # [TransformResize((240, 320))],
+    # [TransformCrop(80, 0, 640 - 80, 480), TransformResize((416, 416))],
 
 ]
 work_dir = 'out/'
 n_iterations = 1
 ObjectLabel.classes = ['gate']
-exp_name = 'datagen'
 for i_m, model in enumerate(models):
     for dataset in datasets:
         for i in range(0, n_iterations):

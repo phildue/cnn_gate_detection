@@ -12,7 +12,7 @@ def evaluate_labels(
         min_box_area=0,
         max_box_area=2.0,
         iou_thresh=0.4,
-        show=False,
+        show=-1,
         result_path=None,
         result_file=None,
         min_aspect_ratio=0.0,
@@ -45,10 +45,10 @@ def evaluate_labels(
         label = labels_true[i]
         if preprocessing:
             for p in preprocessing:
-                img, label = p.transform(img, labels_true[i])
+                img, label = p.transform(img, label)
         result = metric.evaluate(label, labels_pred[i])
-        if show:
-            metric.show(img)
+        if show > -1:
+            metric.show(img,t=show)
         results.append(result)
 
     output = {

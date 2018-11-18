@@ -20,9 +20,9 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
-img_res = 240, 320
-model_dir = 'mavnet_strides3_pool2'
-initial_epoch = 8
+img_res = 120, 160
+model_dir = 'yolo_lowres160'
+initial_epoch = 0
 epochs = 100
 
 anchors = np.array([[
@@ -32,33 +32,27 @@ anchors = np.array([[
     [[25, 40],
      [65, 70],
      [100, 110]]]
-) * 0.76
+) * 0.76/2
 architecture = [
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (2, 2), 'alpha': 0.1},
-    # {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'max_pool', 'size': (2, 2)},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'max_pool', 'size': (2, 2)},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'max_pool', 'size': (2, 2)},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'},
-    {'name': 'route', 'index': [4]},
-    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'route', 'index': [-4]},
+    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+    {'name': 'upsample', 'size': 2},
+    {'name': 'route', 'index': [-1, 8]},
+    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ]
 
@@ -71,11 +65,10 @@ model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), arch
                                      n_polygon=4)
 encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
 decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
-preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52),TransformResize((240, 320))],
-                            encoder=encoder, n_classes=1,
+preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))], encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()
-model.load_weights('out/mavnet_strides3_pool2/model.h5')
+# model.load_weights('out/mavnet/model.h5')
 """
 Datasets
 """
@@ -128,6 +121,7 @@ def filter(label):
         objs_in_view.append(obj)
 
     return ImgLabel(objs_in_view)
+
 
 
 valid_frac = 0.005

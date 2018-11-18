@@ -10,18 +10,21 @@ cd_work()
 
 models = [
     # 'mavnet',
-    'mavnet_lowres160',
-    # 'mavnet_lowres320',
-    'mavnet_strides',
-    'mavnet_strides3_pool2',
-    'mavnet_strides4_pool1',
+    # 'mavnet_lowres160',
+    'mavnet_lowres320',
+    # 'mavnet_strides',
+    # 'mavnet_strides3_pool2',
+    # 'mavnet_strides4_pool1',
+    'yolov3_width0',
+
 ]
 
 preprocessing = [
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
+    # [TransformResize((120, 160))],
+    [TransformResize((240, 320))],
+    # [TransformResize((240, 320))],
+    # [TransformResize((240, 320))],
+    [TransformCrop(80, 0, 640 - 80, 480), TransformResize((416, 416))],
 
 ]
 
@@ -32,8 +35,11 @@ resolution = [
     (240, 320),
 ]
 
-datasets = 'iros2018_course_final_simple_17gates'
-
+datasets = [
+    'jevois_cyberzoo',
+    'jevois_basement',
+    'jevois_hallway',
+]
 work_dir = 'out/'
 n_iterations = 1
 ObjectLabel.classes = ['gate']
@@ -55,7 +61,7 @@ for i_m, model in enumerate(models):
                                     model_src=work_dir + model_folder,
                                     label_file=label_file,
                                     result_path=work_dir + model_folder + '/test_' + dataset + '/',
-                                    show=False)
+                                    show=1)
                 except FileNotFoundError:
                     print("Missing: " + label_file)
                     continue

@@ -63,7 +63,7 @@ class DetectionEvaluator:
 
         return matches_idx_pred
 
-    def show(self, img: Image):
+    def show(self, img: Image,t=0):
         label_tp = ImgLabel(self.boxes_tp)
         label_fp = ImgLabel(self.boxes_fp)
         label_true = ImgLabel(self.boxes_true)
@@ -72,7 +72,6 @@ class DetectionEvaluator:
         #     t = 0
         # else:
         #     t = 1
-        t = 0
         show(img, 'result', labels=[label_true, label_fp, label_tp],
              colors=[COLOR_GREEN, COLOR_RED, (255, 255, 255)],
              legend=LEGEND_TEXT, t=t)

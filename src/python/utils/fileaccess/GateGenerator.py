@@ -50,7 +50,10 @@ class GateGenerator(DatasetGenerator):
                 n = len(files_dir)
                 n_subset = int(subsets[i] * n)
                 print("From {} selecting {}/{}".format(d, n_subset, n))
-                files_dir = np.random.choice(files_dir, n_subset, False)
+                if 1 % subsets[i]:
+                    files_dir = np.random.choice(files_dir, n_subset, False)
+                else:
+                    files_dir = files_dir[::int(1/subsets[i])]
 
             files_all.extend(files_dir)
 
