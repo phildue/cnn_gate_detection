@@ -1,7 +1,7 @@
 import keras.backend as K
 from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate, \
-    UpSampling2D, AveragePooling2D
+    UpSampling2D, AveragePooling2D, Cropping2D
 from keras.layers import Reshape
 
 from modelzoo.Encoder import Encoder
@@ -286,6 +286,14 @@ def upsample(netin, size):
     return UpSampling2D(size)(netin)
 
 
+def crop_creator(netin, config):
+    return crop(netin, config['top'], config['bottom'], config['left'], config['right'])
+
+
+def crop(netin, top, bottom, left, right):
+    return Cropping2D(((top, bottom), (left, right)))(netin)
+
+
 layers = {'conv_leaky': conv_leaky_creator,
           'dconv': dconv_creator,
           'bottleneck_conv': bottleneck_conv_creator,
@@ -300,5 +308,6 @@ layers = {'conv_leaky': conv_leaky_creator,
           'wr_bottleneck_conv_leaky': wr_bottleneck_conv_leaky_creator,
           'wr_inception_conv_leaky': wr_inception_conv_leaky_creator,
           'conv_concat': conv_creator,
-          'upsample': upsample_creator
+          'upsample': upsample_creator,
+          'crop':crop_creator
           }
