@@ -1,7 +1,6 @@
 import numpy as np
 
 from modelzoo.Encoder import Encoder
-from utils.imageprocessing.Backend import crop
 from utils.imageprocessing.Image import Image
 from utils.imageprocessing.Imageprocessing import show
 from utils.imageprocessing.transform.ImgTransform import ImgTransform
@@ -74,7 +73,7 @@ class Preprocessor:
             for p in self.preprocessing:
                 img, _ = p.transform(img, ImgLabel([]))
 
-        if self.color_format is not img.format:
+        if self.color_format != img.format:
             raise ValueError("Invalid Color Format")
 
         if img.shape[0] != self.img_height or img.shape[1] != self.img_width:
@@ -88,29 +87,3 @@ class Preprocessor:
             x_batch[i] = self.preprocess(img)
         return x_batch
 
-    def crop_to_input(self, img, label=None):
-        """
-        Crop the center part
-        :param img:
-        :param label:
-        :return:
-        """
-        shape = np.array(img.shape[:2])
-        short_side = np.argmin(shape)
-        diff = np.max(shape) - np.min(shape)
-        diff2 = diff / 2
-
-        if short_side == 0:
-            return crop(img, (diff2, 0), (shape[1] - diff2, shape[0]), label)
-
-        elif short_side == 1:
-            return crop(img, (0, diff2), (shape[1], shape[0] - diff2), label)
-
-        else:
-            raise ValueError("Short side doesnt make sence")
-
-    def minmax(self, dataset):
-        img_t = np.concatenate([d[0].array for d in dataset], 0)
-        d_min = np.min(img_t, -1)
-        d_max = np.max(img_t, -1)
-        return d_min, d_max

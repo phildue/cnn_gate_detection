@@ -1,12 +1,12 @@
 	\chapter{Detecting \ac{EWFO} on \ac{MAV}}
 	\label{sec:object_detection}
 	
+	\acp{EWFO} differ from solid texture rich objects as their features are sparse and spread over large parts of the image. The m
 	\ac{CNN}-based Object Detectors offer the advantage that they can be trained on any object given labelled training data is available. However, typically the architectures of \acp{CNN} are optimized for solid feature rich objects, such as planes, cars or faces. The predominant metrics optimized are precision and recall rather than inference speed. This work investigates the detection of \ac{EWFO} on \acp{MAV} as part of a control loop. Hence, inference speed and computational requirements can be more important than detection performance. Furthermore, \acp{EWFO} differ substantially from objects usually used in Object Detection. This chapter investigates the detection of \acp{EWFO} with a \acp{CNN}. An off-the-shelve \acp{CNN}-based detector is optimized for the detection of \acp{EWFO}. Furthermore, the trade-off in detection performance and inference speed is studied in the example of the hardware used in this thesis. The research questions are summarized in the following:
 	
 \begin{enumerate}
-	\item[\textbf{RQ2}]How can the architecture be optimized to detect \acp{EWFO} more efficiently?
-	\item[\textbf{RQ3}]What are the trade-offs in detection performance and inference time when the detection model for \acp{EWFO} is deployed on a \ac{MAV}?
-%	\item[\textbf{RQ4}]Can the gained insights be used to build a lightweight and robust detection model for racing gates in the \ac{IROS} Autonomous Drone Race?
+	\item[\textbf{RQ2}]How can a \acp{CNN} be used to detect \acp{EWFO} efficiently?
+	
 \end{enumerate}
 
 	\section{Methodology}
@@ -93,6 +93,12 @@
 	Throughout the experiments the same training and test set is used. For training 20 000 samples from the dataset created in \Cref{sec:datagen} are used. For testing we use the test set described in \Cref{sec:datagen:method}.
 
 	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
+	
+	\section{Detecting Empty Objects}
+	
+	\acp{CNN} such as the \textit{TinyYoloV3}-network combine simple features to a more complex image representation layer by layer. Thereby pooling reduces the spatial operation and removes irrelevant data while task relevant information is propagated in the deeper layers. Hence, in deeper layers information that was spread over large parts of the image gets combined and interpreted. We hypothesize that this will lead to a problem when detecting \acp{EWFO} with a \acp{CNN}. The features are sparse and spread over large parts of the image while a majority of the object contains background or even other objects. Features that appear within that part can activate the network although the information should be discarded. Hence, the detector can be distracted by the objects that appear within the empty part.
+	
+	If this is true it can be expected that the performance of the network decreases as features are spread over larger parts of the image. Hence, we hypothesize that the performance decreases for larger objects. On the other hand \ac{EWFO} also have thin structures. Therefore, the performance should also decrease for very small objects. This contradicts the findings of \todoref{object detect tensorflow} which reports a performance increase with object size. Yet
 	
 	\section{Refining the architecture}
 	

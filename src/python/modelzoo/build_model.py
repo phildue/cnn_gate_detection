@@ -4,10 +4,35 @@ from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, Ti
     UpSampling2D, AveragePooling2D, Cropping2D
 from keras.layers import Reshape
 
+from modelzoo.Decoder import Decoder
+from modelzoo.Detector import Detector
 from modelzoo.Encoder import Encoder
+from modelzoo.Postprocessor import Postprocessor
+from modelzoo.Preprocessor import Preprocessor
 from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.layers.DepthwiseConv2D import DepthwiseConv2D
+from utils.ModelSummary import ModelSummary
 
+
+def load_detector(directory, img_shape=None, preprocessing=None):
+    summary = ModelSummary.from_file(directory + '/summary.pkl')
+    img_res = summary.img_res if img_shape is None else img_shape
+    anchors = summary.anchors
+    architecture = summary.architecture
+    color_format = summary.color_format
+    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+                                         anchors=anchors,
+                                         n_polygon=4)
+    model.load_weights(directory + '/model.h5')
+    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
+    preprocessor = Preprocessor(preprocessing=preprocessing, encoder=encoder, n_classes=1, img_shape=img_res,
+                                color_format=color_format)
+    decoder = Decoder(anchor_dims=anchors, n_polygon=4, norm=img_res, grid=output_grids)
+    postproessor = Postprocessor(decoder=decoder)
+
+    detector = Detector(model, preprocessor, postproessor, summary)
+
+    return detector
 
 def build_detector(img_shape, architecture, anchors, n_polygon=4):
     h, w, input_channels = img_shape
@@ -309,5 +334,5 @@ layers = {'conv_leaky': conv_leaky_creator,
           'wr_inception_conv_leaky': wr_inception_conv_leaky_creator,
           'conv_concat': conv_creator,
           'upsample': upsample_creator,
-          'crop':crop_creator
+          'crop': crop_creator
           }

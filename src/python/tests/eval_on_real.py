@@ -1,4 +1,4 @@
-from evaluation.evalmetric import evaluate_labels
+from evaluation.evaluation import evaluate_labels
 from utils.imageprocessing.transform.TransformCrop import TransformCrop
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ObjectLabel import ObjectLabel

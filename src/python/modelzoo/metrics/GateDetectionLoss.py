@@ -45,14 +45,18 @@ class GateDetectionLoss(Loss):
         xy_pred = coord_pred[:, :, :2]
         # xy_loss = 0.5*K.square(xy_true - xy_pred)
         xy_loss = K.binary_crossentropy(target=xy_true, output=xy_pred, from_logits=True)
+        xy_loss_sum = K.sum(xy_loss, -1) * self.scale_coor * positives
+
         wh_true = K.log(coord_true[:, :, 2:])
         wh_pred = coord_pred[:, :, 2:]
         wh_loss = K.square(wh_true - wh_pred)
-        loc_loss = K.sum(K.concatenate([xy_loss, wh_loss], -1), -1) * self.scale_coor * positives
+        wh_loss_sum = K.sum(wh_loss, -1) * self.scale_coor * positives
+        loc_loss = xy_loss_sum + wh_loss_sum
         total_loc_loss = K.sum(loc_loss) / K.cast(K.shape(y_true)[0], K.dtype(loc_loss))
 
         # loc_loss_sum = K.print_tensor(loc_loss_sum,'Loc Loss=')
-
+        # total_loc_loss = K.tf.Print(total_loc_loss, [K.sum(wh_loss_sum, -1), K.sum(xy_loss_sum
+        #                                                                            , -1)], 'Localization Loss=')
         return total_loc_loss
 
     def confidence_loss(self, y_true, y_pred):

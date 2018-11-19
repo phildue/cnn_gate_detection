@@ -1,26 +1,26 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
 from evaluation.utils import average_precision_recall, sum_results
+
 from utils.fileaccess.utils import load_file
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    # 'mavnet',
+    'mavnet',
     'mavnet_lowres160',
     'mavnet_lowres320',
     'mavnet_strides',
     'mavnet_strides3_pool2',
     'mavnet_strides4_pool1',
-    'yolov3_width0'
+    'yolo_lowres160'
 ]
 work_dir = 'out/'
-n_iterations = 1
+n_iterations = 2
 
 names = [
-    # 'mavnet',
+    'mavnet',
     'mavnet_160x120',
     'mavnet_320x240',
     'mavnet_320x240_strides',
@@ -30,6 +30,7 @@ names = [
 ]
 
 symbols = [
+    ('>', 'r'),
     ('o', 'r'),
     ('v', 'r'),
     ('v', 'g'),
@@ -40,6 +41,7 @@ symbols = [
 markers = ["o", "v", "^", "<", ">"]
 colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
 t = [
+    500,
     50,
     200,
     40,
@@ -57,13 +59,14 @@ realsets = [
 frame = pd.DataFrame()
 frame['Name'] = pd.Series(names)
 frame['Time'] = pd.Series(t)
-results_on_sim = []
+ap_on_sim = []
+err_on_sim = []
 weights = []
 for m, model in enumerate(models):
     total_detections = []
 
     for i in range(n_iterations):
-        model_dir = model  # + '_i0{}'.format(i)
+        model_dir = model + '_i0{}'.format(i)
         result_file = work_dir + model_dir + '/test_' + simset + '/' + 'results_iou{}.pkl'.format(iou)
         try:
             results = load_file(result_file)
@@ -74,12 +77,13 @@ for m, model in enumerate(models):
     m_p, m_r, std_p, std_R = average_precision_recall(total_detections)
     meanAp = np.mean(m_p)
     errAp = np.mean(std_p)
-    results_on_sim.append(np.round(meanAp, 2))  # , errAp
-
-    w = load_file(work_dir + model + '/summary.pkl')['weights']
+    ap_on_sim.append(np.round(meanAp, 2))  # , errAp
+    err_on_sim.append(np.round(errAp, 2))
+    w = load_file(work_dir + model + '_i00/summary.pkl')['weights']
     weights.append(w)
 
-frame['Sim Data' + str(iou)] = pd.Series(results_on_sim)
+frame['Sim Data' + str(iou)] = pd.Series(ap_on_sim)
+frame['Sim Data Err' + str(iou)] = pd.Series(err_on_sim)
 frame['Weights'] = pd.Series(weights)
 
 results_on_real = []
@@ -88,7 +92,7 @@ for m, model in enumerate(models):
     for i in range(n_iterations):
         detections_set = []
         for j, d in enumerate(realsets):
-            model_dir = model# + '_i0{}'.format(i)
+            model_dir = model + '_i0{}'.format(i)
             result_file = work_dir + model_dir + '/test_' + d + '/' + 'results_iou{}.pkl'.format(iou)
             try:
                 results = load_file(result_file)
@@ -114,11 +118,18 @@ plt.xlabel('Inference Time/Sample [ms]')
 plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)
 
+handles = []
 for i, m in enumerate(frame['Name']):
-    plt.plot(frame['Time'][i], frame['Sim Data' + str(iou)][i], marker=symbols[i][0], color=symbols[i][1])
+    h = plt.errorbar(frame['Time'][i], frame['Sim Data' + str(iou)][i], yerr=frame['Sim Data Err' + str(iou)][i],
+                     marker=symbols[i][0], color=symbols[i][1], elinewidth=1, capsize=2)
+    handles.append(h[0])
     # plt.plot(frame['Time'][i], frame['Real Data' + str(iou)][i], marker=symbols[i][0], color=symbols[i][1])
 # plt.plot(frame['Time'], frame['Real Data' + str(iou)], 'o')
-plt.legend(frame['Name'], bbox_to_anchor=(1.0, 1.05))
+plt.legend(handles, frame['Name'], bbox_to_anchor=(1.0, 1.05))
+plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-')
+plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--')
+plt.minorticks_on()
+
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                     wspace=0.3, hspace=0.3)
 print(frame.to_string())

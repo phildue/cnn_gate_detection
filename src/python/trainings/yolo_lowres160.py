@@ -14,13 +14,12 @@ from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
-from utils.imageprocessing.transform.TransformCrop import TransformCrop
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
-img_res = 120, 160
+img_res = 160, 160
 model_dir = 'yolo_lowres160_i01'
 initial_epoch = 0
 epochs = 100
@@ -51,7 +50,7 @@ architecture = [
     {'name': 'route', 'index': [-4]},
     {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'upsample', 'size': 2},
-    {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
+    # {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
     {'name': 'route', 'index': [-1, 6]},
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
@@ -66,7 +65,7 @@ model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), arch
                                      n_polygon=4)
 encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
 decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
-preprocessor = Preprocessor(preprocessing=[TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
+preprocessor = Preprocessor(preprocessing=[TransformResize((160, 160))],
                             encoder=encoder, n_classes=1,
                             img_shape=img_res, color_format='bgr')
 loss = GateDetectionLoss()

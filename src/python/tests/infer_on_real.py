@@ -1,4 +1,4 @@
-from evaluation.evalset import infer_on_set
+from evaluation.evaluation import infer_on_set
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work

@@ -1,95 +1,78 @@
 import numpy as np
 import pandas as pd
 
-from evaluation.evalcluster import evalcluster_size_ap
+from evaluation.evaluation import load_predictions, preprocess_truth, evalcluster_location_ap
 from utils.ModelSummary import ModelSummary
-from utils.fileaccess.utils import load_file
 from utils.imageprocessing.Backend import imread
-from utils.imageprocessing.transform.TransformCrop import TransformCrop
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'mavnet_lowres320',
-    'mavnet_lowres160',
+    # 'mavnet_lowres80',
+    # 'mavnet',
+    # 'mavnet_lowres160',
+    # 'mavnet_lowres320',
+    # 'mavnet_strides',
+    # 'mavnet_strides3_pool2',
+    # 'mavnet_strides4_pool1',
+    # 'yolov3_width0',
+    # 'yolov3_width1',
+    # 'yolov3_width2',
+    # 'yolov3_width3',
     'yolo_lowres160',
-    'yolo_lowres160_i01',
-    'yolov3_width0',
 ]
-titles = [
-    'Mavnet320x240',
-    'Mavnet160x120',
-    'Tiny160x120',
-    'Tiny160x120_01',
-    'Tiny416x416',
-]
-
 preprocessing = [
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
-    [TransformCrop(0, 52, 416, 416 - 52), TransformResize((120, 160))],
-    None,
+    # [TransformResize((80, 80))],
+    # None,
+    # [TransformResize((160, 160))],
+    # [TransformResize((320, 320))],
+    # [TransformResize((320, 320))],
+    # [TransformResize((320, 320))],
+    # [TransformResize((320, 320))],
+    # [TransformResize((160, 160))],
+    # None,
+    # None,
+    # None,
+    # None,
+    [TransformResize((160, 160))],
 ]
+titles = models
 
-img_size = [
-    320 * 240,
-    160 * 120,
-    160 * 120,
-    160 * 120,
-    416 * 416
-]
 ObjectLabel.classes = ['gate']
 bins = 10
 frame = pd.DataFrame()
-frame['Name'] = titles
-frame['img_size'] = img_size
-
-size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032, 0.064, 0.128, 0.256, 0.512, 1.024])[::2]
+n_iterations = 2
+size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032, 0.064, 0.128, 0.256, 0.512, 1.024])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
-frame['Sizes Bins'] = [size_bins] * len(titles)
 
+for i_m, m in enumerate(models):
+    for it in range(n_iterations):
+        model_dir = 'out/{0:s}_i{1:02d}'.format(m, it)
+        try:
+            summary = ModelSummary.from_file(model_dir + '/summary.pkl')
+        except FileNotFoundError:
+            print(FileNotFoundError)
+            continue
+        frame['Name'] = [titles[i_m]]*(len(size_bins)-1)
+        frame['Sizes Bins'] = list(size_bins[:-1])
+        for iou in [0.4, 0.6, 0.8]:
+            prediction_dir = model_dir + '/test_iros2018_course_final_simple_17gates'
+            labels_true, labels_pred, img_files = load_predictions(
+                '{}/predictions.pkl'.format(prediction_dir))
 
-for iou in [0.4, 0.6, 0.8]:
-    n_true = []
-    n_layers = []
-    ap_totals = []
-    aps = []
-    for i, m in enumerate(models):
-        result_file = load_file('out/' + m + '/test_iros2018_course_final_simple_17gates/predictions.pkl')
-        labels_pred = result_file['labels_pred']
-        labels_true = result_file['labels_true']
-        img_files = result_file['image_files']
-        summary = ModelSummary.from_file('out/' + m + '/summary.pkl')
-        labels_true_pp = []
-        images_pp = []
-        if preprocessing[i]:
-            for i_l, l in enumerate(labels_true):
-                img = imread(img_files[i_l], 'bgr')
-                for p in preprocessing[i]:
-                    img, l = p.transform(img, l)
-                labels_true_pp.append(l)
-                images_pp.append(img)
-        else:
-            images_pp = [imread(f, 'bgr') for f in img_files]
-            labels_true_pp = labels_true
-        ap_size, true = evalcluster_size_ap(labels_true_pp, labels_pred,
-                                            bins=size_bins * summary.img_size,
-                                            images=images_pp, show_t=1)
+            if preprocessing[i_m]:
+                images, labels_true = preprocess_truth(img_files, labels_true, preprocessing[i_m])
+            else:
+                images = [imread(f, 'bgr') for f in img_files]
 
-        aps.append(ap_size)
-        n_true.append(true)
+            result_location_ap, true_objects_bin = evalcluster_location_ap(labels_true, labels_pred,
+                                                                           bins=size_bins * summary.img_res[1],
+                                                                           images=images, show_t=1,iou_thresh=iou)
 
-        # sum_r, tp, fp, fn, boxes_true = evalset(labels_true, labels_pred, iou_thresh=iou)
-        # mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([sum_r])
-        # ap_totals.append(np.mean(mean_pr))
-
-        n_layers.append(summary.max_depth)
-
-    frame['AveragePrecision' + str(iou)] = aps
-frame['Objects'] = n_true
-frame['Layers'] = n_layers
-print(frame.to_string())
-frame.to_pickle('out/results/size_sim.pkl')
+            frame['Objects'] = true_objects_bin
+            frame['AveragePrecision{0:02f}_i{1:02d}'.format(iou, it)] = result_location_ap
+            print(frame.to_string())
+            frame.to_pickle('{}/results_size_cluster.pkl'.format(prediction_dir))
+            frame.to_excel('{}/results_size_cluster.xlsx'.format(prediction_dir))
