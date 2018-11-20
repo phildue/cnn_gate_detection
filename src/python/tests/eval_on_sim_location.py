@@ -59,7 +59,6 @@ titles = models
 
 ObjectLabel.classes = ['gate']
 bins = 10
-frame = pd.DataFrame()
 n_iterations = 2
 size_bins = np.array([0, 0.25, 0.75, 1.0])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
@@ -72,6 +71,7 @@ for i_m, m in enumerate(models):
         except FileNotFoundError:
             print(FileNotFoundError)
             continue
+        frame = pd.DataFrame()
         frame['Name'] = [titles[i_m]]*(len(size_bins)-1)
         frame['Sizes Bins'] = list(size_bins[:-1])
         for iou in [0.4, 0.6, 0.8]:

@@ -59,12 +59,12 @@ titles = models
 
 ObjectLabel.classes = ['gate']
 bins = 10
-frame = pd.DataFrame()
 n_iterations = 2
 size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032, 0.064, 0.128, 0.256, 0.512, 1.024])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
 
 for i_m, m in enumerate(models):
+    frame = pd.DataFrame()
     for it in range(n_iterations):
         model_dir = 'out/{0:s}_i{1:02d}'.format(m, it)
         try:

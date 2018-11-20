@@ -94,13 +94,7 @@
 
 	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
 	
-	\section{Detecting Empty Objects}
-	
-	\acp{CNN} such as the \textit{TinyYoloV3}-network combine simple features to a more complex image representation layer by layer. Thereby pooling reduces the spatial operation and removes irrelevant data while task relevant information is propagated in the deeper layers. Hence, in deeper layers information that was spread over large parts of the image gets combined and interpreted. We hypothesize that this will lead to a problem when detecting \acp{EWFO} with a \acp{CNN}. The features are sparse and spread over large parts of the image while a majority of the object contains background or even other objects. Features that appear within that part can activate the network although the information should be discarded. Hence, the detector can be distracted by the objects that appear within the empty part.
-	
-	If this is true it can be expected that the performance of the network decreases as features are spread over larger parts of the image. Hence, we hypothesize that the performance decreases for larger objects. On the other hand \ac{EWFO} also have thin structures. Therefore, the performance should also decrease for very small objects. This contradicts the findings of \todoref{object detect tensorflow} which reports a performance increase with object size. Yet
-	
-	\section{Refining the architecture}
+		\section{Refining the architecture}
 	
 	\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. This led to an architecture with 9 layers and a final width of 1024. Thereby the receptive field is of the last layer is 223 pixels. For solid objects this is of minor impact as even if the network only sees an object part it can still learn to recognize it. However, this does not apply for \acp{EWFO} which are empty and do not contain any information in the object centre. Instead it can confuse an output layer that is assigned responsible to detect such an object. We hypothesize that a larger receptive field will benefit the performance for objects of higher scale. Furthermore, \acp{EWFO} consist only of simple features. Hence we hypothesize that less filters are required to represent such an object and a thinner model can perform equally well than its wider counterpart. Finally, \acp{EWFO} are not very complex. Hence, we hypothesize that a shallower model should be able to learn the task equally well.
 	
@@ -125,12 +119,12 @@
 	The scheme in which the architecture is changed is visualized in \Cref{fig:depth_changes}. The width of the baseline model is decreased stepwise by a factor of two. When decreasing depth only convolutional layers are removed while the pooling layers are kept such that the spatial resolution stays the same. When increasing depth 2 layers are inserted stepwise at the end of both branches. The results show how depth is mainly relevant to detect objects of larger scale. Hence, the final model consist of 5 common layers, 15 layers on the branch to detect larger objects and 2 layers on the branch to detect small objects.
 	
 	
-		\begin{figure}[hbtp]
-			\centering
-			\includegraphics[width=0.9\textwidth]{fig/depth_changes}
-			\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
-			\label{fig:depth_changes}
-		\end{figure}
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.9\textwidth]{fig/depth_changes}
+		\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
+		\label{fig:depth_changes}
+	\end{figure}
 	
 	
 	
@@ -161,13 +155,13 @@
 		\caption{Architectural Changes when varying the depth. The upper graph shows in which order layers are removed. The lower graph shows how layers are added. Depth is increased by inserting two layers on each branch (green). }
 		\label{fig:hyp}
 	\end{figure}
-
+	
 	\begin{figure}[hbtp]
-	\centering
-	\includegraphics[width=\textwidth]{fig/rf_ap_size}
-	\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
-	\label{fig:size_bins}
-\end{figure}
+		\centering
+		\includegraphics[width=\textwidth]{fig/rf_ap_size}
+		\caption{Label distribution in bins of different object size. As the field of view is larger for objects further away, the proportion of small objects is higher.}
+		\label{fig:size_bins}
+	\end{figure}
 	
 	\subsection{Discussion}
 	
@@ -177,7 +171,7 @@
 	
 	Instead it is more likely that the increased receptive field is the reason for the improved performance. In fact only the network with 14 layers has a receptive field of 414 an thus covers the whole image. Yet even this network cannot detect the largest objects. Thus the receptive field can not be the only reason for the lower performance on larger objects.
 	
-	 The current structure combines features distributed across space in a pyramid fashion. So 3-by-3 convolutions are performed layer by layer such until the whole image is covered. For \acp{EWFO} many of these steps are unnecessary as the objects are empty and the network should learn to ignore the empty part in the centre. It is possible that this structure gets confused by the parts that are present in the image centre.
+	The current structure combines features distributed across space in a pyramid fashion. So 3-by-3 convolutions are performed layer by layer such until the whole image is covered. For \acp{EWFO} many of these steps are unnecessary as the objects are empty and the network should learn to ignore the empty part in the centre. It is possible that this structure gets confused by the parts that are present in the image centre.
 	
 	\subsection{Conclusion}
 	
@@ -185,15 +179,33 @@
 	
 	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
 	
-	\section{Empty Objects}
 	
-	The experiments show how the performance of the network drops for larger objects while even a few layers are enough for small objects. This is the opposite as reported for example by \todoref{Objectdetect}. We hypothesize that this is due to the emptiness of \ac{EWFO}. As the object gets larger, the features are spread further and further a part while more and more noise is present in the receptive field of the detector.
+	\section{Detecting Empty Objects}
+	
+	As could be seen in \Cref{sec:methodology}, \textit{TinyYoloV3} similar to most current \acp{CNN} combine simple features to a more abstract representation layer by layer. Thereby pooling reduces task irrelevant information and reduces the spatial dimension. At the same time the number of filters is increased to encode the more complex patterns. in the deeper layers more and more area of the image is covered. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
+	
+	In \acp{EWFO} the largest part of the object is empty while the actual features are simple edges and corners. Hence, the filters should activate on these simple features while ignoring the empty part. However, the empty part can contain any kind of object and thus activate the network. Whether the information does not belong to an object can only be decided when information about the object border is present in the receptive field of the filter. Hence, we hypothesize that despite the relatively simple shape of \acp{EWFO} their detection with \acp{CNN} is not an easy task.
+	
+	If our assumption is correct, the detection should get worse as the features are spread more apart. Hence, the performance should decrease as the object gets closer. This would be the opposite for typical solid objects. For example \todoref{object detect tensorflow} report an increase in detection performance with object size on the common Object Detection benchmarks. On the other hand \ac{EWFO} also have thin structures. Therefore, the performance should also decrease for very small objects.
+	
+	Furthermore, if emptiness is really the reason for a decrease in performance, covering the empty part with a certain pattern should lead to the opposite result. In this case the detector could exploit the information present in the solid part and would not be distracted by background or other objects.
 	
 	\subsection{Experiment}
 	
-	 A 7-by-7 max-pooling layer is inserted on the lower branch after layer 6. The model is compared to the architecture with 14 layers and a model where we replace the 3-by-3 kernel of layer 6 with a 9-by-9 kernel.
-	 
-	 \subsection{Results}
-	 
+	A dataset is created in which the empty part is augmented with a distinctive pattern. An example can be seen in \Cref{fig:cats}. For training 20 000 samples are created and a network is trained. For testing a test set with 150 samples is created. The view points are limited to frontal views. 
 	
-	\section{Implementation on the \ac{MAV}}
+	On this dataset three models are tested: Model I, the baseline TinyYoloV3 architecture , Model II our refined architecture, Model III the refined architecture trained when the object is augmented with the distinctive pattern.
+	
+		\begin{figure}
+		\includegraphics[width=\textwidth]{fig/cats}
+		\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+		\label{fig:cats}
+	\end{figure}
+	
+	\subsection{Results}
+
+	\subsection{Discussion}
+	
+	\subsection{Conclusion}
+	
+	
