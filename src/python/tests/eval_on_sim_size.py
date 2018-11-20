@@ -24,20 +24,37 @@ models = [
     'yolo_lowres160',
 ]
 preprocessing = [
-    # [TransformResize((80, 80))],
+    [TransformResize((80, 80))],
     # None,
-    # [TransformResize((160, 160))],
-    # [TransformResize((320, 320))],
-    # [TransformResize((320, 320))],
-    # [TransformResize((320, 320))],
-    # [TransformResize((320, 320))],
-    # [TransformResize((160, 160))],
+    [TransformResize((160, 160))],
+    [TransformResize((320, 320))],
+    [TransformResize((320, 320))],
+    [TransformResize((320, 320))],
+    [TransformResize((320, 320))],
+    [TransformResize((160, 160))],
     # None,
     # None,
     # None,
     # None,
     [TransformResize((160, 160))],
 ]
+
+img_size = [
+    80**2,
+    # 416**2,
+    160**2,
+    320**2,
+    320**2,
+    320**2,
+    320**2,
+    160**2,
+    # 416**2,
+    # 416**2,
+    # 416**2,
+    # 416**2,
+    160**2,
+]
+
 titles = models
 
 ObjectLabel.classes = ['gate']
@@ -68,8 +85,8 @@ for i_m, m in enumerate(models):
                 images = [imread(f, 'bgr') for f in img_files]
 
             result_location_ap, true_objects_bin = evalcluster_location_ap(labels_true, labels_pred,
-                                                                           bins=size_bins * summary.img_res[1],
-                                                                           images=images, show_t=1,iou_thresh=iou)
+                                                                           bins=size_bins * img_size[i_m],
+                                                                           images=images, show_t=1, iou_thresh=iou)
 
             frame['Objects'] = true_objects_bin
             frame['AveragePrecision{0:02f}_i{1:02d}'.format(iou, it)] = result_location_ap

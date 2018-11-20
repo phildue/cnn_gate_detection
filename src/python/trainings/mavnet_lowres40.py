@@ -10,7 +10,6 @@ from modelzoo.Decoder import Decoder
 from modelzoo.Encoder import Encoder
 from modelzoo.Preprocessor import Preprocessor
 from modelzoo.build_model import build_detector
-from modelzoo.metrics.AveragePrecisionGateNet import AveragePrecisionGateNet
 from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
@@ -139,18 +138,18 @@ for i in range(2):
     Training Config
     """
     optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
-    metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
-                                     norm=img_res, iou_thresh=0.6)
+    # metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
+    #                                  norm=img_res, iou_thresh=0.6)
 
 
-    def ap60(y_true, y_pred):
-        return metric.compute(
-            y_true, y_pred)
+    # def ap60(y_true, y_pred):
+    #     return metric.compute(
+    #         y_true, y_pred)
 
 
     model.compile(optimizer=optimizer,
                   loss=loss.compute,
-                  metrics=[ap60])
+                  metrics=[])
 
     log_file_name = work_dir + '/log.csv'
     append = Path(log_file_name).is_file() and initial_epoch > 0

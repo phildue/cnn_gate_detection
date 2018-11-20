@@ -39,20 +39,20 @@ preprocessing = [
     [TransformResize((160, 160))],
 ]
 
-sizes = [
+img_width = [
     # 416**2,
-    80**2,
-    160**2,
-    320**2,
-    320**2,
-    320**2,
-    320**2,
-    160**2,
-    # 416**2,
-    # 416**2,
+    80,
+    160,
+    320,
+    320,
+    320,
+    320,
+    160,
     # 416**2,
     # 416**2,
-    160**2,
+    # 416**2,
+    # 416**2,
+    160,
 ]
 
 titles = models
@@ -85,8 +85,8 @@ for i_m, m in enumerate(models):
                 images = [imread(f, 'bgr') for f in img_files]
 
             result_location_ap, true_objects_bin = evalcluster_location_ap(labels_true, labels_pred,
-                                                                           bins=size_bins * size,
-                                                                           images=images, show_t=1,iou_thresh=iou)
+                                                                           bins=size_bins * img_width[i_m],
+                                                                           images=images, show_t=1, iou_thresh=iou)
 
             frame['Objects'] = true_objects_bin
             frame['AveragePrecision{0:02f}_i{1:02d}'.format(iou, it)] = result_location_ap
