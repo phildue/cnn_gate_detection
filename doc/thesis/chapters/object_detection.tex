@@ -15,6 +15,18 @@
 	
 	On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $p_w$, height $p_h$ and are arranged in grids corresponding to the spatial resolution of the output layers. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
 	
+	\begin{figure}[hbtp]
+		\centering
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/yolov3_anchors}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/gate_anchors}
+		\end{minipage}
+		\caption{ Visualization of the anchor parametrization. It can be seen the two output grids, where the grid for larger scale objects is drawn thicker. For both output grids the anchor at the center location is displayed. The anchor for smaller objects in blue, the anchors for larger objects in red. The left image shows the baseline \textit{TinyYoloV3} anchors. The right image the anchors based on a k-means clustering of the training set. }
+		\label{fig:anchors}
+	\end{figure}
+	
 	For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
 	
 	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are  the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
@@ -94,23 +106,74 @@
 
 	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
 	
-		\section{Refining the architecture}
+		
+	\section{Detecting Empty Objects}
 	
-	\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. This led to an architecture with 9 layers and a final width of 1024. Thereby the receptive field is of the last layer is 223 pixels. For solid objects this is of minor impact as even if the network only sees an object part it can still learn to recognize it. However, this does not apply for \acp{EWFO} which are empty and do not contain any information in the object centre. Instead it can confuse an output layer that is assigned responsible to detect such an object. We hypothesize that a larger receptive field will benefit the performance for objects of higher scale. Furthermore, \acp{EWFO} consist only of simple features. Hence we hypothesize that less filters are required to represent such an object and a thinner model can perform equally well than its wider counterpart. Finally, \acp{EWFO} are not very complex. Hence, we hypothesize that a shallower model should be able to learn the task equally well.
+	As could be seen in \Cref{sec:methodology}, \textit{TinyYoloV3} similar to most current \acp{CNN} combine simple features to a more abstract representation layer by layer. Thereby pooling reduces task irrelevant information and reduces the spatial dimension. At the same time the number of filters is increased to encode the more complex patterns. In the deeper layers information of larger areas in the image is combined. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
 	
-	The anchor box concept introduces additional hyperparameters. By choosing the anchor box dimensions close to objects that appear in training/test set prior knowledge can be included. The better the anchor boxes fit the appearing object the less work has to be done by the network and hence performance can potentially be improved. Hence, we evaluate whether redesigned anchor boxes improve the network performance. 
+	The power of deep \acp{CNN} arises from their capability to learn very complex patterns. However, these are not present in \acp{EWFO}. Instead most of the object area consists of background and should be ignored by the detector. Therefore we hypothesize that a simple network should perform equally well on \acp{EWFO} as a much deeper network. However, for a more complex object the performance should increase with a deeper architecture.
 	
-	\begin{figure}[hbtp]
-		\centering
-		\begin{minipage}{0.3\textwidth}
-			\includegraphics[width=\textwidth]{fig/yolov3_anchors}
-		\end{minipage}
-		\begin{minipage}{0.3\textwidth}
-			\includegraphics[width=\textwidth]{fig/gate_anchors}
-		\end{minipage}
-		\caption{ Visualization of the anchor parametrization. It can be seen the two output grids, where the grid for larger scale objects is drawn thicker. For both output grids the anchor at the center location is displayed. The anchor for smaller objects in blue, the anchors for larger objects in red. The left image shows the baseline \textit{TinyYoloV3} anchors. The right image the anchors based on a k-means clustering of the training set. }
-		\label{fig:anchors}
+	Due to the emptiness of the object a detector can be distracted by the patterns that are visible within the empty part. Hence, we hypothesize that a solid object is simpler to detect than an \acp{EWFO}. If this is true the performance should decrease as the empty part gets bigger. This would mean objects that appear closer to the image are harder to detect. This would be the opposite to solid objects. For example \todoref{object detect tensorflow} report an increase in detection performance with object size on the common Object Detection benchmarks.
+	
+
+	\subsection{Experiment}
+	
+	In order to evaluate our hypothesis we compare the detection of the empty object to similar objects that are solid. This is achieved by using the data generation tool to augment the object with a solid part that contains patterns of different complexity. Examples can be seen in \Cref{fig:cats}. 
+	
+	\begin{figure}
+		\includegraphics[width=\textwidth]{fig/cats}
+		\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+		\label{fig:cats}
 	\end{figure}
+	
+	For each object a dataset with 20 000 samples is created within the \textit{Basement} environment. On these training sets multiple architectures are trained: 
+	
+	\begin{itemize}
+		\item \textit{Darknet-19}
+		\item \textit{TinyYoloV3}
+		\item \textit{GateNet}
+	\end{itemize}
+
+	Furthermore, test sets are created for each object. Each test set contains 150 samples at various scales. Each architecture is tested on each of the test sets.
+	
+	
+	\subsection{Results}
+	
+	\begin{figure}
+	\includegraphics[width=\textwidth]{fig/basement_gate_size}
+	\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+	\label{fig:basement_gate}
+	\end{figure}
+
+	\begin{figure}
+	\includegraphics[width=\textwidth]{fig/basement_gate_size}
+	\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+	\label{fig:basement_sign}
+	\end{figure}
+
+	\begin{figure}
+	\includegraphics[width=\textwidth]{fig/basement_cats_size}
+	\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+	\label{fig:basement_cats}
+	\end{figure}
+	
+	\subsection{Discussion}
+	
+	\subsection{Conclusion}
+	
+	\section{Refining the architecture}
+	
+	\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. In order to sufficiently represent and distinguish such objects many weights are required. Hence, the network contains 9 layers and a final width of 1024. In contrast, the features of \acp{EWFO} are relatively simple hence less weights should be required. Therefore we hypothesize a thinner network should be able to learn the task equally well while being computationally more efficient.
+	
+	The receptive field of \textit{TinyYoloV3} is 223 pixels which does not cover the full input image. For solid objects this is of minor impact as even if the network only sees an object part it can still learn to recognize it. However, this does not apply for \acp{EWFO} which are empty and do not contain any information in the object centre. Instead it can confuse an output layer that is assigned responsible to detect such an object. Therefore we hypothesize that more layers should improve the performance for larger objects. However, the c 
+	
+	Yet, the complexity of large objects does not increase. Hence, we hypothesize that if the receptive field is large enough,  performance for larger objects. 
+	
+	Another parameter are network width and depth.  The same condition holds for the number of layers. However, more layers also increase the receptive field. Hence, we expect the performance to increase as long as the receptive field does not fully capture the image.
+	
+	In order to evaluate our hypothesis we perform an architecture evaluation by varying the number of layers filters and the receptive field. Before training the networks we tune the anchor box dimensions by performing a k-means clustering on t
+	
+
 	
 	\subsection{Experiments}
 	
@@ -179,33 +242,6 @@
 	
 	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
 	
-	
-	\section{Detecting Empty Objects}
-	
-	As could be seen in \Cref{sec:methodology}, \textit{TinyYoloV3} similar to most current \acp{CNN} combine simple features to a more abstract representation layer by layer. Thereby pooling reduces task irrelevant information and reduces the spatial dimension. At the same time the number of filters is increased to encode the more complex patterns. in the deeper layers more and more area of the image is covered. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
-	
-	In \acp{EWFO} the largest part of the object is empty while the actual features are simple edges and corners. Hence, the filters should activate on these simple features while ignoring the empty part. However, the empty part can contain any kind of object and thus activate the network. Whether the information does not belong to an object can only be decided when information about the object border is present in the receptive field of the filter. Hence, we hypothesize that despite the relatively simple shape of \acp{EWFO} their detection with \acp{CNN} is not an easy task.
-	
-	If our assumption is correct, the detection should get worse as the features are spread more apart. Hence, the performance should decrease as the object gets closer. This would be the opposite for typical solid objects. For example \todoref{object detect tensorflow} report an increase in detection performance with object size on the common Object Detection benchmarks. On the other hand \ac{EWFO} also have thin structures. Therefore, the performance should also decrease for very small objects.
-	
-	Furthermore, if emptiness is really the reason for a decrease in performance, covering the empty part with a certain pattern should lead to the opposite result. In this case the detector could exploit the information present in the solid part and would not be distracted by background or other objects.
-	
-	\subsection{Experiment}
-	
-	A dataset is created in which the empty part is augmented with a distinctive pattern. An example can be seen in \Cref{fig:cats}. For training 20 000 samples are created and a network is trained. For testing a test set with 150 samples is created. The view points are limited to frontal views. 
-	
-	On this dataset three models are tested: Model I, the baseline TinyYoloV3 architecture , Model II our refined architecture, Model III the refined architecture trained when the object is augmented with the distinctive pattern.
-	
-		\begin{figure}
-		\includegraphics[width=\textwidth]{fig/cats}
-		\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
-		\label{fig:cats}
-	\end{figure}
-	
-	\subsection{Results}
 
-	\subsection{Discussion}
-	
-	\subsection{Conclusion}
 	
 	
