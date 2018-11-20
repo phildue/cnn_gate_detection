@@ -15,18 +15,7 @@
 	
 	On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $p_w$, height $p_h$ and are arranged in grids corresponding to the spatial resolution of the output layers. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
 	
-	\begin{figure}[hbtp]
-		\centering
-		\begin{minipage}{0.3\textwidth}
-			\includegraphics[width=\textwidth]{fig/yolov3_anchors}
-		\end{minipage}
-		\begin{minipage}{0.3\textwidth}
-			\includegraphics[width=\textwidth]{fig/gate_anchors}
-		\end{minipage}
-		\caption{ Visualization of the anchor parametrization. It can be seen the two output grids, where the grid for larger scale objects is drawn thicker. For both output grids the anchor at the center location is displayed. The anchor for smaller objects in blue, the anchors for larger objects in red. The left image shows the baseline \textit{TinyYoloV3} anchors. The right image the anchors based on a k-means clustering of the training set. }
-		\label{fig:anchors}
-	\end{figure}
-	
+
 	For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
 	
 	The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are  the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
@@ -100,13 +89,6 @@
 	
 	The model is implemented using \textit{keras} with \textit{tensorflow} backend. 
 	
-	\subsection{Datasets}
-	
-	Throughout the experiments the same training and test set is used. For training 20 000 samples from the dataset created in \Cref{sec:datagen} are used. For testing we use the test set described in \Cref{sec:datagen:method}.
-
-	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
-	
-		
 	\section{Detecting Empty Objects}
 	
 	As could be seen in \Cref{sec:methodology}, \textit{TinyYoloV3} similar to most current \acp{CNN} combine simple features to a more abstract representation layer by layer. Thereby pooling reduces task irrelevant information and reduces the spatial dimension. At the same time the number of filters is increased to encode the more complex patterns. In the deeper layers information of larger areas in the image is combined. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
@@ -121,18 +103,29 @@
 	In order to evaluate our hypothesis we compare the detection of the empty object to similar objects that are solid. This is achieved by using the data generation tool to augment the object with a solid part that contains patterns of different complexity. Examples can be seen in \Cref{fig:cats}. 
 	
 	\begin{figure}
+		\centering
+		\begin{minipage}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{fig/sign}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
 		\includegraphics[width=\textwidth]{fig/cats}
-		\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
+		\end{minipage}
+		\caption{Examples of the three objects that are compared. The \acp{EWFO} object left is compared to a simple solid object in the center and a complex solid object on the right.}
 		\label{fig:cats}
 	\end{figure}
 	
 	For each object a dataset with 20 000 samples is created within the \textit{Basement} environment. On these training sets multiple architectures are trained: 
 	
 	\begin{itemize}
-		\item \textit{Darknet-19}
-		\item \textit{TinyYoloV3}
-		\item \textit{GateNet}
+		\item \textit{TinyYoloV3}: The \textit{TinyYoloV3} architecture serves as baseline for our experiments and is described in fully detail in \Cref{sec:meth}.
+		\item \textit{GateNet}: The \textit{GateNet} architecture is based on  \textit{TinyYoloV3}. However, in the initial configuration the network
+		\item \textit{Darknet-19}: The \textit{Darknet-19} architecture served as baseline for the \textit{YoloV2} detection network. It takes images of 416x416 as input and processes them the image in 19 layers. The exact architecture can be seen in \todo{text}. For the purpose of object detection we add a prediction layer for small objects at layer 16 and replace the fully connected layer with the prediction layer for larger objects.
 	\end{itemize}
+
+	For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
 
 	Furthermore, test sets are created for each object. Each test set contains 150 samples at various scales. Each architecture is tested on each of the test sets.
 	
@@ -161,7 +154,19 @@
 	
 	\subsection{Conclusion}
 	
-	\section{Refining the architecture}
+	\section{Creating an efficient architecture}
+	
+	\begin{figure}[hbtp]
+		\centering
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/yolov3_anchors}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
+			\includegraphics[width=\textwidth]{fig/gate_anchors}
+		\end{minipage}
+		\caption{ Visualization of the anchor parametrization. It can be seen the two output grids, where the grid for larger scale objects is drawn thicker. For both output grids the anchor at the center location is displayed. The anchor for smaller objects in blue, the anchors for larger objects in red. The left image shows the baseline \textit{TinyYoloV3} anchors. The right image the anchors based on a k-means clustering of the training set. }
+		\label{fig:anchors}
+	\end{figure}
 	
 	\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. In order to sufficiently represent and distinguish such objects many weights are required. Hence, the network contains 9 layers and a final width of 1024. In contrast, the features of \acp{EWFO} are relatively simple hence less weights should be required. Therefore we hypothesize a thinner network should be able to learn the task equally well while being computationally more efficient.
 	
@@ -241,6 +246,61 @@
 	We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
 	
 	Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
+	
+	
+	\section{Deploying a Detector for \acp{EWFO} on a \ac{MAV}}
+	
+	
+	So far this work investigated the detection of \ac{EWFO} on a theoretical basis. A virtual dataset was created in which different network architectures were evaluated. In this chapter the application of a \ac{CNN} on an example \ac{MAV} is studied. The target system is the JeVois Smart Camera described in \Cref{background:jevois}. The detector is integrated in a control loop that is explained in detail in \Cref{background:system}. The on-board resources give severe limitations to the network that can be deployed. Furthermore, the global state estimation pipeline fuses data from different sensors and over time. Hence, it can be more important to have fast detections that are less accurate compared to slow but accurate detections. Therefore this chapter investigates the performance-accuracy trade-off in the example of the target system. The research question of this chapter is summarized in the following:
+	
+	\begin{itemize}
+		\item[RQ1] What are is the trade-off in terms of accuracy and inference time?
+	\end{itemize}
+	
+	The limited resources on mobile devices makes the deployment of \acp{CNN} a challenging task. For example on pass of the state of the art \ac{CNN} ResNet101 contains of 11.3 billion floating point operations. Even assuming a powerful 2 GHz processor can perform 2 billion calculations per second it would still require almost 6 seconds for one network pass. Furthermore, a \acp{CPU} usually has to reload operands from the memory and cannot directly perform floating point multiplications. Hence, the actual forward pass would require even more time.
+	
+	Therefore researchers address the reduction of inference time by reducing the number of operations. For example MobileNet and ShuffleNet aim to reduce the computations by addressing the expensive 3D convolutions. Other researchers aim to making the individual operations more efficient. This can be done by replacing floating point operations with integer operations hence quantizing the network.
+	
+	In order to infer a layer in a \acp{CNN} kernels are convolved at multiple locations within one image. Thereby the same calculations are applied on various input data while the individual operations are independent of each other. Hence, theoretically the computations in one layer can be performed completely in parallel. The output of one layer can be stored similarly to the input image as a matrix. Computational platforms that exploit this fact are \acp{GPU} that have been adopted for Deep Learning applications from early on. In contrast to \acp{CPU} that are optimized to perform many different operations sequentially, \acp{GPU} typically consist of more cores and are optimized to perform the same operation on different data. While each individual core is typically slower than a single core in a \acp{CPU}, \acp{GPU} are much faster for applications that can be performed in parallel.
+	
+	With a large enough \ac{GPU} it does not matter whether an operation is performed at an image of size 150x150 or 300x300 despite the actual computations increase by a factor of 4. However, such powerful \acp{GPU} require space and energy which is typically not available for small scale \acp{MAV}. The JeVois Smart Camera contains a MALI-400GPU with two cores and 408 Mhz each. Additionally it contains floating point registers and supports NEON operations. These are processor instructions that enable the efficient use of \acp{SIMD} operations.
+	
+	The actual inference time of a network strongly depends on the computational platform, memory access times as well as the particular low level implementation. Hence, the number of computations within a network can only give a limited insight on the actual inference time. For example the \textit{TensorflowLite} framework allows the deployment of models created in \textit{tensorflow} on mobile processors. However, with this framework a the application of a single kernel on a 104x104 input volume takes 27.1 ms on the JeVois. In contrast, the same operation performed with the \textit{Darknet} framework that supports NEON operations takes only 5.07 ms. 
+	
+	Therefore, the inference time of several layers is measured on the JeVois using the \textit{Darknet} framework. The results are displayed in \Cref{fig:bottleneck_jevois}. Each sample corresponds to the number of computations and their computational time in one layer. Dashed lines connect samples at the same resolution. It is apparent how the same amount of computations at a spatial resolution of 20x15 is more than 4 times faster than at a resolution of 160x120. 
+	
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{fig/bottleneck_jevois}
+		\caption{Inference Time of different layers on the JeVois. Each sample corresponds to the inference in a single layer. Dashed lines connect samples at the same resolution. It can be seen how an operation at a higher spatial resolution is significantly slower.}
+		\label{fig:bottleneck_jevois}
+	\end{figure}
+	
+	Hence, most speed can be gained when reducing the number of computations in the early layers where the spatial resolution is high. In \Cref{sec:object_detection} it could be seen that already a small amount of filters is enough to detect \acp{EWFO}. However, even evaluating 4 kernels at a resolution of 320x240 already takes 55 ms (\Cref{fig:bottleneck_jevois} red triangle). A total network of that size would require more than 200 ms and is thus too slow to be deployed in the control loop. Current research mostly addresses to reduce the computations when the convolved volumes are deep or the operations are performed on \acp{CPU} that do not support floating point operations. However, the bottleneck on the JeVois happens at small volumes and the hardware can perform floating point operations. Furthermore, \acp{EWFO} consist of thin elements that are spread over large parts of the image. Hence, we hypothesize that simply reducing the image resolution will lead to large drops in performance. An alternative is to increase the stride parameter in the early layers of the network. This reduces the number of locations at which the kernel is evaluated. \acp{EWFO} are sparse and spread over large parts of the image, while most of the image does not contain useful information. Hence, we hypothesize that increasing the stride parameter in the early layers will perform better than reducing the image resolution.
+	
+	\section{Experiments}
+	
+	In order to evaluate our hypotheses the network is trained with different architectures. Subsequently, performance and inference time on the JeVois are measured.
+	
+	The JeVois supports aspect ratios of 4:3 and resolutions of 160x120, 320x240 and 640x480. Although, \ac{FCN} do not depend on the image resolution, the object appearance can change at lower image resolution. Hence, during training the images are scaled to 160x160 or 320x320 respectively. The anchor boxes are scaled in similar fashion. Finally, as the input image resolution decreases, the output grid size decreases by the same factor. This is not desirable as the output resolution should stay the same. Hence, when decreasing the input image to 160x160 we remove the last pooling layer such that the output grid stays at 20,20 or 10,10 respectively.
+	
+	\section{Results}
+	
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{fig/ap_speed_tradeoff}
+		\caption{Inference Time of different layers on the JeVois. Each sample corresponds to a single layer. On the x-axis the total number of multiplications in that layer is displayed. It can be seen how an operation at a higher spatial resolution is significantly slower.}
+		\label{fig:ap_speed_tradeoff}
+	\end{figure}
+	
+	Due to their computational complexity deploying a \acp{CNN} on mobile devices is a challenging task
+	
+	\section{Discussion}
+	
+	\section{Conclusion}
+	
+	
+	In order to answer this question we measure the inference time of different model architectures. This enables us to investigate the bottlenecks and thus optimize the model architecture. The JeVois Smart Camera uses an aspect ratio of 4:3. Therefore we change the network resolution accordingly. The JeVois Smart Camera has only limited memory available. Using a network architecture that goes beyond the memory simply results in a system crash. For example our baseline network runs performs one network evaluation in 700 ms. This is at a resolution of 160x120.
 	
 
 	

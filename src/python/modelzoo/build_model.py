@@ -1,8 +1,10 @@
 import keras.backend as K
+import numpy as np
 from keras import Input, Model
 from keras.layers import Conv2D, BatchNormalization, LeakyReLU, MaxPooling2D, TimeDistributed, Add, Concatenate, \
     UpSampling2D, AveragePooling2D, Cropping2D
 from keras.layers import Reshape
+from sklearn.cluster import KMeans
 
 from modelzoo.Decoder import Decoder
 from modelzoo.Detector import Detector
@@ -12,6 +14,7 @@ from modelzoo.Preprocessor import Preprocessor
 from modelzoo.layers.ConcatMeta import ConcatMeta
 from modelzoo.layers.DepthwiseConv2D import DepthwiseConv2D
 from utils.ModelSummary import ModelSummary
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 
 
 def load_detector(directory, img_shape=None, preprocessing=None):
@@ -33,6 +36,41 @@ def load_detector(directory, img_shape=None, preprocessing=None):
     detector = Detector(model, preprocessor, postproessor, summary)
 
     return detector
+
+
+def kmeans_anchors(n_boxes: [int], label_source, img_shape):
+    if isinstance(label_source, list):
+        labels = []
+        for p in label_source:
+            label_reader = DatasetParser.get_parser(p, 'xml', color_format='bgr')
+            labels.extend(label_reader.read()[1])
+    else:
+        label_reader = DatasetParser.get_parser(label_source, 'xml', color_format='bgr')
+        _, labels = label_reader.read()
+
+    wh = []
+    for label in labels:
+        h, w = img_shape
+        for b in label.objects:
+            if 0 < b.poly.width < w \
+                    and 0 < b.poly.height < h:
+                box_dim = np.array([b.poly.width, b.poly.height])
+                box_dim = np.expand_dims(box_dim, 0)
+                wh.append(box_dim)
+    box_dims = np.concatenate(wh, 0)
+
+    kmeans = KMeans(n_clusters=np.sum(n_boxes)).fit(box_dims)
+    centers = kmeans.cluster_centers_
+    centers = np.round(centers, 2)
+    centers = np.sort(centers,0)[::-1]
+    anchors = []
+    idx = 0
+    for n in n_boxes:
+        anchors.append(centers[idx:idx + n])
+        idx += n
+
+    return np.array(anchors)
+
 
 def build_detector(img_shape, architecture, anchors, n_polygon=4):
     h, w, input_channels = img_shape
