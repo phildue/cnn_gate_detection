@@ -6,10 +6,10 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'mavnet',
-    'yolov3_width2',
-    'cats_deep',
-    'cats'
+    # 'mavnet',
+    # 'yolov3_width2',
+    # 'cats_deep',
+    'cats',
     'sign'
 ]
 preprocessing = [
