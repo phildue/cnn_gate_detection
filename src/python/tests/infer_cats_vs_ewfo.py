@@ -6,24 +6,29 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    # 'mavnet',
-    # 'yolov3_width2',
+    'mavnet',
+    'yolov3_width2',
+    'cats_deep',
     'cats'
+    'sign'
 ]
 preprocessing = [
-    # None,
-    # None,
+    None,
+    None,
+    None,
     None,
 ]
 
 img_res = [
-    # (416, 416),
-    # (416, 416),
+    (416, 416),
+    (416, 416),
+    (416, 416),
     (416, 416),
 ]
 datasets = [
-    # 'test_basement_cats',
+    'test_basement_cats',
     'test_basement_gate',
+    'test_basement_sign',
 ]
 
 work_dir = 'out/'
