@@ -8,9 +8,13 @@ cd_work()
 models = [
     'mavnet',
     'yolov3_width2',
-    'cats'
+    'cats',
+    'cats_deep',
+    'sign',
 ]
 preprocessing = [
+    None,
+    None,
     None,
     None,
     None,
@@ -20,16 +24,21 @@ img_res = [
     416 * 416,
     416 * 416,
     416 * 416,
+    416 * 416,
+    416 * 416,
 ]
 datasets = [
     'test_basement_cats',
     'test_basement_gate',
+    'test_basement_sign',
 ]
 
 legend = [
     'GateNet Empty',
     'TinyYoloV3 Empty',
-    'GateNet Filled'
+    'GateNet Filled',
+    'Darknet-19',
+    'Sign'
 ]
 
 n_iterations = 2
@@ -54,7 +63,7 @@ for m in models:
 bins = frames[0]['Sizes Bins']
 
 plt.figure(figsize=(8, 3))
-plt.title('Tested on Filled Object')
+plt.title('Tested on Cat Object')
 w = 1.0 / len(models)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 for i_m, r in enumerate(models):
@@ -113,14 +122,14 @@ plt.savefig('doc/thesis/fig/basement_gate_size.png')
 
 
 plt.figure(figsize=(8, 3))
-plt.title('Tested on Empty Object')
+plt.title('Tested on Sign Object')
 w = 1.0 / len(models)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 for i_m, r in enumerate(models):
     aps = []
     for it in range(n_iterations):
         try:
-            ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, 'test_basement_gate')]
+            ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, 'test_basement_sign')]
             aps.append(ap)
         except KeyError as e:
             print(e)
