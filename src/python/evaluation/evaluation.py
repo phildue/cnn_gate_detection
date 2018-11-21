@@ -373,8 +373,8 @@ def infer_on_set(
         n_samples=None,
         color_format_dataset='bgr',
         preprocessing=None,
-        color_format=None,
-        image_format="jpg"):
+        image_format="jpg",
+        show_t=-1):
     # Model
     conf_thresh = 0
 
@@ -413,14 +413,15 @@ def infer_on_set(
                 images[0].shape[1] != detector.model.input_shape[2]:
             print("Evaluator:: Labels have different size")
 
-        for j, p in enumerate(predictions):
-            l = p.copy()
-            img_show = images[j].copy()
-            l.objects = [o for o in l.objects if o.confidence > 0.01]
-            if preprocessing:
-                for p in preprocessing:
-                    img_show, _ = p.transform(img_show, ImgLabel([]))
-            show(img_show, labels=l, t=1)
+        if show_t > -1:
+            for j, p in enumerate(predictions):
+                l = p.copy()
+                img_show = images[j].copy()
+                l.objects = [o for o in l.objects if o.confidence > 0.01]
+                if preprocessing:
+                    for p in preprocessing:
+                        img_show, _ = p.transform(img_show, ImgLabel([]))
+                show(img_show, labels=l, t=1)
         # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
         # for j in range(len(batch)):
         #     show(batch[j][0], labels=[predictions[j], labels[j]])

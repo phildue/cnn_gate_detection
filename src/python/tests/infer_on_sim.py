@@ -66,7 +66,6 @@ for i_m, model in enumerate(models):
                          batch_size=4,
                          model_src=work_dir + model_folder,
                          preprocessing=preprocessing[i_m],
-                         color_format='bgr',
                          image_source=['resource/ext/samples/{}/'.format(dataset)])
         except FileNotFoundError:
             print("Not found: {}".format(model_folder))

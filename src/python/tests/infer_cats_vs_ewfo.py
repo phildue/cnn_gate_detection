@@ -42,10 +42,10 @@ for i_d, dataset in enumerate(datasets):
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',
                              result_file='predictions',
                              img_res=img_res[i_m],
+                             show_t=-1,
                              batch_size=10,
                              model_src=work_dir + model_folder,
                              preprocessing=preprocessing[i_m],
-                             color_format='bgr',
                              image_source=['resource/ext/samples/{}/'.format(dataset)])
             except FileNotFoundError:
                 print("Not found: {}".format(model_folder))
