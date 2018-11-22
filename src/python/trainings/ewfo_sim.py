@@ -62,12 +62,12 @@ for i in range(2):
         """
     image_source = [
         'resource/ext/samples/train_basement_gate',
-        'resource/ext/samples/train_basement_front_bg1',
-        'resource/ext/samples/train_basement_front_bg2',
-        'resource/ext/samples/train_basement_front_bg3',
-        'resource/ext/samples/train_daylight_front_bg1',
-        'resource/ext/samples/train_daylight_front_bg2',
-        'resource/ext/samples/train_daylight_front_bg3',
+        'resource/ext/samples/train_front_basement_bg1',
+        'resource/ext/samples/train_front_basement_bg2',
+        'resource/ext/samples/train_front_basement_bg3',
+        'resource/ext/samples/train_front_daylight_bg1',
+        'resource/ext/samples/train_front_daylight_bg2',
+        'resource/ext/samples/train_front_daylight_bg3',
     ]
     batch_size = 16
     n_samples = 20000
