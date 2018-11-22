@@ -6,31 +6,18 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    # 'mavnet',
-    # 'yolov3_width2',
-    # 'cats_deep',
-    # 'cats',
     'sign',
-    'sign_scale'
-]
-preprocessing = [
-    None,
-    None,
-    None,
-    None,
+    'cats',
+    'ewfo',
 ]
 
-img_res = [
-    (416, 416),
-    (416, 416),
-    (416, 416),
-    (416, 416),
-    (416, 416),
-]
 datasets = [
-    # 'test_basement_cats',
-    # 'test_basement_gate',
+    'test_basement_cats',
+    'test_basement_gate',
     'test_basement_sign',
+    'test_iros_cats',
+    'test_iros_gate',
+    'test_iros_sign',
 ]
 
 work_dir = 'out/'
@@ -43,11 +30,11 @@ for i_d, dataset in enumerate(datasets):
             try:
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',
                              result_file='predictions',
-                             img_res=img_res[i_m],
-                             show_t=1,
+                             img_res=(416,416),
+                             show_t=-1,
                              batch_size=10,
                              model_src=work_dir + model_folder,
-                             preprocessing=preprocessing[i_m],
+                             preprocessing=None,
                              image_source=['resource/ext/samples/{}/'.format(dataset)])
             except FileNotFoundError:
                 print("Not found: {}".format(model_folder))

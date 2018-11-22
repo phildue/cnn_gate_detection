@@ -38,3 +38,4 @@ class ObjectLabel:
     @property
     def class_id(self):
         return ObjectLabel.name_to_id(self.name)
+

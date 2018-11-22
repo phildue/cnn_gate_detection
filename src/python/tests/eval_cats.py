@@ -36,6 +36,9 @@ datasets = [
     'test_basement_cats',
     'test_basement_gate',
     'test_basement_sign',
+    'test_iros_cats',
+    'test_iros_gate',
+    'test_iros_sign',
 ]
 titles = models
 

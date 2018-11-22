@@ -20,12 +20,12 @@ class XmlParser(AbstractDatasetParser):
         # TODO extend this with color format and other informations about the dataset
         for obj in label.objects:
             obj_root = ET.SubElement(root, 'object')
-            ET.SubElement(obj_root, 'name').text = '{0:s}'.format(obj.class_name)
+            ET.SubElement(obj_root, 'name').text = '{0:s}'.format(obj.name)
             bnd_box = ET.SubElement(obj_root, 'bndbox')
-            x1 = obj.x_min
-            x2 = obj.x_max
-            y1 = obj.y_min
-            y2 = obj.y_max
+            x1 = obj.poly.x_min
+            x2 = obj.poly.x_max
+            y1 = obj.poly.y_min
+            y2 = obj.poly.y_max
             xmin = min((x1, x2))
             xmax = max((x1, x2))
             ymin = min((y1, y2))
@@ -46,17 +46,17 @@ class XmlParser(AbstractDatasetParser):
 
             corner_root = ET.SubElement(obj_root, 'corners')
             ET.SubElement(corner_root, 'top_left').text = '{},{}'.format(
-                int(obj.points[3, 0]),
-                int(obj.points[3, 1]))
+                int(obj.poly.points[3, 0]),
+                int(obj.poly.points[3, 1]))
             ET.SubElement(corner_root, 'top_right').text = '{},{}'.format(
-                int(obj.points[2, 0]),
-                int(obj.points[2, 1]))
+                int(obj.poly.points[2, 0]),
+                int(obj.poly.points[2, 1]))
             ET.SubElement(corner_root, 'bottom_left').text = '{},{}'.format(
-                int(obj.points[0, 0]),
-                int(obj.points[0, 1]))
+                int(obj.poly.points[0, 0]),
+                int(obj.poly.points[0, 1]))
             ET.SubElement(corner_root, 'bottom_right').text = '{},{}'.format(
-                int(obj.points[1, 0]),
-                int(obj.points[1, 1]))
+                int(obj.poly.points[1, 0]),
+                int(obj.poly.points[1, 1]))
 
         tree = ET.ElementTree(root)
         tree.write(path + '.xml')
