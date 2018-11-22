@@ -9,8 +9,9 @@ models = [
     # 'mavnet',
     # 'yolov3_width2',
     # 'cats_deep',
-    'cats',
-    'sign'
+    # 'cats',
+    'sign',
+    'sign_scale'
 ]
 preprocessing = [
     None,
@@ -24,10 +25,11 @@ img_res = [
     (416, 416),
     (416, 416),
     (416, 416),
+    (416, 416),
 ]
 datasets = [
-    'test_basement_cats',
-    'test_basement_gate',
+    # 'test_basement_cats',
+    # 'test_basement_gate',
     'test_basement_sign',
 ]
 
@@ -42,7 +44,7 @@ for i_d, dataset in enumerate(datasets):
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',
                              result_file='predictions',
                              img_res=img_res[i_m],
-                             show_t=-1,
+                             show_t=1,
                              batch_size=10,
                              model_src=work_dir + model_folder,
                              preprocessing=preprocessing[i_m],

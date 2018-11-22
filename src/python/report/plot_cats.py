@@ -11,8 +11,10 @@ models = [
     'cats',
     'cats_deep',
     'sign',
+    'sign_scale',
 ]
 preprocessing = [
+    None,
     None,
     None,
     None,
@@ -21,6 +23,7 @@ preprocessing = [
 ]
 
 img_res = [
+    416 * 416,
     416 * 416,
     416 * 416,
     416 * 416,
@@ -38,7 +41,8 @@ legend = [
     'TinyYoloV3 Empty',
     'GateNet Filled',
     'Darknet-19',
-    'Sign'
+    'Sign',
+    'Sign_Scale'
 ]
 
 n_iterations = 2
@@ -62,91 +66,35 @@ for m in models:
 
 bins = frames[0]['Sizes Bins']
 
-plt.figure(figsize=(8, 3))
-plt.title('Tested on Cat Object')
-w = 1.0 / len(models)
-# plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
-for i_m, r in enumerate(models):
-    aps = []
-    for it in range(n_iterations):
-        try:
-            ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, 'test_basement_cats')]
-            aps.append(ap)
-        except KeyError as e:
-            print(e)
-    ap = np.mean(aps, 0)
-    err = np.std(aps, 0)
+for d in datasets:
+    plt.figure(figsize=(8, 3))
+    plt.title('Tested on {}'.format(d))
+    w = 1.0 / len(models)
+    # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
+    for i_m, r in enumerate(models):
+        aps = []
+        for it in range(n_iterations):
+            try:
+                ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, d)]
+                aps.append(ap)
+            except KeyError as e:
+                print(e)
+        ap = np.mean(aps, 0)
+        err = np.std(aps, 0)
 
-    plt.bar(np.arange(len(bins)) - len(models) * w * 0.5 + i_m * w, ap, width=w, yerr=err)
+        plt.bar(np.arange(len(bins)) - len(models) * w * 0.5 + i_m * w, ap, width=w, yerr=err)
 
-for x, y in enumerate(frame['Objects']):
-    plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
-plt.xlabel('Area Relative to Image Size')
-plt.ylabel('Average Precision')
-plt.xticks(np.arange(len(bins)), np.round(bins, 3))
-plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-                    wspace=0.4, hspace=0.4)
-plt.legend(legend,loc='lower left')
-plt.ylim(0, 1.1)
-plt.savefig('doc/thesis/fig/basement_cats_size.png')
-
-
-
-plt.figure(figsize=(8, 3))
-plt.title('Tested on Empty Object')
-w = 1.0 / len(models)
-# plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
-for i_m, r in enumerate(models):
-    aps = []
-    for it in range(n_iterations):
-        try:
-            ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, 'test_basement_gate')]
-            aps.append(ap)
-        except KeyError as e:
-            print(e)
-    ap = np.mean(aps, 0)
-    err = np.std(aps, 0)
-    xshift = len(models) * w * 0.5 + i_m * w
-    plt.bar(np.arange(len(bins)) - xshift, ap, width=w, yerr=err)
-for x, y in enumerate(frame['Objects']):
-    plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
-# plt.text(x, y + 5, str(y), color='gray', fontweight='bold')
-plt.xlabel('Area Relative to Image Size')
-plt.ylabel('Average Precision')
-plt.xticks(np.arange(len(bins)), np.round(bins, 3))
-plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-                    wspace=0.4, hspace=0.4)
-plt.legend(legend,loc='lower left')
-plt.ylim(0, 1.1)
-plt.savefig('doc/thesis/fig/basement_gate_size.png')
+    for x, y in enumerate(frames[0]['{} Objects'.format(d)]):
+        plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
+    plt.xlabel('Area Relative to Image Size')
+    plt.ylabel('Average Precision')
+    plt.xticks(np.arange(len(bins)), np.round(bins, 3))
+    plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
+                        wspace=0.4, hspace=0.4)
+    plt.legend(legend,loc='lower left')
+    plt.ylim(0, 1.1)
+    plt.savefig('doc/thesis/fig/basement_cats_size.png')
 
 
-plt.figure(figsize=(8, 3))
-plt.title('Tested on Sign Object')
-w = 1.0 / len(models)
-# plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
-for i_m, r in enumerate(models):
-    aps = []
-    for it in range(n_iterations):
-        try:
-            ap = frames[i_m]['{2:s}_ap{0:02f}_i{1:02d}'.format(0.6, it, 'test_basement_sign')]
-            aps.append(ap)
-        except KeyError as e:
-            print(e)
-    ap = np.mean(aps, 0)
-    err = np.std(aps, 0)
-    xshift = len(models) * w * 0.5 + i_m * w
-    plt.bar(np.arange(len(bins)) - xshift, ap, width=w, yerr=err)
-for x, y in enumerate(frame['Objects']):
-    plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
-# plt.text(x, y + 5, str(y), color='gray', fontweight='bold')
-plt.xlabel('Area Relative to Image Size')
-plt.ylabel('Average Precision')
-plt.xticks(np.arange(len(bins)), np.round(bins, 3))
-plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
-                    wspace=0.4, hspace=0.4)
-plt.legend(legend,loc='lower left')
-plt.ylim(0, 1.1)
-plt.savefig('doc/thesis/fig/basement_sign_size.png')
 
 plt.show(True)

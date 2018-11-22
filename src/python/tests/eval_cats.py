@@ -9,13 +9,15 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'mavnet',
-    'yolov3_width2',
-    'cats',
-    'cats_deep',
+    # 'mavnet',
+    # 'yolov3_width2',
+    # 'cats',
+    # 'cats_deep',
     'sign',
+    'sign_scale',
 ]
 preprocessing = [
+    None,
     None,
     None,
     None,
@@ -66,7 +68,7 @@ for i_m, m in enumerate(models):
                                                                            bins=size_bins * img_res[i_m],
                                                                            images=images, show_t=-1, iou_thresh=iou)
 
-                    frame['Objects'] = true_objects_bin
+                    frame['{} Objects'.format(d)] = true_objects_bin
                     frame['{2:s}_ap{0:02f}_i{1:02d}'.format(iou, it, d)] = result_size_ap
                     print(frame.to_string())
                     frame.to_pickle('{}/results_size_cluster.pkl'.format(prediction_dir))

@@ -19,7 +19,7 @@ from utils.workdir import cd_work
 cd_work()
 img_res = 416, 416
 for i in range(1):
-    model_dir = 'cats_deep_i{0:02d}'.format(i)
+    model_dir = 'sign_deep_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100
 
@@ -71,7 +71,7 @@ for i in range(1):
     """
        Datasets
        """
-    image_source = ['resource/ext/samples/train_basement_cats',
+    image_source = ['resource/ext/samples/train_basement_gate',
                     # 'resource/ext/samples/daylight_course5',
                     # 'resource/ext/samples/daylight_course3',
                     # 'resource/ext/samples/iros2018_course1',

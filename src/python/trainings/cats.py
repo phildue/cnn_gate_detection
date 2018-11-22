@@ -24,59 +24,44 @@ for i in range(2):
     initial_epoch = 0
     epochs = 100
 
-    anchors = np.array([[
-        [330, 340],
-        [235, 240],
-        [160, 165]],
-        [[25, 40],
-         [65, 70],
-         [100, 110]]]
-    )
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [11]},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 2},
+        {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 1, 'right': 0},
+        {'name': 'route', 'index': [-1, 10]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'route', 'index': [11]},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 4},
+        {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 2, 'right': 0},
+        {'name': 'route', 'index': [-1, 10]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
     work_dir = 'out/' + model_dir + '/'
     create_dirs([work_dir])
     """
-    Model
-    """
-    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture, anchors=anchors,
-                                         n_polygon=4)
-    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
-    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
-    preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
-    loss = GateDetectionLoss()
-    # model.load_weights('out/mavnet/model.h5')
-    """
-    Datasets
-    """
-    image_source = ['resource/ext/samples/basement_cats20k',
+        Datasets
+        """
+    image_source = ['resource/ext/samples/train_basement_cats',
                     # 'resource/ext/samples/daylight_course5',
                     # 'resource/ext/samples/daylight_course3',
                     # 'resource/ext/samples/iros2018_course1',
@@ -121,12 +106,36 @@ for i in range(2):
                               remove_filtered=False, max_empty=0, filter=filter, subsets=subsets)
 
     """
+    Model
+    """
+    # anchors = kmeans_anchors(label_source=image_source, n_boxes=[2, 2, 2], img_shape=img_res)
+    anchors = np.array(
+        [[[149.77, 154.2],
+          [105.23, 108.23]],
+
+         [[77.98, 80.34],
+          [58.58, 60.54]],
+
+         [[42.82, 44.31],
+          [27.21, 28.19]]]
+    )
+    print(anchors)
+
+    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+                                         anchors=anchors,
+                                         n_polygon=4)
+    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
+    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
+    preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
+    loss = GateDetectionLoss()
+    # model.load_weights('out/mavnet/model.h5')
+
+    """
     Training Config
     """
     optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
     # metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
     #                                  norm=img_res, iou_thresh=0.6)
-
 
     # def ap60(y_true, y_pred):
     #     return metric.compute(
