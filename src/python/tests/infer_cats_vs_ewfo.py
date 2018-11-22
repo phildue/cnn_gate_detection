@@ -6,16 +6,19 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    # 'cats',
+    'cats',
     'ewfo',
     'sign',
+    'sign_deep',
+    'cats_deep',
+    'ewfo_deep',
 ]
 
 datasets = [
-    # 'test_basement_cats',
-    # 'test_basement_gate',
-    # 'test_basement_sign',
-    # 'test_iros_cats',
+    'test_basement_cats',
+    'test_basement_gate',
+    'test_basement_sign',
+    'test_iros_cats',
     'test_iros_gate',
     'test_iros_sign',
 ]
@@ -30,7 +33,7 @@ for i_d, dataset in enumerate(datasets):
             try:
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',
                              result_file='predictions',
-                             img_res=(416,416),
+                             img_res=(416, 416),
                              show_t=1,
                              batch_size=10,
                              model_src=work_dir + model_folder,
