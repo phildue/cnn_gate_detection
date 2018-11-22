@@ -22,7 +22,7 @@ for i in range(1):
     model_dir = 'cats_deep_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100
-
+    anchors = None
     architecture = [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
@@ -45,21 +45,22 @@ for i in range(1):
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [20]},
+        {'name': 'route', 'index': [21]},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 1, 'right': 0},
-        {'name': 'route', 'index': [-1, 19]},
+        {'name': 'route', 'index': [-1, 20]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [20]},
+        {'name': 'route', 'index': [21]},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 4},
-        {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 1, 'right': 0},
-        {'name': 'route', 'index': [-1, 10]},
+        {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 2, 'right': 0},
+        {'name': 'route', 'index': [-1, 16]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
 
@@ -118,7 +119,8 @@ for i in range(1):
     """
     Model
     """
-    anchors = kmeans_anchors(label_source=image_source, n_boxes=[2, 2, 2], img_shape=img_res)
+    if anchors is None:
+        anchors = kmeans_anchors(label_source=image_source, n_boxes=[2, 2, 2], img_shape=img_res)
 
     model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture, anchors=anchors,
                                          n_polygon=4)
@@ -126,7 +128,7 @@ for i in range(1):
     decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
     preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
     loss = GateDetectionLoss()
-    # model.load_weights('out/mavnet/model.h5')
+    model.load_weights('resource/vgg16_weights.h5',by_name=True)
 
 
     """

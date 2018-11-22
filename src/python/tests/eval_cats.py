@@ -1,37 +1,19 @@
 import numpy as np
 import pandas as pd
 
-from evaluation.evaluation import load_predictions, preprocess_truth, evalcluster_size_ap
+from evaluation.evaluation import load_predictions, evalcluster_size_ap
 from utils.ModelSummary import ModelSummary
-from utils.imageprocessing.Backend import imread
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
 cd_work()
 models = [
-    # 'mavnet',
-    # 'yolov3_width2',
-    # 'cats',
-    # 'cats_deep',
     'sign',
-    'sign_scale',
-]
-preprocessing = [
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
+    'cats',
+    'ewfo',
 ]
 
-img_res = [
-    416 * 416,
-    416 * 416,
-    416 * 416,
-    416 * 416,
-    416 * 416,
-]
+
 datasets = [
     'test_basement_cats',
     'test_basement_gate',
@@ -62,14 +44,11 @@ for i_m, m in enumerate(models):
                     labels_true, labels_pred, img_files = load_predictions(
                         '{}/predictions.pkl'.format(prediction_dir))
 
-                    if preprocessing[i_m]:
-                        images, labels_true = preprocess_truth(img_files, labels_true, preprocessing[i_m])
-                    else:
-                        images = [imread(f, 'bgr') for f in img_files]
+                    #images = [imread(f, 'bgr') for f in img_files]
 
                     result_size_ap, true_objects_bin = evalcluster_size_ap(labels_true, labels_pred,
-                                                                           bins=size_bins * img_res[i_m],
-                                                                           images=images, show_t=-1, iou_thresh=iou)
+                                                                           bins=size_bins * 416**2,
+                                                                           images=None, show_t=-1, iou_thresh=iou)
 
                     frame['{} Objects'.format(d)] = true_objects_bin
                     frame['{2:s}_ap{0:02f}_i{1:02d}'.format(iou, it, d)] = result_size_ap

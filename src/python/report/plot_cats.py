@@ -6,30 +6,12 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'mavnet',
-    'yolov3_width2',
-    'cats',
-    'cats_deep',
     'sign',
-    'sign_scale',
-]
-preprocessing = [
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
+    'cats',
+    'ewfo',
 ]
 
-img_res = [
-    416 * 416,
-    416 * 416,
-    416 * 416,
-    416 * 416,
-    416 * 416,
-    416 * 416,
-]
+
 datasets = [
     'test_basement_cats',
     'test_basement_gate',
@@ -40,15 +22,12 @@ datasets = [
 ]
 
 legend = [
-    'GateNet Empty',
-    'TinyYoloV3 Empty',
-    'GateNet Filled',
-    'Darknet-19',
-    'Sign',
-    'Sign_Scale'
+    'Trained on Sign',
+    'Trained on Cats',
+    'Trained on EWFO',
 ]
 
-n_iterations = 2
+n_iterations = 1
 frames = []
 for m in models:
     frame = None
@@ -85,7 +64,7 @@ for d in datasets:
         ap = np.mean(aps, 0)
         err = np.std(aps, 0)
 
-        plt.bar(np.arange(len(bins)) - len(models) * w * 0.5 + i_m * w, ap, width=w, yerr=err)
+        plt.bar(np.arange(len(bins)) +i_m * w, ap, width=w, yerr=err)
 
     for x, y in enumerate(frames[0]['{} Objects'.format(d)]):
         plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
