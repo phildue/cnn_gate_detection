@@ -51,7 +51,7 @@ for i in range(2):
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 4},
         {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 2, 'right': 0},
-        {'name': 'route', 'index': [-1, 10]},
+        {'name': 'route', 'index': [-1, 8]},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
