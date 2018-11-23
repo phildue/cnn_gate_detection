@@ -177,6 +177,9 @@ The filters of \acp{CNN} are translation invariant by design but cannot inherent
 
 \section{How can we transfer the detector on a \acp{MAV}?}
 
+
+In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of image augmentation is a common tool to improve the detection performance. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. In the \ac{MAV} domain sensor and lens effects have a significant influence on the obtained sample. Hence, we hypothesize that the incorporation of these effects will improve the performance of the trained models. A total of  five image augmentation techniques are investigated.
+
 \begin{figure}[hbtp]
 	\centering
 	\begin{minipage}{0.3\textwidth}

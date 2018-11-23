@@ -1,5 +1,7 @@
 \chapter{Methodology}
 
+This chapter introduces a notation as well as the mathematical models and software tools used in this thesis. It starts with describing the data generation pipeline that is used to generate synthetic data. Subsequently the Object-Detection network is explained.
+
 \section{Data Generation Pipeline}
 \label{sec:datagen:method}
 \begin{figure}[htbp]
@@ -9,13 +11,21 @@
 	\label{fig:training:datagen_notation}
 \end{figure}
 
-A data generation pipeline is implemented using OpenGL, UnrealEngine and AirSim. An overview can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by translation $\textbf{t}$ and rotation $\textbf{r}$. The coordinate system is \ac{NED}.
+An overview of the data generation pipeline can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by its translation $\textbf{t} = [x,y,z]$ and rotation $\textbf{r}={\phi, \theta \psi}$. The used coordinate system is \ac{NED} while the center of origin is placed at the initial position of the camera.
 
-A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. A final post processing step can simulate further effects like lens distortion and sensor noise. This step is implemented using OpenCV and Python. All source code is made publicly available at \url{https://github.com/phildue/datagen.git}.
+A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. The position of each point in the image space is defined by $\textbf{p} = [p_x,p_y]$. The origin is on the bottom left of the image.
+
+These steps are implemented using Epic's \textit{UnrealEngine} and its \textit{AirSim}-Plug-In by Microsoft. This allows the creation of environments using \ac{CAD} models, as well as the automatic placement of the camera in C++. The tool is extended to store the location of a bounding box that surrounds an object in the environment. This allows the automatic generation of ground truth labels while the camera is placed.
+
+The UnrealEngine contains a profound amount of photorealistic image effects. However, their use with data generation tool would require a deep understanding of graphical programming and a substantial amount of work. Hence, the final post processing step is implemented using the image processing library \textit{OpenCV} in Python. This also allows to study the incorporation of particular sensor effects or image augmentation while training the network.
+
+All source code is made publicly available at \url{https://github.com/phildue/datagen.git}.
 
 \subsection{Environments}
 
-Within the pipeline environments for training and testing are created. A black environment serves as base to replace the background with existing images. Furthermore, three indoor base environments are created that fully simulate illumination and background. An overview can be seen in \Cref{fig:environments}. Within the environment light conditions, background textures, object locations can be changed manually. The environments are described in the following:
+Images can appear substantially different depending on the particular environment in which they are taken. The light conditions in an indoor scene with artificial light are substantially different than the ones outdoors in sunlight. The environment also influences the appearance of an object and therefore its detection.
+
+In order to train and evaluate the detection of \acp{EWFO} in different conditions, three environments are created. A black environment serves as base to replace the background with existing images. Furthermore, three indoor base environments are created that fully simulate illumination and background. An overview can be seen in \Cref{fig:environments}. Within the environment light conditions, background textures, object locations can be changed manually. The environments are described in the following:
 
 \begin{enumerate}
 	\item \textit{Dark:} The environment is a room without windows, only containing artificial light sources. 
@@ -38,25 +48,52 @@ Within the pipeline environments for training and testing are created. A black e
 	\label{fig:environments}
 \end{figure}
 
-The data generation pipeline is used to generate a test set in simulation. The test set is set up in the \textit{IROS} environment and inspired by the race court of the \ac{IROS} Autonomous Drone Race. The AirSim flight controller is used to simulate a flight of an \ac{MAV} through the race court. The test set contains 550 images with a total of 1361\todo{recount with filtered} objects.
 
-It should be noted that when generating data with the described methods it is likely that samples appear in which only a corner of the object is visible or the view angle is in such a way that the object appears only as a thin line. In initial experiments these corner cases led to unstable training. Hence, some minimum requirements for the labels are set and samples/labels are removed if these are not met. Objects have to have a minimum size of 1\% of the image area as well as an aspect ratio between 1/3 and 3/1. Furthermore, at least three corners have to be visible.
+\subsection{Post Processing}
 
-The models and training are implemented using the \textit{Keras} framework with \textit{tensorflow}-backend. For all trainings the Adam optimizer is applied using a learning rate of 0.001 for the first 60 epochs and a learning rate 0.0001 afterwards. A validation set containing 1\% randomly sampled images from the training set is used. The training is stopped if the validation error does not decrease for more than 5 epochs or 100 epochs are reached.
+Another parameter that influences the image and object appearance are camera and lens conditions. An object detector should be able to cope with these effects. Hence, this work studies the influence of some effects when modeled in the training set.
 
-Throughout the experiments the baseline TinyYoloV3 architecture is used. Thereby we simplify the loss function to a single class prediction. The exact model is described in \Cref{sec:object_detection}. The input image resolution is 416x416.
+Lens distortion and motion blur are chosen due to their presence in the real world data set. Furthermore, Chromatic Aberration is studied because it led to vast improvements in \cite{Carlson2018}. Variations in \ac{HSV} space are selected as it is a common image augmentation technique in current Object Detection pipelines. A visual overview can be seen in \Cref{eq:distortion}. This section describes the mathematical models behind the applied the effects.
 
-\subsection{Image Augmentation}
+\begin{figure}[bhtp]
+	\centering
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example}
+		\caption{Original Image.}
+		\label{fig:orig}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
+		\caption{Chromatic Aberration. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.} 		
+		\label{fig:chromatic}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_distorted}
+		\caption{Lens Distortion. It can be seen how the previously straight lines appear as circular shape.}		
+		\label{fig:distortion}
+	\end{minipage}
+	
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
+		\caption{Out-of-Focus blur.}
+		\label{fig:focusblur}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
+		\caption{Vertical Motion Blur.}
+		\label{fig:motionblur}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
+		\caption{Exposure. It can be seen how lighter areas appear particularly light, while dark areas remain dark.}
+		\label{fig:exposure}
+	\end{minipage}
+\end{figure}
 
-The final step applies low-level image transformations. It allows to further simulate sensor effects and increase the variance in the generated data.
-
-In literature \cite{Krizhevsky2012a,Howard2013,Redmon,Liu} the application of image augmentation is a common tool to improve the detection performance. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. In the \ac{MAV} domain sensor and lens effects have a significant influence on the obtained sample. Hence, we hypothesize that the incorporation of these effects will improve the performance of the trained models. A total of  five image augmentation techniques are investigated.
 
 \paragraph{Lens Distortion}
 
 Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. For \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
-
-For this work a 120 wide angle lens is used. Especially, close objects undergo a strong variation in appearance. Hence, we hypothesize including this effect in the training process will improve the performance on the real world dataset. 
 
 The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
 \todo{double check formula is (y in first line?)}
@@ -79,9 +116,8 @@ Where:
 	\item $\lambda_x$ and $\lambda_y$ control the tangential distortion
 \end{itemize}
 
-Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution, so the Newton-approximation.
+Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution the Newton-approximation is used.
 
-An example with $\kappa_1 = 0.5, \kappa_2 = 0.5$ is displayed in \Cref{fig:distortion}. It can be seen how the previously straight lines appear as circular shape.
 
 \paragraph{Chromatic Aberration.}
 
@@ -105,7 +141,6 @@ y_C \\
 
 Where $C$ is one colour channel of the image.
 
-An example is displayed in \Cref{fig:chromatic}. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.
 
 \paragraph{Blur}
 
@@ -117,7 +152,7 @@ The effect is modelled using a Gaussian-filter. The image is convolved with a 2D
 k(x,y) = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\frac{1}{2}({\frac{(x-\mu_x)^2}{\sigma_x^2} + \frac{(y-\mu_y)^2}{\sigma_y^2}})}
 \end{equation}
 
-Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to model directional (motion) blur and $\mu_x$, $\mu_y$ are at the kernel center. An example can be seen in \Cref{fig:focusblur}.
+Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to model directional (motion) blur and $\mu_x$, $\mu_y$ are at the kernel center. 
 
 \paragraph{Exposure.}
 
@@ -141,9 +176,9 @@ where $S$ is obtained from :
 S = f^{-1}(I)
 \end{equation}
 
-An example for overexposure is displayed in \Cref{fig:exposure}. It can be seen how lighter areas appear particularly light, while dark areas remain dark.
+An example for overexposure is displayed in \Cref{fig:exposure}. 
 
-\paragraph{Colour Variations}
+\paragraph{Variations in \ac{HSV}}
 
 The 3D-models and textures used in the simulator are limited and creating a large variation in environments or objects requires manual effort. An alternative method to increase the variation in colour and illumination is a scaling in HSV space. The objects in the real world dataset have a slightly different shape and different colour to the 3D-models of the data generation tool. We hypothesize including variations in HSV space will improve the performance on the real world dataset.
 
@@ -153,67 +188,39 @@ I^* = f(I) = S I
 \end{equation}
 Where \textbf{S} is a 3D-vector where each element stems from a uniform distribution. The distributions are:
 
+\subsection{Synthetic Test Set}
 
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example}
-		\caption{Original Image.}
-		\label{fig:orig}
-	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
-		\caption{Chromatic Aberration.} 		
-		\label{fig:chromatic}
-	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_distorted}
-		\caption{Lens Distortion. }		
-		\label{fig:distortion}
-	\end{minipage}
-	
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
-		\caption{Out-of-Focus blur.}
-		\label{fig:focusblur}
-	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
-		\caption{Vertical Motion Blur.}
-		\label{fig:motionblur}
-	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
-		\caption{Exposure.}
-		\label{fig:exposure}
-	\end{minipage}
-\end{figure}
+The data that can be created with the data generation tool is limited by the graphical engine, the used textures and the created environments. It is possible that this reality gap limits the performance of the detection on real data. Hence, only measuring the performance on the real world data set introduced in \Cref{sec:background} would limit the insights gained from the experiments. Furthermore, the real world dataset does not contain flights with more than two gates. That is why a synthetic test set is created by simulating a flight through the \textit{IROS}-environment. This test set contains 550 images with a total of 1361\todo{recount with filtered} objects.
 
+The arrangement of objects is based on the race court of the Autonomous Drone Race at \ac{IROS} 2018.
 
 \section{Object Detector}
 
-This work uses a typical one-stage detector with anchor boxes as baseline, namely the \textit{YoloV3} detector with the \textit{TinyYoloV3} network. The fundamental concept of one-stage detectors with anchor boxes is illustrated in \Cref{sec:related}. In this section the implementation with the \textit{TinyYoloV3} network and its training goal are explained.
+This work investigates the detection of \acp{EWFO} with \textit{YoloV3} a typical one stage detector with anchor boxes. The fundamental concept of one-stage detectors with anchor boxes is explained in \Cref{sec:related}. This section describes the detailed implementation of \ac{YoloV3} and its training goal. It further introduces the baseline network architectures of this work.
 
-On a high level basis \textit{YoloV3} maps the input image to a predefined set of anchor boxes which are visualized in \Cref{sec:anchors}. The anchors have a predefined width $p_w$, height $p_h$ and are arranged in grids corresponding to the spatial resolution of the output layers. For objects of different scales different image features are relevant. Furthermore, for small objects a more fine grain resolution is required to sufficiently distinguish between multiple small objects close to each other. Therefore, \textit{YoloV3} uses two output grids $G=2$ output grids, with a grid of $S_1 =13$ for larger objects (red) and $S_2 = 26$ smaller objects (blue). 
+\subsection{Concept}
 
+On a high level basis \textit{YoloV3} maps the input image to a fixed set of bounding boxes. For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
 
-For each box the network predicts an object probability $\hat o$ that classifies the class as object (1) or background (0). The original version of \textit{YoloV3} further distinguishes between object classes, however this work considers the single class case. There we remove this output node from the prediction. 
+The anchor boxes have a predefined width $p_w$, height $p_h$ as well as a center location $c_x$,$c_y$ and are arranged in $G$ 2D-Grids with individual spatial resolution $S_n$. This allows to define different output resolutions depending on the object size. Smaller objects need a more fine grain resolution as more of them can appear close to each other. The same fine grain resolution can be too high for larger objects and thus lead to confusion of the detector during training. The bounding box dimensions $p_w$ and $p_h$ can be chosen manually or determined by k-means clustering on label width and height of the training set.
 
-The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are  the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
+The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
 
-In total this leads to 5 predicted parameters for each bounding box and thus to a mapping from the input image of 416x416x3 pixels to 12675 output nodes that predict 2535 boxes. In a last step boxes that contain the same class and have a high overlap are filtered such that only the boxes with the highest confidences remain.	
+In total this leads to 5 predicted parameters for each bounding box and to a mapping from the input image of $I_HxI_WxI_D$ to $5*B$ nodes that encode $B=\sum_{i=0}^{G}S^h_i*S^w_i*a_i$ boxes. Where $a_i$ is the number of anchor boxes in grid $i$. In a last step boxes that contain the same class prediction and have high overlap are filtered such that only the boxes with the highest confidence remain.	
 
-\subsection{Architecture}
+\subsection{Architectures}
 
-This mapping is implemented with a \acp{CNN} as illustrated in  \Cref{fig:tinyyolov3_arch}. It contains 10 convolutional, 6 pooling and 1 unpooling layer(s). After each convolutional layer batch normalization normalizes the output in order to simplify the training process.
-The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. The architecture is a typical example of current \acp{CNN}. In the early layers the receptive field of the filters is small. Hence, the patterns that can be represented are not very complex and only a small amount of filters is used. As the network gets deeper more complex patterns can be present and more weights are required to encode these features. Hence, the width is increased. Research has shown that fixing kernels to a size of 3x3 and stacking them in deep layers is particularly efficient\todoref{vgg}. This can also be seen in the \textit{TinyYoloV3} architecture. 
+This mapping is implemented with a \acp{CNN}. Thereby the dimension of the network output corresponds to $S^w_*xS^h_*x5\cdot a_i$.
+
+With \textit{YoloV3} the \textit{TinyYoloV3} network was released that is 10 layer \acp{CNN} and thus a suitable baseline for this work. However, due to the small amount of layers, the receptive field of the network is only 223 pixels. Furthermore, the spatial resolution of 13x13 is still fine for objects that almost cover the whole image. Therefore the architecture is extended by an additional pooling and output layer. 
+
+The network architecture is referred to as \textit{SmallYoloV3} and displayed in \Cref{fig:tinyyolov3_arch} and explained in detail in the following. The input image with a resolution of 416x416x3 is processed by 5 layers that stepwise decrease the spatial resolution (max pooling) while increasing the width, leading to a intermediate volume of 26x26x512. This part can be seen as a common part that extracts features for objects at all scales. The architecture is a typical example of current \acp{CNN}. In the early layers the receptive field of the filters is small. Hence, the patterns that can be represented are not very complex and only a small amount of filters is used. As the network gets deeper more complex patterns can be present and more weights are required to encode these features. Hence, the width is increased. Research has shown that fixing kernels to a size of 3x3 and stacking them in deep layers is particularly efficient \todoref{vgg}. This can also be seen in the \textit{TinyYoloV3}\todo{update picture} architecture. 
 
 Convolving the wide volume of deeper layers such as the 26x26x512  output of layer 5 with a 3x3 kernel requires many computations. Therefore a common technique is to first compress the volume by applying a 1x1 kernel intermediately. Such \textit{bottleneck} layers can be seen in layer 6-1 and 7-2.
 
-From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch extracts features for larger objects leading to a final grid of 13x13. The higher branch extracts features for smaller objects leading to a grid of 26x26. When Although not stated explicitly by the authors this is likely to compress the feature response of the previous layer and thus save computations.
+From layer 5 the network splits to two branches responsible for smaller and larger objects. The lower branch extracts features for larger objects leading to a final grid of 13x13. The higher branch extracts features for smaller objects leading to a grid of 26x26.
 
-In the final layer 15 output nodes are responsible to predict 3 bounding boxes for each grid cell. Thereby the nodes responsible for $\hat o$ have a sigmoid-activation such that the response gets squashed between 0 and 1 thus can be interpreted as a probability. Similarly the nodes responsible for $\hat x$ and $\hat y$ have a sigmoid activation such that the output can be interpreted as coordinate normalized to the image size. For the output nodes of $w$ and $h$ \textit{YoloV3} uses $e^x$-activation. This way the output is always larger than one while no adaption in bounding box width/height ($w=1$) corresponds to no activation. Furthermore, the network can predict a large range of scales in a small range of activation which aims to simplify the learning process.
-
+The created network serves as a baseline since it is relatively shallow and suits to the computational requirement of an \ac{MAV}. In order to study the influence of network complexity on the detection of \acp{EWFO} a second much deeper architecture is created. Its architecture is displayed in \Cref{fig:tinyyolov3_arch} and follows a similar pattern as \textit{SmallYoloV3}. However, it contains much more parameters.
 
 \begin{figure}[hbtp]
 	\centering
@@ -222,12 +229,11 @@ In the final layer 15 output nodes are responsible to predict 3 bounding boxes f
 	\label{fig:tinyyolov3_arch}
 \end{figure}
 
-	\subsection{Training Goal}
+\subsection{Training Goal}
 
-In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each of the 12675 output nodes. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with backpropagation.
+In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each output node. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with backpropagation.
 
-Thereby it is desirable that a network output of zero corresponds to no network activation and henceforth to keep all predicted bounding boxes in the default shape. Therefore, \textit{YoloV3} encodes the ground true coordinates as follows:
-
+Thereby it is desirable that a network output of zero corresponds to no filter activation and henceforth to keep all predicted bounding boxes in the default shape. Therefore, \textit{YoloV3} encodes the ground true coordinates as follows:
 
 \begin{equation}
 \label{sec:encoding}
@@ -239,9 +245,9 @@ b_h = e^{\hat h_{i,j,k}} \cdot p^h_{i,j,k}
 
 where $\hat{x}$,$\hat{y}$,$\hat w_{i,j,k}$ and $\hat h_{i,j,k}$ correspond to output nodes of anchor box at grid $i$, cell $j$, anchor $k$; $g^x_{i,j,k}$, $g^y_{i,j}$ is the top left coordinate of the respective grid cell; $\sigma$ is the sigmoid-function.
 
-The question remains to which grid cell and anchor box a label is assigned to. Therefore the \ac{IoU} between every ground truth and anchor box is calculated and the grid with the highest value is assigned. If a ground truth box has very different coordinates than any possible anchor box, even the highest \ac{IoU} is comparatively low. Thus the network has to perform a very strong activation to predict such a label. In return the gradient will be high which can cause unstable updates. Therefore labels that have a lower \ac{IoU} than 0.5 are excluded. 
+The question remains to which grid cell and anchor box a label is assigned to. During training the loss is only propagated through the nodes that correspond to the "responsible" anchor box. This responsibility determined by the center location of the ground truth box and its width and height. A label is assigned to the grid in which its center falls into and within that cell to the anchor that has the highest \ac{IoU}. This can be a very strict assignment when an object has a high overlap with multiple anchor boxes. While other one stage detectors allow multiple anchors to be responsible to predict a box, \textit{YoloV3} only assigns one anchor, but ignores the predictions of an output node that has an \ac{IoU} of more than 0.5.
 
-With the true label and the predicted label the training goal can be formulated. The loss needs to capture the localization and the classification goal. In a typical ground truth image only a small subset of anchors is assigned responsible to predict an object. All the other anchors see only background. Hence, there is a class imbalance between the "object" class and the "background" class. Treating both losses equally would lead the model to simply assign "background" for all anchors. The weight terms $\lambda_{obj}$ and $\lambda_{noobj}$ compensate for this class imbalance. Furthermore, $\lambda_{loc}$ trades-off the localization goal and the classification goal. The abstract training loss is summarized in: 
+With true and predicted label the training goal can be formulated. The loss needs to capture the localization and the classification goal. In a typical ground truth image only a small subset of anchors is assigned responsible to predict an object. All the other anchors see only background. Hence, there is a class imbalance between the "object" class and the "background" class. Treating both losses equally would lead the model to simply assign "background" for all anchors. The weight terms $\lambda_{obj}$ and $\lambda_{noobj}$ compensate for this class imbalance. Furthermore, $\lambda_{loc}$ trades-off the localization goal and the classification goal. The abstract training loss is summarized in: 
 
 \begin{equation}
 \mathcal{L} = \lambda_{loc}\mathcal{L}_{loc} + \lambda_{obj}\mathcal{L}_{obj} + \lambda_{noobj}\mathcal{L}_{noobj} + \lambda_{class}\mathcal{L}_{class}
@@ -260,9 +266,9 @@ where $\hat o_{ij}$ is an output node with sigmoid activation assigned to anchor
 \mathcal{L}_{obj} = \sum_{i=0}^{G}\sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}(-(c_{ijk}\log(\hat c_{ijk}) + (1 - c_{ijk})\log(1 - \hat c_{ijk})))
 \end{equation}
 
-Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if an object is present at anchor $i,j,k$. $\mathcal{L}_{obj}$ is defined vice versa but controlled by the $\mathbb{1}_{ijk}^{noobj}$ binary variable.
+Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if an the anchor box at $i,j,k$ is assigned responsible to predict the respective object. $\mathcal{L}_{obj}$ is defined vice versa but controlled by the $\mathbb{1}_{ijk}^{noobj}$ binary variable.
 
-For the localization loss, similar to the classification loss, the weights should be updated significantly when the difference is high but less strongly when the difference is small. Furthermore, the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. However, the squared distance does not make a difference between large and small boxes. For example, a deviation of 5 px for a small ground truth box with a width of 1 is treated equally to a deviation from a ground truth box with width 100. Therefore \textit{YoloV3}, applies the square root on width and height to scale down very large box dimensions and thus balance the loss calculation. The localization loss is summarized in:
+For the localization loss, similar properties are desirable, although the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. The localization loss is summarized in:
 
 \begin{equation}
 \mathcal{L}_{loc} = \sum_{i=0}^{G} \sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}[(x_{ijk}-\hat{x}_{ijk})^2 + (y_{ijk}-\hat{y}_{ijk})^2  + (\sqrt{w_{ijk}}-\sqrt{\hat{w}_{ijk}})^2 +(\sqrt{h_{ijk}}-\sqrt{\hat{h}_{ijk}})^2 ]
