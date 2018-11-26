@@ -3,8 +3,16 @@ import pandas as pd
 
 from evaluation.evaluation import load_predictions, evalcluster_size_ap
 from utils.ModelSummary import ModelSummary
+from utils.imageprocessing.Backend import imread
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('show', metavar='s', type=int, nargs=1)
+args = parser.parse_args()
+show_t = args.show
 
 cd_work()
 models = [
@@ -12,7 +20,6 @@ models = [
     'cats',
     'ewfo',
 ]
-
 
 datasets = [
     'test_basement_cats',
@@ -44,11 +51,14 @@ for i_m, m in enumerate(models):
                     labels_true, labels_pred, img_files = load_predictions(
                         '{}/predictions.pkl'.format(prediction_dir))
 
-                    #images = [imread(f, 'bgr') for f in img_files]
+                    if show_t >= 0:
+                        images = [imread(f, 'bgr') for f in img_files]
+                    else:
+                        images = None
 
                     result_size_ap, true_objects_bin = evalcluster_size_ap(labels_true, labels_pred,
-                                                                           bins=size_bins * 416**2,
-                                                                           images=None, show_t=-1, iou_thresh=iou)
+                                                                           bins=size_bins * 416 ** 2,
+                                                                           images=images, show_t=show_t, iou_thresh=iou)
 
                     frame['{} Objects'.format(d)] = true_objects_bin
                     frame['{2:s}_ap{0:02f}_i{1:02d}'.format(iou, it, d)] = result_size_ap
