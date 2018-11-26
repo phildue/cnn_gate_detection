@@ -223,6 +223,13 @@ The created network serves as a baseline since it is relatively shallow and suit
 	\label{fig:tinyyolov3_arch}
 \end{figure}
 
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{fig/VGGYoloV3}
+	\caption{\textit{VGGYoloV3}. A \textit{YoloV3} architecture based on \textit{VGG-19}. Similar to \textit{SmallYoloV3} the width is increased as the network gets deeper and spatial resolution decreases, while three output grids focus on different object scales. The network contains additional layers in the different stages. The bottleneck layers add flexibility without adding too much computations. }
+	\label{fig:vggyolov3_arch}
+\end{figure}
+
 \subsection{Training Goal}
 
 In order to train a \ac{CNN} to predict the desired properties a ground truth has to be defined for each output node. Subsequently the loss is formulated as derivable function and the \ac{CNN} can be trained with backpropagation.
@@ -269,7 +276,7 @@ For the localization loss, similar properties are desirable, although the loss s
 \end{equation}
 where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. 
 
-The model is implemented using \textit{keras} with \textit{tensorflow} backend. 
+The model is implemented using \textit{keras} \cite{keras} with \textit{tensorflow} \cite{tensorflow} backend. 
 
 \section{Datasets}
 \label{sec:datasets}
