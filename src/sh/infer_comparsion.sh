@@ -10,4 +10,4 @@
 #SBATCH --workdir=/home/nfs/pdurnay
 #SBATCH --gres=gpu:pascal:1
 #SBATCH --export=ALL
-srun python3 dronevision/src/python/tests/infer_cats_vs_ewfo.py
+srun python3 dronevision/src/python/tests/infer_comparison.py -s -1

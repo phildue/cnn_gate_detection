@@ -45,30 +45,6 @@ Within this work the first step of the aforementioned pipeline is addressed. It 
 SnakeGate is fast to execute but lacks from several drawbacks. (1) it is colour dependent and thus very subtle to light changes. Hence it must be fine tuned according to light conditions in a certain room. Strong colour variations across the object cannot be handled by the method; (2) the method requires the full object to be visible; (3) the method cannot exploit context  such as the pole of an object. These drawbacks motivate a learning based approach to be investigated in this thesis.
 
 
-\section{Datasets}
-\label{sec:datasets}
-A dataset has been recorded to serve as a benchmark for the developed methods. The dataset consists of 300 images recorded with the JeVois camera during flight and while remaining on ground. The samples stem from three different rooms with varying light conditions. The rooms are referred to as \textit{Basement}, \textit{Cyberzoo} and \textit{Hallway}. Example images for each room can be seen in \Cref{fig:example_real_set}.
-\begin{figure}
-	\centering
-	\begin{minipage}{0.3\textwidth}
-		\includegraphics[width=\textwidth]{fig/basement}
-	\end{minipage}\hfill
-	\begin{minipage}{0.3\textwidth}
-	\includegraphics[width=\textwidth]{fig/cyberzoo}
-\end{minipage}\hfill
-	\begin{minipage}{0.3\textwidth}
-	\includegraphics[width=\textwidth]{fig/hallway}
-\end{minipage}
-\caption{Examples of the three test domains. From left to right: \textit{Basement}, \textit{Cyberzoo} and \textit{Hallway}}
-\label{fig:example_real_set}
-\end{figure}
-
-All environments are indoor scenes which are a typical examples for GPS-denied areas, where vision based state estimation is required. The scenes contain two gates that are arranged in varying order. Hence up to two objects are visible and can overlap which means the gate farer away can be seen through the closer gate. Each of the rooms has different environmental conditions:
-\begin{enumerate}
-	\item \textit{Basement} is a bright environment illuminated by artificial light sources. The corridor in which the objects of interest are placed are narrow while also objects and persons are visible on the samples. The dataset contains 163 samples with 312 objects in total.
-	\item \textit{Cyberzoo} is taken from a test environment for \ac{MAV} flights. External light sources are covered such that an even illumination and dark background is created. Only in a small subset of images distractors like other objects or persons are visible. In total 88 samples stem from this room while 71 objects are present.
-	\item \textit{Hallway} is a bright environment illuminated by a combination of artificial light sources as well as daylight that shines through the windows. The samples are taken with the windows as background. This leads to a very bright background such that the thin structure of the objects are hardly visible. The dataset contains 49 samples with a total of 86 objects.
-\end{enumerate}
 
 \section{Evaluation Metrics}
 
@@ -229,6 +205,19 @@ Attention models are promising as their computational complexity can be controll
 \subsection{Reducing Inference Time}
 
 Computer Vision research typically focuses on detection accuracy rather than inference speed. However, for the deployment on a \ac{MAV} resource consumption is an important parameter. The following describes research topics that concern the reduction of inference time.
+
+\todo{cleanup}
+One pass of the state of the art \ac{CNN} ResNet101 contains of 11.3 billion floating point operations. Even assuming a powerful 2 GHz processor can perform 2 billion calculations per second it would still require almost 6 seconds for one network pass. Furthermore, a \acp{CPU} usually has to reload operands from the memory and cannot directly perform floating point multiplications. Hence, the actual forward pass would require even more time.
+
+
+Therefore researchers address the reduction of inference time by reducing the number of operations. For example MobileNet and ShuffleNet aim to reduce the computations by addressing the expensive 3D convolutions. Other researchers aim to making the individual operations more efficient. This can be done by replacing floating point operations with integer operations hence quantizing the network.
+
+In order to infer a layer in a \acp{CNN} kernels are convolved at multiple locations within one image. Thereby the same calculations are applied on various input data while the individual operations are independent of each other. Hence, theoretically the computations in one layer can be performed completely in parallel. The output of one layer can be stored similarly to the input image as a matrix. Computational platforms that exploit this fact are \acp{GPU} that have been adopted for Deep Learning applications from early on. In contrast to \acp{CPU} that are optimized to perform many different operations sequentially, \acp{GPU} typically consist of more cores and are optimized to perform the same operation on different data. While each individual core is typically slower than a single core in a \acp{CPU}, \acp{GPU} are much faster for applications that can be performed in parallel.
+
+With a large enough \ac{GPU} it does not matter whether an operation is performed at an image of size 150x150 or 300x300 despite the actual computations increase by a factor of 4. However, such powerful \acp{GPU} require space and energy which is typically not available for small scale \acp{MAV}. The JeVois Smart Camera contains a MALI-400GPU with two cores and 408 Mhz each. Additionally it contains floating point registers and supports NEON operations. These are processor instructions that enable the efficient use of \acp{SIMD} operations.
+
+The actual inference time of a network strongly depends on the computational platform, memory access times as well as the particular low level implementation. Hence, the number of computations within a network can only give a limited insight on the actual inference time. For example the \textit{TensorflowLite} framework allows the deployment of models created in \textit{tensorflow} on mobile processors. However, with this framework a the application of a single kernel on a 104x104 input volume takes 27.1 ms on the JeVois. In contrast, the same operation performed with the \textit{Darknet} framework that supports NEON operations takes only 5.07 ms. 
+
 
 \subsubsection{Weight Quantization}
 

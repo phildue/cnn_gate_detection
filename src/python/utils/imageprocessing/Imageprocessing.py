@@ -93,7 +93,6 @@ def show(img: Image, name: str = "Img", t=0, labels=None, colors=None, legend=LE
 
     imshow(img_ann, name, t)
 
-
 def save_labeled(img: Image, filename: str = "Img", labels=None, colors=None, legend=LEGEND_POSITION):
     img_ann = img.copy()
     if isinstance(labels, list):

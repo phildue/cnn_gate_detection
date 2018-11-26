@@ -2,6 +2,13 @@ from evaluation.evaluation import infer_on_set
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('show', metavar='s', type=int, nargs=1)
+args = parser.parse_args()
+show_t = args.show
+
 cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
@@ -34,7 +41,7 @@ for i_d, dataset in enumerate(datasets):
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',
                              result_file='predictions',
                              img_res=(416, 416),
-                             show_t=1,
+                             show_t=show_t,
                              batch_size=10,
                              model_src=work_dir + model_folder,
                              preprocessing=None,
