@@ -421,7 +421,7 @@ def infer_on_set(
                 if preprocessing:
                     for p in preprocessing:
                         img_show, _ = p.transform(img_show, ImgLabel([]))
-                show(img_show, labels=l, t=1)
+                show(img_show, labels=l, t=show_t)
         # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
         # for j in range(len(batch)):
         #     show(batch[j][0], labels=[predictions[j], labels[j]])

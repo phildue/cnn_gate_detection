@@ -10,7 +10,7 @@ from utils.workdir import cd_work
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--show', metavar='s', type=int, nargs=1)
+parser.add_argument('--show', metavar='s', type=int)
 args = parser.parse_args()
 show_t = args.show
 

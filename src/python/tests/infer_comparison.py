@@ -5,10 +5,10 @@ from utils.workdir import cd_work
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--show', metavar='s', type=int, nargs=1)
+parser.add_argument('-s', '--show', type=int)
 args = parser.parse_args()
 show_t = args.show
-
+print(show_t)
 cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
