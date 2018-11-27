@@ -3,51 +3,30 @@
 
 This chapter describes background knowledge required to understand the remaining parts of the thesis. It introduces the target system for this work as well as datasets and metrics used for evaluation. Furthermore, it discusses related work in Object Detection and Data Generation.
 
-\section{System Overview}
 
-A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
+\section{Detecting Objects}
+\label{sec:object_detection:related}
 
-
-\begin{figure}[hbtp]
-	\centering
-	\includegraphics[width=0.8\textwidth]{fig/control_loop}
-	\caption{Control Loop}
-	\label{fig:control_loop}
-\end{figure}
-
-The high level control loop of this work is described in further detail. A first step detects the racing gate and yields the corner coordinates. These are used to estimate the relative position of the \ac{MAV} towards the gate. In the second step the visual measurements are fused with measurements of other sensors. In this case \ac{IMU} and a sonar deliver altitude and attitude data. This step yields a global position estimate of the \ac{MAV}. Combined with prior knowledge about the race court, the desired attitude and altitude required to fly the trajectory is calculated. The results are send as set points to the low level controller.
-
-The hardware platform used to run the high level control loop is the \textit{JeVois} smart camera. It contains a 1.3 MP camera with 65 degree field of view. The processing units are a quad core ARM Cortex A7 processor with 1.35 GHz and a dual core MALI-400 GPU with 233 Mhz. In order to extent the field of view a 120 degree wide angle lens is mounted. In \Cref{fig:jevois} the camera is shown.
+On a high level Object Detection can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain redundant and task irrelevant information. Performing detection in this space is difficult, also because the performance of machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
 
 \begin{figure}[hbtp]
+	
 	\centering
-	\includegraphics[width=0.5\textwidth]{fig/jevois}
-	\caption{JeVois Camera}
-	\label{fig:jevois}
+	\includegraphics[width=\linewidth]{fig/ObjectDetection}
+	\caption{Object Detection Pipeline. An initial step extracts task relevant features of the input signal and derives an internal representation. Consecutively, classification determines what kind of object is present in the image, while localization determines where the object is located. The output consists of area(s) with class annotation.}
+	\label{fig:obj_pipeline}
 \end{figure}
-
-\subsection{Baseline Algorithm}
-
-Within this work the first step of the aforementioned pipeline is addressed. It aims to replace the current baseline algorithm \textit{SnakeGate}, a low-level image processing algorithm. Its scheme is summarized in and described in the following.
-
 \begin{enumerate}
-	\item Filter image by colour threshold
-	\item Sample stochastically 
-	\item Follow the pixels horizontally as long as they are within the colour threshold otherwise return to 2.
-	\item If a bar of sufficient length has been found repeat 3. vertically along one end of the line found in 3.
-	\item If a vertical bar is found the square is considered as gate candidate
-	\item Create local histogram around the corners of the gate candidate and choose the highest peak as gate corner.
-	\item Count the fraction of pixels within the color threshold  in relation to the total number of pixels a long all edges of the gate candidate to determine the \textit{color fitness}.
-	\item Gate candidates that exceed a chosen threshold are considered valid detections.
+	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation of lower dimension.
+	
+	\item The classification/localization stage produces the final output based on this representation. 
+	\todo{add object model}
 \end{enumerate}
-\todo{this can be described more formally}
 
-SnakeGate is fast to execute but lacks from several drawbacks. (1) it is colour dependent and thus very subtle to light changes. Hence it must be fine tuned according to light conditions in a certain room. Strong colour variations across the object cannot be handled by the method; (2) the method requires the full object to be visible; (3) the method cannot exploit context  such as the pole of an object. These drawbacks motivate a learning based approach to be investigated in this thesis.
+An efficient feature extraction stage is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish an object from the background. In contrast, even a flexible classifier cannot separate a highly overlapping feature space.
 
-
-
-\section{Evaluation Metrics}
-
+\subsection{Evaluation Metrics}
+\label{sec:background:metrics}
 The detection performance is evaluated in terms of precision and recall. These metrics are defined as:
 
 \paragraph{Precision}
@@ -77,37 +56,38 @@ $$ ap = \int_{r}p_{interp}(r) dr$$
 
 We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60}$,$r_{60}$ and $ap_{60}$.
 
-\section{Related Work}
 
-This section describes previous work related to this thesis. Covered are methods to detect objects, reduce the inference time of \acp{CNN} and methods to train detectors in a simulated environment.
+\subsection{Baseline Algorithm}
 
-\subsection{Detecting Objects}
-\label{sec:object_detection:related}
-Object Detection is one of the central domains in Computer Vision. Giving a full review of all approaches is beyond the scope of this work. We mention some of the most important milestones relevant for this work.
+The above pipeline can be illustrated in the example of the baseline algorithm of this work: \textit{SnakeGate}. Its scheme is summarized in \todo{text} and described here on a higher level.
 
-On a high level Object Detection can be described by two individual goals: the description of what kind of object is seen (Classification), as well as where it is seen (Localization). Hence, an Object Detection pipeline transforms the raw image to a set of one or more areas and corresponding class labels. Images are high dimensional signals that can contain redundant and task irrelevant information. Performing detection in this space is difficult, also because the performance of machine learning models decreases when the feature space becomes too large (curse of dimensionality), Computer Vision pipelines usually apply a feature extraction stage, before the actual prediction is done. An overview is displayed in \Cref{fig:obj_pipeline}.
+Initially, the image gets filtered by a higher and lower color threshold. This way ideally the largest part of the image is filtered. This can be seen as the initial feature extraction stage.
 
-\begin{figure}[hbtp]
-	
-	\centering
-	\includegraphics[width=\linewidth]{fig/ObjectDetection}
-	\caption{Object Detection Pipeline. An initial step extracts task relevant features of the input signal and derives an internal representation. Consecutively, classification determines what kind of object is present in the image, while localization determines where the object is located. The output consists of area(s) with class annotation.}
-	\label{fig:obj_pipeline}
-\end{figure}
+The follow up stage searches for object parts. \textit{SnakeGate} detects square objects and hence searches for vertical and horizontal bars that are respectively perpendicular to each other. Once this combination is found in a particular area of the image it is counted as a valid detection. 
+
 \begin{enumerate}
-	\item The feature extraction stage extracts task relevant information from the image and infers an internal, more abstract representation of lower dimension.
-	
-	\item The classification/localization stage produces the final output based on this representation. 
-	
+	\item Filter image by colour threshold
+	\item Sample stochastically 
+	\item Follow the pixels horizontally as long as they are within the colour threshold otherwise return to 2.
+	\item If a bar of sufficient length has been found repeat 3. vertically along one end of the line found in 3.
+	\item If a vertical bar is found the square is considered as gate candidate
+	\item Create local histogram around the corners of the gate candidate and choose the highest peak as gate corner.
+	\item Count the fraction of pixels within the color threshold  in relation to the total number of pixels a long all edges of the gate candidate to determine the \textit{color fitness}.
+	\item Gate candidates that exceed a chosen threshold are considered valid detections.
 \end{enumerate}
+\todo{this can be described more formally}
 
-An efficient feature extraction stage is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish an object from the background. In contrast, even a flexible classifier cannot separate a highly overlapping feature space.
+\textit{SnakeGate} is fast to execute but lacks from several drawbacks. (1) the main feature is colour dependent and thus the method is very subtle to light changes. It must be fine tuned according to light conditions in a certain room. Strong colour variations across the object cannot be handled by the method; (2) the object is defined as the four bars, if one of the parts can not be detected e.g. due to occlusion, the object will not be found. Furthermore, the object model does not take into account context such as the object pole.
+
+\subsection{Related Work}
+
+The problems of \textit{SnakeGate} are very typical for Object Detection. Since the beginning researchers investigated different methods of feature selection and the definition of object models. While initial work manually defined such features, later work replaced many of these stages with learning based methods. Today, whole state-of-the-art pipelines can be trained directly on raw images. This section investigates available literature and discusses the major milestones relevant for this work.
 
 \subsubsection{Traditional Methods}
 
 The early attempts to Object Detection define objects in terms of basic volumetric shapes such as cubes and cylinders. During inference these features are extracted and compared to a database. However, in practice even recognizing these basic shapes proves to be difficult \cite{Andreopoulos2013}. 
 
-Later approaches focus more on appearance based features such as wavelets \cite{Papageorgiou} which also applied in \cite{Viola2004} for human face detection. Thereby the image is processed by a cascade of classifiers using a sliding window in multiple scales. The processing of an image patch is stopped when a classifier assigns background to that patch. The features can be computed with simple operations and thus the detector can be executed extremely fast. However, the used Haar-wavelets cannot efficiently encode large textures making the approach less suitable for more complex objects \cite{Andreopoulos2013}. 
+Later approaches focus more on appearance based features such as wavelets \cite{Papageorgiou} which also applied in \cite{Viola2004} for human face detection. Thereby the image is processed by a cascade of classifiers using a sliding window in multiple scales. The processing of an image patch is stopped when a classifier assigns background to that patch. The features can be computed with simple operations and thus the detector can be executed extremely fast. However, the used Haar-wavelets cannot efficiently encode complex textures making the approach less suitable for many real world objects \cite{Andreopoulos2013}. 
 
 In contrast \ac{HOG} \cite{Dalal} and \ac{SIFT} \cite{Lowe2004} use the image gradient to cover shape information. In a sliding window local histograms based on the gradient orientation are calculated. \citeauthor{Dalal} \cite{Dalal} use the feature for pedestrian detection.
 
@@ -283,6 +263,29 @@ While transfer learning provides the theoretical framework as well as methods to
 \subsection{Generative Adversarial Networks}
 
 \acp{GAN} \cite{Goodfellow2014} are a learning technique to generate new samples. The method uses two models a generator and a discriminator. While the generator generates samples the discriminator aims to distinguish the generated samples from a real dataset. Thereby the training goal of the generator is to maximize the error of the discriminator. Both models are updated with back propagation. The method shows promising results for image transformation or image synthesises but also for audio signals \cite{Creswell2017}. Yet to the authors knowledge \acp{GAN} have not yet been applied to generate samples for Object Detection. Furthermore, the discriminator needs a training set for initialization. As for this work only a small amount of training samples are available, we do not investigate this approach for generating samples to detect \acp{EWFO}.
+
+\section{System Overview}
+
+A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
+
+
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{fig/control_loop}
+	\caption{Control Loop}
+	\label{fig:control_loop}
+\end{figure}
+
+The high level control loop of this work is described in further detail. A first step detects the racing gate and yields the corner coordinates. These are used to estimate the relative position of the \ac{MAV} towards the gate. In the second step the visual measurements are fused with measurements of other sensors. In this case \ac{IMU} and a sonar deliver altitude and attitude data. This step yields a global position estimate of the \ac{MAV}. Combined with prior knowledge about the race court, the desired attitude and altitude required to fly the trajectory is calculated. The results are send as set points to the low level controller.
+
+The hardware platform used to run the high level control loop is the \textit{JeVois} smart camera. It contains a 1.3 MP camera with 65 degree field of view. The processing units are a quad core ARM Cortex A7 processor with 1.35 GHz and a dual core MALI-400 GPU with 233 Mhz. In order to extent the field of view a 120 degree wide angle lens is mounted. In \Cref{fig:jevois} the camera is shown.
+
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig/jevois}
+	\caption{JeVois Camera}
+	\label{fig:jevois}
+\end{figure}
 
 
 
