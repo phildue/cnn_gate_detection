@@ -19,7 +19,7 @@ from utils.workdir import cd_work
 cd_work()
 img_res = 416, 416
 for i in range(1):
-    model_dir = 'sign_deep_i{0:02d}'.format(i)
+    model_dir = 'ewfo_deep_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100
     anchors = None

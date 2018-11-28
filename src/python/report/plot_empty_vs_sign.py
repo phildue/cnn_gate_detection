@@ -8,17 +8,11 @@ cd_work()
 models = [
     'sign',
     'cats',
-    'ewfo',
 ]
 
-
 datasets = [
-    'test_basement_cats',
     'test_basement_gate',
-    'test_basement_sign',
-    'test_iros_cats',
-    'test_iros_gate',
-    'test_iros_sign',
+    'test_basement_cats',
 ]
 
 legend = [
@@ -48,12 +42,17 @@ for m in models:
 
 bins = frames[0]['Sizes Bins']
 
+plt.figure(figsize=(8, 3))
+i_p = 0
 for d in datasets:
-    plt.figure(figsize=(8, 3))
+    i_p += 1
+    plt.subplot(1, 2, i_p)
     plt.title('Tested on {}'.format(d))
     w = 1.0 / len(models)
     # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
+
     for i_m, r in enumerate(models):
+
         aps = []
         for it in range(n_iterations):
             try:
@@ -64,19 +63,17 @@ for d in datasets:
         ap = np.mean(aps, 0)
         err = np.std(aps, 0)
 
-        plt.bar(np.arange(len(bins)) +i_m * w, ap, width=w, yerr=err)
+        plt.bar(np.arange(len(bins)) + i_m * w, ap, width=w, yerr=err)
 
     for x, y in enumerate(frames[0]['{} Objects'.format(d)]):
-        plt.text(x-0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
+        plt.text(x - 0.1, 1.0, str(np.round(y, 2)), color='gray', fontweight='bold')
     plt.xlabel('Area Relative to Image Size')
     plt.ylabel('Average Precision')
     plt.xticks(np.arange(len(bins)), np.round(bins, 3))
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                         wspace=0.4, hspace=0.4)
-    plt.legend(legend,loc='lower left')
+    plt.legend(legend, loc='lower left')
     plt.ylim(0, 1.1)
     plt.savefig('doc/thesis/fig/basement_cats_size.png')
-
-
 
 plt.show(True)

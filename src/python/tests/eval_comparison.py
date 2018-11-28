@@ -9,16 +9,20 @@ from utils.workdir import cd_work
 
 import argparse
 
+show_t = -1
 parser = argparse.ArgumentParser()
-parser.add_argument('--show', metavar='s', type=int)
+parser.add_argument('--show', metavar='s', type=int, default=show_t)
 args = parser.parse_args()
 show_t = args.show
 
 cd_work()
 models = [
-    'sign',
-    'cats',
-    'ewfo',
+    # 'sign',
+    # 'cats',
+    # 'ewfo',
+    'sign_deep',
+    'cats_deep',
+    'ewfo_deep',
 ]
 
 datasets = [
@@ -32,9 +36,9 @@ datasets = [
 titles = models
 
 ObjectLabel.classes = ['gate']
-bins = 10
 n_iterations = 2
 size_bins = np.array([0.0, 0.001, 0.004, 0.016, 0.064, 0.256, 0.512, 1.024])
+size_bins = np.array([0.0, 0.125, 0.25, 1.024])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
 for i_m, m in enumerate(models):
     frame = pd.DataFrame()

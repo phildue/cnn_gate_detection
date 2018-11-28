@@ -6,24 +6,19 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
+    'sign',
     'ewfo',
-    'ewfo_sim',
-    'ewfo_voc',
 ]
 
 datasets = [
-    'test_basement_gate',
     'test_iros_gate',
-    'test_basement_cats',
-    'test_iros_cats',
-    'test_basement_sign',
     'test_iros_sign',
 ]
 
 legend = [
-    'Single Background',
-    'Simulated Background',
-    'VOC Background',
+    'Trained on Sign',
+    'Trained on Cats',
+    'Trained on EWFO',
 ]
 
 n_iterations = 1
@@ -46,15 +41,18 @@ for m in models:
     frames.append(frame)
 
 bins = frames[0]['Sizes Bins']
-plt.figure(figsize=(16, 9))
-i_p = 1
+
+plt.figure(figsize=(8, 3))
+i_p = 0
 for d in datasets:
-    plt.subplot(3, 2, i_p)
     i_p += 1
+    plt.subplot(1, 2, i_p)
     plt.title('Tested on {}'.format(d))
     w = 1.0 / len(models)
     # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
+
     for i_m, r in enumerate(models):
+
         aps = []
         for it in range(n_iterations):
             try:
