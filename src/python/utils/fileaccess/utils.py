@@ -23,7 +23,7 @@ def load_file(filename: str):
             return pickle.load(f)
 
 
-def save_file(file, name: str, path: str = './', verbose=True,raw=True):
+def save_file(file, name: str, path: str = './', verbose=True,raw=False):
     if not os.path.exists(path):
         os.makedirs(path)
 

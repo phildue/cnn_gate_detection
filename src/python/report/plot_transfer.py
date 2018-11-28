@@ -7,17 +7,17 @@ from utils.workdir import cd_work
 cd_work()
 models = [
     'sign',
-    'ewfo',
     'cats',
+    'ewfo',
 ]
 
 datasets = [
     'test_basement_gate',
-    'test_iros_gate',
-    'test_iros_sign',
     'test_basement_sign',
-    'test_iros_cats',
     'test_basement_cats',
+    'test_iros_gate',
+    'test_iros_cats',
+    'test_iros_sign',
 ]
 
 legend = [
@@ -47,7 +47,7 @@ for m in models:
 
 bins = frames[0]['Sizes Bins']
 
-plt.figure(figsize=(8, 3))
+plt.figure(figsize=(16, 9))
 i_p = 0
 for d in datasets:
     i_p += 1
