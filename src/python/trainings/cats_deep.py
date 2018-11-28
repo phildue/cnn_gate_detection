@@ -128,7 +128,7 @@ for i in range(1):
     decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
     preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
     loss = GateDetectionLoss()
-    model.load_weights('resource/vgg16_weights.h5',by_name=True)
+    model.load_weights('resource/ext/vgg16_weights.h5', by_name=True)
 
 
     """

@@ -6,11 +6,11 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'sign',
     'ewfo',
+    'sign',
     'cats',
-    'sign_deep',
     'ewfo_deep',
+    'sign_deep',
     'cats_deep',
 ]
 
@@ -48,20 +48,57 @@ for m in models:
             except FileNotFoundError as e:
                 print(e)
                 continue
-    print(frame.to_string())
-    frames.append(frame)
+    if frame is not None:
+        print(frame.to_string())
+        frames.append(frame)
 
 bins = frames[0]['Sizes Bins']
 
-frame_result = pd.DataFrame()
+table_shallow = pd.DataFrame()
 
-frame_result['Names'] = models
+column_names = ['EWFO', 'Sign', 'Cats']
+columns = ['gate', 'sign', 'cats']
 
-columns = ['sign', 'ewfo', 'cats']
+
+table_shallow['Trained'] = column_names
 
 for c in columns:
     column_content = []
-    for i_m, m in enumerate(models):
+    for i_m, m in enumerate(columns):
         result = frames[i_m]['test_basement_' + c]
         column_content.append(result)
-    frame_result[c] = column_content
+    table_shallow['Basement ' + c] = column_content
+
+for c in columns:
+    column_content = []
+    for i_m, m in enumerate(columns):
+        result = frames[i_m]['test_iros_' + c]
+        column_content.append(result)
+    table_shallow['IROS ' + c] = column_content
+
+print(table_shallow.to_string())
+
+"""
+Deep
+"""
+# table_deep = pd.DataFrame()
+#
+# columns = ['EWFO', 'Sign', 'Cats']
+#
+# table_shallow['Trained'] = columns
+#
+# for c in columns:
+#     column_content = []
+#     for i_m, m in enumerate(columns):
+#         result = frames[i_m + 3]['test_basement_' + c]
+#         column_content.append(result)
+#     table_deep['Basement ' + c] = column_content
+#
+# for c in columns:
+#     column_content = []
+#     for i_m, m in enumerate(columns):
+#         result = frames[i_m + 3]['test_iros_' + c]
+#         column_content.append(result)
+#     table_deep['IROS ' + c] = column_content
+#
+# print(table_shallow.to_string())
