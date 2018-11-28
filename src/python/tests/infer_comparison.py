@@ -12,19 +12,19 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'cats',
-    'ewfo',
-    'sign',
+    # 'cats',
+    # 'ewfo',
+    # 'sign',
     'sign_deep',
     'cats_deep',
     'ewfo_deep',
 ]
 
 datasets = [
-    # 'test_basement_cats',
-    # 'test_basement_gate',
-    # 'test_basement_sign',
-    # 'test_iros_cats',
+    'test_basement_cats',
+    'test_basement_gate',
+    'test_basement_sign',
+    'test_iros_cats',
     'test_iros_gate',
     'test_iros_sign',
 ]

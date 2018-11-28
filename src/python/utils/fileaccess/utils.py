@@ -23,7 +23,7 @@ def load_file(filename: str):
             return pickle.load(f)
 
 
-def save_file(file, name: str, path: str = './', verbose=True):
+def save_file(file, name: str, path: str = './', verbose=True,raw=True):
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -32,7 +32,10 @@ def save_file(file, name: str, path: str = './', verbose=True):
             pickle.dump(file, f)
     elif name.endswith('.txt'):
         with open(path + name, 'w') as f:
-            pprint(file, stream=f)
+            if raw:
+                f.write(file)
+            else:
+                pprint(file, stream=f)
     elif name.endswith('.yml'):
         with open(path + name, 'w') as f:
             yaml.dump(file)

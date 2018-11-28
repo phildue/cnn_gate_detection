@@ -8,11 +8,16 @@ cd_work()
 models = [
     'sign',
     'ewfo',
+    'cats',
 ]
 
 datasets = [
+    'test_basement_gate',
     'test_iros_gate',
     'test_iros_sign',
+    'test_basement_sign',
+    'test_iros_cats',
+    'test_basement_cats',
 ]
 
 legend = [
@@ -46,7 +51,7 @@ plt.figure(figsize=(8, 3))
 i_p = 0
 for d in datasets:
     i_p += 1
-    plt.subplot(1, 2, i_p)
+    plt.subplot(3, 2, i_p)
     plt.title('Tested on {}'.format(d))
     w = 1.0 / len(models)
     # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')

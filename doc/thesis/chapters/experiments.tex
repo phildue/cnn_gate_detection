@@ -75,6 +75,20 @@ For each object a test set of 150 samples is created within the \textit{Basement
 
 \subsection{Results}
 
+\begin{table}
+	\centering
+	 \caption{Performance in \ac{mAP} in the \textit{Basement} Environment. Each trained network (row) is evaluated on each test set (column). It can be seen how the detectors exploit the structure that is placed in the object. When it is removed the performance drops. Similarly, the performance drops when the detector for \ac{EWFO} sees a structure inside the object. }
+	\input{tables/shallow_basement.txt}
+\end{table}
+
+\begin{table}r
+	\centering
+	\input{tables/shallow_iros.txt}
+	\caption{}
+	
+\end{table}
+
+
 \begin{figure}
 	\includegraphics[width=\textwidth]{fig/basement_gate_size}
 	\caption{An example of the augmented object. A \acp{CNN} can exploit this structure and should be less distracted by background.}
@@ -137,6 +151,8 @@ The models are tested on the real datasets described in \Cref{sec:datasets} as w
 
 
 \subsection{Results}
+
+
 
 \Cref{fig:context} display the results. It can be seen how using uniformly coloured backgrounds achieve almost no detection. Only on the simulated data a few objects could be detected.
 

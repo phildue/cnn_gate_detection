@@ -276,7 +276,22 @@ For the localization loss, similar properties are desirable, although the loss s
 \end{equation}
 where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. 
 
-The model is implemented using \textit{keras} \cite{keras} with \textit{tensorflow} \cite{tensorflow} backend. 
+\subsection{Training Procedure}
+
+With a quantified loss the training can be formalized as minimization problem: 
+
+\begin{equation}
+	\min\limits_{w}	\mathcal{L}(f(I,w),y)
+\end{equation}
+where $I$ is an input image, $w$ are the network weights and $y$ is the true label.
+
+The optimization can be performed using gradient descent. However, with large amounts of data and high amount of parameters this algorithm has a slow update rate. Hence, \textit{Adam}\cite{Kingma2014}, a version of stochastic gradient descent is used. Thereby the gradient is estimated based on a subsample of the training set. While this leads to faster convergence, estimation errors can cause updates in the wrong direction. \textit{Adam} compensates for this by not only taking the mean gradient into account but also its first and second statistical moment. The three moments are weighted with $\alpha$,$\beta_1$ and $\beta_2$, where $\alpha$ is also referred to as learning rate. This work uses the parameters recommended in the initial public publication of \textit{Adam}\cite{Kingma2014}:
+
+$$\alpha=0.001 \quad \beta_1=0.9 \quad \beta_2=0.999$$
+
+An optimization process such as the training of a \acp{CNN} depends on the initialization of its parameters. \citeauthor{Glorot2010} \cite{Glorot2010} propose to initialize weights based on a uniform distribution centered around zero, where the borders depend on the input size of the layer. This scheme is a standard in Deep Learning frameworks and also used in this work.
+
+\textit{YoloV3} and its training is implemented using \textit{keras} \cite{keras} with \textit{tensorflow} \cite{tensorflow} backend. 
 
 \section{Datasets}
 \label{sec:datasets}
