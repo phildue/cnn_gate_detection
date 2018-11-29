@@ -17,9 +17,9 @@ show_t = args.show
 
 cd_work()
 models = [
-    'sign',
-    'cats',
-    'ewfo',
+    # 'sign',
+    # 'cats',
+    # 'ewfo',
     'sign_deep',
     'cats_deep',
     'ewfo_deep',

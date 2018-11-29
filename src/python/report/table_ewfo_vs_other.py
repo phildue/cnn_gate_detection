@@ -10,9 +10,9 @@ models = [
     'ewfo',
     'sign',
     'cats',
-    # 'ewfo_deep',
-    # 'sign_deep',
-    # 'cats_deep',
+    'ewfo_deep',
+    'sign_deep',
+    'cats_deep',
 ]
 
 datasets = [
@@ -51,66 +51,78 @@ for d in datasets:
         frame['{}_i0{}'.format(d, it)] = column
         print(frame.to_string())
 
-table_shallow_basement = pd.DataFrame()
 
-column_names = ['EWFO', 'Sign', 'Cats']
-columns = ['gate', 'sign', 'cats']
+def create_table(setname, filename, shift=0):
+    column_names = ['EWFO', 'Sign', 'Cats']
+    columns = ['gate', 'sign', 'cats']
+    table = pd.DataFrame()
+    table['Trained/Tested'] = column_names
 
-table_shallow_basement['Trained/Tested'] = column_names
+    for i_c, c in enumerate(columns):
+        column_content = []
+        for i_m, _ in enumerate(columns):
+            results = []
+            for i_i in range(n_iterations):
+                result = frame['test_{}_{}_i0{}'.format(setname, c, i_i)][i_m + shift]
+                if result >= 0:
+                    results.append(result)
+            column_content.append('{:.2f} +- {:.2f}'.format(np.mean(results), np.std(results)))
+        table[column_names[i_c]] = column_content
 
-for i_c, c in enumerate(columns):
-    column_content = []
-    for i_m, m in enumerate(columns):
-        result_mean = 0
-        for i_i in range(n_iterations):
-            result = frame['test_basement_{}_i0{}'.format(c, i_i)][i_m]
-            result_mean += result / n_iterations
-        column_content.append(result_mean)
-    table_shallow_basement[column_names[i_c]] = column_content
+    print(table.to_string(index=False))
+    print(table.to_latex(index=False))
+    save_file(table.to_latex(index=False), filename, 'doc/thesis/tables/', raw=True)
 
-print(table_shallow_basement.to_string(index=False))
-print(table_shallow_basement.to_latex(index=False))
 
-save_file(table_shallow_basement.to_latex(index=False), 'shallow_basement.txt', 'doc/thesis/tables/', raw=True)
+def create_table_all(setname, filename, shift=0):
+    column_names = ['EWFO', 'Sign', 'Cats', 'EWFO Deep', 'Sign Deep', 'Cats Deep']
+    columns = ['gate', 'sign', 'cats', 'gate', 'sign', 'cats']
+    table = pd.DataFrame()
+    table['Trained/Tested'] = column_names
 
-table_shallow_iros = pd.DataFrame()
-table_shallow_iros['Trained/Tested'] = column_names
+    for i_c, c in enumerate(columns[:3]):
+        column_content = []
+        for i_m, _ in enumerate(columns):
+            results = []
+            for i_i in range(n_iterations):
+                result = frame['test_{}_{}_i0{}'.format(setname, c, i_i)][i_m]
+                if result >= 0:
+                    results.append(result)
+            column_content.append('{:.2f} +- {:.2f}'.format(np.mean(results), np.std(results)))
+        table[column_names[i_c]] = column_content
 
-for i_c, c in enumerate(columns):
-    column_content = []
-    for i_m, m in enumerate(columns):
-        result_mean = 0
-        for i_i in range(n_iterations):
-            result = frame['test_iros_{}_i0{}'.format(c, i_i)][i_m]
-            result_mean += result / n_iterations
-        column_content.append(result_mean)
-    table_shallow_iros[column_names[i_c]] = column_content
+    print(table.to_string(index=False))
+    print(table.to_latex(index=False))
+    save_file(table.to_latex(index=False), filename, 'doc/thesis/tables/', raw=True)
 
-print(table_shallow_iros.to_string(index=False))
-print(table_shallow_iros.to_latex(index=False))
-save_file(table_shallow_iros.to_latex(index=False), 'shallow_iros.txt', 'doc/thesis/tables/', raw=True)
 
-"""
-Deep
-"""
-# table_deep = pd.DataFrame()
-#
-# columns = ['EWFO', 'Sign', 'Cats']
-#
-# table_shallow['Trained'] = columns
-#
-# for c in columns:
-#     column_content = []
-#     for i_m, m in enumerate(columns):
-#         result = frames[i_m + 3]['test_basement_' + c]
-#         column_content.append(result)
-#     table_deep['Basement ' + c] = column_content
-#
-# for c in columns:
-#     column_content = []
-#     for i_m, m in enumerate(columns):
-#         result = frames[i_m + 3]['test_iros_' + c]
-#         column_content.append(result)
-#     table_deep['IROS ' + c] = column_content
-#
-# print(table_shallow.to_string())
+def create_table_diff(filename):
+    column_names = ['Gate', 'Sign', 'Cats', 'Gate Deep', 'Sign Deep', 'Cats Deep']
+    columns = ['gate', 'sign', 'cats', 'gate', 'sign', 'cats']
+    table = pd.DataFrame()
+    table['Trained/Tested'] = column_names
+
+    for i_c, c in enumerate(columns[:3]):
+        column_content = []
+        for i_m, _ in enumerate(columns):
+            results = []
+            for i_i in range(n_iterations):
+                result = frame['test_iros_{}_i0{}'.format(c, i_i)][i_m]
+                result_shift = frame['test_basement_{}_i0{}'.format(c, i_i)][i_m]
+                if result >= 0 and result_shift >= 0:
+                    results.append(result-result_shift)
+            column_content.append('{:.2f} +- {:.2f}'.format(np.mean(results), np.std(results)))
+        table[column_names[i_c]] = column_content
+
+    print(table.to_string(index=False))
+    print(table.to_latex(index=False))
+    save_file(table.to_latex(index=False), filename, 'doc/thesis/tables/', raw=True)
+
+create_table('basement', 'shallow_basement.txt')
+create_table('basement', 'deep_basement.txt', 3)
+create_table('iros', 'shallow_iros.txt')
+create_table('iros', 'deep_iros.txt', 3)
+create_table_all('basement', 'all_basement.txt')
+create_table_all('iros', 'all_iros.txt', 3)
+create_table_diff('diff_iros.txt')
+

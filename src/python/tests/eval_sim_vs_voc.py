@@ -8,6 +8,7 @@ from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
 import argparse
+
 show_t = -1
 parser = argparse.ArgumentParser()
 parser.add_argument('--show', metavar='s', type=int, default=show_t)
@@ -33,12 +34,12 @@ titles = models
 ObjectLabel.classes = ['gate']
 bins = 10
 n_iterations = 2
-size_bins = np.array([0.0, 0.001, 0.004, 0.016, 0.064, 0.256, 0.512, 1.024])
+size_bins = np.array([0.0, 1.0])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
 for i_m, m in enumerate(models):
-    frame = pd.DataFrame()
-    for i_d, d in enumerate(datasets):
-        for it in range(n_iterations):
+    for it in range(n_iterations):
+        for i_d, d in enumerate(datasets):
+            frame = pd.DataFrame()
             model_dir = 'out/{0:s}_i{1:02d}'.format(m, it)
             try:
                 summary = ModelSummary.from_file(model_dir + '/summary.pkl')
@@ -62,8 +63,8 @@ for i_m, m in enumerate(models):
                     frame['{} Objects'.format(d)] = true_objects_bin
                     frame['{2:s}_ap{0:02f}_i{1:02d}'.format(iou, it, d)] = result_size_ap
                     print(frame.to_string())
-                    frame.to_pickle('{}/results_size_cluster.pkl'.format(prediction_dir))
-                    frame.to_excel('{}/results_size_cluster.xlsx'.format(prediction_dir))
+                    frame.to_pickle('{}/results_total.pkl'.format(prediction_dir))
+                    frame.to_excel('{}/results_total.xlsx'.format(prediction_dir))
             except FileNotFoundError as e:
                 print(e)
                 continue

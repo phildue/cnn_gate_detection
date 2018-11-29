@@ -1,0 +1,9 @@
+\begin{tabular}{lrrr}
+\toprule
+Trained/Tested &      EWFO &      Sign &      Cats \\
+\midrule
+          EWFO &  0.591401 &  0.008544 &  0.313983 \\
+          Sign &  0.030449 &  0.686123 &  0.011924 \\
+          Cats &  0.022927 &  0.030994 &  0.772256 \\
+\bottomrule
+\end{tabular}

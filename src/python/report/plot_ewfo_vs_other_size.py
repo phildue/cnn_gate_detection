@@ -9,9 +9,15 @@ models = [
     'sign',
     'cats',
     'ewfo',
+    'sign_deep',
+    'cats_deep',
+    'ewfo_deep',
 ]
 
 datasets = [
+    'test_basement_sign',
+    'test_basement_cats',
+    'test_basement_gate',
     'test_basement_sign',
     'test_basement_cats',
     'test_basement_gate',
@@ -21,6 +27,9 @@ legend = [
     'Sign',
     'Cats',
     'Racing Gate',
+    'Sign Deep',
+    'Cats Deep',
+    'Racing Gate Deep',
 ]
 
 n_iterations = 2
@@ -41,8 +50,9 @@ for i_m, r in enumerate(models):
             aps.append(ap)
             bins = frame['Sizes Bins']
             n_objects = frame['{} Objects'.format(datasets[i_m])]
-        except KeyError as e:
+        except FileNotFoundError or KeyError as e:
             print(e)
+            continue
     ap = np.mean(aps, 0)
     err = np.std(aps, 0)
 
