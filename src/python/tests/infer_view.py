@@ -7,8 +7,9 @@ cd_work()
 # models = [name for name in os.listdir('out/0108/')]
 models = [
     'ewfo_sim',
-    'mavnet_random_view',
-    'mavnet_race_court',
+    'randomview',
+    'racecourt',
+    'racecourt_allviews',
 ]
 
 dataset = 'iros2018_course_final_simple_17gates'
