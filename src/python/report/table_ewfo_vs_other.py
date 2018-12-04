@@ -53,7 +53,7 @@ for d in datasets:
 
 
 def create_table(setname, filename, shift=0):
-    column_names = ['EWFO', 'Sign', 'Cats']
+    column_names = ['Gate', 'Sign', 'Cats']
     columns = ['gate', 'sign', 'cats']
     table = pd.DataFrame()
     table['Trained/Tested'] = column_names
@@ -75,7 +75,7 @@ def create_table(setname, filename, shift=0):
 
 
 def create_table_all(setname, filename, shift=0):
-    column_names = ['EWFO', 'Sign', 'Cats', 'EWFO Deep', 'Sign Deep', 'Cats Deep']
+    column_names = ['Gate', 'Sign', 'Cats', 'EWFO Deep', 'Sign Deep', 'Cats Deep']
     columns = ['gate', 'sign', 'cats', 'gate', 'sign', 'cats']
     table = pd.DataFrame()
     table['Trained/Tested'] = column_names

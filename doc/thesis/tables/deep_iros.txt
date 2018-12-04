@@ -1,8 +1,8 @@
 \begin{tabular}{llll}
 \toprule
-Trained/Tested &          EWFO &          Sign &          Cats \\
+Trained/Tested &          Gate &          Sign &          Cats \\
 \midrule
-          EWFO &  0.23 +- 0.00 &  0.01 +- 0.00 &  0.27 +- 0.00 \\
+          Gate &  0.23 +- 0.00 &  0.01 +- 0.00 &  0.27 +- 0.00 \\
           Sign &  0.00 +- 0.00 &  0.38 +- 0.00 &  0.00 +- 0.00 \\
           Cats &  0.01 +- 0.00 &  0.00 +- 0.00 &  0.04 +- 0.00 \\
 \bottomrule
