@@ -105,7 +105,7 @@ class SetAnalysis:
         elif angle is 'pitch':
             angle_v = pose.pitch
         angle_v = np.degrees(angle_v)
-        return SetAnalysis.assign_to_bin(angle_v,dist,angle_bins,distance_bins)
+        return SetAnalysis.assign_angle_dist_to_bin(angle_v,dist,angle_bins,distance_bins)
 
     @staticmethod
     def assign_angle_dist_to_bin(angle, dist, angle_bins, distance_bins):
