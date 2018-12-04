@@ -99,24 +99,24 @@ The effect is applied using the model for wide-angle lenses from \cite{Vass}. It
 \todo{double check formula is (y in first line?)}
 \begin{equation}
 \begin{pmatrix}
-x_u \\
-y_u  
+p_x^u \\
+p_y^u  
 \end{pmatrix}=
-f(x,y) =
+f(p_x,p_y) =
 \begin{pmatrix}
-x (1 + \kappa_1 x^2 + \kappa_1 (1 + \lambda_x) y^2 + \kappa_2(x^2 + y^2)^2) \\
-y (1 + \kappa_1 x^2 + \kappa_1 (1 + \lambda_y) y^2 + \kappa_2(x^2 + y^2)^2)
+p_x (1 + \kappa_1 p_x^2 + \kappa_1 (1 + \lambda_x) p_y^2 + \kappa_2(p_x^2 + p_y^2)^2) \\
+p_y (1 + \kappa_1 p_x^2 + \kappa_1 (1 + \lambda_y) p_y^2 + \kappa_2(p_x^2 + p_y^2)^2)
 \end{pmatrix} 
 \label{eq:distortion}
 \end{equation}
 Where:
 \begin{itemize}
-	\item $x_u$ and $y_u$ are the undistorted coordinates.
+	\item $p_x^u$ and $p_y^u$ are the undistorted coordinates.
 	\item $\kappa_1$ $\kappa_2$ control the radial distortion 
 	\item $\lambda_x$ and $\lambda_y$ control the tangential distortion
 \end{itemize}
 
-Applying the lens distortion to an image is done using the inverse of \Cref{eq:distortion}. However, as there is no closed form solution the Newton-approximation is used.
+Applying the lens distortion to an image is done by inverting \Cref{eq:distortion}. Since there is no closed form solution the Newton-approximation is used.
 
 
 \paragraph{Chromatic Aberration.}
@@ -125,22 +125,19 @@ Chromatic Aberration is caused when different wavelengths of light do not end up
 
 In \cite{Carlson2018} including chromatic aberration significantly improves the performance of models that are trained on fully synthesized data. Hence, we hypothesizes this will also help for our work.
 
-Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. The model can be implemented as affine transformation of the pixel locations for each channel:
+Similarly to \cite{Carlson2018}, chromatic aberration is applied by scaling the locations of the green channel, as well as applying translations on all channels. Mathematically this is:
 
 \begin{equation}
-f(x_C,y_C) = \begin{pmatrix}
-S & 0 & t_x \\
-0 & S & t_y \\
-0 & 0 & 1
-\end{pmatrix} \begin{pmatrix}
-x_C \\
-y_C \\
-1
-\end{pmatrix}
+\begin{pmatrix}
+p_x^c \\
+p_y^c  
+\end{pmatrix}= f(p_x^c,p_y^c) = \begin{pmatrix}
+s^c p_x^c + t_x^c \\
+s^c p_y^c + t_y^c \\
+\end{pmatrix} 
 \end{equation}
 
-Where $C$ is one colour channel of the image.
-
+Where $c$ is a colour channel.
 
 \paragraph{Blur}
 
@@ -161,10 +158,9 @@ Exposure is the time the sensor records light in order to create an image. Over-
 Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. Hence, we hypothesize incorporating the effect in the data generation will improve the performance of the trained model. The effect is modelled following \cite{Carlson2018}:
 
 \begin{equation}
-f(S) = \frac{255}{1 + e^{-A S}}
+f(S) = \frac{255}{1 + e^{-S}}
 \end{equation}
-where $A$ is a constant term for contrast and $S$ the exposure.
-\todo{whats a}
+
 The image can be re-exposed with:
 
 \begin{equation}
@@ -272,7 +268,7 @@ Thereby the  binary variable $\mathbb{1}_{ijk}^{obj}$ is 1 if an the anchor box 
 For the localization loss, similar properties are desirable, although the loss should be invariant to direction. A loss that contains these properties is the squared distance between each bounding box parameter. The localization loss is summarized in:
 
 \begin{equation}
-\mathcal{L}_{loc} = \sum_{i=0}^{G} \sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}[(x_{ijk}-\hat{x}_{ijk})^2 + (y_{ijk}-\hat{y}_{ijk})^2  + (\sqrt{w_{ijk}}-\sqrt{\hat{w}_{ijk}})^2 +(\sqrt{h_{ijk}}-\sqrt{\hat{h}_{ijk}})^2 ]
+\mathcal{L}_{loc} = \sum_{i=0}^{G} \sum_{j=0}^{S_i^2}\sum_{k=0}^{B_i} \mathbb{1}_{ijk}^{obj}[(x_{ijk}-\hat{x}_{ijk})^2 + (y_{ijk}-\hat{y}_{ijk})^2  + (w_{ijk}-\hat{w}_{ijk})^2 +(h_{ijk}-\hat{h}_{ijk})^2 ]
 \end{equation}
 where $x_{ijk}$,$y_{ijk}$ are the ground truth center coordinates of anchor box $i,j,k$ and $w_{ijk}$,$h_{ijk}$ the corresponding width and height. $\hat x_{ijk}$,$\hat y_{ijk}, \hat w_{ijk}$,$\hat h_{ijk}$ are the predicted bounding box coordinates. 
 

@@ -15,7 +15,7 @@ sets = [
 ]
 titles = [
     'Random Placement',
-    'Racing Track',
+    'Simulated Flight',
 ]
 areas = []
 label_maps = []
@@ -66,7 +66,7 @@ for i in range(len(sets)):
     plt.hist2d(yaws, dists, bins=10,cmap=plt.cm.viridis, vmin=0, vmax=100)
     # plt.ylim(0,12)
     plt.colorbar()
-    plt.xlabel("$|\Delta \psi|$")
+    plt.xlabel("$\Delta \psi$")
     plt.ylabel("$|\Delta t|$")
 
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
