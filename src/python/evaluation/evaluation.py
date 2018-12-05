@@ -172,7 +172,7 @@ def evalcluster_size(labels_true, labels_pred, conf_thresh, n_bins, iou_thresh=0
 
 
 def evalscatter_wh(labels_true, labels_pred, conf_thresh, iou_thresh=0.6):
-    evaluator = DetectionEvaluator(show_=True, min_box_area=0.01 * 416 * 416, max_box_area=1.0 * 416 * 416,
+    evaluator = DetectionEvaluator(min_box_area=0.01 * 416 * 416, max_box_area=1.0 * 416 * 416,
                                    min_aspect_ratio=0,
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
     fn = []

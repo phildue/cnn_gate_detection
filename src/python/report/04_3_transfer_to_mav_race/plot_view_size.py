@@ -10,6 +10,7 @@ models = [
     'randomview',
     'racecourt',
     'racecourt_allviews',
+    'randomview_and_racecourt_allviews',
 ]
 
 dataset = 'iros2018_course_final_simple_17gates'
@@ -18,7 +19,8 @@ legend = [
     'Frontal Views',
     'Random Placement',
     'Simulated Flight',
-    'Simulated Flight - All View Points'
+    'Simulated Flight - All View Points',
+    'Combined'
 ]
 
 n_iterations = 2

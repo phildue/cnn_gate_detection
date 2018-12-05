@@ -17,10 +17,12 @@ show_t = args.show
 
 cd_work()
 models = [
-    'ewfo_sim',
+    # 'ewfo_sim',
     'randomview',
-    'racecourt',
-    'racecourt_allviews',
+    # 'racecourt',
+    # 'racecourt_allviews',
+    'randomview_and_racecourt_allviews',
+
 ]
 
 dataset = 'iros2018_course_final_simple_17gates'
