@@ -55,7 +55,7 @@ for i in range(2):
         {'name': 'predict'}
     ]
 
-    work_dir = 'out/' + model_dir + '/'
+    work_dir = 'out/ext/' + model_dir + '/'
     create_dirs([work_dir])
     """
         Datasets
