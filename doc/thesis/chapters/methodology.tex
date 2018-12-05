@@ -155,7 +155,7 @@ Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to m
 
 Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
 
-Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. Hence, we hypothesize incorporating the effect in the data generation will improve the performance of the trained model. The effect is modelled following \cite{Carlson2018}:
+Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. The effect can be modelled following \cite{Carlson2018} by a scaling of all colour channels with:
 
 \begin{equation}
 f(S) = \frac{255}{1 + e^{-S}}
