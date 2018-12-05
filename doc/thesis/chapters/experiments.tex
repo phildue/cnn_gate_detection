@@ -168,7 +168,7 @@ In order to examine this further the view points of random placement and a simul
 
 \begin{equation}
 x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
-\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{N}(-\pi,\pi)
+\phi = \mathcal{U}(0,0.1\pi),\quad \theta = \mathcal{U}(0,0.1\pi),\quad \psi = \mathcal{U}(-\pi,\pi)
 \label{eq:distroexp}
 \end{equation}
 Where $\mathcal{U}(a,b)$ is a uniform distribution with borders $a$ and $b$; $\mathcal{N}(\mu,\sigma)$ a Gaussian distribution with mean $\mu$ and variance $\sigma$. The labels are compared to the ones from the synthetic dataset described in \Cref{sec:datasets}.
@@ -196,13 +196,38 @@ Although \textit{Random Placement} covers more and better distributed view angle
 
 \subsection{Training Set}
 
+Training sets with 20 000 samples each are created using \textit{Random Placement} and \textit{Simulated Flight} in each of the environments described in \Cref{sec:meth}. In each environment the background textures are varied during data generation. For \textit{Random Placement} the gates are placed throughout the room, subsequently the camera is placed according to \Cref{eq:distroexp}. For \textit{Simulated Flight} 3 race courts with corresponding trajectories are created. It should be noted that the race court present in the test set is not part in either of the training sets.
+
 \begin{figure}
 	\includegraphics[width=\textwidth]{fig/ar_train}
 \end{figure}
 
 \subsection{Results}
+
+The results are presented in \Cref{fig:view_size}. Predicted and true labels are assigned to bins based on their covered area $A_O=b_w*b_h$. Subsequently $ap_{60}$ is evaluated for each bin. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{fig/view_size}
+	\caption{Results of different methods to include more samples in the training set. The results are clustered based on the size of the true/predicted bounding box. It can be seen how the network that contained only frontal views performs poorly when applied in the simulated \ac{MAV} race track. The network trained with images obtained with \textit{Simulated Flight} outperforms the network trained on samples obtained with \textit{Random Placement} for larger object sizes.}
+	\label{fig:view_size}
+\end{figure}
+
+\textit{Frontal Views} is the network trained in the previous section. Its training set contained only frontal views and no overlap. It can be seen how it performs poorly when simulating a whole \ac{MAV} race. \textit{Random Placement} achieves competitive performance for smaller object sizes until 25\% of the input image. However, the performance drops below 20\% for larger objects. \textit{Simulated Flight} achieves competitive performance on all bins. Only for objects of a size between 6.2\% - 12.5\% of the input image the random placement performs slightly better. 
+
+Overall a significant drop in performance can be seen compared to the test sets of the previous sections. Only on the bin for objects of a size between 6.2\% - 12.5\% of the input image the networks achieve a comparable performance of 69 \%. This bin seems to be the optimal distance for all networks. Especially for larger objects the performance decreases.
+
 \subsection{Discussion}
+
+In the results it can be seen how the detectors struggle in the more challenging environment of a \ac{MAV} race. A drop in performance can be seen for all detectors. Including new view points in the training set helped counteracting against this drop. The networks trained with more view points perform significantly better than the network which was only trained on frontal views.
+
+The question remains what view points to include. The capability of the detector to generalize across view points seems quite poor. Despite the fact that \textit{Random Placement} contains close up views on the object, it performs poorly for larger objects. In contrary \textit{Simulating Flight} works much better on this data set. However, its data generation assumes a certain motion model of the camera as well as certain patterns in race courts.
+
+Overall we see a performance drop for larger objects. We assume the reasons that less context is visible, also the features are spread more apart.
+
 \subsection{Conclusion}
+
+In this section we evaluated how the detector performs when applied in \ac{MAV} racing. It can be seen how such an environment is more challenging for the detector. Incorporating the pattern of a \ac{MAV} race improved the performance.
 
 \section{Transferring the detector to the real world}
 

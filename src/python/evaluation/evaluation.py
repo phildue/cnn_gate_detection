@@ -21,9 +21,9 @@ def evalcluster_yaw_dist(labels_true, labels_pred, conf_thresh, n_bins_angle=10,
     fn = np.zeros((n_bins_dist, n_bins_angle))
 
     for i in range(len(labels_true)):
-        m = DetectionEvaluator(min_box_area=0.01 * 416 * 416, max_box_area=2.0 * 416 * 416,
-                               min_aspect_ratio=0.3,
-                               max_aspect_ratio=3.0, iou_thresh=iou_thresh)
+        m = DetectionEvaluator(min_box_area=0.001 * 416 * 416, max_box_area=2.0 * 416 * 416,
+                               min_aspect_ratio=0,
+                               max_aspect_ratio=100.0, iou_thresh=iou_thresh)
         label_pred = ImgLabel([obj for obj in labels_pred[i].objects if obj.confidence > conf_thresh])
         label_true = labels_true[i]
         m.evaluate(label_true, label_pred)
@@ -223,13 +223,16 @@ def evalset(labels_true, labels_pred, iou_thresh=0.6):
     return sum_r, tp, fp, fn, boxes_true
 
 
-def evalcluster_size_ap(labels_true, labels_pred, bins, iou_thresh=0.6, images=None, show_t=-1):
-    evaluator = DetectionEvaluator(min_box_area=min(bins),
-                                   max_box_area=max(bins),
-                                   min_aspect_ratio=0,
-                                   max_aspect_ratio=100.0, iou_thresh=iou_thresh)
+def evalcluster_size_ap(labels_true, labels_pred, bins, min_ar, max_ar,
+                        min_obj_size, max_obj_size, iou_thresh=0.6, images=None, show_t=-1):
+    evaluator = DetectionEvaluator(min_box_area=min_obj_size,
+                                   max_box_area=max_obj_size,
+                                   min_aspect_ratio=min_ar,
+                                   max_aspect_ratio=max_ar, iou_thresh=iou_thresh)
 
     aps = []
+    recalls = []
+    precisions = []
     n_true = []
     for i_s in range(len(bins) - 1):
         results_bin = []
@@ -246,14 +249,16 @@ def evalcluster_size_ap(labels_true, labels_pred, bins, iou_thresh=0.6, images=N
         mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([r])
         ap = np.mean(mean_pr)
         aps.append(ap)
+        recalls.append(r.recall_conf)
+        precisions.append(r.precision_conf)
         n_true.append(n_true_bin)
 
-    return aps, n_true
+    return aps, n_true, recalls, precisions
 
 
 def evalcluster_location_ap(labels_true, labels_pred, bins, iou_thresh=0.6, images=None, show_t=-1):
-    evaluator = DetectionEvaluator(min_box_area=0.001*416*416,
-                                   max_box_area=2.0*416*416,
+    evaluator = DetectionEvaluator(min_box_area=0.001 * 416 * 416,
+                                   max_box_area=2.0 * 416 * 416,
                                    min_aspect_ratio=0,
                                    max_aspect_ratio=100.0, iou_thresh=iou_thresh)
 
@@ -480,7 +485,7 @@ def interpolate(precision_raw, recall_raw, recall_levels=None):
 
     precision = np.zeros(shape=(len(recall_levels)))
     for i, r in enumerate(recall_levels):
-        idx = recall_raw > r
+        idx = recall_raw >= r
         if np.any(idx == True):
             precision[i] = np.max(precision_raw[idx])
         else:
