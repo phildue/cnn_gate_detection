@@ -69,8 +69,8 @@ for i in range(2):
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/flight_basement_mavlab_gates_bg1',
-                    'resource/ext/samples/flight_basement_mavlab_gates_bg2'
+                    'resource/ext/samples/flight_basement_mavlab_gates_bg0',
+                    'resource/ext/samples/flight_basement_mavlab_gates_bg1'
                     # 'resource/ext/samples/various_environments20k',
                     # 'resource/ext/samples/realbg20k'
                     ]
