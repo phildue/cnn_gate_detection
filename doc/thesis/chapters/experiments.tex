@@ -235,21 +235,21 @@ The depth of a network has multiple effects. Deeper networks contain more non-li
 
 \Cref{tab:depth} shows the results of networks with varying depth. The best network on simulated \ac{MAV} race has 9 layers. Further increasing depth does not lead to an improvement in performance. In contrast reducing the number of layers decreases the performance gradually.
 
-This observation can be made for both thresholds of \ac{IoU}. However, the performance drop for an \ac{IoU} of 40\% from 9 to 8 layers is only 2\%. In contrast the performance drop an \ac{IoU} of 60\% is 11 \%.
+This observation can be made for both thresholds of \ac{IoU}. However, the performance drop for an \ac{IoU} of 40\% from 8 to 7 layers is only 2\%. In contrast the performance drop an \ac{IoU} of 60\% is 11 \%.
 
 \begin{table}[hbtp]
 	\centering
 	\input{tables/depth.txt}
-	\caption{Performance of networks with varying depth on the simple test set introduced in \Cref{sec:empty} and the more complex simulated \ac{MAV} race. It can be seen how on the more complex test set depth only improves the performance until 9 layers.}
+	\caption{Performance of networks with varying depth on the simulated \ac{MAV} race. It can be seen how on the more complex test set depth only improves the performance until 9 layers.}
 	\label{tab:depth}
 \end{table}
 
-\begin{figure}[hbtp]
+\begin{table}[hbtp]
 	\centering
-	\includegraphics[width=\textwidth]{fig/perf_width}
-	\caption{Performance in simulation when varying the amount of filters per layer. Starting from the baseline architecture with approximately 9 Mio. weights, the amount of filters per layer are decreased stepwise by a factor of 2. Only minor effects on performance can be seen, despite reducing the flexibility of the model.}
-	\label{fig:perf_width}
-\end{figure}
+	\input{tables/width.txt}
+	\caption{Performance of networks with varying depth on the simulated \ac{MAV} race. }
+	\label{tab:width}
+\end{table}
 
 
 

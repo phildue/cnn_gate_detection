@@ -47,18 +47,18 @@ for iou in ious:
 column_names = ['15', '9', '8', '7', '6']
 table = pd.DataFrame()
 table['Layers'] = column_names
+iou=0.6
 
-for iou in ious:
-    for i_d, d in enumerate(datasets):
-        column_content = []
-        for i_m, _ in enumerate(models):
-            results = []
-            for i_i in range(n_iterations):
-                result = frame['{}_iou{}_i0{}'.format(d, iou,i_i)][i_m]
-                if result >= 0:
-                    results.append(result)
-            column_content.append('${:.2f} \pm {:.2f}$'.format(np.mean(results), np.std(results)))
-        table['$ap_{' + str(int(np.round(iou*100,0))) + '}$'] = column_content
+for i_d, d in enumerate(datasets):
+    column_content = []
+    for i_m, _ in enumerate(models):
+        results = []
+        for i_i in range(n_iterations):
+            result = frame['{}_iou{}_i0{}'.format(d, iou,i_i)][i_m]
+            if result >= 0:
+                results.append(result)
+        column_content.append('${:.2f} \pm {:.2f}$'.format(np.mean(results), np.std(results)))
+    table['$ap_{' + str(int(np.round(iou*100,0))) + '}$'] = column_content
 
 print(table.to_string(index=False))
 print(table.to_latex(index=False,escape=False))

@@ -20,10 +20,10 @@ models = [
     # 'depth1',
     # 'depth2',
     # 'depth3',
-    'racecourt',
-    'vgg'
+    # 'racecourt',
+    'vgg',
     # 'width2',
-    # 'width3',
+    'width3',
     # 'width4',
 
 ]
@@ -59,8 +59,8 @@ for dataset in datasets:
                     size_bins_total = size_bins * 416 ** 2
                     result_size_ap, true_objects_bin, recalls, precisions = evalcluster_size_ap(labels_true, labels_pred,
                                                                                                 bins=size_bins_total,
-                                                                                                min_ar=0,
-                                                                                                max_ar=100.0,
+                                                                                                min_ar=0.3,
+                                                                                                max_ar=3.0,
                                                                                                 min_obj_size=0.001 * 416 ** 2,
                                                                                                 max_obj_size=2.0 * 416 ** 2,
                                                                                                 images=images,
