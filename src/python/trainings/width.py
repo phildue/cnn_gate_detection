@@ -18,44 +18,42 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-for n in range(3, 4):
+for n in [4, 2]:
     model_dir = 'width{}'.format(n)
     initial_epoch = 0
     epochs = 100
 
-
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(16/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(16 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(64/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(64 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(128/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(128 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(1024/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(1024 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(256/2**n), 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(256 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(512 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         {'name': 'route', 'index': [11]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 2},
         {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 1, 'right': 0},
         {'name': 'route', 'index': [-1, 10]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
         {'name': 'route', 'index': [11]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': int(128 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'upsample', 'size': 4},
         {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 2, 'right': 0},
         {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256/2**n), 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': int(256 / 2 ** n), 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
-
 
     work_dir = 'out/ext' + model_dir + '/'
     create_dirs([work_dir])
@@ -106,7 +104,6 @@ for n in range(3, 4):
                               color_format='bgr', label_format='xml', n_samples=n_samples,
                               remove_filtered=False, max_empty=0, filter=filter, subsets=subsets)
 
-
     """
     Model
     """
@@ -120,7 +117,6 @@ for n in range(3, 4):
     preprocessor = Preprocessor(preprocessing=None, encoder=encoder, n_classes=1, img_shape=img_res, color_format='bgr')
     loss = GateDetectionLoss()
     # model.load_weights('out/mavnet/model.h5')
-
 
     """
     Training Config

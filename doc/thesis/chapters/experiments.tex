@@ -17,7 +17,7 @@ In special cases it can happen that a bin border falls right between a true and 
 The training algorithm as well as the network initialization are random processes. Hence, the network weights after training, as well as its performance are not deterministic. This condition has to be taken into account when interpreting the results. Ideally, each training is performed repeatedly and mean and standard deviation are used for evaluation. However, the training of \acp{CNN} takes a considerable amount of time which is why not all experiments can be taken out with many repetitions. Instead, trainings are performed at least two times and only further repeated if the two results have a high deviation. In plots an error bar displays the standard deviation between the different repetitions.
 
 \section{Empty Objects}
-
+\label{sec:empty}
 \acp{CNN} combine simple local features to more complex patterns layer by layer. Thereby pooling removes task irrelevant information and reduces the spatial dimension. In the deeper layers features of larger areas in the image are combined and encoded in an increasing amount of filters. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
 
 The power of deep \acp{CNN} arises from their capability to learn very complex patterns. However, these are not present in \acp{EWFO}. Instead most of the object area consists of background and should be ignored by the detector. We hypothesize that this emptiness makes the detection more difficult than the detection of other objects as the detector can not exploit complex patterns. Instead any object can be present within the frame and thus distract the detector.
@@ -50,12 +50,7 @@ The created objects allow to study how a detector performs that is trained on a 
 	\label{fig:cats}
 \end{figure}
 
-\subsection{Training Set}
-
 For each object a dataset with 20 000 samples is created within the \textit{Dark} environment. As this experiment focuses on the influence of the empty part of the object, the view points are limited to frontally facing the object in various distances. On these training sets the two architectures illustrated in \Cref{sec:meth} \textit{SmallYoloV3} and \textit{VGGYoloV3} are trained. As 20 000 samples is a comparatively small amount of samples for a network such as the \textit{VGGYoloV3}, the network is initialized with the weights of the \textit{VGG-19} pretrained on ImageNet.
-
-
-\subsection{Test Set}
 
 For each object a test set of 200 samples is created within the \textit{Dark}-Environment, as well as the \textit{IROS}-Environment. Hence, in total there are 6 test sets with 150 samples each. Similar to the training set the view points are limited to frontally facing the object at various distances.
 
@@ -63,7 +58,7 @@ For each object a test set of 200 samples is created within the \textit{Dark}-En
 
 \subsection{Results}
 
-\begin{table}
+\begin{table}[hbtp]
 	\centering
 	\input{tables/all_basement.txt}
 	\caption{Performance of two architectures when the test environment is similar to the training environment. Each trained network (row) is evaluated on each test set (column). It can be seen how the detectors exploit the structure that is placed in the object. In contrary, the detector of \acp{EWFO} only gets confused when the structure inside the object is very different from the training set.}
@@ -74,7 +69,7 @@ For each object a test set of 200 samples is created within the \textit{Dark}-En
 
 For detecting the \textit{Gate}-object, the lowest performance is achieved. When the same detector is applied on an object where the empty part is filled, the performance drops. This happens particularly for the \textit{Sign}-structure. For the \textit{Cat}-structure the performance drop is lower. In fact for the deep network there is not really a performance drop measurable.
 
-\begin{table}
+\begin{table}[hbtp]
 	\centering
 	\input{tables/diff_iros.txt}
 	\caption{Change in performance when the detectors are tested in another environment than their training environment. The most severe drop can be seen at the \textit{Cats}-object. The drop for \acp{EWFO} is comparable to the \textit{Sign}-object}
@@ -124,8 +119,6 @@ We hypothesize that the creation of samples with a simulator leads to better res
 	\label{fig:sim_vs_voc}
 \end{figure}
 
-\subsection{Training Set}
-
 With both methods a dataset with 20 000 samples is created. The view points are limited to frontal views.
 
 The simulated dataset is created using \textit{Daylight} and \textit{Dark} environment which have different lightning conditions. Additionally, the backgrounds in both environments are varied such that a higher variance in background textures is achieved. Thereby the background texture that is present in the \textit{IROS} environment is not used.
@@ -162,9 +155,12 @@ In this section we investigated how to make the detector more invariant against 
 
 Until now the conducted experiments where limited to relatively simple environments. In a real world application such as an \acp{MAV} race, much more objects are in sight. These can not only appear frontally but also in more difficult view angle. Furthermore, the objects can appear behind each other, such that in the empty part, another object is visible. This section studies whether the results obtained so far also apply in a more challenging environment. Therefore different architectures and training methods are evaluated on the synthetic test set described in \Cref{sec:datasets}.
 
-Due to the challenges in this dataset we hypothesize that the detector trained so far will perform poorly on this dataset. In order to handle overlapping objects in difficult angles, such situations should be included in the training set. Yet, the amount of possible views/overlaps is large and manually constructing such examples is cumbersome especially considering the amount of samples required to train a \acp{CNN}. A simpler way is creating a scene with several objects and placing the camera randomly (within some margin) in order to cover a large variation of views on the scene. That way the network should learn a general object representation and detect unseen objects from different view points. However, this \textit{Random Placement} might not resemble the real world sufficiently. An \ac{MAV} does not appear at random places within a scene, especially not when it follows a racing track. Alternatively, the samples can be generated by simulating a flight through a race court. Although such a \textit{Simulated Flight} requires to create a race court an a corresponding trajectory the obtained samples should resemble the real world better. 
+Due to the challenges in this dataset we hypothesize that the detector trained so far will perform poorly on this dataset. In order to handle overlapping objects in difficult angles, such situations should be included in the training set. Yet, the amount of possible views/overlaps is large and manually constructing such examples is cumbersome especially considering the amount of samples required to train a \acp{CNN}. A simpler way is creating a scene with several objects and placing the camera randomly (within some margin) in order to cover a large variation of views on the scene. With this \textit{Random Placement} the detector can learn a general object representation and detect unseen objects from different view points. However, \acp{CNN} cannot inherently handle object rotations and variations in scale. Including too many view angles in the training set could also confuse the detector. For example from a 90° angle the investigated object appears as a straight line and is hardly detectable even for a human. If too many view angles confuse the detector the samples should be created by only using a limited set of view points.
 
-In order to examine this further the view points of random placement and a simulated flight are compared. Therefore, 600 samples are created using random placement with the following distributions:
+The question remains how to choose those view points. In the application of this work the \ac{MAV} follows a predefined trajectory which is based on the a priori known race court. It needs the detections to correct its positions but the rough object position is known in advance.
+Hence, the \ac{MAV} can point the camera in such a way that the object is roughly faced frontally. Subsequently, it adapts its position to fly through the gate. This behaviour can be mimicked when creating the samples. Although such a \textit{Simulated Flight} requires to create a race court an a corresponding trajectory the obtained samples should better resemble what the detector can expect in the real world.
+
+We investigate the creation of samples with the two methods \textit{Random Placement} and \textit{Simulated Flight}. For \textit{Random Placement} 600 samples are created by heuristically choosing the following distributions:
 
 \begin{equation}
 x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5,0.5)),\quad
@@ -173,47 +169,43 @@ x = \mathcal{U}(-30,30),\quad y = \mathcal{U}(-20,20),\quad z = \mathcal{N}(-4.5
 \end{equation}
 Where $\mathcal{U}(a,b)$ is a uniform distribution with borders $a$ and $b$; $\mathcal{N}(\mu,\sigma)$ a Gaussian distribution with mean $\mu$ and variance $\sigma$. The labels are compared to the ones from the synthetic dataset described in \Cref{sec:datasets}.
 
+For \textit{Simulated Flight} the dynamic model of a quadcopter is used \footnote{The model has been developed next to this work which is why it is not described here further. The interested reader is referred to }\todoref{quad model}. Several race courts are created and the camera follows a predefined trajectory through these race courts.
+
 \begin{figure}
 	\begin{minipage}{\textwidth}
 		\includegraphics[width=\textwidth]{fig/heatmap_camplace}
-		\caption{Object appearances in 2D when generating samples with random poses (left) and during a \ac{MAV} flight. Each pixel value corresponds to the number of labels that cover this particular pixel. In the simulated flight objects appear mostly centred on the horizontal line.}
+		\caption{Object appearances in 2D when generating 600 samples with \textit{Random Placement} and  \textit{Simulated Flight}. Each pixel value corresponds to the number of labels that cover this particular pixel. In the simulated flight objects appear mostly centred on the horizontal line.}
 		\label{fig:heatmap_camplace}
 	\end{minipage}
 	\begin{minipage}{\textwidth}
-		\includegraphics[width=\textwidth]{fig/hist2d_camplace}
-		\caption{Histogram of object occurrences in $\Delta \psi$ and euclidean distance relative to the camera.$\Delta \psi = |\delta t| = 0$ corresponds to flying through the centre part. With a $\Delta \psi = 90\degree$ the object appears as straight line for $\Delta e = 0$. For $\Delta e > 0$ and $\delta \psi = 90\degree$ the object can be seen as squeezed quadrangle. It can be seen how the random placement does rarely cover facing the object closely and frontally. }
-		\label{fig:hist2d_camplace}
+	\includegraphics[width=\textwidth]{fig/ar_train}
+	\caption{$b_h$ and $b_w$ of 600 samples created with \textit{Random Placement} and  \textit{Simulated Flight}. When the object is faced frontally the aspect ratio is 1.1/1. It can be seen how with \textit{Simulated Flight} much more close up samples are created. On the other hand \textit{Random Placement} covers a broader range of view angles.}
+	\label{fig:aspect_ratio_camplace}
 	\end{minipage}
 \end{figure}
 
-\Cref{fig:heatmap_camplace} shows the distribution of bounding boxes when created with random camera placement and when following a racing track. Thereby each pixel value corresponds to the number of labels that cover this particular pixel. It can be seen how, when following the race track most of the objects are centred and distributed across the horizon, as camera focuses the next object frontally most of the time. In contrast, random placement leads to more evenly distributed object locations. 
+\Cref{fig:heatmap_camplace} shows the label distribution when created with the two methods. Thereby each pixel value corresponds to the number of labels that cover this particular pixel. It can be seen how, when following the race track most of the objects are centred and distributed across the horizon, as camera focuses the next object frontally most of the time. In contrast,\textit{Random Placement} leads to more evenly distributed object locations. 
 
-This can also be seen in \Cref{fig:hist2d_camplace} where a 2D histogram of the $\Delta \psi$ and $|\Delta t|$ with respect to the camera is displayed. Thereby a $\Delta \psi = |\Delta t| = 0$ corresponds to flying through the centre part. For $\Delta e = 0$ and $\Delta \psi = 90\degree$ the object appears as straight line. For $\Delta e > 0$ and $\Delta \psi = 90\degree$ the object can be seen as squeezed quadrangle. It is apparent how the random placement covers a much larger range of relative angles, while in the racing track certain angles do not appear at all. Even more importantly the largest bins of the racing track is an angle of 0 and a distance between 0m and 4m. These bins are almost not present when placing the camera randomly. This is because close to the camera the field of view is small, while the area of the object faced frontally is big. Hence, the probability of an object ending up at this specific location is relatively low. Furthermore, when placing the camera randomly there are no samples further away than 8m. This is because in the race track the camera traverses the room from one end - where it can see almost all gates - to another. The probability that the randomly placed camera ends up in a similar position is relatively low.
+\Cref{fig:aspect_ratio_camplace} shows $b_h$ and $b_w$ of 600 samples created with the two methods. Although the actual view angle can not be inferred from these dimension, the plot gives an idea on how the labels look like. When the object is faced frontally the aspect ratio is 1.1/1. It can be seen  \textit{Random Placement} covers a broader range of view angles but does not create many samples with large objects. The reason is that the field of view gets smaller as objects get closer. Hence, the camera ending up exactly in front of the object is relatively low. On the other hand with \textit{Simulated Flight} does not cover many view points where $b_h >> b_w$. In the created race courts these view angles do not seem to be present.
 
-We hypothesize that there is a trade-o
-Although \textit{Random Placement} covers more and better distributed view angles, it misses certain object appearances that are typical in a \ac{MAV} racing. On the other hand, when simulating a flight the samples strongly depend on the racing track as well as the trajectory the camera flies. We hypothesize that there is a trade-off between generalizability and specialization. A detector that has to cover more view points will have a larger recall but be less precise in its predictions. 
+We investigate to what extent the detector can generalize across view points. We hypothesize that a detector trained with \textit{Simulated Flight} performs better in a simulated \ac{MAV} race than a detector trained with \textit{Random Placement}. 
 
+Training sets with 20 000 samples each are created using \textit{Random Placement} and \textit{Simulated Flight}. The scenes are created with the environments introduced in \Cref{sec:meth}. Additionally, the background textures are varied during data generation. For \textit{Random Placement} the gates are placed throughout the room, subsequently the camera is placed according to \Cref{eq:distroexp}. For \textit{Simulated Flight} 3 race courts with corresponding trajectories are created. It should be noted that the race court present in the test set is not part in either of the training sets. 
 
-\subsection{Training Set}
+\todo{what did we train what excluded?}.
 
-Training sets with 20 000 samples each are created using \textit{Random Placement} and \textit{Simulated Flight} in each of the environments described in \Cref{sec:meth}. In each environment the background textures are varied during data generation. For \textit{Random Placement} the gates are placed throughout the room, subsequently the camera is placed according to \Cref{eq:distroexp}. For \textit{Simulated Flight} 3 race courts with corresponding trajectories are created. It should be noted that the race court present in the test set is not part in either of the training sets.
-
-\begin{figure}
-	\includegraphics[width=\textwidth]{fig/ar_train}
-\end{figure}
 
 \subsection{Results}
 
 The results are presented in \Cref{fig:view_size}. Predicted and true labels are assigned to bins based on their covered area $A_O=b_w*b_h$. Subsequently $ap_{60}$ is evaluated for each bin. 
-
-\begin{figure}
-	\centering
+	\begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/view_size}
 	\caption{Results of different methods to include more samples in the training set. The results are clustered based on the size of the true/predicted bounding box. It can be seen how the network that contained only frontal views performs poorly when applied in the simulated \ac{MAV} race track. The network trained with images obtained with \textit{Simulated Flight} outperforms the network trained on samples obtained with \textit{Random Placement} for larger object sizes.}
 	\label{fig:view_size}
 \end{figure}
 
-\textit{Frontal Views} is the network trained in the previous section. Its training set contained only frontal views and no overlap. It can be seen how it performs poorly when simulating a whole \ac{MAV} race. \textit{Random Placement} achieves competitive performance for smaller object sizes until 25\% of the input image. However, the performance drops below 20\% for larger objects. \textit{Simulated Flight} achieves competitive performance on all bins. Only for objects of a size between 6.2\% - 12.5\% of the input image the random placement performs slightly better. 
+
+\textit{Frontal Views} is the network trained in the previous section. Its training set contained only frontal views and no overlap. It can be seen how it performs poorly when simulating a whole \ac{MAV} race. \textit{Random Placement} achieves competitive performance for smaller object sizes until 25\% of the input image. However, the performance drops below 20\% for larger objects. \textit{Simulated Flight} achieves competitive performance on all bins. Only for objects of a size between 6.2\% - 12.5\% of the input image the random placement performs slightly better. In most bins combining both methods led to worse results than each of the methods individually.
 
 Overall a significant drop in performance can be seen compared to the test sets of the previous sections. Only on the bin for objects of a size between 6.2\% - 12.5\% of the input image the networks achieve a comparable performance of 69 \%. This bin seems to be the optimal distance for all networks. Especially for larger objects the performance decreases.
 
@@ -221,33 +213,36 @@ Overall a significant drop in performance can be seen compared to the test sets 
 
 In the results it can be seen how the detectors struggle in the more challenging environment of a \ac{MAV} race. A drop in performance can be seen for all detectors. Including new view points in the training set helped counteracting against this drop. The networks trained with more view points perform significantly better than the network which was only trained on frontal views.
 
-The question remains what view points to include. The capability of the detector to generalize across view points seems quite poor. Despite the fact that \textit{Random Placement} contains close up views on the object, it performs poorly for larger objects. In contrary \textit{Simulating Flight} works much better on this data set. However, its data generation assumes a certain motion model of the camera as well as certain patterns in race courts.
+Yet including to many view points seems to confuse the detector. The network trained with \textit{Random Placement} performs poor for larger objects. Also combining \textit{Random Placement} and \textit{Simulating Flight} leads to a deterioration in performance. In contrast, the network trained with \textit{Simulating Flight} only works better on those bins. 
 
-Overall we see a performance drop for larger objects. We assume the reasons that less context is visible, also the features are spread more apart.
+Overall a performance drop for larger objects can be seen. This is somewhat surprising as the object gets better visible when it is larger. However, the closer the camera gets, the less context is visible. For example the object pole gets out of view. Also, it is more likely that parts of the object get out of view as it comes closer. This could be the reason for the drop in performance for larger objects.
 
 \subsection{Conclusion}
 
-In this section we evaluated how the detector performs when applied in \ac{MAV} racing. It can be seen how such an environment is more challenging for the detector. Incorporating the pattern of a \ac{MAV} race improved the performance.
+In this section we evaluated how the detector performs when applied in \ac{MAV} racing. It can be seen how such an environment is more challenging for the detector as more objects and view points are visible. 
+
+Incorporating these view points in the training improved the performance. However, creating a detector that performs well on all view points proves to be difficult. Instead better performance can be achieved when creating samples based on what the detector will see in reality.
 
 \section{Optimizing the Architecture}
 
-\textit{TinyYoloV3} is optimized to detect solid feature rich objects of multiple classes with a low computational budget. In order to sufficiently represent and distinguish such objects many weights are required. Hence, the network contains 9 layers and a final width of 1024. In contrast, the features of \acp{EWFO} are relatively simple hence less weights should be required. Therefore we hypothesize a thinner network should be able to learn the task equally well while being computationally more efficient.
+The baseline network architecture is optimized to detect solid feature rich objects of multiple classes. In order to sufficiently represent and distinguish such complex objects many weights are required. This leads to a high computational complexity and longer inference time. Also, more weights require typically more data to train and are more prune to overfit to a training set. The features of \acp{EWFO} are relatively simple hence less weights should be required. This section investigates whether equal performance can be reached when using a more shallow/thinner architecture.
 
-The receptive field of \textit{TinyYoloV3} is 223 pixels which does not cover the full input image. For solid objects this is of minor impact as even if the network only sees an object part it can still learn to recognize it. However, this does not apply for \acp{EWFO} which are empty and do not contain any information in the object centre. Instead it can confuse an output layer that is assigned responsible to detect such an object. Therefore we hypothesize that more layers should improve the performance for larger objects. However, the c 
+The width in a \acp{CNN} determines how many features can be extracted in one layer. Wider networks can extract and retain more information than thinner layers. As the information in \acp{EWFO} is limited to basic geometric shapes and colour, we hypothesize a thinner network should be able to learn the detection task equally well. We examine this by reducing the number of filters per layer in our baseline network step wise.
 
-Yet, the complexity of large objects does not increase. Hence, we hypothesize that if the receptive field is large enough,  performance for larger objects. 
+The depth of a network has multiple effects. Deeper networks contain more non-linear elements and can thus represent more complex functions/features. \acp{EWFO} have simple features and thus only a few layers should be required. However, in a \acp{MAV} race the objects appear overlapping and in difficult angles. This increases the complexity of the problem and a deep network could perform better in such cases. Also, the depth determines the receptive field of the network. With a too shallow network the last layer does not see the entire object. This is of particularly effect for \acp{EWFO} which do not contain information in its centre part. In \Cref{sec:empty} it could already be seen how a very deep network did not improve for the detection of the object. In this section we examine whether the same is true for a more complex environment. Furthermore, we investigate whether the number of layers can be further reduced. Therefore the first layers of the baseline \textit{SmallYoloV3} are removed while at the same time the pooling/kernel size is increased in order to keep the receptive field large enough.
 
-Another parameter are network width and depth.  The same condition holds for the number of layers. However, more layers also increase the receptive field. Hence, we expect the performance to increase as long as the receptive field does not fully capture the image.
+\section{Results}
 
-In order to evaluate our hypothesis we perform an architecture evaluation by varying the number of layers filters and the receptive field. Before training the networks we tune the anchor box dimensions by performing a k-means clustering on t
+\Cref{tab:depth} shows the results of networks with varying depth. The best network on simulated \ac{MAV} race has 9 layers. Further increasing depth does not lead to an improvement in performance. In contrast reducing the number of layers decreases the performance gradually.
 
-Initially an architecture evaluation is performed. Therefore different architectures are trained and evaluated in terms of \ac{ap60}. As an architecture contains many parameters we can not simply vary each of them independently. Hence, three experiments are performed iteratively. We first describe them on a high level basis before explaining the exact changes. In a first step the width is decreased until a drop in performance is noticeable. In a second step the architecture with the lowest width but without performance drop is chosen and the depth is varied. Based on the results of this step we create a final model that combines the gained insights and tune the anchor boxes.
+This observation can be made for both thresholds of \ac{IoU}. However, the performance drop for an \ac{IoU} of 40\% from 9 to 8 layers is only 2\%. In contrast the performance drop an \ac{IoU} of 60\% is 11 \%.
 
-The scheme in which the architecture is changed is visualized in \Cref{fig:depth_changes}. The width of the baseline model is decreased stepwise by a factor of two. When decreasing depth only convolutional layers are removed while the pooling layers are kept such that the spatial resolution stays the same. When increasing depth 2 layers are inserted stepwise at the end of both branches. The results show how depth is mainly relevant to detect objects of larger scale. Hence, the final model consist of 5 common layers, 15 layers on the branch to detect larger objects and 2 layers on the branch to detect small objects.
-
-
-\Cref{fig:perf_width} shows the performance for thinner and wider networks. It is apparent how the performance only undergoes slight variations despite reducing the total number of weights by a factor 1000. \todo{retrain one in the middle to get variance, it should be more linear}
-
+\begin{table}[hbtp]
+	\centering
+	\input{tables/depth.txt}
+	\caption{Performance of networks with varying depth on the simple test set introduced in \Cref{sec:empty} and the more complex simulated \ac{MAV} race. It can be seen how on the more complex test set depth only improves the performance until 9 layers.}
+	\label{tab:depth}
+\end{table}
 
 \begin{figure}[hbtp]
 	\centering
@@ -256,31 +251,20 @@ The scheme in which the architecture is changed is visualized in \Cref{fig:depth
 	\label{fig:perf_width}
 \end{figure}
 
-\begin{figure}[hbtp]
-	\centering
-	\includegraphics[width=\textwidth]{fig/depth_ap_size}
-	\caption{Performance in simulation of models with varying depth and for bins of different size. It can be seen that the performance for larger objects increases with the amount of layers.}
-	\label{fig:depth_ap_size}
-\end{figure}
-
-\Cref{fig:size_bins} shows the distribution of object sizes in the bins used for evaluation. It can be seen that most objects in the test set are further away. \todo{put some examples to show what each size actuall means}
 
 
 \subsection{Discussion}
 
-The overall performance is only slightly affected when reducing the number of weights in terms of width and height. We can assume that this is because the objects we investigate are of quite simple structure. Intuitively the features to be considered are color, lines and edges in certain combinations. Hence, it seems logical that only a few filters are necessary to represent these shapes.
+Similarly to the results in \Cref{sec:empty} the very deep network did not improve in performance. Hence, depth does not seem to help when detecting objects with more overlap and in difficult view angles. However, a certain amount of layers seems to be crucial. When decreasing the number of layers further than 9 the performance gradually decreases. A possible reason is that with less layers the pooling has to be increased in order to keep the receptive field large enough. Yet aggressive pooling removes spatial information quickly. While this is of less influence for the detection task, it can be harmful for the localization. The results for $ap_{40}$ also hint in this direction. When the threshold for correct localization is lower the performance drop from 8 to 9 layers is less severe.
 
-The performance in terms of different object sizes varies significantly for models with varying depth. Only deeper networks are able to detect larger objects. However, the complexity of the object does not increase for closer objects. In contrary the closer the objects are, the less context is visible. A very close object consists "only" of an orange square. Hence, it is unlikely that increased flexibility is the reason for the increase in performance. 
-
-Instead it is more likely that the increased receptive field is the reason for the improved performance. In fact only the network with 14 layers has a receptive field of 414 an thus covers the whole image. Yet even this network cannot detect the largest objects. Thus the receptive field can not be the only reason for the lower performance on larger objects.
-
-The current structure combines features distributed across space in a pyramid fashion. So 3-by-3 convolutions are performed layer by layer such until the whole image is covered. For \acp{EWFO} many of these steps are unnecessary as the objects are empty and the network should learn to ignore the empty part in the centre. It is possible that this structure gets confused by the parts that are present in the image centre.
 
 \subsection{Conclusion}
 
-We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
+We investigated how depth affects the detection performance. Our hypothesis was that a deeper network could perform better at detecting objects in difficult angles or higher overlap. However, we could not confirm this hypothesis. Yet decreasing the depth to less than 9 layers also hurts the performance. It seems that too aggressive pooling is bad for the object localization.
 
-Furthermore, we investigated how depth affects the performance of the model. We hypothesized that a shallow network should be able to detect the object as it only consists of relatively simple features. We can see how depth is required in order to cover the whole input image. Hence, we cannot fully conclude whether depth is required for the increased flexibility or simply due to the receptive field. 
+%We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
+
+
 
 \section{Transferring the detector to the real world}
 
@@ -319,7 +303,7 @@ We also investigated image augmentation by adding variations in HSV-space to eva
 
 \section{Deploying the detector on a \ac{MAV}}
 
-In the application of the detection of \acp{EWFO} on a \acp{MAV} detection accuracy is only one important metric. Equally relevant are inference speed and energy requirements. The example control loop in which the detector of this work is integrated, contains a filtering stage which fuses measurements of different sensors over time to infer a global state. This stage can deal with outliers and henceforth it can be more important ot have more bad detections in high frequency than only slow but good ones. This section studies the deployment of a detector for \acp{EWFO} on a \ac{MAV} in the example of the target system of this work. Therefore the performance-accuracy trade-off is studied and an experiment in a real world flight is conducted.
+In the application of the detection of \acp{EWFO} on a \acp{MAV} detection accuracy is only one important metric. Equally relevant are inference speed and energy requirements. The example control loop in which the detector of this work is integrated, contains a filtering stage which fuses measurements of different sensors over time to infer a global state. This stage can deal with outliers and henceforth it can be more important to have more bad detections in high frequency than only slow but good ones. This section studies the deployment of a detector for \acp{EWFO} on a \ac{MAV} in the example of the target system of this work. Therefore the performance-accuracy trade-off is studied and an experiment in a real world flight is conducted.
 
 As explained in \Cref{sec:background} the execution time strongly depends on the used hardware as well as its low level implementation. Therefore the inference time of several layers is measured on the JeVois using the \textit{Darknet} framework. The results are displayed in \Cref{fig:bottleneck_jevois}. Each sample corresponds to the number of computations and their computational time in one layer. Dashed lines connect samples at the same resolution. It is apparent how the same amount of computations at a spatial resolution of 20x15 is more than 4 times faster than at a resolution of 160x120. We assume this is because parallelism is better exploited at the lower scale.
 
@@ -333,10 +317,6 @@ As explained in \Cref{sec:background} the execution time strongly depends on the
 This means most speed can be gained when reducing the number of computations in the early layers where the spatial resolution is high. In earlier experiments it could be seen that already a small amount of filters is enough to detect \acp{EWFO}. However, even evaluating 4 kernels at a resolution of 320x240 already takes 55 ms (\Cref{fig:bottleneck_jevois} red triangle). A total network of that size would require more than 200 ms and is thus too slow to be deployed in the control loop.
 
 Current research mostly addresses to reduce the computations when the convolved volumes are deep or the operations are performed on \acp{CPU} that do not support floating point operations. However, the bottleneck on the JeVois happens at shallow volumes and the hardware can perform floating point operations. Furthermore, \acp{EWFO} consist of thin elements that are spread over large parts of the image. Hence, we hypothesize that simply reducing the image resolution will lead to large drops in performance. An alternative is to increase the stride parameter in the early layers of the network. This reduces the number of locations at which the kernel is evaluated. \acp{EWFO} are sparse and spread over large parts of the image, while most of the image does not contain useful information. Hence, we hypothesize that increasing the stride parameter in the early layers will perform better than reducing the image resolution.
-
-\section{Experiments}
-
-In order to answer this question we measure the inference time of different model architectures. This enables us to investigate the bottlenecks and thus optimize the model architecture. The JeVois Smart Camera uses an aspect ratio of 4:3. Therefore we change the network resolution accordingly. The JeVois Smart Camera has only limited memory available. Using a network architecture that goes beyond the memory simply results in a system crash. For example our baseline network runs performs one network evaluation in 700 ms. This is at a resolution of 160x120.
 
 In order to evaluate our hypotheses the network is trained with different architectures. Subsequently, performance and inference time on the JeVois are measured.
 

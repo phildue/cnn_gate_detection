@@ -96,7 +96,7 @@ Lens distortion and motion blur are chosen due to their presence in the real wor
 Lens distortion is a form of optical aberration which causes light to not fall in a single point but a region of space. For \acp{MAV} commonly used wide-angle lenses, this leads to barrel distortion and thus to straight lines appearing as curves in the image.
 
 The effect is applied using the model for wide-angle lenses from \cite{Vass}. It models the removal of lens distortion as combination of radial and non-radial part, that is approximated with a second order Taylor expansion:
-\todo{double check formula is (y in first line?)}
+
 \begin{equation}
 \begin{pmatrix}
 p_x^u \\
@@ -155,7 +155,7 @@ Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to m
 
 Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
 
-Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. The effect can be modelled following \cite{Carlson2018} by a scaling of all colour channels with:
+Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. The effect can be modelled following \cite{Carlson2018}:
 
 \begin{equation}
 f(S) = \frac{255}{1 + e^{-S}}

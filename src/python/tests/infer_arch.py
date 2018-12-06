@@ -13,20 +13,23 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'depth1',
-    'depth2',
-    'depth3',
+    # 'depth1',
+    # 'depth2',
+    # 'depth3',
+    # 'racecourt',
+    'vgg'
     # 'width2',
     # 'width3',
     # 'width4',
 
 ]
 
-datasets = ['iros2018_course_final_simple_17gates',
+datasets = [
+    'iros2018_course_final_simple_17gates',
             'test_iros_gate',
             ]
 
-work_dir = 'out/ext/'
+work_dir = 'out/'
 n_iterations = 2
 ObjectLabel.classes = ['gate']
 for dataset in datasets:

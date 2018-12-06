@@ -1,7 +1,7 @@
-from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from utils.fileaccess.labelparser.DatasetParser import DatasetParser
 from utils.workdir import cd_work
 
 cd_work()
@@ -46,8 +46,8 @@ for i, d in enumerate(datasets):
     plt.hist2d(frame['Width'][i], frame['Height'][i], bins=10, cmap=plt.cm.viridis)
     # plt.ylim(0,12)
     plt.colorbar()
-    plt.xlabel("Width")
-    plt.ylabel("Height")
+    plt.xlabel("$b_w$")
+    plt.ylabel("$b_h$")
 
     plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                         wspace=0.3, hspace=0.3)
