@@ -22,7 +22,7 @@ from utils.workdir import cd_work
 cd_work()
 img_res = 416, 416
 for i in range(2):
-    model_dir = 'blur_i{0:02d}'.format(i)
+    model_dir = 'distortion_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100
 

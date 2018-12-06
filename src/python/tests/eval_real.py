@@ -6,10 +6,12 @@ import pandas as pd
 from evaluation.evaluation import load_predictions, evalcluster_size_ap
 from utils.ModelSummary import ModelSummary
 from utils.imageprocessing.Backend import imread
+from utils.imageprocessing.transform.TransformCrop import TransformCrop
+from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
-show_t = -1
+show_t = 1
 parser = argparse.ArgumentParser()
 parser.add_argument('--show', metavar='s', type=int, default=show_t)
 args = parser.parse_args()
@@ -17,20 +19,22 @@ show_t = args.show
 
 cd_work()
 models = [
-    # 'depth1',
-    # 'depth2',
-    # 'depth3',
-    # 'racecourt',
-    # 'vgg',
-    'width2',
-    # 'width3',
-    'width4',
+    'mavlabgates',
+    # 'mavnet_lowres160',
+    # 'mavnet_lowres320',
+    # 'mavnet_strides',
+    # 'mavnet_strides3_pool2',
+    # 'mavnet_strides4_pool1',
+    # 'yolov3_width0',
 
 ]
+preprocessing = [TransformCrop(80, 0, 640 - 80, 480), TransformResize((416, 416))]
 
-datasets = ['iros2018_course_final_simple_17gates',
-            'test_iros_gate',
-            ]
+datasets = [
+    'jevois_cyberzoo',
+    'jevois_basement',
+    'jevois_hallway',
+]
 titles = models
 
 ObjectLabel.classes = ['gate']
@@ -52,18 +56,26 @@ for dataset in datasets:
                     labels_true, labels_pred, img_files = load_predictions(
                         '{}/predictions.pkl'.format(prediction_dir))
 
-                    if show_t >= 0:
-                        images = [imread(f, 'bgr') for f in img_files]
-                    else:
-                        images = None
+                    images = [imread(f, 'bgr') for f in img_files]
+
+                    labels_true_pp = []
+                    images_pp = []
+                    for i_l, l in enumerate(labels_true):
+                        for p in preprocessing:
+                            img_pp, l_pp = p.transform(images[i_l], l)
+                        images_pp.append(img_pp)
+                        labels_true_pp.append(l_pp)
+
+
                     size_bins_total = size_bins * 416 ** 2
-                    result_size_ap, true_objects_bin, recalls, precisions = evalcluster_size_ap(labels_true, labels_pred,
+                    result_size_ap, true_objects_bin, recalls, precisions = evalcluster_size_ap(labels_true_pp,
+                                                                                                labels_pred,
                                                                                                 bins=size_bins_total,
                                                                                                 min_ar=0.3,
                                                                                                 max_ar=3.0,
                                                                                                 min_obj_size=0.001 * 416 ** 2,
                                                                                                 max_obj_size=2.0 * 416 ** 2,
-                                                                                                images=images,
+                                                                                                images=images_pp,
                                                                                                 show_t=show_t,
                                                                                                 iou_thresh=iou)
 
