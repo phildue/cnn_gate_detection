@@ -15,7 +15,7 @@ from utils.workdir import cd_work
 
 cd_work()
 # 'resource/ext/samples/iros2018_course_final_simple_17gates'
-generator = GateGenerator(directories=['resource/ext/samples/iros2018_course_final_simple_17gates'],
+generator = GateGenerator(directories=['resource/ext/samples/jevois_hallway'],
                           batch_size=8, color_format='bgr',
                           shuffle=False, start_idx=0, valid_frac=0,
                           label_format='xml',
@@ -30,11 +30,11 @@ generator = GateGenerator(directories=['resource/ext/samples/iros2018_course_fin
 #                      color_format='yuv', weight_file='logs/v2_mixed/model.h5')
 # model = Yolo.tiny_yolo(class_names=['gate'], batch_size=8, conf_thresh=0.5,
 #                        color_format='yuv', weight_file='logs/tiny_mixed/model.h5')
-src_dir = 'out/mavnet_lowres320/'
+src_dir = 'out/mavlabgates_i00/'
 summary = load_file(src_dir + 'summary.pkl')
 pprint(summary['architecture'])
 iou_thresh = 0.6
-preprocessing = [TransformCrop(0, 52, 416, 416 - 52), TransformResize((240, 320))]
+preprocessing = [TransformCrop(60,0 ,  640 - 60,480), TransformResize((416, 416))]
 model, output_grids = build_detector(img_shape=(summary['img_res'][0], summary['img_res'][1], 3),
                                      architecture=summary['architecture'],
                                      anchors=summary['anchors'],
@@ -95,7 +95,7 @@ for i in range(int(n_samples / generator.batch_size)):
 
         show(img, 'demo', labels=[label_tp, label_fp, label],
              colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
-             legend=LEGEND_POSITION, t=0)
+             legend=LEGEND_POSITION, t=1)
 
         # save_labeled(img.bgr, out_file + '/{0:04d}.jpg'.format(idx), labels=[label_tp, label_fp, label],
         #              colors=[(255, 255, 255), (0, 0, 255), (255, 0, 0)],
