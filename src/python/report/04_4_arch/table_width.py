@@ -7,6 +7,7 @@ from utils.workdir import cd_work
 cd_work()
 models = [
     'racecourt',
+    'width1',
     'width2',
     'width3',
     'width4',
@@ -42,7 +43,7 @@ for iou in ious:
             frame['{}_iou{}_i0{}'.format(d, iou,it)] = column
             print(frame.to_string())
 
-column_names = ['$1$', '$\\frac{1}{4}$', '$\\frac{1}{8}$', '$\\frac{1}{16}$']
+column_names = ['$1$', '$\\frac{1}{2}$','$\\frac{1}{4}$', '$\\frac{1}{8}$', '$\\frac{1}{16}$']
 table = pd.DataFrame()
 table['Width'] = column_names
 iou=0.6
