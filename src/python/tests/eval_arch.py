@@ -21,10 +21,10 @@ models = [
     # 'depth2',
     # 'depth3',
     # 'racecourt',
-    'vgg',
-    # 'width2',
-    'width3',
-    # 'width4',
+    # 'vgg',
+    'width2',
+    # 'width3',
+    'width4',
 
 ]
 

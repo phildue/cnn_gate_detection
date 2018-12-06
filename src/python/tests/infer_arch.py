@@ -18,9 +18,9 @@ models = [
     # 'depth3',
     # 'racecourt',
     # 'vgg'
-    # 'width2',
-    'width3',
-    # 'width4',
+    'width2',
+    # 'width3',
+    'width4',
 
 ]
 

@@ -14,12 +14,12 @@ models = [
 
 ]
 datasets = [
-    # 'test_iros_gate',
+    'test_iros_gate',
     'iros2018_course_final_simple_17gates',
 ]
 
 datasets_title = [
-    # 'Simple Test Set',
+    'Simple Test Set',
     'Simulated MAV Race',
 ]
 
@@ -58,7 +58,7 @@ for i_d, d in enumerate(datasets):
             if result >= 0:
                 results.append(result)
         column_content.append('${:.2f} \pm {:.2f}$'.format(np.mean(results), np.std(results)))
-    table['$ap_{' + str(int(np.round(iou*100,0))) + '}$'] = column_content
+    table[datasets_title[i_d] + ' $ap_{' + str(int(np.round(iou*100,0))) + '}$'] = column_content
 
 print(table.to_string(index=False))
 print(table.to_latex(index=False,escape=False))
