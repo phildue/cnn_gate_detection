@@ -13,11 +13,11 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    # 'depth1',
-    # 'depth2',
-    # 'depth3',
-    # 'racecourt',
-    # 'vgg'
+    'depth1',
+    'depth2',
+    'depth3',
+    'racecourt',
+    'vgg'
     'width1',
     'width2',
     'width3',
@@ -27,7 +27,7 @@ models = [
 
 datasets = [
     'iros2018_course_final_simple_17gates',
-            'test_iros_gate',
+            'test_basement_gate',
             ]
 
 work_dir = 'out/'
