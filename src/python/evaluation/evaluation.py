@@ -442,6 +442,78 @@ def infer_on_set(
         save_file(content, result_file, result_path)
 
 
+def infer_detector_on_set(
+        detector,
+        image_source,
+        batch_size,
+        result_path,
+        result_file,
+        img_res=None,
+        n_samples=None,
+        color_format_dataset='bgr',
+        preprocessing=None,
+        image_format="jpg",
+        show_t=-1):
+    # Model
+    conf_thresh = 0
+
+
+    generator = GateGenerator(directories=image_source, batch_size=batch_size, img_format=image_format,
+                              n_samples=n_samples,
+                              shuffle=False, color_format=color_format_dataset, label_format='xml', start_idx=0)
+
+    create_dirs([result_path])
+
+    exp_params = {'conf_thresh': conf_thresh,
+                  'image_source': image_source,
+                  'color_format': color_format_dataset,
+                  'n_samples': generator.n_samples,
+                  'result_file': result_file,
+                  'preprocessing': preprocessing}
+
+    save_file(exp_params, 'test_summary' + '.pkl', result_path)
+    save_file(exp_params, 'test_summary' + '.txt', result_path)
+    n_batches = int(generator.n_samples / generator.batch_size)
+    it = iter(generator.generate())
+    labels_true = []
+    labels_pred = []
+    image_files = []
+    for i in range(n_batches):
+        batch = next(it)
+        images = [b[0] for b in batch]
+        labels = [b[1] for b in batch]
+        image_files_batch = [b[2] for b in batch]
+
+        tic()
+        predictions = detector.detect(images)
+        if images[0].shape[0] != detector.model.input_shape[1] or \
+                images[0].shape[1] != detector.model.input_shape[2]:
+            print("Evaluator:: Labels have different size")
+
+        if show_t > -1:
+            for j, p in enumerate(predictions):
+                l = p.copy()
+                img_show = images[j].copy()
+                l.objects = [o for o in l.objects if o.confidence > 0.01]
+                if preprocessing:
+                    for p in preprocessing:
+                        img_show, _ = p.transform(img_show, ImgLabel([]))
+                show(img_show, labels=l, t=show_t)
+        # labels = [resize_label(l, images[0].shape[:2], self.model.input_shape) for l in labels]
+        # for j in range(len(batch)):
+        #     show(batch[j][0], labels=[predictions[j], labels[j]])
+
+        labels_true.extend(labels)
+        labels_pred.extend(predictions)
+        image_files.extend(image_files_batch)
+        toc("Evaluated batch {0:d}/{1:d} in ".format(i, n_batches))
+
+        content = {'labels_true': labels_true,
+                   'labels_pred': labels_pred,
+                   'image_files': image_files}
+        save_file(content, result_file, result_path)
+
+
 def sum_results(detection_results: [DetectionResult]):
     """
     Sums list

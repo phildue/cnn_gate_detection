@@ -25,36 +25,6 @@ On a high level Object Detection can be described by two individual goals: the d
 
 An efficient feature extraction stage is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish an object from the background. In contrast, even a flexible classifier cannot separate a highly overlapping feature space.
 
-\subsection{Evaluation Metrics}
-\label{sec:background:metrics}
-The detection performance is evaluated in terms of precision and recall. These metrics are defined as:
-
-\paragraph{Precision}
-$$p = \frac{\text{true positives}}{\text{true positives} + \text{false positives}}$$
-
-\paragraph{Recall}
-$$r = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}$$
-
-Where true positives are objects that are detected, false positives are detections although there is no object and false negatives are objects which have not been detected.
-
-Hence, recall expresses how many of all objects are detected and therefore how complete the result is. Precision measures how many of the predicted objects are actually correct detections.
-
-A correct detection is determined based on its overlap with a ground truth box. This is measured by the relation of \ac{IoU}. In experiments we determine 0.6 as sufficient overlap for a detection. 
-
-The model used within this thesis associates a "confidence" value with each prediction that can trade off precision and recall. This is further explained in \Cref{sec:object_detection}. By accepting more detections with a lower confidence threshold, the probability increases that one of the predictions is a true positive. Hence, it increases recall. However, it also increases the probability of false positives and thus lowers precision. In order to evaluate this trade-off, precision is plotted over recall at increasing confidence values.
-
-As the learning of \acp{CNN} is stochastic, the mean across several trainings is reported. In order to determine the average precision recall trade-off the precision is interpolated across evenly distributed recall levels between 0 and 1 using:
-
-$$ p_\text{interp}(r) = \max\limits_{r' \geq r} p(r')$$
-
-Subsequently the mean at all recall levels can be calculated. A metric that combines the precision-recall trade-off is \ac{AP}:
-
-
-$$ ap = \int_{r}p_{interp}(r) dr$$
-
-\todoref{There should be a source for this}
-
-We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60}$,$r_{60}$ and $ap_{60}$.
 
 
 \subsection{Baseline Algorithm}
@@ -210,7 +180,7 @@ Knowledge Distillation \cite{Hinton2006} is way to create a smaller model based 
 
 The approaches have in common that a very complex function learned from a deep model is aimed to be compressed in a more efficient model. Training the smaller model directly leads to a lower performance than using the distillation approach. We assume this is successfully as the network architectures used are generally deep. Even \cite{Wei2018a} which speaks of very tiny networks uses the VGG-architecture with 23 layers. These architectures are prohibitive to be deployed on small scale \acp{MAV}. We investigate a network size of around 10 layers. Such networks are easier to train and our experiments how we can reduce the width of the model by simply training the network on the task. Therefore we do not investigate this approach further.
 
-\subsection{Generating Data}
+\section{Generating Data}
 \label{sec:training:related}
 
 Related methods vary from changing low level properties of the image over using CAD models in combination with real background up to rendering full 3D-environments. Often various combinations of synthesized and real data are applied. 
@@ -264,7 +234,7 @@ While transfer learning provides the theoretical framework as well as methods to
 
 \acp{GAN} \cite{Goodfellow2014} are a learning technique to generate new samples. The method uses two models a generator and a discriminator. While the generator generates samples the discriminator aims to distinguish the generated samples from a real dataset. Thereby the training goal of the generator is to maximize the error of the discriminator. Both models are updated with back propagation. The method shows promising results for image transformation or image synthesises but also for audio signals \cite{Creswell2017}. Yet to the authors knowledge \acp{GAN} have not yet been applied to generate samples for Object Detection. Furthermore, the discriminator needs a training set for initialization. As for this work only a small amount of training samples are available, we do not investigate this approach for generating samples to detect \acp{EWFO}.
 
-\section{System Overview}
+\section{The target system}
 
 A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
 

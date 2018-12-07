@@ -16,6 +16,37 @@ In special cases it can happen that a bin border falls right between a true and 
 
 The training algorithm as well as the network initialization are random processes. Hence, the network weights after training, as well as its performance are not deterministic. This condition has to be taken into account when interpreting the results. Ideally, each training is performed repeatedly and mean and standard deviation are used for evaluation. However, the training of \acp{CNN} takes a considerable amount of time which is why not all experiments can be taken out with many repetitions. Instead, trainings are performed at least two times and only further repeated if the two results have a high deviation. In plots an error bar displays the standard deviation between the different repetitions.
 
+
+\section{Evaluation Metrics}
+\label{sec:background:metrics}
+The detection performance is evaluated in terms of precision and recall. These metrics are defined as:
+
+\paragraph{Precision}
+$$p = \frac{\text{true positives}}{\text{true positives} + \text{false positives}}$$
+
+\paragraph{Recall}
+$$r = \frac{\text{true positives}}{\text{true positives} + \text{false negatives}}$$
+
+Where true positives are objects that are detected, false positives are detections although there is no object and false negatives are objects which have not been detected.
+
+Hence, recall expresses how many of all objects are detected and therefore how complete the result is. Precision measures how many of the predicted objects are actually correct detections.
+
+A correct detection is determined based on its overlap with a ground truth box. This is measured by the relation of \ac{IoU}. In experiments we determine 0.6 as sufficient overlap for a detection. 
+
+The model used within this thesis associates a "confidence" value with each prediction that can trade off precision and recall. This is further explained in \Cref{sec:object_detection}. By accepting more detections with a lower confidence threshold, the probability increases that one of the predictions is a true positive. Hence, it increases recall. However, it also increases the probability of false positives and thus lowers precision. In order to evaluate this trade-off precision and recall can be compared at different confidence levels.
+
+A metric that combines precision and recall in a single metric is average precision $ap$ introduced by the Pascal Visual Object Challenge (Pascal VOC)\cite{Everingham2010}. It takes the average interpolated precision $p_{interp}$ across evenly spaced recall levels:
+
+$$ ap = \frac{1}{11}\sum_{r \in {0,0.1,...,1.0}}p_{interp}(r)$$
+
+The interpolation reduces the amount of zig-zags in precision-recall plots and simplifies the comparison between outputs off different detectors. It is defined as:
+
+$$ p_\text{interp}(r) = \max\limits_{r' \geq r} p(r')$$
+
+We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60}$,$r_{60}$ and $ap_{60}$.
+
+\section{Threats to Validity}
+
 \section{Empty Objects}
 \label{sec:empty}
 \acp{CNN} combine simple local features to more complex patterns layer by layer. Thereby pooling removes task irrelevant information and reduces the spatial dimension. In the deeper layers features of larger areas in the image are combined and encoded in an increasing amount of filters. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.

@@ -184,7 +184,7 @@ I^* = f(I) = S I
 \end{equation}
 Where \textbf{S} is a 3D-vector where each element stems from a uniform distribution. The distributions are:
 
-\section{Object Detector}
+\section{You only look once V3 - Object Detector}
 
 This work investigates the detection of \acp{EWFO} with \textit{YoloV3} a typical one stage detector with anchor boxes. The fundamental concept of one-stage detectors with anchor boxes is explained in \Cref{sec:related}. This section describes the detailed implementation of \textit{YoloV3} and its training goal. It further introduces the baseline network architectures of this work.
 
@@ -196,11 +196,11 @@ The anchor boxes have a predefined width $p_w$, height $p_h$ as well as a center
 
 The predefined anchors only cover a subset of possible areas that can contain an object. Hence, \textit{YoloV3} also predicts how to adapt the anchor box to better fit the predicted object. These are the bounding box center $b_x,b_y$ as well as its width $b_w$ and height $b_h$. 
 
-In total this leads to 5 predicted parameters for each bounding box and to a mapping from the input image of $I_HxI_WxI_D$ to $5*B$ nodes that encode $B=\sum_{i=0}^{G}S^h_i*S^w_i*a_i$ boxes. Where $a_i$ is the number of anchor boxes in grid $i$. In a last step boxes that contain the same class prediction and have high overlap are filtered such that only the boxes with the highest confidence remain.	
+In total this leads to 5 predicted parameters for each bounding box and to a mapping from the input image of $I_H\times I_W\times I_D$ to $5B$ nodes that encode $B=\sum_{i=0}^{G}S^h_i\times S^w_i\times a_i$ boxes. Where $a_i$ is the number of anchor boxes in grid $i$. In a last step boxes that contain the same class prediction and have high overlap are filtered such that only the boxes with the highest confidence remain.	
 
 \subsection{Architectures}
 
-This mapping is implemented with a \acp{CNN}. Thereby the dimension of the network output corresponds to $S^w_*xS^h_*x5\cdot a_i$.
+This mapping is implemented with a \ac{CNN}. Thereby the dimension of the network output corresponds to $S^w_*\times S^h_*\times 5a_i$.
 
 With \textit{YoloV3} the \textit{TinyYoloV3} network was released that is 10 layer \acp{CNN} and thus a suitable baseline for this work. However, due to the small amount of layers, the receptive field of the network is only 223 pixels. Furthermore, the spatial resolution of 13x13 is still fine for objects that almost cover the whole image. Therefore the architecture is extended by an additional pooling and output layer. 
 
