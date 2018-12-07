@@ -14,7 +14,7 @@ models = [
 
 ]
 datasets = [
-    'test_iros_gate',
+    'test_basement_gate',
     'iros2018_course_final_simple_17gates',
 ]
 

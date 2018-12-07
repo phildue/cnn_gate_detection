@@ -17,18 +17,19 @@ show_t = args.show
 
 cd_work()
 models = [
-    # 'depth1',
-    # 'depth2',
-    # 'depth3',
+    'depth1',
+    'depth2',
+    'depth3',
     'width1',
-    # 'width2',
-    # 'width3',
-    # 'width4',
+    'width2',
+    'width3',
+    'width4',
 
 ]
 
-datasets = ['iros2018_course_final_simple_17gates',
-            'test_iros_gate',
+datasets = [
+    # 'iros2018_course_final_simple_17gates',
+            'test_basement_gate',
             ]
 titles = models
 

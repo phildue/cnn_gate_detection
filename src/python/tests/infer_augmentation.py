@@ -20,11 +20,11 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'distortion',
-    'blur',
-    'hsv',
-    'exposure',
-    'chromatic',
+    # 'distortion',
+    # 'blur',
+    # 'hsv',
+    # 'exposure',
+    # 'chromatic',
     'mavlabgates'
 ]
 

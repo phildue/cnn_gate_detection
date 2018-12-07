@@ -1,0 +1,11 @@
+\begin{tabular}{lll}
+\toprule
+Layers & Simple Test Set $ap_{60}$ & Simulated MAV Race $ap_{60}$ \\
+\midrule
+    15 &             $nan \pm nan$ &              $0.47 \pm 0.00$ \\
+     9 &             $nan \pm nan$ &              $0.49 \pm 0.00$ \\
+     8 &           $0.60 \pm 0.00$ &              $0.47 \pm 0.00$ \\
+     7 &           $0.65 \pm 0.00$ &              $0.42 \pm 0.00$ \\
+     6 &           $0.44 \pm 0.00$ &              $0.32 \pm 0.00$ \\
+\bottomrule
+\end{tabular}
