@@ -25,15 +25,17 @@ On a high level Object Detection can be described by two individual goals: the d
 
 An efficient feature extraction stage is thereby crucial for the success of an Object Detection pipeline. If the inferred representation is clearly separable, a simple classification stage can distinguish an object from the background. In contrast, even a flexible classifier cannot separate a highly overlapping feature space.
 
-
-
 \subsection{Baseline Algorithm}
 
 The above pipeline can be illustrated in the example of the baseline algorithm of this work: \textit{SnakeGate}. Its scheme is summarized in \todo{text} and described here on a higher level.
 
-Initially, the image gets filtered by a higher and lower color threshold. This way ideally the largest part of the image is filtered. This can be seen as the initial feature extraction stage.
+Initially, the image gets filtered by a higher and lower color threshold. This way ideally the largest part of pixels in the image is removed. This can be seen as the feature extraction stage.
 
-The follow up stage searches for object parts. \textit{SnakeGate} detects square objects and hence searches for vertical and horizontal bars that are respectively perpendicular to each other. Once this combination is found in a particular area of the image it is counted as a valid detection. 
+In the resulting binary image the follow up stage searches for object parts. \textit{SnakeGate} detects square objects and hence looks for vertical and horizontal bars that are respectively perpendicular to each other. Once this combination is found in a particular area of the image, it is counted as a valid detection. In the final step the corners of the bounding box are refined to get more accurate coordinates.
+
+This simple method shows how crucial the feature extraction stage is. With a suitable color threshold, object parts can easily be found and the detection is accurate. However, this requires an evenly distributed colour across the object. As soon as back light or shadows fall on the object, a clear separation is difficult. Therefore, \textit{SnakeGate} is quite subtle to light changes.
+
+Another issue of \textit{SnakeGate} is that it is defined as 4 bars in quadrangle shape. If one of the bars is not clearly visible the algorithm can not detect detect the object. Also, it does not exploit object context such as the object pole.
 
 \begin{enumerate}
 	\item Filter image by colour threshold
@@ -47,7 +49,6 @@ The follow up stage searches for object parts. \textit{SnakeGate} detects square
 \end{enumerate}
 \todo{this can be described more formally}
 
-\textit{SnakeGate} is fast to execute but lacks from several drawbacks. (1) the main feature is colour dependent and thus the method is very subtle to light changes. It must be fine tuned according to light conditions in a certain room. Strong colour variations across the object cannot be handled by the method; (2) the object is defined as the four bars, if one of the parts can not be detected e.g. due to occlusion, the object will not be found. Furthermore, the object model does not take into account context such as the object pole.
 
 \subsection{Related Work}
 
@@ -57,11 +58,11 @@ The problems of \textit{SnakeGate} are very typical for Object Detection. Since 
 
 The early attempts to Object Detection define objects in terms of basic volumetric shapes such as cubes and cylinders. During inference these features are extracted and compared to a database. However, in practice even recognizing these basic shapes proves to be difficult \cite{Andreopoulos2013}. 
 
-Later approaches focus more on appearance based features such as wavelets \cite{Papageorgiou} which also applied in \cite{Viola2004} for human face detection. Thereby the image is processed by a cascade of classifiers using a sliding window in multiple scales. The processing of an image patch is stopped when a classifier assigns background to that patch. The features can be computed with simple operations and thus the detector can be executed extremely fast. However, the used Haar-wavelets cannot efficiently encode complex textures making the approach less suitable for many real world objects \cite{Andreopoulos2013}. 
+Later approaches focus more on appearance based features such as wavelets \cite{Papageorgiou} which also applied in \cite{Viola2004} for human face detection. Thereby the image is processed by a cascade of classifiers using a sliding window in multiple scales. The processing of an image patch is stopped when a patch is classified as background. The features can be computed with simple operations and thus the detector can be executed extremely fast. Yet, the used Haar-wavelets cannot efficiently encode complex textures making the approach less suitable for many real world objects \cite{Andreopoulos2013}. 
 
-In contrast \ac{HOG} \cite{Dalal} and \ac{SIFT} \cite{Lowe2004} use the image gradient to cover shape information. In a sliding window local histograms based on the gradient orientation are calculated. \citeauthor{Dalal} \cite{Dalal} use the feature for pedestrian detection.
+In contrast, \ac{HOG} \cite{Dalal} and \ac{SIFT} \cite{Lowe2004} use the image gradient to cover shape information. In a sliding window local histograms based on the gradient orientation are calculated. \citeauthor{Dalal} \cite{Dalal} use the feature for pedestrian detection.
 
-A general challenge in Computer Vision is the combination of local image features such as corners and edges to a more global detection of an object. Especially, when parts of the object can be occluded or deformed and thus undergo large variations in appearance. In order to cope with these issues \citeauthor{Felzenszwalb} \cite{Felzenszwalb} model pedestrians in individual parts and combine them in their proposed \ac{DPM}.
+A general challenge in Computer Vision is the combination of local image features such as corners and edges to a more global detection of an object. Especially, when parts of the object can be occluded or deformed and thus undergo variations in appearance. In order to cope with these issues \citeauthor{Felzenszwalb} \cite{Felzenszwalb} model pedestrians in individual parts and combine them in their proposed \ac{DPM}.
 
 Traditional methods have in common that the individual steps of the detection pipeline are optimized separately. Furthermore, often the feature extractors and object models are designed manually. Hence, designing such a detector can result in cumbersome application dependent work. \ac{EWFO} have sparse features and cameras on \ac{MAV} can have a strong influence on the object appearance. Modelling this appearances manually is difficult. Also, the methods seem to have reached a limit in performance in the years of 2005-2012 where almost no improvement in performance was achieved.
 
@@ -82,15 +83,6 @@ The modular structure of \acp{CNN} allows to create highly non-linear models tha
 
 Among these parameters depth is considered one of the preliminary parameters to improve performance \cite{He}. \citeauthor{Simonyan2014} \cite{Simonyan2014} achieve first places in the 2014 ImageNet Classification challenge using a network that only contained filters of size 3-by-3 but up to 19 layers. \citeauthor{Szegedy2014} \cite{Szegedy2014} achieve similar performance using a network with 22 layers. The proposed network included an \textit{Inception}-module, an architectural element that allows deeper networks at a constant computational budget. 
 
-\paragraph{Residual Connections.}
-
-An issue that prevented training even deeper networks is the \textit{vanishing gradient problem}. As the gradient distributes across nodes its magnitude gets smaller with increasing amount of nodes. Hence, the training becomes slow and the risk of converging in a local minima increases. This was addressed by \citeauthor{He2015} \cite{He2015} who propose the use of residual connections. Instead of propagating the gradient from the last to the first layer these connections allow the gradient to flow directly into all layers. This circumvents the vanishing gradient problem. The use of residual connections allowed to train a network 101 layers and improved on state of the art at that time.
-
-\paragraph{Wide-Residual Networks.}
-
-However, later work by \citeauthor{Zagoruyko2016} \cite{Zagoruyko2016} shows how residual networks do not behave like a single deep model but more like an ensemble of more shallow networks. Moreover, the study shows that similar performance can be achieved by particularly wide networks and residual connections. Being of similar performance the proposed \acp{WRN} are computationally more efficient to execute.
-
-While wide residual networks can achieve similar performance to deep residual networks with reduced inference time the computational requirements are still large. This work addresses the detection of \ac{EWFO} with very limited resources. Hence, a network in which the vanishing gradient problem would appear is likely to be already too computationally expensive to be applied on a \ac{MAV}.
 
 \paragraph{Fully Convolution Networks.}
 
@@ -108,9 +100,6 @@ Another line of research to reduce the number of computations in \acp{CNN} addre
 
 \cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation. 
 
-\paragraph{Dense Connections.}
-\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. By enabling feature reuse the total amount of parameters shall be reduced.
-
 Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
 \subsubsection{\ac{CNN}-based Object Detection}
@@ -123,8 +112,7 @@ After showing promising results for Classification, \acp{CNN} where also applied
 
 Follow up work aims to share computations for faster inference. Spatial Pyramid Pooling \cite{He2014b} allows to crop any region to a predefined size. Thus a \ac{CNN} does not have to be run at overlapping regions anymore but the extracted features can be reused and need to be only computed once. This leads to a vast reduction in computations and leaves the region proposal algorithm as a computational bottleneck.
 
-With the \ac{RPN}\cite{Ren2015} region proposals and feature extraction is combined in a single stage. The whole stage is framed as a regression problem by predicting object probability for a predefined set of bounding boxes so called anchor/prior or default boxes.  Predefining the total amount of possible locations and bounding box dimensions would lead to an intractable amount of parameters and computations. Hence, the most common object appearances are defined and the network not only predicts an object probability for each box but also how to adapt location and dimensions to better fit the predicted object.
-Combining feature extraction and region proposals in a single network led to 213x speed up.
+With the \ac{RPN}\cite{Ren2015} region proposals and feature extraction is combined in a single stage. The whole stage is framed as a regression problem by predicting object probability for a predefined set of bounding boxes so called anchor/prior or default boxes.  Predefining the total amount of possible locations and bounding box dimensions would lead to an intractable amount of parameters and computations. Hence, the most common object appearances are defined and the network not only predicts an object probability for each box but also how to adapt location and dimensions to better fit the predicted object. Combining feature extraction and region proposals in a single network led to 213x speed up at that time.
  
 Being currently the method with the best performance in terms of \ac{mAP} two stage approaches would be a valid choice for the detection of \ac{EWFO}. However, their two stage character makes the inference time relatively slow, which is not suitable for the application on a \ac{MAV}. Also, this work investigates the detection of a single object. For this application the \ac{RPN} can be used directly.
 
@@ -138,11 +126,8 @@ Better results could be achieved by predicting offsets to predefined regions as 
 
 An issue that arises with discretization of the object detection task is that objects can appear at different scales. For small objects it is required to have a high resolution of bounding box locations to have a sufficient representation of the input image. For example many small objects can appear next to each other. A too coarse resolution could not capture the fact that there are multiple objects present. Furthermore, it is required to take into account fine grain features to predict such an object. In contrast, for large objects small changes in location do not make a difference. In contrary, a too fine resolution can cause the detector focus on noise and thus lead to bad predictions or unstable training. Therefore, \ac{SSD} introduces the prediction of objects at multiple output grids at different layers of the network. Thus, the output grid can be defined depending on the object size and the network can extract features based on the object scale. Follow up work in \cite{Redmon, Redmona} also included the concept of anchor boxes and prediction layers at multiple scales, making \ac{SSD} and \ac{Yolo} converge to a very similar solution.
 
-\if false
-A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
-\fi
 
-In \cite{Huang} one and two stage detectors are compared in terms of accuracy as well as resource requirements. While two stage detectors with very deep networks tend to achieve the best performance, one stage detectors are generally faster. The experiments also show how the inference time of two stage detectors can be reduced without loosing too much accuracy when the amount of bounding box proposals is limited. However, single shot detectors are still the fastest method with the lowest memory profile. Furthermore, for the single class case the region proposal stage of a two stage detector can be used directly. Hence, in this work we investigate the the detection of a \ac{EWFO} with a one stage detector. The \textit{TinyYoloV3} architecture is 9-layer network with a suitable size to be applied on a \ac{MAV}. This work uses this approach as the baseline model.
+In \cite{Huang} one and two stage detectors are compared in terms of accuracy as well as resource requirements. While two stage detectors with very deep networks tend to achieve the best performance, one stage detectors are generally faster. The experiments also show how the inference time of two stage detectors can be reduced without loosing too much accuracy when the amount of bounding box proposals is limited. However, single shot detectors are still the fastest method with the lowest memory profile. Furthermore, for the single class case the region proposal stage of a two stage detector can be used directly. Hence, in this work we investigate the detection of a \ac{EWFO} with a one stage detector. 
 
 The anchor box concept allows to incorporate prior knowledge about possible objects but also introduces additional hyperparameters that need to be tuned for an application. Therefore the alternative approach of \textit{CornerNet}\cite{Law2018} avoids the anchor box concept by defining objects as paired key points. Each bounding box is defined as two corners. The network predicts a heatmap with potential corner locations as well as which corners belong together. This would be an interesting approach for the detection of \ac{EWFO}. However, as the publication was quite recent the approach could not be taken into account. 
 

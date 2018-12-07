@@ -1,3 +1,31 @@
-\chapter{Conclusion}
+\chapter{Conclusion \& Future Work}
 
-deep learning sucks
+This work investigated the detection of \acp{EWFO} on \ac{MAV} using a \ac{CNN}. In this section an overall conclusion is derived and the research questions are answered. Furthermore, possible future work is discussed.
+
+\begin{enumerate}
+	\item[\textbf{RQ1}]How can data be generated to train an object detector for \ac{EWFO} detection on a \acp{MAV}?
+	
+	The results show that the \ac{Yolo}-Object-Detector has difficulties learning to detect objects from all view angles. When a wide range of view angles is introduced the performance drops for larger objects. Therefore, we propose to simulate a flight during data creation such that the objects seen during inference are similar to the ones at training. However, this technique is still limited by the chosen motion model as well as the racing court. Future work could investigate whether a particular view point sampling gives more insights about the relation of view angles.
+	
+	Furthermore, we find that image augmentation is crucial when transferring the detector to the real world. Particluarly image blurring and image distortion improved the result on the real data. Yet there remains a reality gap between the results obtained in simulation and on real data. We cannot fully resolve whether this is because of the complexity of the real data or whether there are certain properties missing in the data generation process. Future work could address this issue by including real data in the training process. If this improves the results significantly the problem is likely because of a reality gap. Otherwise, there might be a more fundamental problem in the chosen detector/complexity of the test set.
+	
+	\item[\textbf{RQ2}]What kind of architecture is suitable to detect \acp{EWFO}?
+	
+	We compared different architectures in various experiments. Our hypothesis was that a simple network should be able to learn the task. We could show that a particularly thin network is able to learn the task equally well. Also a very deep network did not improve the performance on the simulated data set. However, compared to the intuitively present features present in the investigated object the required network is still big. It is not fully clear for what so many layers are required. It is possible that it helps by distinguishing overlapping objects.
+	
+	\item[\textbf{RQ3}]What are the trade-offs in detection performance and inference time when an object detector for \acp{EWFO} is deployed on a \ac{MAV}?
+\end{enumerate}
+
+
+
+
+In this work we investigated a learning based approach for the detection of \acp{EWFO} on \acp{MAV}. The research was motivated by several drawbacks of the manual crafted detection method \textit{SnakeGate}. The aim was to investigate whether a learning based Object Detector is more robust against, occlusion, out of view and changes in illumination. Our results show how the deep learning based detector outperforms \textit{SnakeGate} especially in the cases of occlusion and out of view. The deep learning based detector is able to detect objects even in difficult lighting conditions.
+
+Yet the deep learning based detector introduces its own drawbacks. For example the bounding boxes are generally less accurate than of SnakeGate. We assume that the reason is the general structure of \ac{Yolo}. \acp{CNN} collect "shallow" low level image features and combine them to a more deep representation of the image. Pooling layers reduce the spatial resolution to keep the number of computations tracktable, however thereby also local information about the features gets lost. In the final layers information is present which features are present in that part of the image, however it is not clear where they come from. 
+
+This not only leads loss in localization accuracy but also to lack of transparency. In some scenarios a clearly visible gate is not detected by the \acp{CNN}. In this case it is hard to find out what part of the input image led to this wrong decision. In contrast for a simple algorithm such as  \textit{SnakeGate} it is clear at all times which input information led to a decision.
+
+Future work should address how to reflect back from the deep representation to the low level features.
+
+A main argument for deep learning detectors is the fact that they can be trained on any kind of object and thus make feature engineering unnecessary. Furthermore, the learned representation are often much better than the features crafted manually. A drawback is the computational requirements of \acp{CNN}. For this work no training data was available and the computational requirements were limited. By implementing a data generation pipeline and refining the architecture we could show how the deep learning based method outperforms the manually crafted one. However, this process was a vast amount of work and yet we have a severe drop in peformance between the simulated and the real data. Hence, we have to wonder whether it would have not been more fruitful to invest time in feature engineering based on real data. It is questionable whether this is method would still perform better than the deep learning method. And yes for a new object it would required to be changed. But it would lead to a more transparent detector.
+\todo{deep detector can be better extended but we loose track of whats going on, deep learning makes sense with the appropriate hardware and the appropriate data}
