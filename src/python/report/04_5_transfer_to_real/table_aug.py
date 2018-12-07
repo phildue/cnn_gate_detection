@@ -14,6 +14,15 @@ models = [
     'mavlabgates'
 
 ]
+titles = [
+    'distortion',
+    'blur',
+    'hsv',
+    'exposure',
+    'chromatic',
+    'no augmentation'
+
+]
 
 datasets = [
     'jevois_cyberzoo',
@@ -47,9 +56,9 @@ for iou in ious:
             frame['{}_iou{}_i0{}'.format(d, iou,it)] = column
             print(frame.to_string())
 
-column_names = models
+column_names = titles
 table = pd.DataFrame()
-table['Width'] = column_names
+table['Augmentation'] = column_names
 iou=0.6
 for i_d, d in enumerate(datasets):
     column_content = []
@@ -64,4 +73,4 @@ for i_d, d in enumerate(datasets):
 
 print(table.to_string(index=False))
 print(table.to_latex(index=False,escape=False))
-save_file(table.to_latex(index=False,escape=False), 'width.txt', 'doc/thesis/tables/', raw=True)
+save_file(table.to_latex(index=False,escape=False), 'augmentation.txt', 'doc/thesis/tables/', raw=True)
