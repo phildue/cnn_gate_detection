@@ -113,7 +113,7 @@ plt.figure(figsize=(10, 4))
 
 w = 0.1 / len(models)
 maxw = 1000000
-plt.title('Speed Accuracy Trade-Off', fontsize=12)
+plt.title('Speed Accuracy Trade-Off Simulation', fontsize=12)
 plt.xlabel('Inference Time/Sample [ms]')
 plt.ylabel('Average Precision')
 plt.ylim(0, 1.1)
@@ -135,4 +135,28 @@ plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
 print(frame.to_string())
 print(frame.to_latex())
 plt.savefig('doc/thesis/fig/ap_speed_tradeoff.png')
+
+
+plt.title('Speed Accuracy Trade-Off Real Data', fontsize=12)
+plt.xlabel('Inference Time/Sample [ms]')
+plt.ylabel('Average Precision')
+plt.ylim(0, 1.1)
+
+handles = []
+for i, m in enumerate(frame['Name']):
+    h = plt.errorbar(frame['Time'][i], frame['Real Data' + str(iou)][i], yerr=frame['Real Data Err' + str(iou)][i],
+                     marker=symbols[i][0], color=symbols[i][1], elinewidth=1, capsize=2)
+    handles.append(h[0])
+    # plt.plot(frame['Time'][i], frame['Real Data' + str(iou)][i], marker=symbols[i][0], color=symbols[i][1])
+# plt.plot(frame['Time'], frame['Real Data' + str(iou)], 'o')
+plt.legend(handles, frame['Name'], bbox_to_anchor=(1.0, 1.05))
+plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-')
+plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--')
+plt.minorticks_on()
+
+plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
+                    wspace=0.3, hspace=0.3)
+print(frame.to_string())
+print(frame.to_latex())
+plt.savefig('doc/thesis/fig/ap_speed_tradeoff_real.png')
 plt.show(True)

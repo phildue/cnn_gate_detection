@@ -50,7 +50,7 @@ In order to train and evaluate the detection of \acp{EWFO} in different conditio
 
 
 \subsection{Post Processing}
-
+\label{sec:postprocessing}
 Another parameter that influences the image and object appearance are camera and lens conditions. An object detector should be able to cope with these effects. Hence, this work studies the influence of some effects when modeled in the training set.
 
 Lens distortion and motion blur are chosen due to their presence in the real world data set. Furthermore, Chromatic Aberration is studied because it led to vast improvements in \cite{Carlson2018}. Variations in \ac{HSV} space are selected as it is a common image augmentation technique in current Object Detection pipelines. A visual overview can be seen in \Cref{eq:distortion}. This section describes the mathematical models behind the applied the effects.
@@ -176,13 +176,8 @@ An example for overexposure is displayed in \Cref{fig:exposure}.
 
 \paragraph{Variations in \ac{HSV}}
 
-The 3D-models and textures used in the simulator are limited and creating a large variation in environments or objects requires manual effort. An alternative method to increase the variation in colour and illumination is a scaling in HSV space. The objects in the real world dataset have a slightly different shape and different colour to the 3D-models of the data generation tool. We hypothesize including variations in HSV space will improve the performance on the real world dataset.
-
-The variations are including with:
-\begin{equation}
-I^* = f(I) = S I
-\end{equation}
-Where \textbf{S} is a 3D-vector where each element stems from a uniform distribution. The distributions are:
+The 3D-models and textures used in the simulator are limited and creating a large variation in environments or objects requires manual effort. An alternative method to increase the variation in colour and illumination is directly varying the colour. The \ac{HSV} colour space groups colours that are visually close to each other. Hence, for augmentation the image can be varied in this space. 
+ 
 
 \section{You only look once V3 - Object Detector}
 

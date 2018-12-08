@@ -13,6 +13,7 @@ models = [
     'hsv',
     'exposure',
     'chromatic',
+    'blur_distortion',
 
 ]
 titles = [
@@ -22,7 +23,7 @@ titles = [
     'hsv',
     'exposure',
     'chromatic',
-
+    'blur + distortion'
 ]
 
 datasets = [

@@ -29,6 +29,7 @@ datasets = [
     'jevois_cyberzoo',
     'jevois_basement',
     'jevois_hallway',
+    'iros2018_course_final_simple_17gates'
 ]
 
 titles = models
@@ -49,19 +50,20 @@ for dataset in datasets:
                 for iou in [0.4, 0.6, 0.8]:
                     prediction_dir = model_dir + '/test_{}'.format(dataset)
                     labels_true, labels_pred, img_files = load_predictions(
-                        '{}/predictions.pkl'.format(prediction_dir))
+                        '{}/predictions160.pkl'.format(prediction_dir))
 
                     if show_t >= 0:
                         images = [imread(f, 'bgr') for f in img_files]
                     else:
                         images = None
-                    size_bins_total = size_bins * 640*480
-                    result_size_ap, true_objects_bin, recalls, precisions = evalcluster_size_ap(labels_true, labels_pred,
+                    size_bins_total = size_bins * 640 * 480
+                    result_size_ap, true_objects_bin, recalls, precisions = evalcluster_size_ap(labels_true,
+                                                                                                labels_pred,
                                                                                                 bins=size_bins_total,
                                                                                                 min_ar=0,
                                                                                                 max_ar=100.0,
-                                                                                                min_obj_size=0.001 * 640*480,
-                                                                                                max_obj_size=2.0 * 640*480,
+                                                                                                min_obj_size=0.001 * 640 * 480,
+                                                                                                max_obj_size=2.0 * 640 * 480,
                                                                                                 images=images,
                                                                                                 show_t=show_t,
                                                                                                 iou_thresh=iou)
@@ -71,8 +73,8 @@ for dataset in datasets:
                     frame['{2:s}_r50{0:02f}_i{1:02d}'.format(iou, it, dataset)] = [r[4] for r in recalls]
                     frame['{2:s}_p50{0:02f}_i{1:02d}'.format(iou, it, dataset)] = [p[4] for p in precisions]
                     print(frame.to_string())
-                    frame.to_pickle('{}/results_total.pkl'.format(prediction_dir))
-                    frame.to_excel('{}/results_total.xlsx'.format(prediction_dir))
+                    frame.to_pickle('{}/results_total_160.pkl'.format(prediction_dir))
+                    frame.to_excel('{}/results_total_160.xlsx'.format(prediction_dir))
 
             except FileNotFoundError as e:
                 print(e)

@@ -260,14 +260,11 @@ The baseline network architecture is optimized to detect solid feature rich obje
 
 The width in a \acp{CNN} determines how many features can be extracted in one layer. Wider networks can extract and retain more information than thinner layers. As the information in \acp{EWFO} is limited to basic geometric shapes and colour, we hypothesize a thinner network should be able to learn the detection task equally well. We examine this by reducing the number training networks with a thinner architecture. Therefore the number of filters in each layer of the \textit{SmallYoloV3} network are reduced to $\frac{1}{2}$, $\frac{1}{4}$, $\frac{1}{8}$ and $\frac{1}{16}$ of its original number. The network is trained on the training set consisting of various racing courts. All architectures are tested on the simple test set introduced in \Cref{sec:empty} and the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
 
-The depth of a network has multiple effects. Deeper networks contain more non-linear elements and can thus represent more complex functions/features. \acp{EWFO} have simple features and thus only a few layers should be required. In fact the features that are relevant to detect an \acp{EWFO} are typically lines on the border of its location. Hence, a detector would only need to detect those edges in order to determine whether an object is present. This should be possible with a few amount of layers. On the other hand in a \acp{MAV} race the objects appear overlapping and in difficult angles. In such cases the above is not valid anymore. For overlapping objects a detector would need to distinguish which line/edge belongs to which object. Such complex relations can be better represented with more complex network. We investigate these hypotheses in an experiment. Therefore we remove layers but use larger pooling operations. \todo{} shows the network architecture. The network is trained on the training set consisting of various racing courts. Additionally, the \textit{VGGYoloV3} is trained on the data. All architectures are tested on the simple test set introduced in \Cref{sec:empty} and the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
-
+The depth of a network has multiple effects. Deeper networks contain more non-linear elements and can thus represent more complex functions/features. \acp{EWFO} have simple features and thus only a few layers should be required. In fact the features that are relevant to detect an \acp{EWFO} are typically lines on the border of its location. Hence, a detector would only need to detect those edges in order to determine whether an object is present. This should be possible with a few amount of layers. On the other hand in a \acp{MAV} race the objects appear overlapping and in difficult angles. In such cases the above is not valid anymore. For overlapping objects a detector would need to distinguish which line/edge belongs to which object. Such complex relations can be better represented with more complex network. We investigate these hypotheses in an experiment. Therefore we remove layers but use larger pooling operations. The network is trained on the training set consisting of various racing courts introduced in the previous section. Additionally, \textit{VGGYoloV3} is trained on the data. All architectures are tested the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
 
 \section{Results}
 
-\Cref{tab:depth} shows the results of networks with varying depth. The best network on simulated \ac{MAV} race has 9 layers. Further increasing depth does not lead to an improvement in performance. In contrast reducing the number of layers decreases the performance gradually. A similar observation can be made on the simple test set. Yet here the deepest network also achieves the highest performance.
-
-This observation can be made for both thresholds of \ac{IoU}. However, the performance drop for an \ac{IoU} of 40\% from 8 to 7 layers is only 2\%. In contrast the performance drop an \ac{IoU} of 60\% is 11 \%.
+\Cref{tab:depth} shows the results of networks with varying depth. The best network on simulated \ac{MAV} race has 9 layers. Further increasing depth does not lead to an improvement in performance. In contrast reducing the number of layers decreases the performance gradually. 
 
 \begin{table}[hbtp]
 	\centering
@@ -275,6 +272,8 @@ This observation can be made for both thresholds of \ac{IoU}. However, the perfo
 	\caption{Performance of networks with varying depth on the simulated \ac{MAV} race. It can be seen how on the more complex test set depth only improves the performance until 9 layers.}
 	\label{tab:depth}
 \end{table}
+
+\Cref{tab:width} shows the results of networks with varying width. The best architecture is the baseline with 49\%. Reducing to the width leads to a decrease in performance. The results between a width of $\frac{1}{4}$,$\frac{1}{8}$ and $\frac{1}{16}$ are in similar range. The lowest result is obtained when using a width of $\frac{1}{2}$.
 
 \begin{table}[hbtp]
 	\centering
@@ -287,51 +286,70 @@ This observation can be made for both thresholds of \ac{IoU}. However, the perfo
 
 \subsection{Discussion}
 
-Similarly to the results in \Cref{sec:empty} the very deep network did not improve in performance. Hence, depth does not seem to help when detecting objects with more overlap and in difficult view angles. However, a certain amount of layers seems to be crucial. When decreasing the number of layers further than 9 the performance gradually decreases. A possible reason is that with less layers the pooling has to be increased in order to keep the receptive field large enough. Yet aggressive pooling removes spatial information quickly. While this is of less influence for the detection task, it can be harmful for the localization. The results for $ap_{40}$ also hint in this direction. When the threshold for correct localization is lower the performance drop from 8 to 9 layers is less severe.
+Similarly to the results in \Cref{sec:empty} the very deep network did not improve in performance. Hence, depth does not seem to help when detecting objects with more overlap and in difficult view angles. However, a certain amount of layers seems to be crucial. When decreasing the number of layers further than 9 the performance gradually decreases. A possible reason is that with less layers the pooling has to be increased in order to keep the receptive field large enough. Yet aggressive pooling removes spatial information quickly. While this is of less influence for the detection task, it can be harmful for the localization. 
+
+When lower width we hypothesized that the performance will only be effected for a very small amount of filters. However, the results show only a decrease of 11\% from the widest to the thinnest network. The network achieves 38\% mean average precision with only 1 filter in the first layer. On the other hand the much wider network with $\frac{1}{2}$ of the original width achieves only 36 \%. This is quite counterintuitive as one would expect a more linear decrease in performance. On the other hand the variance in the results is quite high.
 
 
 \subsection{Conclusion}
 
 We investigated how depth affects the detection performance. Our hypothesis was that a deeper network could perform better at detecting objects in difficult angles or higher overlap. However, we could not confirm this hypothesis. Yet decreasing the depth to less than 9 layers also hurts the performance. It seems that too aggressive pooling is bad for the object localization.
 
-%We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can confirm this hypothesis as we see that the width can be decreased by a factor of 10 without loosing performance. This leads to a reduction of weights by a factor of 1000. 
-
+We investigated how width affects the performance for the detection of \acp{EWFO}. We hypothesized that due to the low variance in the investigated object and the simple features, less filters are required than in the baseline architecture. We can not really confirm or reject this hypothesis. Although a performance drop can be observed it is relatively low compared to the amount of weights that are removed.
 
 
 \section{Transferring the detector to the real world}
 
 After having gained several insights in simulation it is time to perform experiments on real data. This section investigates the reality gap and several methods to reduce it.
 
-As a test set the real world dataset introduced in \Cref{sec:datasets} is used. The examples in \Cref{fig:example_real_set} show several properties that are different to the samples created in simulation. The objects used in this dataset consist of square bars and a black pole. In contrast the \ac{CAD} models used for synthesizing data consist of round bars and are uniformly coloured. Also, the aspect ratio between both objects is different. In contrast to the synthetic objects, the objects in the real world set are more wide than high. Finally, the colour is not exactly the same. A network only trained on the available \ac{CAD} models is likely to overfit to the colour and object shape. In order to evaluate this hypothesis more object variations are included in the training set.
+As a test set the real world dataset introduced in \Cref{sec:datasets} is used. The examples in \Cref{fig:example_real_set} show several properties that are different to the samples created in simulation. The objects used in this dataset consist of square bars and a black pole. In contrast the \ac{CAD} models used for synthesizing data consist of round bars and are uniformly coloured. Also, the aspect ratio between both objects is different. In contrast to the synthetic objects, the objects in the real world set are more wide than high. Finally, the colour is not exactly the same. A network only trained on the available \ac{CAD} models is likely to overfit to the colour and object shape. In order to evaluate this hypothesis a new 3D Model is created and samples are included in the training set. The new model can be seen in \Cref{fig:mavlabgateexample}.
 
-Furthermore, it can be seen how motion blur and lens distortion change object appearance. We hypothesize that including such effects in the training data can improve the performance on the real data. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. We study this incorporation by applying image augmentation with the models introduced in \Cref{sec:meth}.
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.3\textwidth]{fig/mavlabexample}
+	\caption{In order to increase the variance in object appearance a new 3D-Model is created using \textit{AirSim}. It contains a black pole and square bars.}
+	\label{fig:mavlabgateexampe}
+\end{figure}
 
-\subsection{Training Set}
+Furthermore, it can be seen how motion blur and lens distortion change object appearance. We hypothesize that including such effects in the training data can improve the performance on the real data. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. We study this incorporation by applying image augmentation with the models introduced in \Cref{sec:postprocessing}.
+
+The detector is trained with 20 000 samples where 3000 are generated with the new 3D model. During training one or several image augmentation methods. The parameters chosen visually:
+
+\begin{itemize}
+	\item Distortion: $k_1 = k_2 = 0.7$.
+	\item Blur: $\sigma$ is drawn from a uniform distribution: $\mathcal{U}(0.1,1.5)$.
+	\item Chromatic: $t^R_x$,$t^R_y$,$s^G$,$t^B_x$,$t^B_y$ are drawn from $\mathcal{U}^R(-2,2)$, $\mathcal{U}^G(0.99,1.01)$,$\mathcal{U}^B(-2,2)$.
+	\item Exposure: $\Delta S$ is drawn from $\mathcal{U}^B(0.8,1.2)$
+	\item $\Delta H$,$\Delta S$,$\Delta V$ are drawn from $\mathcal{U}^H(.9, 1.1)$, $\mathcal{U}^S(0.8, 1.2)$, $\mathcal{U}^V(0.8, 1.2)$
+\end{itemize}
 
 \subsection{Results}
 
-\begin{table}[hbtp]
-	\centering
-	\input{tables/augmentation.txt}
-	\caption{Performance of networks with different image augmentation techniques. }
-	\label{tab:aug}
-\end{table}
+\begin{figure}[hbtp]
+	\includegraphics[width=\textwidth]{fig/augmentation}
+	\caption{.}
+	\label{fig:augmentation}
+\end{figure}
 
-\Cref{fig:pp_bar} shows the results in terms of average precision in the training domain. On the simulated data variations in exposure improve the performance of low quality predictions slightly compared to using no augmentation. However, using no data augmentation achieves the best performance for high quality detections. The other effects have only minor influence. 
+\Cref{fig:augmentation} shows the results on the various real datasets. Throughout the augmentation methods it can be seen how best results are achieved on the \textit{Cyberzoo} set. Lower results are achieved on the \textit{Basement} and finally the \textit{Hallway} set.
 
-On the real data variations in HSV space as well as blurring improves the results compared to not using data augmentation. Incorporating chromatic aberration and variations in exposure lead to a deterioration in performance.
+Compared to no augmentation all techniques lead to an improvement. The distortion is among the highest results for all data sets. Shortly after follows blur and chromatic aberration. However, for chromatic aberration the results on basement and hallway are lower than for blur an distortion. Combining blur and distortion does not lead to an improvement compared to the individual methods. Image augmentation with variations in \ac{HSV} and exposure achieve the lowest results.
 
 \subsection{Discussion}
 
-In simulation the data augmentation has only a minor effect on low quality predictions, while the performance in high quality predictions decreases. As most effects are not really present in the test set this confirms that the models can learn a robust representation. Despite having more noise in the training data, the performance on the test set stays the same. However, the added noise leads to a lower quality in the predicted bounding boxes.
+In the results without the augmentation it can be seen that there is a large reality gap. Without augmentation the results on the real data are very low. 
 
-On the real data there is a stronger effect measurable. Variation in HSV and image blurring increase the performance compare to not using data augmentation. This meets our hypothesis that variations in HSV help to achieve a model that is more robust against changes in colour. Blur is one effect that can clearly be seen in the real world test set. Including this effect in the training process helped the model to perform better in the real world. Chromatic Aberration led to a significant improvement in \cite{Carlson2018} however, we cannot confirm these results. It is possible that our camera suffers only little from  chromatic aberration and thus including the effect in the training does not further help the prediction. The same holds for variations in exposure. 
+Applying image augmentation seems to help bridging this gap as the results improve when applying these techniques. Thereby certain techniques are more suitable than others. Distortion and blur are the most significant effects that could also be observed when visually inspecting the dataset. Correspondingly the respective image augmentation techniques show the most improvement. Other techniques were mainly included as other authors reported improvements not because such effects could be observed in the dataset. These effects also showed minor improvements.
+
+Surprisingly, the methods that vary colour are of minor effect. As this is a relatively distinctive feature in simulation one would have expected the detector is more sensitive to it.
+
+Overall the best results are achieved in \textit{Cyberzoo}. This is not surprising as there the light conditions are relatively easy. The background is black and the object is clearly visible. \textit{Basement} has more difficult light conditions and more overlapping objects. Compared to that the performance difference to \textit{Cyberzoo} is relatively low. In \textit{Hallway} the light conditions are very difficult as the objects stand in front of the window. The detector seems to struggle with this too. Several iteration achieve an average precision of 0. Furthermore, here the results show the highest variance. It seems that despite having similar examples in the training set, the detector can not transfer the results to the real world.
 
 \subsection{Conclusion}
 
-We investigated whether including sensor effects present in the target domain in the data generation process can improve the detection. Therefore we modelled several effects that were observed when working with the camera or that improved the detection in experiments conducted in literature. Finally, image blurring improved the detection. Other effects led to a deterioration in performance.
+We investigated how the detector performs in the real world and if image augmentation can bridge the reality gap. We can conclude that image augmentation is crucial to avoid an overfitting to the dataset in simulation. In particular lens distortion and blur improve the detection on the real world data set.
 
-We also investigated image augmentation by adding variations in HSV-space to evaluated whether this improves the robustness of the model, improving the performance on the real world dataset. We can confirm this hypothesis and conclude that this image augmentation should be part of the training process.
+The results obtained on \textit{Cyberzoo} and \textit{Hallway} are comparable to the ones achieved in simulation. However, on \textit{Hallway} the results are quite low. Hence, we can conclude that, the performance of the detector heavily depends on the applied environment. 
 
 \section{Deploying the detector on a \ac{MAV}}
 

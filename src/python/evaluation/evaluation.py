@@ -485,6 +485,7 @@ def infer_detector_on_set(
         image_files_batch = [b[2] for b in batch]
 
         tic()
+
         predictions = detector.detect(images)
         if images[0].shape[0] != detector.model.input_shape[1] or \
                 images[0].shape[1] != detector.model.input_shape[2]:

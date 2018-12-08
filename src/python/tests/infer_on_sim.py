@@ -1,5 +1,4 @@
 from evaluation.evaluation import infer_on_set
-from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
@@ -7,7 +6,7 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'mavnet_lowres80',
+    'mavlabgates',
     # 'mavnet',
     # 'mavnet_lowres160',
     # 'mavnet_lowres320',
@@ -21,7 +20,7 @@ models = [
     # 'yolo_lowres160',
 ]
 preprocessing = [
-    [TransformResize((80, 80))],
+    # [TransformResize((80, 80))],
     # None,
     # [TransformResize((160, 160))],
     # [TransformResize((320, 320))],

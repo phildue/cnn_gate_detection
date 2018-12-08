@@ -13,67 +13,54 @@ from modelzoo.build_model import build_detector
 from modelzoo.metrics.GateDetectionLoss import GateDetectionLoss
 from utils.fileaccess.GateGenerator import GateGenerator
 from utils.fileaccess.utils import create_dirs, save_file
+from utils.imageprocessing.transform.RandomBlur import RandomBlur
 from utils.imageprocessing.transform.RandomEnsemble import RandomEnsemble
+from utils.imageprocessing.transform.RandomMotionBlur import RandomMotionBlur
 from utils.imageprocessing.transform.TransformResize import TransformResize
 from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
-img_res = 40, 40
-initial_epoch = 0
-epochs = 100
-for i in range(2):
-    model_dir = 'mavnet_lowres40_i{0:02d}'.format(i)
-    anchors = np.array([[
-        [330, 340],
-        [235, 240],
-        [160, 165]],
-        [[25, 40],
-         [65, 70],
-         [100, 110]]]
-    ) * 0.19/2
+img_res = 160, 160
+for i in range(1, 2):
+    model_dir = '160_i{0:02d}'.format(i)
+    initial_epoch = 0
+    epochs = 100
+
     architecture = [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'max_pool', 'size': (2, 2)},#80
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'max_pool', 'size': (2, 2)},#40
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 24, 'strides': (1, 1), 'alpha': 0.1},
-        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'max_pool', 'size': (2, 2)},#20
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},#10
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'},
-        {'name': 'route', 'index': [4]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 2},
+        {'name': 'crop', 'top': 0, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 8]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 4},
+        {'name': 'crop', 'top': 0, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 6]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'predict'}
     ]
 
-    work_dir = 'out/' + model_dir + '/'
+    work_dir = 'out/ext/' + model_dir + '/'
     create_dirs([work_dir])
-    """
-    Model
-    """
-    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture, anchors=anchors,
-                                         n_polygon=4)
-    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
-    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
-    preprocessor = Preprocessor(preprocessing=[TransformResize((40, 40))], encoder=encoder, n_classes=1,
-                                img_shape=img_res, color_format='bgr')
-    loss = GateDetectionLoss()
-    # model.load_weights('out/mavnet/model.h5')
     """
     Datasets
     """
@@ -86,24 +73,14 @@ for i in range(2):
                     'resource/ext/samples/basement_course3',
                     'resource/ext/samples/basement_course1',
                     'resource/ext/samples/iros2018_course3_test',
-                    'resource/ext/samples/various_environments20k',
+                    'resource/ext/samples/flight_basement_mavlab_gates_bg0',
+                    'resource/ext/samples/flight_basement_mavlab_gates_bg1'
+                    # 'resource/ext/samples/various_environments20k',
                     # 'resource/ext/samples/realbg20k'
                     ]
     batch_size = 16
-    n_samples = 20000
-    subsets = [
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.25
-    ]
+    n_samples = 30000
+    subsets = None
     min_obj_size = 0.001
     max_obj_size = 2
     min_aspect_ratio = 0.3
@@ -112,7 +89,7 @@ for i in range(2):
 
     def filter(label):
         objs_in_size = [obj for obj in label.objects if
-                        min_obj_size < (obj.poly.height * obj.poly.width) / (416 * 416) < max_obj_size]
+                        min_obj_size < (obj.poly.height * obj.poly.width) / (img_res[0] * img_res[1]) < max_obj_size]
 
         objs_within_angle = [obj for obj in objs_in_size if
                              min_aspect_ratio < obj.poly.height / obj.poly.width < max_aspect_ratio]
@@ -120,13 +97,12 @@ for i in range(2):
         objs_in_view = []
         for obj in objs_within_angle:
             mat = obj.poly.points
-            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > 416)]) +
-                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > 416)])) > 2:
+            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
+                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
                 continue
             objs_in_view.append(obj)
 
         return ImgLabel(objs_in_view)
-
 
 
     valid_frac = 0.005
@@ -135,21 +111,49 @@ for i in range(2):
                               remove_filtered=False, max_empty=0, filter=filter, subsets=subsets)
 
     """
+    Model
+    """
+    anchors = np.array([[[330.58, 333.99],
+                         [226.27, 232.06]],
+
+                        [[153.54, 158.03],
+                         [97.34, 105.7]],
+
+                        [[59.81, 66.41],
+                         [24.36, 39.8]]])
+    anchors /= (416 / img_res[0])
+    print(anchors)
+    augmenter = [RandomEnsemble([
+        (0.2, RandomMotionBlur(1.0, 2.0, 15)),
+        (0.2, RandomBlur((5, 5))),
+        # (0.3, TransformDistort(
+        #     dist_model=BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0])))
+    ])]
+
+    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+                                         anchors=anchors,
+                                         n_polygon=4)
+    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
+    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
+    preprocessor = Preprocessor(preprocessing=[TransformResize((160, 160))], encoder=encoder, n_classes=1,
+                                img_shape=img_res, color_format='bgr',
+                                augmentation=augmenter)
+    loss = GateDetectionLoss()
+    model.load_weights('out/blur_distortion_i01/model.h5',skip_mismatch=True,by_name=True)
+
+    """
     Training Config
     """
     optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.005)
     # metric = AveragePrecisionGateNet(batch_size=batch_size, n_boxes=encoder.n_boxes, grid=output_grids,
     #                                  norm=img_res, iou_thresh=0.6)
 
-
     # def ap60(y_true, y_pred):
     #     return metric.compute(
     #         y_true, y_pred)
 
-
     model.compile(optimizer=optimizer,
-                  loss=loss.compute,
-                  metrics=[])
+                  loss=loss.compute)
 
     log_file_name = work_dir + '/log.csv'
     append = Path(log_file_name).is_file() and initial_epoch > 0

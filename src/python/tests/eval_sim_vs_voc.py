@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 import pandas as pd
 
@@ -6,8 +8,6 @@ from utils.ModelSummary import ModelSummary
 from utils.imageprocessing.Backend import imread
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
-
-import argparse
 
 show_t = -1
 parser = argparse.ArgumentParser()
@@ -33,7 +33,7 @@ titles = models
 
 ObjectLabel.classes = ['gate']
 bins = 10
-n_iterations = 2
+n_iterations = 4
 size_bins = np.array([0.0, 1.0])
 # size_bins = np.array([0.001, 0.002, 0.004, 0.016, 0.032])
 for i_m, m in enumerate(models):
@@ -56,8 +56,12 @@ for i_m, m in enumerate(models):
                     else:
                         images = None
 
-                    result_size_ap, true_objects_bin = evalcluster_size_ap(labels_true, labels_pred,
+                    result_size_ap, true_objects_bin,_,_ = evalcluster_size_ap(labels_true, labels_pred,
                                                                            bins=size_bins * 416 ** 2,
+                                                                           min_ar=0.33,
+                                                                           max_ar=3.0,
+                                                                           min_obj_size=0.001 * 416 ** 2,
+                                                                           max_obj_size=2.0 * 416 ** 2,
                                                                            images=images, show_t=show_t, iou_thresh=iou)
 
                     frame['{} Objects'.format(d)] = true_objects_bin

@@ -14,12 +14,12 @@ models = [
 
 ]
 datasets = [
-    'test_basement_gate',
+    # 'test_basement_gate',
     'iros2018_course_final_simple_17gates',
 ]
 
 datasets_title = [
-    'Simple Test Set',
+    # 'Simple Test Set',
     'Simulated MAV Race',
 ]
 
