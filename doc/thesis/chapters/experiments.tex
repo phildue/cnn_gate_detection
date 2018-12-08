@@ -221,7 +221,7 @@ For \textit{Simulated Flight} the dynamic model of a quadcopter is used \footnot
 
 We investigate to what extent the detector can generalize across view points. We hypothesize that a detector trained with \textit{Simulated Flight} performs better in a simulated \ac{MAV} race than a detector trained with \textit{Random Placement}. 
 
-Training sets with 20 000 samples each are created using \textit{Random Placement} and \textit{Simulated Flight}. The scenes are created with the environments introduced in \Cref{sec:meth}. Additionally, the background textures are varied during data generation. For \textit{Random Placement} the gates are placed throughout the room, subsequently the camera is placed according to \Cref{eq:distroexp}. For \textit{Simulated Flight} 3 race courts with corresponding trajectories are created. It should be noted that the race court present in the test set is not part in either of the training sets. 
+Training sets with 20 000 samples each are created using \textit{Random Placement} and \textit{Simulated Flight}. The scenes are created with the environments introduced in \Cref{sec:environments}. Additionally, the background textures are varied during data generation. For \textit{Random Placement} the gates are placed throughout the room, subsequently the camera is placed according to \Cref{eq:distroexp}. For \textit{Simulated Flight} 3 race courts with corresponding trajectories are created. It should be noted that the race court present in the test set is not part in either of the training sets. 
 
 \todo{what did we train what excluded?}.
 
@@ -229,12 +229,17 @@ Training sets with 20 000 samples each are created using \textit{Random Placemen
 \subsection{Results}
 
 The results are presented in \Cref{fig:view_size}. Predicted and true labels are assigned to bins based on their covered area $A_O=b_w*b_h$. Subsequently $ap_{60}$ is evaluated for each bin. 
-	\begin{figure}[hbtp]
+\begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/view_size}
 	\caption{Results of different methods to include more samples in the training set. The results are clustered based on the size of the true/predicted bounding box. It can be seen how the network that contained only frontal views performs poorly when applied in the simulated \ac{MAV} race track. The network trained with images obtained with \textit{Simulated Flight} outperforms the network trained on samples obtained with \textit{Random Placement} for larger object sizes.}
 	\label{fig:view_size}
 \end{figure}
 
+\begin{figure}[hbtp]
+	\includegraphics[width=\textwidth]{fig/view_precision_recall}
+	\caption{Precision and Recall at a confidence level of 0.5 of different methods to generate data. The results are clustered based on the size of the true/predicted bounding box. It can be seen how the precision drops for methods that contain more view points}
+	\label{fig:view_size_pr}
+\end{figure}
 
 \textit{Frontal Views} is the network trained in the previous section. Its training set contained only frontal views and no overlap. It can be seen how it performs poorly when simulating a whole \ac{MAV} race. \textit{Random Placement} achieves competitive performance for smaller object sizes until 25\% of the input image. However, the performance drops below 20\% for larger objects. \textit{Simulated Flight} achieves competitive performance on all bins. Only for objects of a size between 6.2\% - 12.5\% of the input image the random placement performs slightly better. In most bins combining both methods led to worse results than each of the methods individually.
 
@@ -242,15 +247,20 @@ Overall a significant drop in performance can be seen compared to the test sets 
 
 \subsection{Discussion}
 
-In the results it can be seen how the detectors struggle in the more challenging environment of a \ac{MAV} race. A drop in performance can be seen for all detectors. Including new view points in the training set helped counteracting against this drop. The networks trained with more view points perform significantly better than the network which was only trained on frontal views.
+In the results it can be seen how the detectors struggle in the more challenging environment of a \ac{MAV} race. Compared to the results on the simple dataset of the previous section, a drop in performance can be seen for all detectors. Including more view points in the training set helped counteracting against this drop. The networks trained with more view points perform significantly better than the network which was only trained on frontal views.
 
-Yet including to many view points seems to confuse the detector. The network trained with \textit{Random Placement} performs poor for larger objects. Also combining \textit{Random Placement} and \textit{Simulating Flight} leads to a deterioration in performance. In contrast, the network trained with \textit{Simulating Flight} only works better on those bins. 
+Yet including to many view points seems to confuse the detector. The network trained with \textit{Random Placement} performs poor for larger objects. Combining \textit{Random Placement} and \textit{Simulating Flight} leads overall to a deterioration in performance. In contrast, the network trained with \textit{Simulating Flight} only, achieves a higher performance. 
 
-Overall a performance drop for larger objects can be seen. This is somewhat surprising as the object gets better visible when it is larger. However, the closer the camera gets, the less context is visible. For example the object pole gets out of view. Also, it is more likely that parts of the object get out of view as it comes closer. This could be the reason for the drop in performance for larger objects.
+\textit{Random Placement} and \textit{Simulating Flight} are limited in a way that they do not give control of which exact view points are present in the training set. A more sophisticated method could be the controlled creation of particular view points. This way a certain distribution of scales and angles could be created. On the other hand this creates other questions such as in what way to include overlap etc. Furthermore, enough variation in background would be required for each view point. Controlling each of these parameters manually would require a lot of engineering work or a further extension of the created data generation tool. Nevertheless, it would be worth investigating and could be addressed in future work.
+
+Overall a performance drop for larger objects can be seen. This is somewhat surprising as the object should be better visible when it is larger. However, the closer the camera gets, the less context is visible and the more likely it is that a part of the object is out view. This could be the reason for the drop in performance for larger objects. An experiment that would show whether this is true could be done by training the network without the pole and testing the model again.
 
 \subsection{Conclusion}
 
-In this section we evaluated how the detector performs when applied in \ac{MAV} racing. It can be seen how such an environment is more challenging for the detector as more objects and view points are visible. 
+In this section we evaluated how the detector performs when applied in a simulated \ac{MAV} race. We hypothesized that the performance will decrease as more view points and overlapping angles are visible. The results confirm this hypothesis.
+
+Furthermore, we investigated whether the detector can learn to detect the object from many view points. Although this seems possible, it comes at cost of precision
+
 
 Incorporating these view points in the training improved the performance. However, creating a detector that performs well on all view points proves to be difficult. Instead better performance can be achieved when creating samples based on what the detector will see in reality.
 

@@ -13,10 +13,10 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'depth1',
-    'depth2',
-    'depth3',
-    'racecourt',
+    # 'depth1',
+    # 'depth2',
+    # 'depth3',
+    # 'racecourt',
     # 'vgg'
     'width1',
     'width2',

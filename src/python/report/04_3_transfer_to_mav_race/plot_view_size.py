@@ -19,7 +19,7 @@ legend = [
     'Frontal Views',
     'Random Placement',
     'Simulated Flight',
-    # 'Simulated Flight - All View Points',
+    # 'Simulated Flight \n- All View Points',
     'Combined'
 ]
 
@@ -28,10 +28,12 @@ n_iterations = 2
 bins = None
 n_objects = None
 plt.figure(figsize=(9, 3))
-plt.title('Tested on Synthetic Test Set'.format(dataset))
+plt.title('Tested on simulated MAV Race'.format(dataset))
 w = 0.8 / len(models)
-
+plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-',zorder=0)
+plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--',zorder=0)
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
+handles = []
 for i_m, r in enumerate(models):
     aps = []
     for it in range(n_iterations):
@@ -48,16 +50,19 @@ for i_m, r in enumerate(models):
     ap = np.mean(aps, 0)
     err = np.std(aps, 0)
 
-    plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, ap, width=w, yerr=err)
-
-plt.text(-1.15, 1.0, '$N_{Objects}$:',color='gray')
+    h = plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, ap, width=w,zorder=2)
+    plt.errorbar(np.arange(len(bins)) + i_m * w - (len(models)) * w, ap, err, 0, fmt=' ', ecolor='gray', capsize=2,
+                 elinewidth=1, zorder=3)
+    handles.append(h)
+plt.text(-1.15, 1.0, '$N_{Objects}$:', color='gray')
 for x, y in enumerate(n_objects):
     plt.text(x - 0.5, 1.0, '${}$'.format(np.round(y, 2)), color='gray', fontweight='bold')
-plt.ylim(0, 1.1)
-plt.xlabel('$A_O/A_I$')
+plt.ylim(0, 0.8)
+plt.xlabel('Label bins as fraction of image size', horizontalalignment='right',x=1.0)
 plt.ylabel('$ap_{60}$')
-plt.xticks(np.arange(len(bins))-1, np.round(bins, 3))
-plt.legend(legend, bbox_to_anchor=(1.0, 1.0),loc='upper left')
+plt.xticks(np.arange(len(bins)) - 1,
+           ['$\\frac{1}{100}$', '$\\frac{1}{32}$', '$\\frac{1}{16}$', '$\\frac{1}{8}$', '$\\frac{1}{4}$', '$\\frac{1}{2}$', '1.0'],fontsize=12)
+plt.legend(handles,legend, bbox_to_anchor=(1.0, 1.0), loc='upper left')
 # Shrink current axis by 20%
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None)
 ax = plt.subplot(111)

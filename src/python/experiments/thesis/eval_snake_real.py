@@ -6,7 +6,7 @@ from utils.fileaccess.utils import save_file
 from utils.workdir import cd_work
 
 cd_work()
-results_root = 'out/thesis/snake/'
+results_root = 'out/snake/'
 image_root = 'resource/ext/samples/'
 datasets = [
     'jevois_cyberzoo',
