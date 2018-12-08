@@ -25,7 +25,8 @@ models = [
     # 'hsv',
     # 'exposure',
     # 'chromatic',
-    'mavlabgates'
+    # 'mavlabgates'
+    'blur_distortion',
 ]
 
 datasets = [
