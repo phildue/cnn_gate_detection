@@ -30,7 +30,7 @@ datasets = [
             'test_basement_gate',
             ]
 
-work_dir = 'out/'
+work_dir = 'out/ext/'
 n_iterations = 4
 ObjectLabel.classes = ['gate']
 for dataset in datasets:
