@@ -18,7 +18,7 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-for i in range(2):
+for i in range(4):
     model_dir = 'mavlabgates_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100

@@ -17,6 +17,8 @@ show_t = args.show
 
 cd_work()
 models = [
+    'racecourt',
+    'vgg',
     'depth1',
     'depth2',
     'depth3',
@@ -28,13 +30,13 @@ models = [
 ]
 
 datasets = [
-    # 'iros2018_course_final_simple_17gates',
+    'iros2018_course_final_simple_17gates',
             'test_basement_gate',
             ]
 titles = models
 
 ObjectLabel.classes = ['gate']
-n_iterations = 2
+n_iterations = 4
 size_bins = np.array([0.0, 1.0])
 for dataset in datasets:
     for i_m, m in enumerate(models):

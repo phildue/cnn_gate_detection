@@ -18,9 +18,9 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-iterations = [2, 1, 1]
+iterations = [2, 2, 2]
 for n_i, n in enumerate([1, 2, 3]):
-    for i in range(iterations[n_i]):
+    for i in range(2,iterations[n_i]):
         model_dir = 'width{}_i0{}'.format(n, i)
         initial_epoch = 0
         epochs = 100
