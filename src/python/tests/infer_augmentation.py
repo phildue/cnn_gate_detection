@@ -25,8 +25,8 @@ models = [
     # 'hsv',
     # 'exposure',
     # 'chromatic',
-    # 'mavlabgates'
-    'blur_distortion',
+    'mavlabgates'
+    # 'blur_distortion',
 ]
 
 datasets = [
@@ -36,7 +36,7 @@ datasets = [
 ]
 
 work_dir = 'out/'
-n_iterations = 2
+n_iterations = 4
 ObjectLabel.classes = ['gate']
 for dataset in datasets:
     for i_m, model in enumerate(models):

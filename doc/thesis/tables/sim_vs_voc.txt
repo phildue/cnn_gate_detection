@@ -1,9 +1,9 @@
 \begin{tabular}{llll}
 \toprule
-       Trained/Tested &        Gate &        Sign &        Cats \\
+       Trained/Tested &          Gate &          Sign &          Cats \\
 \midrule
-    Single Background &  nan +- nan &  nan +- nan &  nan +- nan \\
- Simulated Background &  nan +- nan &  nan +- nan &  nan +- nan \\
-       VOC Background &  nan +- nan &  nan +- nan &  nan +- nan \\
+    Single Background &  0.26 +- 0.06 &  0.03 +- 0.02 &  0.36 +- 0.03 \\
+ Simulated Background &  0.74 +- 0.05 &  0.54 +- 0.22 &  0.71 +- 0.07 \\
+       VOC Background &    nan +- nan &    nan +- nan &    nan +- nan \\
 \bottomrule
 \end{tabular}

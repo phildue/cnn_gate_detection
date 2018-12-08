@@ -31,8 +31,8 @@ n_objects = None
 plt.figure(figsize=(8, 3))
 plt.title('Precision/Recall for different Object Sizes on Simulated MAV Race'.format(dataset))
 w = 0.8 / len(models)
-colors = [(0, 0, 0.8), (0, 0.8, 0.8), (0, 0.8, 0), (0.8, 0, 0)]
-colors_dark = [(0, 0, 0.5), (0, 0.5, 0.5), (0, 0.5, 0), (0.5, 0, 0)]
+colors = ['deepskyblue', 'bisque', 'lightgreen', 'lightsalmon']
+colors_dark = ['royalblue', 'darkorange', 'forestgreen', 'tomato']
 
 # plt.bar(np.arange(bins), np.array(frame['Objects'][0]) / np.sum(frame['Objects'][0]), width=1.0, color='gray')
 handles = []
@@ -64,9 +64,9 @@ for i_m, r in enumerate(models):
     precision = np.mean(precisions, 0)
     err = np.std(precisions, 0)
     recall = np.mean(recalls, 0)
-    h = plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, [p[4] for p in precision], width=w, zorder=2,
+    plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, [p[4] for p in precision], width=w, zorder=2,
                 color=colors[i_m])
-    plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, [r[4] for r in recall], width=w, zorder=2,
+    h = plt.bar(np.arange(len(bins)) + i_m * w - len(models) * w, [r[4] for r in recall], width=w, zorder=2,
             color=colors_dark[i_m])
 
     # plt.errorbar(np.arange(len(bins)) + i_m * w - (len(models)) * w, precision[4], err[4], 0, fmt=' ', ecolor='gray', capsize=2,

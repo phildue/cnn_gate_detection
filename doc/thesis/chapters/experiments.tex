@@ -237,7 +237,7 @@ The results are presented in \Cref{fig:view_size}. Predicted and true labels are
 
 \begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/view_precision_recall}
-	\caption{Precision and Recall at a confidence level of 0.5 of different methods to generate data. The results are clustered based on the size of the true/predicted bounding box. It can be seen how the precision drops for methods that contain more view points}
+	\caption{Precision and Recall at a confidence level of 0.5 of different methods to generate data. The results are clustered based on the size of the true/predicted bounding box. For each method and each bin precision and recall are shown. Precision is the lighter coloured bar. It can be seen how for \textit{Simulated Flight} only the recall drops for larger objects. With \textit{Random Placement} included, the precision drops similarly.}
 	\label{fig:view_size_pr}
 \end{figure}
 
@@ -249,7 +249,7 @@ Overall a significant drop in performance can be seen compared to the test sets 
 
 In the results it can be seen how the detectors struggle in the more challenging environment of a \ac{MAV} race. Compared to the results on the simple dataset of the previous section, a drop in performance can be seen for all detectors. Including more view points in the training set helped counteracting against this drop. The networks trained with more view points perform significantly better than the network which was only trained on frontal views.
 
-Yet including to many view points seems to confuse the detector. The network trained with \textit{Random Placement} performs poor for larger objects. Combining \textit{Random Placement} and \textit{Simulating Flight} leads overall to a deterioration in performance. In contrast, the network trained with \textit{Simulating Flight} only, achieves a higher performance. 
+Yet including to many view points seems to confuse the detector. The network trained with \textit{Random Placement} performs poor for larger objects. Combining \textit{Random Placement} and \textit{Simulating Flight} leads overall to a deterioration in performance. In contrast, the network trained with \textit{Simulating Flight} only, achieves a higher performance. This is mainly achieved because the precision stays high. The detectors with \textit{Random Placement} produce more false positives compared to the network trained with \textit{Simulating Flight}.
 
 \textit{Random Placement} and \textit{Simulating Flight} are limited in a way that they do not give control of which exact view points are present in the training set. A more sophisticated method could be the controlled creation of particular view points. This way a certain distribution of scales and angles could be created. On the other hand this creates other questions such as in what way to include overlap etc. Furthermore, enough variation in background would be required for each view point. Controlling each of these parameters manually would require a lot of engineering work or a further extension of the created data generation tool. Nevertheless, it would be worth investigating and could be addressed in future work.
 
@@ -259,10 +259,9 @@ Overall a performance drop for larger objects can be seen. This is somewhat surp
 
 In this section we evaluated how the detector performs when applied in a simulated \ac{MAV} race. We hypothesized that the performance will decrease as more view points and overlapping angles are visible. The results confirm this hypothesis.
 
-Furthermore, we investigated whether the detector can learn to detect the object from many view points. Although this seems possible, it comes at cost of precision
+Furthermore, we investigated whether the detector can learn to detect the object from many view points. Although this seems possible, it comes at cost of precision for larger object sizes. We can conclude that restricting the network to a subset of view points is crucial to keep a better performance for larger objects.
 
 
-Incorporating these view points in the training improved the performance. However, creating a detector that performs well on all view points proves to be difficult. Instead better performance can be achieved when creating samples based on what the detector will see in reality.
 
 \section{Optimizing the Architecture}
 
@@ -318,7 +317,7 @@ As a test set the real world dataset introduced in \Cref{sec:datasets} is used. 
 	\centering
 	\includegraphics[width=0.3\textwidth]{fig/mavlabexample}
 	\caption{In order to increase the variance in object appearance a new 3D-Model is created using \textit{AirSim}. It contains a black pole and square bars.}
-	\label{fig:mavlabgateexampe}
+	\label{fig:mavlabgateexample}
 \end{figure}
 
 Furthermore, it can be seen how motion blur and lens distortion change object appearance. We hypothesize that including such effects in the training data can improve the performance on the real data. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. We study this incorporation by applying image augmentation with the models introduced in \Cref{sec:postprocessing}.
@@ -344,6 +343,53 @@ The detector is trained with 20 000 samples where 3000 are generated with the ne
 \Cref{fig:augmentation} shows the results on the various real datasets. Throughout the augmentation methods it can be seen how best results are achieved on the \textit{Cyberzoo} set. Lower results are achieved on the \textit{Basement} and finally the \textit{Hallway} set.
 
 Compared to no augmentation all techniques lead to an improvement. The distortion is among the highest results for all data sets. Shortly after follows blur and chromatic aberration. However, for chromatic aberration the results on basement and hallway are lower than for blur an distortion. Combining blur and distortion does not lead to an improvement compared to the individual methods. Image augmentation with variations in \ac{HSV} and exposure achieve the lowest results.
+
+\begin{figure}[hbtp]
+\centering
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/cyberzoo_nice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/cyberzoo_nice2.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/cyberzoo_notnice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/cyberzoo_notnice2.jpg}
+\end{minipage}
+\caption{Predictions in the \textit{Cyberzoo} environment. Several gates are detected with good localization, even when occluded by another gate (3.). Yet the gate which is in front is not detected. Also, the perfect visible gate (4.) is not well detected. Instead many false positives are predicted.}
+\end{figure}
+\begin{figure}[hbtp]
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/basement_nice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/basement_nice2.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/basement_notnice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/basement_notnice2.jpg}
+\end{minipage}
+\caption{Predictions in the \textit{Basement} environment. The network produces very nice detections in cases of heavy occlusion (1 and 2). However, in other cases where the gate is visible at least equally well (3 and 4) the gate is not detected or with bad localization.}
+\end{figure}
+\begin{figure}[hbtp]
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/hallway_nice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/hallway_nice2.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/hallway_notnice1.jpg}
+\end{minipage}
+\begin{minipage}{0.24\textwidth}
+	\includegraphics[width=\textwidth]{fig/examples/hallway_notnice2.jpg}
+\end{minipage}
+\caption{Predictions in the \textit{Hallway} environment. In some images (1 and 2) the network predicts a half way correct bounding box. Yet in the majority of images such as 3 and 4 the gate is not detected, although clearly visible. }
+\end{figure}
 
 \subsection{Discussion}
 

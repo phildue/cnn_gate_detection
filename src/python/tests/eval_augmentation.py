@@ -9,7 +9,7 @@ from utils.imageprocessing.Backend import imread
 from utils.labels.ObjectLabel import ObjectLabel
 from utils.workdir import cd_work
 
-show_t = -1
+show_t = 1
 parser = argparse.ArgumentParser()
 parser.add_argument('--show', metavar='s', type=int, default=show_t)
 args = parser.parse_args()
@@ -17,12 +17,13 @@ show_t = args.show
 
 cd_work()
 models = [
-    'blur_distortion',
+    # 'blur_distortion',
     # 'distortion',
     # 'blur',
     # 'hsv',
     # 'exposure',
     # 'chromatic'
+    'mavlabgates'
 ]
 
 datasets = [
@@ -34,7 +35,7 @@ datasets = [
 titles = models
 
 ObjectLabel.classes = ['gate']
-n_iterations = 2
+n_iterations = 5
 size_bins = np.array([0.0, 1.0])
 for dataset in datasets:
     for i_m, m in enumerate(models):
