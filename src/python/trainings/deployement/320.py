@@ -142,7 +142,7 @@ for i in range(1, 2):
                                 img_shape=img_res_network, color_format='bgr',
                                 augmentation=augmenter)
     loss = GateDetectionLoss()
-    model.load_weights('out/blur_distortion_i01/model.h5', skip_mismatch=True, by_name=True)
+    model.load_weights('out/ext/blur_distortion_i01/model.h5', skip_mismatch=True, by_name=True)
 
     """
     Training Config
