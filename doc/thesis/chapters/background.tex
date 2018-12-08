@@ -84,23 +84,10 @@ The modular structure of \acp{CNN} allows to create highly non-linear models tha
 Among these parameters depth is considered one of the preliminary parameters to improve performance \cite{He}. \citeauthor{Simonyan2014} \cite{Simonyan2014} achieve first places in the 2014 ImageNet Classification challenge using a network that only contained filters of size 3-by-3 but up to 19 layers. \citeauthor{Szegedy2014} \cite{Szegedy2014} achieve similar performance using a network with 22 layers. The proposed network included an \textit{Inception}-module, an architectural element that allows deeper networks at a constant computational budget. 
 
 
-\paragraph{Fully Convolution Networks.}
+\paragraph{Fully Convolutional Networks.}
 
 Instead the work focuses on much smaller networks that are fast to execute. Execution time is also the motivation for \acp{FCN}. Instead of using a fully connected layer in the last stage, these networks only apply local operations. This saves many computations in the last layer and enables the application of models on various input sizes.
 
-\paragraph{Dilated Convolutions.}
-
-However, \ac{FCN} in combination with a small amount of layers introduce a limited receptive field. If the network is too shallow the last layer cannot take into account the whole input image. A way to increase the receptive field without increasing the number of computations is the use of sparse kernels, also called Atrous/Dilated convolutions. 
-
-\paragraph{Depthwise Separable Convolutions.}
-
-Another line of research to reduce the number of computations in \acp{CNN} address the convolution operation. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. This reduces the total number of operations from $N = k_w \cdot k_h \cdot w_n \cdot w_{n+1}$ to $N=(k_w \cdot k_h + w_n)+w_n \cdot w_{n+1}$. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations. These are convolutions with a 1by1 kernel and linear activation.
-
-\paragraph{Channel Shuffling.}
-
-\cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation. 
-
-Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
 \subsubsection{\ac{CNN}-based Object Detection}
 
@@ -141,11 +128,12 @@ Attention models are promising as their computational complexity can be controll
 
 Computer Vision research typically focuses on detection accuracy rather than inference speed. However, for the deployment on a \ac{MAV} resource consumption is an important parameter. The following describes research topics that concern the reduction of inference time.
 
-\todo{cleanup}
-One pass of the state of the art \ac{CNN} ResNet101 contains of 11.3 billion floating point operations. Even assuming a powerful 2 GHz processor can perform 2 billion calculations per second it would still require almost 6 seconds for one network pass. Furthermore, a \acp{CPU} usually has to reload operands from the memory and cannot directly perform floating point multiplications. Hence, the actual forward pass would require even more time.
+One research line addresses the reduction of inference time by reducing the number of operations. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. This reduces the total number of operations from $N = k_w \cdot k_h \cdot w_n \cdot w_{n+1}$ to $N=(k_w \cdot k_h + w_n)+w_n \cdot w_{n+1}$. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations. These are convolutions with a 1by1 kernel and linear activation.
 
+\cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation. 
 
-Therefore researchers address the reduction of inference time by reducing the number of operations. For example MobileNet and ShuffleNet aim to reduce the computations by addressing the expensive 3D convolutions. Other researchers aim to making the individual operations more efficient. This can be done by replacing floating point operations with integer operations hence quantizing the network.
+Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how networks with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
+
 
 In order to infer a layer in a \acp{CNN} kernels are convolved at multiple locations within one image. Thereby the same calculations are applied on various input data while the individual operations are independent of each other. Hence, theoretically the computations in one layer can be performed completely in parallel. The output of one layer can be stored similarly to the input image as a matrix. Computational platforms that exploit this fact are \acp{GPU} that have been adopted for Deep Learning applications from early on. In contrast to \acp{CPU} that are optimized to perform many different operations sequentially, \acp{GPU} typically consist of more cores and are optimized to perform the same operation on different data. While each individual core is typically slower than a single core in a \acp{CPU}, \acp{GPU} are much faster for applications that can be performed in parallel.
 

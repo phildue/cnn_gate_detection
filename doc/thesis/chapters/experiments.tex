@@ -310,12 +310,12 @@ Furthermore, it can be seen how motion blur and lens distortion change object ap
 
 \subsection{Results}
 
-\begin{figure}[htbp]
+\begin{table}[hbtp]
 	\centering
-	\includegraphics[width=\textwidth]{fig/pp_bar}
-	\caption{Performance in terms of Average Precision for different methods  of image augmentation.}
-	\label{fig:pp_bar}
-\end{figure}
+	\input{tables/augmentation.txt}
+	\caption{Performance of networks with different image augmentation techniques. }
+	\label{tab:aug}
+\end{table}
 
 \Cref{fig:pp_bar} shows the results in terms of average precision in the training domain. On the simulated data variations in exposure improve the performance of low quality predictions slightly compared to using no augmentation. However, using no data augmentation achieves the best performance for high quality detections. The other effects have only minor influence. 
 
