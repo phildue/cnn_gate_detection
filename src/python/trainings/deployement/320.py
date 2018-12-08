@@ -23,7 +23,7 @@ from utils.workdir import cd_work
 cd_work()
 img_res_data = 416, 416
 img_res_network = 320, 320
-for i in range(1, 2):
+for i in range(2, 4):
     model_dir = '320_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100

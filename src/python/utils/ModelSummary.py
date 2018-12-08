@@ -8,9 +8,12 @@ class ModelSummary:
     @staticmethod
     def from_file(path):
         summary = load_file(path)
-        return ModelSummary(summary['architecture'], summary['weights'], summary['img_res'], summary['anchors'],
+        try:
+            return ModelSummary(summary['architecture'], summary['weights'], summary['img_res'], summary['anchors'],
                             summary['color_format'])
-
+        except KeyError:
+            return ModelSummary(summary['architecture'], summary['weights'], 0, summary['anchors'],
+                                summary['color_format'])
     def __init__(self, arch, weights, img_res, anchors, color_format):
         # {'model': self.predictor.net.__class__.__name__,
         #  'resolution': self.predictor.input_shape,
