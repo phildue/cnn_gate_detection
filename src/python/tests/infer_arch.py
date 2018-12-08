@@ -17,7 +17,7 @@ models = [
     'depth2',
     'depth3',
     'racecourt',
-    'vgg'
+    # 'vgg'
     'width1',
     'width2',
     'width3',
@@ -31,7 +31,7 @@ datasets = [
             ]
 
 work_dir = 'out/'
-n_iterations = 2
+n_iterations = 4
 ObjectLabel.classes = ['gate']
 for dataset in datasets:
     for i_m, model in enumerate(models):
