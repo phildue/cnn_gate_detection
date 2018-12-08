@@ -21,7 +21,8 @@ from utils.labels.ImgLabel import ImgLabel
 from utils.workdir import cd_work
 
 cd_work()
-img_res = 320, 320
+img_res_data = 416, 416
+img_res_network = 320, 320
 for i in range(1, 2):
     model_dir = '320_strides2_i{0:02d}'.format(i)
     initial_epoch = 0
@@ -89,7 +90,8 @@ for i in range(1, 2):
 
     def filter(label):
         objs_in_size = [obj for obj in label.objects if
-                        min_obj_size < (obj.poly.height * obj.poly.width) / (img_res[0] * img_res[1]) < max_obj_size]
+                        min_obj_size < (obj.poly.height * obj.poly.width) / (
+                                    img_res_data[0] * img_res_data[1]) < max_obj_size]
 
         objs_within_angle = [obj for obj in objs_in_size if
                              min_aspect_ratio < obj.poly.height / obj.poly.width < max_aspect_ratio]
@@ -97,8 +99,8 @@ for i in range(1, 2):
         objs_in_view = []
         for obj in objs_within_angle:
             mat = obj.poly.points
-            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res[1])]) +
-                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res[0])])) > 2:
+            if (len(mat[(mat[:, 0] < 0) | (mat[:, 0] > img_res_data[1])]) +
+                len(mat[(mat[:, 1] < 0) | (mat[:, 1] > img_res_data[0])])) > 2:
                 continue
             objs_in_view.append(obj)
 
@@ -121,7 +123,7 @@ for i in range(1, 2):
 
                         [[59.81, 66.41],
                          [24.36, 39.8]]])
-    anchors /= (416 / img_res[0])
+    anchors /= (416 / img_res_network[0])
     print(anchors)
     augmenter = [RandomEnsemble([
         (0.2, RandomMotionBlur(1.0, 2.0, 15)),
@@ -130,16 +132,17 @@ for i in range(1, 2):
         #     dist_model=BarrelDistortion((416, 416), rad_dist_params=[0.7, 0], tangential_dist_params=[0.7, 0])))
     ])]
 
-    model, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=architecture,
+    model, output_grids = build_detector(img_shape=(img_res_network[0], img_res_network[1], 3),
+                                         architecture=architecture,
                                          anchors=anchors,
                                          n_polygon=4)
-    encoder = Encoder(anchor_dims=anchors, img_norm=img_res, grids=output_grids, n_polygon=4, iou_min=0.4)
-    decoder = Decoder(anchor_dims=anchors, norm=img_res, grid=output_grids, n_polygon=4)
-    preprocessor = Preprocessor(preprocessing=[TransformResize((320, 320))], encoder=encoder, n_classes=1,
-                                img_shape=img_res, color_format='bgr',
+    encoder = Encoder(anchor_dims=anchors, img_norm=img_res_network, grids=output_grids, n_polygon=4, iou_min=0.4)
+    decoder = Decoder(anchor_dims=anchors, norm=img_res_network, grid=output_grids, n_polygon=4)
+    preprocessor = Preprocessor(preprocessing=[TransformResize(img_res_network)], encoder=encoder, n_classes=1,
+                                img_shape=img_res_network, color_format='bgr',
                                 augmentation=augmenter)
     loss = GateDetectionLoss()
-    model.load_weights('out/ext/blur_distortion_i01/model.h5')
+    model.load_weights('out/blur_distortion_i01/model.h5', skip_mismatch=True, by_name=True)
 
     """
     Training Config
@@ -185,7 +188,7 @@ for i in range(1, 2):
     else:
         augmentation = preprocessor.augmenter.__class__.__name__
 
-    summary = {'resolution': img_res,
+    summary = {'resolution': img_res_network,
                'image_source': train_gen.source_dir,
                'color_format': train_gen.color_format,
                'batch_size': train_gen.batch_size,
@@ -196,7 +199,6 @@ for i in range(1, 2):
                'weights': model.count_params(),
                'architecture': architecture,
                'anchors': anchors,
-               'img_res': img_res,
                'grid': output_grids,
                # 'valid_set': validation_set,
                'min_obj_size': min_obj_size,
