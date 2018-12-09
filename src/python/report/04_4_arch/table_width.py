@@ -23,8 +23,8 @@ datasets_title = [
     'Simulated MAV Race',
 ]
 
-ious = [0.4, 0.6]
-n_iterations = 2
+ious = [0.6]
+n_iterations = 4
 frame = pd.DataFrame()
 frame['Name'] = models
 for iou in ious:

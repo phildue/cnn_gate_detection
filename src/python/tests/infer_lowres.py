@@ -21,13 +21,15 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
+    '320',
     '320_strides1',
     '320_strides2',
-    # '160',
+    '160',
 
 ]
 
 preprocessing = [
+    [TransformResize((240, 320))],
     [TransformResize((240, 320))],
     [TransformResize((240, 320))],
     [TransformResize((120, 160))],
@@ -37,17 +39,49 @@ preprocessing = [
 img_res = [
     (240, 320),
     (240, 320),
+    (240, 320),
     (120, 160),
 
 ]
 
 datasets = [
-    # 'jevois_cyberzoo',
+    'jevois_cyberzoo',
     'jevois_basement',
     'jevois_hallway',
 ]
 
 architectures = [
+[
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 2},
+        {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 9]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 4},
+        {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 7]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'}
+    ],
 [
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
         # {'name': 'max_pool', 'size': (2, 2)},
@@ -109,37 +143,37 @@ architectures = [
     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
     {'name': 'predict'}
 ],
-# [
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'max_pool', 'size': (2, 2)},#80
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'max_pool', 'size': (2, 2)},#40
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'max_pool', 'size': (2, 2)},#20
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'max_pool', 'size': (2, 2)},#10
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'max_pool', 'size': (2, 2)},
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-#         # {'name': 'max_pool', 'size': (2, 2)},
-#         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'predict'},
-#         {'name': 'route', 'index': [10]},
-#         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'upsample', 'size': 2},
-#         {'name': 'crop', 'top': 0, 'bottom': 0, 'left': 0, 'right': 0},
-#         {'name': 'route', 'index': [-1, 8]},
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'predict'},
-#         {'name': 'route', 'index': [10]},
-#         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'upsample', 'size': 4},
-#         {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
-#         {'name': 'route', 'index': [-1, 6]},
-#         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-#         {'name': 'predict'}
-#     ]
+[
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},#80
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},#40
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},#20
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},#10
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        # {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 2},
+        {'name': 'crop', 'top': 0, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 8]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'},
+        {'name': 'route', 'index': [10]},
+        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'upsample', 'size': 4},
+        {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
+        {'name': 'route', 'index': [-1, 6]},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'predict'}
+    ]
 ]
 
 work_dir = 'out/'

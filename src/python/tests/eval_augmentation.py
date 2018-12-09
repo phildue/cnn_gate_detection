@@ -17,6 +17,10 @@ show_t = args.show
 
 cd_work()
 models = [
+    'background',
+    'gray',
+    'gray_background',
+    'all',
     # 'blur_distortion',
     # 'distortion',
     # 'blur',

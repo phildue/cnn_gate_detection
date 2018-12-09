@@ -12,9 +12,13 @@ models = [
     'distortion',
     'blur',
     'hsv',
-    'exposure',
+    # 'exposure',
     'chromatic',
     'blur_distortion',
+    'gray',
+    'gray_background',
+    'background',
+    'all',
 
 ]
 titles = [
@@ -25,6 +29,10 @@ titles = [
     'exposure',
     'chromatic',
     'blur \n+ distortion',
+    'gray',
+    'gray \n+background',
+    'background',
+    'all',
     'SnakeGate',
 ]
 
@@ -40,7 +48,7 @@ datasets_title = [
     'Hallway'
 ]
 
-ious = [0.4, 0.6]
+ious = [0.6]
 n_iterations = 5
 frame = pd.DataFrame()
 frame['Name'] = models + ['SnakeGate']

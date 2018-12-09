@@ -2,10 +2,10 @@
 \toprule
           Width & Simulated MAV Race $ap_{60}$ \\
 \midrule
-            $1$ &              $0.49 \pm 0.00$ \\
-  $\frac{1}{2}$ &              $0.36 \pm 0.00$ \\
-  $\frac{1}{4}$ &              $0.41 \pm 0.06$ \\
-  $\frac{1}{8}$ &              $0.41 \pm 0.02$ \\
+            $1$ &              $0.51 \pm 0.04$ \\
+  $\frac{1}{2}$ &              $0.43 \pm 0.03$ \\
+  $\frac{1}{4}$ &              $0.41 \pm 0.05$ \\
+  $\frac{1}{8}$ &              $0.40 \pm 0.02$ \\
  $\frac{1}{16}$ &              $0.38 \pm 0.00$ \\
 \bottomrule
 \end{tabular}

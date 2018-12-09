@@ -18,14 +18,14 @@ show_t = args.show
 cd_work()
 models = [
     'racecourt',
-    'vgg',
-    'depth1',
-    'depth2',
-    'depth3',
-    'width1',
-    'width2',
-    'width3',
-    'width4',
+    # 'vgg',
+    # 'depth1',
+    # 'depth2',
+    # 'depth3',
+    # 'width1',
+    # 'width2',
+    # 'width3',
+    # 'width4',
 
 ]
 
