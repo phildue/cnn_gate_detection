@@ -8,24 +8,25 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'hsv',
     'background',
     'chromatic',
+    'hsv',
     'blur',
     'blur_distortion',
     'gray',
-    'mavlabgates',
     'distortion',
+    'mavlabgates',
+
 ]
 titles = [
-    'hsv',
     'VOC \n background',
     'chromatic',
+    'hsv',
     'blur',
     'blur \n + distortion',
     'gray',
-    'no\n augmentation',
     'distortion',
+    'no\n augmentation',
     'SnakeGate',
 ]
 
@@ -94,10 +95,11 @@ plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-',zorder=0
 plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--',zorder=0)
 w = 1 / len(models)
 handles = []
-for i_d, d in enumerate(datasets):
+
+for i_m in range(len(models)+1):
     mean = []
     err = []
-    for i_m in range(len(models)+1):
+    for i_d, d in enumerate(datasets):
         results = []
         for i_i in range(n_iterations):
             result = frame['{}_iou{}_i0{}'.format(d, iou, i_i)][i_m]
@@ -105,18 +107,18 @@ for i_d, d in enumerate(datasets):
                 results.append(result)
         mean.append(np.mean(results))
         err.append(np.std(results))
-    h = plt.bar(np.arange(len(models)+1) + i_d * w - (len(models)+1) * w, mean, width=w, capsize=2, ecolor='gray',zorder=3)
-    plt.errorbar(np.arange(len(models)+1) + i_d * w - (len(models)+1) * w, mean, err, 0, fmt=' ', ecolor='gray', capsize=2,
+    h = plt.bar(i_m+1, np.mean(mean,0), width=w, capsize=2, ecolor='gray',zorder=3)
+    plt.errorbar(i_m+1, np.mean(mean,0), np.mean(err,0), 0, fmt=' ', ecolor='gray', capsize=2,
                  elinewidth=1, zorder=3)
     handles.append(h)
-plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right')
+# plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right')
 
-plt.xticks(np.arange(len(models)+1) - 1, titles)
+plt.xticks(np.arange(len(models)+1)+1, titles)
 plt.ylabel('$ap_{60}$')
 plt.minorticks_on()
 plt.ylim(0, 0.7)
 # plt.legend(handles, datasets_title)
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                     wspace=0.3, hspace=0.3)
-plt.savefig('doc/thesis/fig/augmentation.png')
+plt.savefig('doc/thesis/fig/augmentation_overview.png')
 plt.show(True)

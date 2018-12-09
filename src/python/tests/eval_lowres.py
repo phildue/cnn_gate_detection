@@ -18,23 +18,26 @@ show_t = args.show
 
 cd_work()
 models = [
-    '320_strides1',
-    '320_strides2',
-    '160',
+    '320',
+    # '320_strides1',
+    # '320_strides2',
+    # '160',
 
 ]
 
 preprocessing = [
     [TransformResize((240, 320))],
-    [TransformResize((240, 320))],
-    [TransformResize((120, 160))],
+    # [TransformResize((240, 320))],
+    # [TransformResize((240, 320))],
+    # [TransformResize((120, 160))],
 
 ]
 
 img_res = [
     (240, 320),
-    (240, 320),
-    (120, 160),
+    # (240, 320),
+    # (240, 320),
+    # (120, 160),
 
 ]
 

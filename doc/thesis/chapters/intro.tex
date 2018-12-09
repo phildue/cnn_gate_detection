@@ -104,22 +104,14 @@ This section summarizes the research question addressed in this thesis. Furtherm
 
 \begin{enumerate}
 	\item[\textbf{RQ1}]How can data be generated to train an object detector for \ac{EWFO} detection on a \acp{MAV}?
-	\item[\textbf{RQ2}]What kind of architecture is suitable to detect \acp{EWFO}?
-	\item[\textbf{RQ3}]What are the trade-offs in detection performance and inference time when an object detector for \acp{EWFO} is deployed on a \ac{MAV}?
+	\item[\textbf{RQ2}]How does the shape of \acp{EWFO} affect the detection with a \acp{CNN}?
+	\item[\textbf{RQ3}]What kind of architecture is suitable to detect \acp{EWFO} on \acp{MAV}?
 \end{enumerate}
 
 \section{Outline}
 
 
-\begin{figure}[hbtp]
-	\centering
-	\includegraphics[width=\textwidth]{fig/Outline}
-	\caption{Thesis Outline}
-	\label{fig:outline}
-\end{figure}
-
-
-The thesis is structured as displayed in \Cref{fig:outline}. \Cref{sec:metrics} describes the metrics and systems used for evaluation. \Cref{sec:training}, \Cref{sec:object_detection}, \Cref{sec:tradeoff} and \Cref{sec:method} address the individual research questions. Each chapter contains an introduction to the topic, the methodology used in this thesis and experiments that have been carried out. \Cref{sec:training} describes methods to generate synthetic data for machine learning. It concludes with the datasets used for the remaining parts of this thesis.  \Cref{sec:object_detection} describes object detection and evaluates current methods in the application for \acp{EWFO}. \Cref{sec:tradeoff} illustrates and evaluates measures to reduce computations and optimize an object detection system for a particular hardware. It investigates the trade-off between detection performance and inference time. \Cref{sec:method} describes how the gained insights are used to develop a detector for racing gates at the \ac{IROS} 2018 Autonomous Drone Race. It also compares the current method to a traditional image processing method in terms of speed and detection performance. \Cref{sec:disc} discusses the overall results and formulates a conclusion.
+The thesis is structured as follows. \Cref{sec:background} gives an introduction to Object Detection and Synthesizing Data. Also, the target system of this work is illustrated.  \Cref{sec:method} introduces the methodology including the tool used to generate data, the object detection network as well as the test sets. \Cref{sec:experiments} describes the experiments conducted in order to answer the research questions. \Cref{sec:conclusion} discusses the overall results, formulates a conclusion and describes possible future work.
 
 
 

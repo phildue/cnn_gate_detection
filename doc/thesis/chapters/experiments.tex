@@ -1,5 +1,5 @@
 \chapter{Experiments}
-
+\label{sec:experiments}
 This chapter introduces the line of experiments taken out in this work and their intermediate conclusions. Initially, basic experiments about the detection of \acp{EWFO} are conducted. In further steps the insights are applied when transferring to the more challenging environment of autonomous drone races. Finally, a detector for \acp{EWFO} is deployed on an example \ac{MAV}.
 
 \section{Experimental Setup}
@@ -470,11 +470,13 @@ The plot shows how the different networks are generally slower than \textit{Snak
 
 In this section different methods to increase the speed of the detector were investigated. As expected the performance is better when keeping a higher resolution but increasing the stride parameter. At a resolution of $160\times120$ the performance of the detector drops almost to the level of \textit{SnakeGate}. In contrast the network with one stride layer achieves the best results.
 
-Replacing the first pooling layers with larger strides gives a speed up of 17 ms/frame
+Replacing the first pooling layers with larger strides gives a speed up of 17 ms/frame without loosing any performance. Further replacing the pooling layers leads a stepwise decrease in performance. Hence, replacing the pooling layers with larger strides can be used to trade-off between performance and inference speed.
 
 \subsection{Conclusion}
 
+In this experiment we evaluated the trade-off in terms of speed and accuracy on the \textit{JeVois} and compared it to the baseline. It could be seen how replacing pooling layers with larger strides can be used to trade-off inference speed and detection performance. 
 
+Overall the same inference speed as \textit{SnakeGate} can not be achieved by the network. Hence, we can conclude that the learning based detector improves detection performance at cost of inference speed.
 
 
 

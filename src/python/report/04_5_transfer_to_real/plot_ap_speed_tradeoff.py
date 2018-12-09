@@ -8,14 +8,11 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'blur_distortion',
+    '320',
     '320_strides1',
     '320_strides2',
     '160',
-    # 'mavnet_strides',
-    # 'mavnet_strides3_pool2',
-    # 'mavnet_strides4_pool1',
-    'yolo_lowres160'
+    # 'yolo_lowres160'
 ]
 work_dir = 'out/'
 
@@ -33,29 +30,42 @@ symbols = [
 markers = ["o", "v", "^", "<", ">"]
 colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
 t = [
-    900,
-    500,
-    200,
-    100,
-    # 40,
-    # 60,
-    # 50,
-    700,
+    101,
+    84,
+    73,
+    55,
+    # 700,
+    25,
+]
+t_err = [
+    3,
+    3,
+    4,
+    5,
+    # 12,
     20,
 ]
 datasets = [
     'jevois_cyberzoo',
     'jevois_basement',
-    # 'jevois_hallway',
+    'jevois_hallway',
 ]
 
+titles = [
+    'GateNet_320',
+    'GateNet_320_s1',
+    'GateNet_320_s2',
+    'GateNet_160',
+    # 'TinyYoloV3_160'
+]
 
 
 ious = [0.6]
 n_iterations = 5
 frame = pd.DataFrame()
-frame['Name'] = models + ['SnakeGate']
+frame['Name'] = titles + ['SnakeGate']
 frame['Time'] = t
+frame['Time Err'] = t_err
 for iou in ious:
     for d in datasets:
         for it in range(n_iterations):
@@ -91,7 +101,7 @@ plt.title('Speed Accuracy Trade-Off', fontsize=12)
 plt.xlabel('Inference Time/Image [ms]')
 plt.ylabel('$ap_{60}$')
 plt.ylim(0, 0.6)
-
+# plt.xlim(0,250)
 handles = []
 for i, m in enumerate(frame['Name']):
     aps_datasets = []
@@ -105,7 +115,7 @@ for i, m in enumerate(frame['Name']):
         aps_datasets.append(np.mean(aps))
         errs_datasets.append(np.std(aps))
 
-    h = plt.errorbar(frame['Time'][i], np.mean(aps_datasets), yerr=np.mean(errs_datasets),
+    h = plt.errorbar(frame['Time'][i], np.mean(aps_datasets), yerr=np.mean(errs_datasets),xerr=frame['Time Err'][i],
                      marker=symbols[i][0], color=symbols[i][1], elinewidth=1, capsize=2)
     handles.append(h[0])
     # plt.plot(frame['Time'][i], frame['Real Data' + str(iou)][i], marker=symbols[i][0], color=symbols[i][1])

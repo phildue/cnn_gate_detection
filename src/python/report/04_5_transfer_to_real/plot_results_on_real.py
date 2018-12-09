@@ -8,24 +8,24 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'hsv',
-    'background',
-    'chromatic',
-   'distortion',
-    'blur',
+    # 'hsv',
+    # 'background',
+    # 'chromatic',
+    # 'blur',
+    # 'blur_distortion',
     'gray',
+    'distortion',
     'mavlabgates',
-    'blur_distortion',
 ]
 titles = [
-    'hsv',
-    'VOC \n background',
-    'chromatic',
-    'distortion',
-    'blur',
+    # 'hsv',
+    # 'VOC \n background',
+    # 'chromatic',
+    # 'blur',
+    # 'blur \n + distortion',
     'gray',
+    'distortion',
     'no\n augmentation',
-    'blur \n + distortion',
     'SnakeGate',
 ]
 
@@ -44,7 +44,7 @@ datasets_title = [
 ious = [0.6]
 n_iterations = 5
 frame = pd.DataFrame()
-frame['Name'] = models + ['SnakeGate']
+# frame['Name'] = models + ['SnakeGate']
 for iou in ious:
     for d in datasets:
         for it in range(n_iterations):
@@ -58,14 +58,14 @@ for iou in ious:
                     column.append(-1)
                     print(e)
                     continue
-
-            result_file = 'out/snake/test_' + d + '_results_iou' + str(iou) + '_' + str(it) + '.pkl'.format(d,
-                                                                                                           iou,
-                                                                                                           it)
-
-            results = load_file(result_file)
-            mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([sum_results(results['results'])])
-            column.append(mean_pr.mean())
+            #
+            # result_file = 'out/snake/test_' + d + '_results_iou' + str(iou) + '_' + str(it) + '.pkl'.format(d,
+            #                                                                                                iou,
+            #                                                                                                it)
+            #
+            # results = load_file(result_file)
+            # mean_pr, mean_rec, std_pr, std_rec = average_precision_recall([sum_results(results['results'])])
+            # column.append(mean_pr.mean())
 
             frame['{}_iou{}_i0{}'.format(d, iou, it)] = column
             print(frame.to_string())
@@ -92,7 +92,7 @@ iou = 0.6
 plt.figure(figsize=(10, 3))
 plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-',zorder=0)
 plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--',zorder=0)
-w = 1 / len(models)
+w = 1 / (len(datasets))/2
 handles = []
 for i_d, d in enumerate(datasets):
     mean = []
@@ -105,13 +105,13 @@ for i_d, d in enumerate(datasets):
                 results.append(result)
         mean.append(np.mean(results))
         err.append(np.std(results))
-    h = plt.bar(np.arange(len(models)+1) + i_d * w - (len(models)+1) * w, mean, width=w, capsize=2, ecolor='gray',zorder=3)
-    plt.errorbar(np.arange(len(models)+1) + i_d * w - (len(models)+1) * w, mean, err, 0, fmt=' ', ecolor='gray', capsize=2,
+    h = plt.bar(np.arange(len(models)+1)+0.5 + i_d * w - (len(models)+1) * w, mean, width=w, capsize=2, ecolor='gray',zorder=3)
+    plt.errorbar(np.arange(len(models)+1)+0.5 + i_d * w - (len(models)+1) * w, mean, err, 0, fmt=' ', ecolor='gray', capsize=2,
                  elinewidth=1, zorder=3)
     handles.append(h)
 plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right')
 
-plt.xticks(np.arange(len(models)+1) - 1, titles)
+plt.xticks(np.arange(len(models)+1), titles)
 plt.ylabel('$ap_{60}$')
 plt.minorticks_on()
 plt.ylim(0, 0.7)

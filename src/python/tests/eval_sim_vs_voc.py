@@ -18,7 +18,7 @@ show_t = args.show
 cd_work()
 models = [
     # 'ewfo',
-    # 'ewfo_sim',
+    'ewfo_sim',
     'ewfo_voc',
 ]
 
