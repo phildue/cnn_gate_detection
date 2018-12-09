@@ -1,19 +1,19 @@
 \chapter{Methodology}
 
-This chapter introduces a notation as well as the mathematical models and software tools used in this thesis. It starts with describing the data generation pipeline that is used to generate synthetic data. Subsequently, the Object-Detection network is explained. Finally, two datasets used for evaluation are introduced.
+This chapter introduces notations as well as the mathematical models and software tools used in this thesis. It starts with describing the data generation pipeline that is used to generate synthetic data. Subsequently, the Object-Detection network is explained. Finally, two datasets used for evaluation are introduced.
 
 \section{Data Generation Pipeline}
 \label{sec:datagen:method}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{fig/datagen_notation}
-	\caption{Notation and data generation process. In the first step a scene is created which defines the environment and background. The second step places the camera in the environment and creates a 2D view on the scene. The third step applies further image transformations. The coordinate system in 3D is \ac{NED} originating at the initial position of the camera. In 2D positions are defined in Cartesian coordinates originating at the bottom left. With a rotation of 0° the object appears as an empty square, with 90° as a straight line.}
+	\caption{Notation and data generation process. In the first step a scene is created which defines the environment and background. The second step places the camera in the environment and creates a 2D view of the scene. The third step applies further image transformations. The coordinate system in 3D is \ac{NED} originating at the initial position of the camera. In 2D, positions are defined in Cartesian coordinates originating at the bottom left. With a rotation of 0° the object appears as an empty square, with 90° as a straight line.}
 	\label{fig:training:datagen_notation}
 \end{figure}
 
-An overview of the data generation pipeline can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by its translation $\textbf{t} = [x,y,z]$ and rotation $\textbf{r}={\phi, \theta \psi}$. The used coordinate system is \ac{NED} while the center of origin is placed at the initial position of the camera.
+An overview of the data generation pipeline can be seen in \Cref{fig:training:datagen_notation}. In the first step a scene is created in which the objects of interest as well as the camera are placed. In 3D space position and orientation (pose) of each object are determined by its translation $\textbf{t} = [x,y,z]$ and rotation $\textbf{r}={\phi, \theta, \psi}$. The used coordinate system is \ac{NED} while the center of origin is placed at the initial position of the camera.
 
-A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. The position of each point in the image space is defined by $\textbf{p} = [p_x,p_y]$. The origin is on the bottom left of the image.
+A view projection yields an image through the lens of the camera. The coordinates of each point in 3D space are projected on the 2D image plane. The position of each point in the image space is defined by $\textbf{p} = [p_x,p_y]$. The origin is on the bottom left of the image.\todo{some details about the projection?}
 
 These steps are implemented using \textit{Epic}'s \textit{UnrealEngine}\cite{unreal} and its \textit{AirSim}-Plug-In\cite{airsim} by \textit{Microsoft}. This allows the creation of environments using \ac{CAD} models, as well as the automatic placement of the camera in C++. The tool is extended to store the location of a bounding box that surrounds an object in the environment. This allows the automatic generation of ground truth labels while the camera is placed.
 
