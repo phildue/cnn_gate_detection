@@ -34,11 +34,11 @@ Where true positives are objects that are detected, false positives are detectio
 
 Hence, recall expresses how many of all objects are detected and therefore how complete the result is. Precision measures how many of the predicted objects are actually correct detections.
 
-A correct detection is determined based on its overlap with a ground truth box. This is measured by the relation of \ac{IoU}. In experiments we determine 0.6 as sufficient overlap for a detection. \todo{explain briefly the choice of value}
+A correct detection is determined based on its overlap with a ground truth box. This is measured by the relation of \ac{IoU}. In experiments we determine 0.6 as sufficient overlap for a detection as it allows an accurate estimation of the relative pose on the \ac{MAV}.
 
-The model used within this thesis associates a "confidence" value with each prediction that can trade off precision and recall. This is further explained in \Cref{sec:detection}. By accepting more detections with a lower confidence threshold, the probability increases that one of the predictions is a true positive. Hence, it increases recall. However, it also increases the probability of false positives and thus lowers precision. In order to evaluate this trade-off, precision and recall can be compared at different confidence levels.
+\textit{YoloV3} predicts an object probability for each bounding box. By accepting detections with lower probability the number of potential true positives increases. Therefore the recall gets higher. However, it also increases the amount of potential false positives and thus lowers precision. In order to evaluate this trade-off, precision and recall can be compared at different confidence thresholds.
 
-A metric that combines precision and recall in a single metric is average precision $ap$ introduced by the Pascal Visual Object Challenge (Pascal VOC)\cite{Everingham2010}. It takes the average interpolated precision $p_{interp}$ across evenly spaced recall levels:\todo{correct this reference bitte}
+A metric that combines precision and recall in a single metric is average precision $ap$ introduced by the Pascal Visual Object Challenge (Pascal VOC)\cite{Everingham2010}. It takes the average interpolated precision $p_{interp}$ across evenly spaced recall levels:
 
 $$ ap = \frac{1}{11}\sum_{r \in {0,0.1,...,1.0}}p_{interp}(r)$$
 
@@ -49,12 +49,19 @@ $$ p_\text{interp}(r) = \max\limits_{r' \geq r} p(r')$$
 We denote precision, recall and average precision at a certain \ac{IoU} threshold such as 60\% as $p_{60}$,$r_{60}$ and $ap_{60}$.
 
 \section{Threats to Validity}
-\todo{write that!}
+
+The experiments are conducted within a certain environment which can have influence on the validity of the results. This section summarizes these threats to validity.
+
+All experiments are conducted with the frameworks described in \Cref{sec:meth}. Potential software faults in these frameworks can have an influence on the obtained results.
+
+The experiments are conducted in the example of a single object and a recorded test set. An other object that falls in the category of \acp{EWFO} might produce different results.
+
+The test set contain a limited range of backgrounds and environments. In other environments other results can be obtained.
 
 \section{Empty Objects}
 \label{sec:empty}
 
-\todo{Add a sentence to introduce what youRe talking about in this section}
+In this first sections basis experiments in simulation are conducted. The detection of \acp{EWFO} is compared to other objects.
 
 \acp{CNN} combine simple local features to more complex patterns layer by layer. Thereby pooling removes task irrelevant information and reduces the spatial dimension. In the deeper layers features of larger areas in the image are combined and encoded in an increasing amount of filters. In the final layer each location in the volume encodes the patterns that are present in the respective field of the preceding filters and an object prediction is performed.
 
@@ -90,7 +97,7 @@ The created objects allow to study how a detector that is trained on a filled ob
 
 For each object a dataset with 20 000 samples is created within the \textit{Dark} environment. As this experiment focuses on the influence of the empty part of the object, the view points are limited to frontally facing the object in various distances. On these training sets the two architectures illustrated in \Cref{sec:detection} \textit{SmallYoloV3} and \textit{VGGYoloV3} are trained. As 20 000 samples is a comparatively small amount of samples for a network such as the \textit{VGGYoloV3}, the network is initialized with the weights of the \textit{VGG-19} pretrained on ImageNet.
 
-For each object a test set of 200 samples is created within the \textit{Dark}-Environment, as well as the \textit{IROS}-Environment (testing of hypothesis 3). Hence, in total there are 6 test sets with 150 samples each\todo{i thought it's 200}. Similar to the training set the view points are limited to frontally facing the object at various distances.
+For each object a test set of 200 samples is created within the \textit{Dark}-Environment, as well as the \textit{IROS}-Environment (testing of hypothesis 3). Hence, in total there are 6 test sets with 200 samples each. Similar to the training set the view points are limited to frontally facing the object at various distances.
 
 
 
@@ -286,7 +293,7 @@ The depth of a network has multiple effects. Deeper networks contain more non-li
 
 It should be noted that throughout the thesis many more architectures have been evaluated. For example using larger kernels, dilated convolutions, varying pooling operations at different layers. However, in the end none of these architectures led consistently to an increased efficiency (performance/weights). While under certain conditions improvements could be observed, these usually disappeared when applying the detector on a different test set. Overall reduction in weights led to a similar decrease in performance as can be seen in the results of this experiment. Therefore, we keep the basic structure of the baseline architecture as it follows a pattern that is intuitive to understand. We show how the results change when varying the parameters of the architecture on a high level basis (depth/width).
 
-\section{Results}
+\subsection{Results}
 
 \Cref{tab:depth} shows the results of networks with varying depth. The best network on simulated \ac{MAV} race has 9 layers. Further increasing depth does not lead to an improvement in performance. In contrast reducing the number of layers decreases the performance gradually. 
 

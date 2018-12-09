@@ -14,7 +14,7 @@ Especially in emergency scenarios the fast and safe flight of \acp{MAV} is cruci
 
 A major challenge on the way to the full autonomous flight of \acp{MAV} is the accurate estimation of the \ac{MAV}'s state within its environment. The system is highly dynamic so position and orientation can change rapidly. At the same time noise introduced by motor vibrations makes the position estimation with only on-board \acp{IMU} too inaccurate \cite{Mohamed2014}. \ac{LIDAR}-sensors can capture long and wide range 3D information but the sensors are typically heavy and require a significant amount of energy. \ac{IR} sensors can cover distance information but are often limited in their \ac{FoV} as well as in their range. External infrastructure like \ac{GPS} and optical tracking systems can provide accurate measurements but there is no guarantee that such systems are present in real world applications. Cameras on the other hand are cheap, lightweight and can measure long range distance information. This makes them a suitable choice as a sensor for on-board state estimation on light \acp{MAV} \cite{Elbanhawi2017}.
 
-However, the signal delivered by the camera is high dimensional and can not directly be interpreted as position or orientation measurements. Computer Vision algorithms are required to interpret the image and extract relevant information. This can be done by designing an algorithm manually or learning the image processing from annotated examples. In particular Deep Learning based methods aim to combine whole Computer Vision pipelines into one mapping that transforms the raw input image into a task dependent output. Experiments have shown how Deep Learning based methods outperform traditional Machine Learning approaches and manually crafted algorithms \cite{Razavian}. This made them the predominant choice for almost any vision task.
+However, the signal delivered by the camera is high dimensional and can not directly be interpreted as position or orientation measurements. Computer Vision algorithms are required to interpret the image and extract relevant information. This can be done by designing an algorithm manually or learning the image processing from annotated examples. In particular Deep Learning based methods aim to combine whole Computer Vision pipelines into one mapping that transforms the raw input image into a task dependent output. Experiments have shown how Deep Learning based methods outperform traditional Machine Learning approaches and manually crafted algorithms \cite{Razavian2014}. This made them the predominant choice for almost any vision task.
 
 The hereby used \acp{CNN} are designed in a hierarchical way, using multiple layers that are evaluated sequentially. An example architecture is displayed in \Cref{fig:cnn_example}. The network transforms an image of size 224x224 from its input (left) to a task dependent output (right). In this case a classification network predicting 1000 class probabilities is displayed. Each layer applies a non-linear transformation for which the parameters are learned during training. By stacking more layers on top of each other (deepening) and increasing the number of nodes $D$ per layer (widening), highly non-linear functions can be modelled. 
 
@@ -23,7 +23,7 @@ Experiments have shown the superior performance of particularly deep/wide models
 \begin{figure}[bhtp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{fig/vgg_architecture}
-	\caption{Example Architecture of a \ac{CNN}.}
+	\caption{\textit{VGGNet} \cite{SimonyanZ14a} Example Architecture of a \ac{CNN}.}
 	\label{fig:cnn_example}
 \end{figure}
 
@@ -56,7 +56,7 @@ This thesis defines a class of objects as \textbf{\ac{EWFO}} studies methods for
 
 \end{enumerate}
 
-The detection of \ac{EWFO} is studied in the examples of the \ac{IROS} drone race gates. These can be seen can be seen in \Cref{fig:gates}. The image shows the \textit{Closed Gate} as well as the \textit{Jungle Gate}. Thereby the orange part is considered to be the object of interest. To the best of the authors knowledge \ac{EWFO} have not been particularly addressed in Computer Vision. In \cite{Falanga} and \cite{Li2018a} the authors also detect racing gates, however the used objects contain more structure than the ones investigated in this thesis. \citeauthor{Jung2018} present a framework to detect similar objects in \cite{Jung} and \cite{Jung2018} but do not study the particular effects of the object shape. This work particularly addresses the implications of the object shape in using a Deep Learning based detection system for \ac{EWFO}.
+The detection of \ac{EWFO} is studied in the examples of the \ac{IROS} drone race gates. These can be seen can be seen in \Cref{fig:gates}. The image shows the \textit{Closed Gate} Thereby the orange part is considered to be the object of interest. To the best of the authors knowledge \ac{EWFO} have not been particularly addressed in Computer Vision. In \cite{Falanga} and \cite{Li2018a} the authors also detect racing gates, however the used objects contain more structure than the ones investigated in this thesis. \citeauthor{Jung2018} present a framework to detect similar objects in \cite{Jung} and \cite{Jung2018} but do not study the particular effects of the object shape. This work particularly addresses the implications of the object shape in using a Deep Learning based detection system for \ac{EWFO}.
 
 \begin{figure}[bhtp]
 	\centering
@@ -64,11 +64,7 @@ The detection of \ac{EWFO} is studied in the examples of the \ac{IROS} drone rac
 		\centering
 		\includegraphics[height=5cm]{fig/closed_real}
 	\end{minipage}\hfill
-	\begin{minipage}{0.45\linewidth}
-		\centering
-		\includegraphics[height=5cm]{fig/jungle_real}
-	\end{minipage}
-	\caption{Example Images of the Empty Wire Frame Objects investigated in this thesis. }
+	\caption{Example Image of the Empty Wire Frame Object investigated in this thesis. }
 	\label{fig:gates}
 \end{figure}
 
@@ -104,14 +100,13 @@ This section summarizes the research question addressed in this thesis. Furtherm
 
 \begin{enumerate}
 	\item[\textbf{RQ1}]How can data be generated to train an object detector for \ac{EWFO} detection on a \acp{MAV}?
-	\item[\textbf{RQ2}]How does the shape of \acp{EWFO} affect the detection with a \acp{CNN}?
-	\item[\textbf{RQ3}]What kind of architecture is suitable to detect \acp{EWFO} on \acp{MAV}?
+	\item[\textbf{RQ2}]What kind of architecture is suitable to detect \acp{EWFO} on \acp{MAV}?
 \end{enumerate}
 
 \section{Outline}
 
 
-The thesis is structured as follows. \Cref{sec:background} gives an introduction to Object Detection and Synthesizing Data. Also, the target system of this work is illustrated.  \Cref{sec:method} introduces the methodology including the tool used to generate data, the object detection network as well as the test sets. \Cref{sec:experiments} describes the experiments conducted in order to answer the research questions. \Cref{sec:conclusion} discusses the overall results, formulates a conclusion and describes possible future work.
+The thesis is structured as follows. \Cref{sec:background} gives an introduction to Object Detection and Synthesizing Data. Also, the target system of this work is illustrated.  \Cref{sec:meth} introduces the methodology including the tool used to generate data, the object detection network as well as the test sets. \Cref{sec:experiments} describes the experiments conducted in order to answer the research questions. \Cref{sec:conclusion} discusses the overall results, formulates a conclusion and describes possible future work.
 
 
 

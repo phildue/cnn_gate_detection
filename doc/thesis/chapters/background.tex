@@ -94,10 +94,7 @@ Another line of research to reduce the number of computations in \acp{CNN} addre
 
 \paragraph{Channel Shuffling.}
 
-\cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation.
-
-\paragraph{Dense Connections.}
-\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. By enabling feature reuse the total amount of parameters shall be reduced.
+In \ac{DSC} pointwise convolutions are the bottleneck. The computation time can be reduced by performing groupwise convolutions. Thereby the channel is separated in subsets and the convolutions are applied on smaller volumes. This reduces computational cost by the number of groups but also stops the information flow between the groups. Therefore \textit{ShuffleNet}\cite{Zhang2017a} proposes a layer that shuffles the channels after the group convolution. This allows the information flow between groups while exploiting the reduced computational cost of group convolutions.
 
 Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
@@ -141,36 +138,17 @@ Attention models are promising as their computational complexity can be controll
 
 \section{On the inference time of \acp{CNN}}
 
-For the deployment on a \ac{MAV} resource consumption is an important parameter. The following describes research topics that concern the reduction of inference time.
+For the deployment on a \ac{MAV} resource consumption is an important parameter. Next to the architecture elements such as \ac{DSC} and \textit{Channel Shuffling} other ways are investigated to reduce the inference time of a \ac{CNN}.
 
-One research line addresses the reduction of inference time by reducing the number of operations. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. This reduces the total number of operations from $N = k_w \cdot k_h \cdot w_n \cdot w_{n+1}$ to $N=(k_w \cdot k_h + w_n)+w_n \cdot w_{n+1}$. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations. These are convolutions with a 1by1 kernel and linear activation.
+\paragraph{Weight Quantization}
 
-In \ac{DSC} pointwise convolutions are the bottleneck. The computation time can be reduced by performing groupwise convolutions. Thereby the channel is separated in subsets and the convolutions are applied on smaller volumes. This reduces computational cost by the number of groups but also stops the information flow between the groups. Therefore \textit{ShuffleNet}\cite{Zhang2017a} proposes a layer that shuffles the channels after the group convolution. This allows the information flow between groups while exploiting the reduced computational cost of group convolutions.
+Weights are quantized such that the calculations can be performed as integer operations. As \acp{CPU} typically do not have hardware supported floating point units, integer operations can be executed much faster. By mimicking the quantization effects during training, the network learns to deal with these kind of artefacts. 
 
-Another line of research does not address the number of operations but the execution time of the individual computations. Weights are quantized such that the calculations can be performed as integer operations. As \acp{CPU} typically do not have hardware supported floating point units, integer operations can be executed much faster. By mimicking the quantization effects during training, the network learns to deal with these kind of artefacts. 
-
-Both lines of research would be interesting for the deployment of a \ac{CNN} on a \ac{MAV}. However, they require the low level implementation of the respective operations. The target system of this work contains a MALI-400GPU with two cores and 408 Mhz each. Additionally it contains floating point registers and supports NEON operations. These are processor instructions that enable the efficient use of \acp{SIMD} operations. The only framework that fully supports the hardware is \textit{Darknet}\footnote{\textit{https://pjreddie.com/darknet/yolo/}}. Yet this framework does not contain 
-
- This work \textit{Darknet} is used to implement the network on the target system.
-
-
-
-
-In order to infer a layer in a \ac{CNN} kernels are convolved at multiple locations within one image. Thereby the same calculations are applied on various input data while the individual operations are independent of each other. Hence, theoretically the computations in one layer can be performed completely in parallel. The output of one layer can be stored similarly to the input image as a matrix. Computational platforms that exploit this fact are \acp{GPU} that have been adopted for Deep Learning applications from early on. In contrast to \acp{CPU} that are optimized to perform many different operations sequentially, \acp{GPU} typically consist of more cores and are optimized to perform the same operation on different data. While each individual core is typically slower than a single core in a \acp{CPU}, \acp{GPU} are much faster for applications that can be performed in parallel.
-
-With a large enough \ac{GPU} it does not matter whether an operation is performed at an image of size 150x150 or 300x300 despite the actual computations increase by a factor of 4. However, such powerful \acp{GPU} require space and energy which is typically not available for small scale \acp{MAV}. The JeVois Smart Camera 
-
-The actual inference time of a network strongly depends on the computational platform, memory access times as well as the particular low level implementation. Hence, the number of computations within a network can only give a limited insight on the actual inference time. For example the \textit{TensorflowLite} framework allows the deployment of models created in \textit{tensorflow} on mobile processors. However, with this framework a the application of a single kernel on a 104x104 input volume takes 27.1 ms on the JeVois. In contrast, the same operation performed with the \textit{Darknet} framework that supports NEON operations takes only 5.07 ms.
-
-
-
-
-
-\subsubsection{Knowledge Distillation}
+\paragraph{Knowledge Distillation}
 
 Knowledge Distillation \cite{Hinton2006} is way to create a smaller model based on a trained bigger model or an ensemble of models. Thereby the smaller student-network is trained to mimic the output of the final and intermediate activations of the teacher-network. \textit{FitNet} extends the approach to create a thinner/deeper network based on a trained network thereby reducing parameters without loosing performance. In \cite{Li2017c} the approach is applied to the task of Object Detection. In \cite{Wei2018a} knowledge distillation is combined with weight quantization in order to obtain a faster and more efficient model.
 
-
+Both methods would be interesting to explore for the deployment of \ac{CNN} on the target system. However, they require an efficient low level implementation. A full implementation of a \acp{CNN} on the target system would be beyond the scope of this work. Therefore the \textit{Darknet}\textit{https://pjreddie.com/darknet/yolo/} framework is used. It supports the hardware available on the target system. Unfortunately, it does not contain the possibility to apply weight quantization or knowledge distillation. Therefore we do not further consider this option and address the inference time on a more architectural basis.
 
 \section{Generating Data}
 \label{sec:training:related}
@@ -197,7 +175,7 @@ In order to create new view points \ac{CAD}-models can be used. These models des
 
 \citeauthor{Madaan2017}\cite{Madaan2017} study the segmentation of wires based on synthetic training. As wires similarly to \ac{EWFO} only consist of thin edges, the application is quite close to this work. However, the experiments focus on a single domain, namely sky images and thus the variations in background are comparatively small. We hypothesize that \ac{EWFO} are particularly sensitive to such variations and address the application in multiple domains.
 
-\citeauthor{Hinterstoisser2017} \cite{Hinterstoisser2017} propose to use a base network that has been trained on real images and to continue training on images with \ac{CAD}-models. During training the base network is frozen and only the last layers are updated. The method does not use real data but requires a suitable base network. As most available feature extractors (further discussed in \Cref{sec:object_detection}) are of a size that is computationally prohibitive for \ac{MAV} the method is not really applicable for this work. 
+\citeauthor{Hinterstoisser2017} \cite{Hinterstoisser2017} propose to use a base network that has been trained on real images and to continue training on images with \ac{CAD}-models. During training the base network is frozen and only the last layers are updated. The method does not use real data but requires a suitable base network. As most available feature extractors are of a size that is computationally prohibitive for \ac{MAV} the method is not really applicable for this work. 
 
 The use of CAD-models in combination with real backgrounds allows to generate totally new view points for the object of interest. Furthermore, the image background consists of real data and thus the synthetic textures only concern the rendered object. However, the geometric properties like perspective as well as the physical properties like object placement are violated and therefore create an artificial scene. Despite this fact, literature shows that such images can benefit model performance in various cases. Yet, most of the approaches still use real data and/or focus on solid objects with rich textures and complex shape. We hypothesize that since \ac{EWFO} do not provide these kind of structures the results do not apply in the same way. Hence, we incorporate the method to generate data and investigate how it can be applied for the detection of \ac{EWFO}.
 
@@ -228,9 +206,6 @@ While transfer learning provides the theoretical framework as well as methods to
 
 \section{The target system}
 
-A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
-
-
 \begin{figure}[hbtp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{fig/control_loop}
@@ -238,7 +213,9 @@ A \ac{MAV} consist of multiple components of Software that are responsible for h
 	\label{fig:control_loop}
 \end{figure}
 
-The high level control loop of this work is described in further detail. A first step detects the racing gate and yields the corner coordinates. These are used to estimate the relative position of the \ac{MAV} towards the gate. In the second step the visual measurements are fused with measurements of other sensors. In this case \ac{IMU} and a sonar deliver altitude and attitude data. This step yields a global position estimate of the \ac{MAV}. Combined with prior knowledge about the race court, the desired attitude and altitude required to fly the trajectory is calculated. The results are send as set points to the low level controller.
+A \ac{MAV} consist of multiple components of Software that are responsible for higher and lower level tasks. \Cref{fig:control_loop} illustrates these components in the example of the target platform of this thesis. On the lowest level drivers read out sensors such as the camera and an \ac{IMU} or communicate with a ground station. A low level control loop is responsible for controlling the local state of the \ac{MAV} such as altitude and attitude. A higher level control loop controls the global state of the \ac{MAV} which is the position and the flying trajectory.
+
+The high level control loop of this work is described in further detail. A first step detects the racing gate and yields the corner coordinates. These are used to estimate the relative position of the \ac{MAV} towards the gate. In the second step the visual measurements are fused with measurements of other sensors. In this case \ac{IMU} and a sonar deliver attitude and altitude data. This step yields a global position estimate of the \ac{MAV}. Combined with prior knowledge about the race court, the desired attitude and altitude required to fly the trajectory is calculated. The results are send as set points to the low level controller.
 
 The hardware platform used to run the high level control loop is the \textit{JeVois} smart camera. It contains a 1.3 MP camera with 65 degree field of view. The processing units are a quad core ARM Cortex A7 processor with 1.35 GHz and a dual core MALI-400 GPU with 233 Mhz. In order to extend the field of view a 120 degree wide angle lens is mounted. In \Cref{fig:jevois} the camera is shown.
 
