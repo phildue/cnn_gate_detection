@@ -20,18 +20,16 @@ urldate = {2018-11-26}
 }
 
 @article{He2014b,
-abstract = {Existing deep convolutional neural networks (CNNs) require a fixed-size (e.g., 224x224) input image. This requirement is "artificial" and may reduce the recognition accuracy for the images or sub-images of an arbitrary size/scale. In this work, we equip the networks with another pooling strategy, "spatial pyramid pooling", to eliminate the above requirement. The new network structure, called SPP-net, can generate a fixed-length representation regardless of image size/scale. Pyramid pooling is also robust to object deformations. With these advantages, SPP-net should in general improve all CNN-based image classification methods. On the ImageNet 2012 dataset, we demonstrate that SPP-net boosts the accuracy of a variety of CNN architectures despite their different designs. On the Pascal VOC 2007 and Caltech101 datasets, SPP-net achieves state-of-the-art classification results using a single full-image representation and no fine-tuning. The power of SPP-net is also significant in object detection. Using SPP-net, we compute the feature maps from the entire image only once, and then pool features in arbitrary regions (sub-images) to generate fixed-length representations for training the detectors. This method avoids repeatedly computing the convolutional features. In processing test images, our method is 24-102x faster than the R-CNN method, while achieving better or comparable accuracy on Pascal VOC 2007. In ImageNet Large Scale Visual Recognition Challenge (ILSVRC) 2014, our methods rank {\#}2 in object detection and {\#}3 in image classification among all 38 teams. This manuscript also introduces the improvement made for this competition.},
-archivePrefix = {arXiv},
-arxivId = {1406.4729},
-author = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
-doi = {10.1007/978-3-319-10578-9_23},
-eprint = {1406.4729},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/He et al. - 2014 - Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition.pdf:pdf},
-month = {jun},
-title = {{Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition}},
-url = {http://arxiv.org/abs/1406.4729 http://dx.doi.org/10.1007/978-3-319-10578-9{\_}23},
-year = {2014}
+	title={Spatial pyramid pooling in deep convolutional networks for visual recognition},
+	author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+	journal={IEEE transactions on pattern analysis and machine intelligence},
+	volume={37},
+	number={9},
+	pages={1904--1916},
+	year={2015},
+	publisher={IEEE}
 }
+
 @article{Hou2018,
 archivePrefix = {arXiv},
 arxivId = {1802.08635},
@@ -43,27 +41,24 @@ title = {{Loss-aware Weight Quantization of Deep Networks}},
 url = {https://arxiv.org/abs/1802.08635},
 year = {2018}
 }
+
 @article{Creswell2017,
-archivePrefix = {arXiv},
-arxivId = {1710.07035},
-author = {Creswell, Antonia and White, Tom and Dumoulin, Vincent and Arulkumaran, Kai and Sengupta, Biswa and Bharath, Anil A},
-doi = {10.1109/msp.2017.2765202},
-eprint = {1710.07035},
-month = {oct},
-title = {{Generative Adversarial Networks: An Overview}},
-url = {https://arxiv.org/abs/1710.07035},
-year = {2017}
+	title={Generative adversarial networks: An overview},
+	author={Creswell, Antonia and White, Tom and Dumoulin, Vincent and Arulkumaran, Kai and Sengupta, Biswa and Bharath, Anil A},
+	journal={IEEE Signal Processing Magazine},
+	volume={35},
+	number={1},
+	pages={53--65},
+	year={2018},
+	publisher={IEEE}
 }
-@article{Goodfellow2014,
-archivePrefix = {arXiv},
-arxivId = {1406.2661},
-author = {Goodfellow, Ian J. and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
-eprint = {1406.2661},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Goodfellow et al. - 2014 - Generative Adversarial Networks.pdf:pdf},
-month = {jun},
-title = {{Generative Adversarial Networks}},
-url = {https://arxiv.org/abs/1406.2661},
-year = {2014}
+
+@inproceedings{Goodfellow2014,
+	title={Generative adversarial nets},
+	author={Goodfellow, Ian and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
+	booktitle={Advances in neural information processing systems},
+	pages={2672--2680},
+	year={2014}
 }
 @inproceedings{Li2017c,
 author = {Li, Quanquan and Jin, Shengying and Yan, Junjie},
@@ -199,28 +194,28 @@ title = {{Very Deep Convolutional Networks for Large-Scale Image Recognition}},
 url = {http://arxiv.org/abs/1409.1556},
 year = {2014}
 }
-@article{Law2018,
-abstract = {We propose CornerNet, a new approach to object detection where we detect an object bounding box as a pair of keypoints, the top-left corner and the bottom-right corner, using a single convolution neural network. By detecting objects as paired keypoints, we eliminate the need for designing a set of anchor boxes commonly used in prior single-stage detectors. In addition to our novel formulation, we introduce corner pooling, a new type of pooling layer that helps the network better localize corners. Experiments show that CornerNet achieves a 42.1{\%} AP on MS COCO, outperforming all existing one-stage detectors.},
-archivePrefix = {arXiv},
-arxivId = {1808.01244},
-author = {Law, Hei and Deng, Jia},
-eprint = {1808.01244},
-month = {aug},
-title = {{CornerNet: Detecting Objects as Paired Keypoints}},
-url = {http://arxiv.org/abs/1808.01244},
-year = {2018}
+
+@inproceedings{Law2018,
+	title={Cornernet: Detecting objects as paired keypoints},
+	author={Law, Hei and Deng, Jia},
+	booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+	volume={6},
+	year={2018}
 }
-@article{Johnson-Roberson2016,
-abstract = {Deep learning has rapidly transformed the state of the art algorithms used to address a variety of problems in computer vision and robotics. These breakthroughs have relied upon massive amounts of human annotated training data. This time consuming process has begun impeding the progress of these deep learning efforts. This paper describes a method to incorporate photo-realistic computer images from a simulation engine to rapidly generate annotated data that can be used for the training of machine learning algorithms. We demonstrate that a state of the art architecture, which is trained only using these synthetic annotations, performs better than the identical architecture trained on human annotated real-world data, when tested on the KITTI data set for vehicle detection. By training machine learning algorithms on a rich virtual world, real objects in real scenes can be learned and classified using synthetic data. This approach offers the possibility of accelerating deep learning's application to sensor-based classification problems like those that appear in self-driving cars. The source code and data to train and validate the networks described in this paper are made available for researchers.},
-archivePrefix = {arXiv},
-arxivId = {1610.01983},
-author = {Johnson-Roberson, Matthew and Barto, Charles and Mehta, Rounak and Sridhar, Sharath Nittur and Rosaen, Karl and Vasudevan, Ram},
-eprint = {1610.01983},
-month = {oct},
-title = {{Driving in the Matrix: Can Virtual Worlds Replace Human-Generated Annotations for Real World Tasks?}},
-url = {http://arxiv.org/abs/1610.01983},
-year = {2016}
-}
+
+@INPROCEEDINGS{Johnson-Roberson2016, 
+	author={M. Johnson-Roberson and C. Barto and R. Mehta and S. N. Sridhar and K. Rosaen and R. Vasudevan}, 
+	booktitle={2017 IEEE International Conference on Robotics and Automation (ICRA)}, 
+	title={Driving in the Matrix: Can virtual worlds replace human-generated annotations for real world tasks?}, 
+	year={2017}, 
+	volume={}, 
+	number={}, 
+	pages={746-753}, 
+	keywords={learning (artificial intelligence);pattern classification;virtual world;human-generated annotation;deep learning;photo-realistic computer image;machine learning algorithm;data classification;sensor-based classification problems;Engines;Training;Machine learning;Data models;Robots;Training data;Automobiles;deep learning;simulation;object detection;autonomous driving}, 
+	doi={10.1109/ICRA.2017.7989092}, 
+	ISSN={}, 
+	month={May},}
+
 @article{Gaidon2016,
 abstract = {Modern computer vision algorithms typically require expensive data acquisition and accurate manual labeling. In this work, we instead leverage the recent progress in computer graphics to generate fully labeled, dynamic, and photo-realistic proxy virtual worlds. We propose an efficient real-to-virtual world cloning method, and validate our approach by building and publicly releasing a new video dataset, called Virtual KITTI (see http://www.xrce.xerox.com/Research-Development/Computer-Vision/Proxy-Virtual-Worlds), automatically labeled with accurate ground truth for object detection, tracking, scene and instance segmentation, depth, and optical flow. We provide quantitative experimental evidence suggesting that (i) modern deep learning algorithms pre-trained on real data behave similarly in real and virtual worlds, and (ii) pre-training on virtual data improves performance. As the gap between real and virtual worlds is small, virtual worlds enable measuring the impact of various weather and imaging conditions on recognition performance, all other things being equal. We show these factors may affect drastically otherwise high-performing deep models for tracking.},
 archivePrefix = {arXiv},
@@ -233,18 +228,17 @@ title = {{Virtual Worlds as Proxy for Multi-Object Tracking Analysis}},
 url = {http://arxiv.org/abs/1605.06457},
 year = {2016}
 }
-@article{Dodge2016a,
-abstract = {Image quality is an important practical challenge that is often overlooked in the design of machine vision systems. Commonly, machine vision systems are trained and tested on high quality image datasets, yet in practical applications the input images can not be assumed to be of high quality. Recently, deep neural networks have obtained state-of-the-art performance on many machine vision tasks. In this paper we provide an evaluation of 4 state-of-the-art deep neural network models for image classification under quality distortions. We consider five types of quality distortions: blur, noise, contrast, JPEG, and JPEG2000 compression. We show that the existing networks are susceptible to these quality distortions, particularly to blur and noise. These results enable future work in developing deep neural networks that are more invariant to quality distortions.},
-archivePrefix = {arXiv},
-arxivId = {1604.04004},
-author = {Dodge, Samuel and Karam, Lina},
-eprint = {1604.04004},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Dodge, Karam - 2016 - Understanding How Image Quality Affects Deep Neural Networks(2).pdf:pdf},
-month = {apr},
-title = {{Understanding How Image Quality Affects Deep Neural Networks}},
-url = {http://arxiv.org/abs/1604.04004},
-year = {2016}
+
+@inproceedings{Dodge2016a,
+	title={Understanding how image quality affects deep neural networks},
+	author={Dodge, Samuel and Karam, Lina},
+	booktitle={Quality of Multimedia Experience (QoMEX), 2016 Eighth International Conference on},
+	pages={1--6},
+	year={2016},
+	organization={IEEE}
 }
+
+
 @article{Andreopoulos2012,
 author = {Andreopoulos, A. and Tsotsos, J. K.},
 doi = {10.1109/TPAMI.2011.91},
@@ -380,30 +374,23 @@ title = {{StrassenNets: Deep Learning with a Multiplication Budget}},
 url = {http://arxiv.org/abs/1712.03942},
 year = {2017}
 }
-@article{Szegedy2014,
-abstract = {We propose a deep convolutional neural network architecture codenamed "Inception", which was responsible for setting the new state of the art for classification and detection in the ImageNet Large-Scale Visual Recognition Challenge 2014 (ILSVRC 2014). The main hallmark of this architecture is the improved utilization of the computing resources inside the network. This was achieved by a carefully crafted design that allows for increasing the depth and width of the network while keeping the computational budget constant. To optimize quality, the architectural decisions were based on the Hebbian principle and the intuition of multi-scale processing. One particular incarnation used in our submission for ILSVRC 2014 is called GoogLeNet, a 22 layers deep network, the quality of which is assessed in the context of classification and detection.},
-archivePrefix = {arXiv},
-arxivId = {1409.4842},
-author = {Szegedy, Christian and Liu, Wei and Jia, Yangqing and Sermanet, Pierre and Reed, Scott and Anguelov, Dragomir and Erhan, Dumitru and Vanhoucke, Vincent and Rabinovich, Andrew},
-eprint = {1409.4842},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Szegedy et al. - 2014 - Going Deeper with Convolutions.pdf:pdf},
-month = {sep},
-title = {{Going Deeper with Convolutions}},
-url = {http://arxiv.org/abs/1409.4842},
-year = {2014}
+
+@inproceedings{Szegedy2014,
+	title={Going deeper with convolutions},
+	author={Szegedy, Christian and Liu, Wei and Jia, Yangqing and Sermanet, Pierre and Reed, Scott and Anguelov, Dragomir and Erhan, Dumitru and Vanhoucke, Vincent and Rabinovich, Andrew},
+	booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+	pages={1--9},
+	year={2015}
 }
-@article{He2015,
-abstract = {Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously. We explicitly reformulate the layers as learning residual functions with reference to the layer inputs, instead of learning unreferenced functions. We provide comprehensive empirical evidence showing that these residual networks are easier to optimize, and can gain accuracy from considerably increased depth. On the ImageNet dataset we evaluate residual nets with a depth of up to 152 layers---8x deeper than VGG nets but still having lower complexity. An ensemble of these residual nets achieves 3.57{\%} error on the ImageNet test set. This result won the 1st place on the ILSVRC 2015 classification task. We also present analysis on CIFAR-10 with 100 and 1000 layers. The depth of representations is of central importance for many visual recognition tasks. Solely due to our extremely deep representations, we obtain a 28{\%} relative improvement on the COCO object detection dataset. Deep residual nets are foundations of our submissions to ILSVRC {\&} COCO 2015 competitions, where we also won the 1st places on the tasks of ImageNet detection, ImageNet localization, COCO detection, and COCO segmentation.},
-archivePrefix = {arXiv},
-arxivId = {1512.03385},
-author = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
-eprint = {1512.03385},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/He et al. - 2015 - Deep Residual Learning for Image Recognition.pdf:pdf},
-month = {dec},
-title = {{Deep Residual Learning for Image Recognition}},
-url = {http://arxiv.org/abs/1512.03385},
-year = {2015}
+
+@inproceedings{He2015,
+	title={Deep residual learning for image recognition},
+	author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+	booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+	pages={770--778},
+	year={2016}
 }
+
 @article{Mohamed2014,
 abstract = {The small scale and portability of fixed-wing Micro Aerial Vehicles lend them to many unique applications, however their utility is often limited by ineffective attitude control in turbulent environments. The performance of attitude control systems themselves are affected by a variety of factors. Assessment of this system's performance needs to be viewed in relation to the MAVs' unique constraints. Certain aspects and limitations of MAV attitude control related issues are addressed in the literature, but to fully address the degradation of utility, the entire system must be examined. These issues can only be fully addressed when considering them concurrently. There is no framework for defining the attitude control problem explicitly for MAVs. This paper attempts to (1) Define the MAV attitude control problem with respect to the unique constraints imposed by this class of Unmanned Aircraft; (2) Review current design trends of MAVs with respect to vulnerability to atmospheric turbulence.},
 author = {Mohamed, Abdulghani and Massey, Kevin and Watkins, Simon and Clothier, Reece},
@@ -664,17 +651,16 @@ url = {http://link.springer.com/10.1007/s10994-009-5152-4},
 volume = {79},
 year = {2010}
 }
-@article{Tobin2017,
-abstract = {Bridging the 'reality gap' that separates simulated robotics from experiments on hardware could accelerate robotic research through improved data availability. This paper explores domain randomization, a simple technique for training models on simulated images that transfer to real images by randomizing rendering in the simulator. With enough variability in the simulator, the real world may appear to the model as just another variation. We focus on the task of object localization, which is a stepping stone to general robotic manipulation skills. We find that it is possible to train a real-world object detector that is accurate to {\$}1.5{\$}cm and robust to distractors and partial occlusions using only data from a simulator with non-realistic random textures. To demonstrate the capabilities of our detectors, we show they can be used to perform grasping in a cluttered environment. To our knowledge, this is the first successful transfer of a deep neural network trained only on simulated RGB images (without pre-training on real images) to the real world for the purpose of robotic control.},
-archivePrefix = {arXiv},
-arxivId = {1703.06907},
-author = {Tobin, Josh and Fong, Rachel and Ray, Alex and Schneider, Jonas and Zaremba, Wojciech and Abbeel, Pieter},
-eprint = {1703.06907},
-month = {mar},
-title = {{Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World}},
-url = {http://arxiv.org/abs/1703.06907},
-year = {2017}
+
+@inproceedings{Tobin2017,
+title={Domain randomization for transferring deep neural networks from simulation to the real world},
+author={Tobin, Josh and Fong, Rachel and Ray, Alex and Schneider, Jonas and Zaremba, Wojciech and Abbeel, Pieter},
+booktitle={Intelligent Robots and Systems (IROS), 2017 IEEE/RSJ International Conference on},
+pages={23--30},
+year={2017},
+organization={IEEE}
 }
+
 @article{Liu2017a,
 abstract = {Current top-performing object detectors depend on deep CNN backbones, such as ResNet-101 and Inception, benefiting from their powerful feature representation but suffering from high computational cost. Conversely, some lightweight model based detectors fulfil real time processing, while their accuracies are often criticized. In this paper, we explore an alternative to build a fast and accurate detector by strengthening lightweight features using a crafting mechanism. Inspired by the structure of Receptive Fields (RFs) in human visual systems, we propose a novel RF Block (RFB) module, which takes the relationship between the size and eccentricity of RFs into account, to enhance the discriminability and robustness of features. We further assemble the RFB module to the top of SSD with a lightweight CNN model, constructing the RFB Net detector. To evaluate its effectiveness, experiments are conducted on two major benchmarks and the results show that RFB Net is able to reach the accuracy of advanced very deep backbone network based detectors while keeping the real-time speed. Code is available at https://github.com/ruinmessi/RFBNet},
 archivePrefix = {arXiv},
@@ -744,18 +730,15 @@ title = {{Fast R-CNN}},
 url = {http://arxiv.org/abs/1504.08083},
 year = {2015}
 }
-@article{Sandler2018,
-abstract = {In this paper we describe a new mobile architecture, MobileNetV2, that improves the state of the art performance of mobile models on multiple tasks and benchmarks as well as across a spectrum of different model sizes. We also describe efficient ways of applying these mobile models to object detection in a novel framework we call SSDLite. Additionally, we demonstrate how to build mobile semantic segmentation models through a reduced form of DeepLabv3 which we call Mobile DeepLabv3. The MobileNetV2 architecture is based on an inverted residual structure where the input and output of the residual block are thin bottleneck layers opposite to traditional residual models which use expanded representations in the input an MobileNetV2 uses lightweight depthwise convolutions to filter features in the intermediate expansion layer. Additionally, we find that it is important to remove non-linearities in the narrow layers in order to maintain representational power. We demonstrate that this improves performance and provide an intuition that led to this design. Finally, our approach allows decoupling of the input/output domains from the expressiveness of the transformation, which provides a convenient framework for further analysis. We measure our performance on Imagenet classification, COCO object detection, VOC image segmentation. We evaluate the trade-offs between accuracy, and number of operations measured by multiply-adds (MAdd), as well as the number of parameters},
-archivePrefix = {arXiv},
-arxivId = {1801.04381},
-author = {Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},
-eprint = {1801.04381},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sandler et al. - 2018 - MobileNetV2 Inverted Residuals and Linear Bottlenecks.pdf:pdf},
-month = {jan},
-title = {{MobileNetV2: Inverted Residuals and Linear Bottlenecks}},
-url = {http://arxiv.org/abs/1801.04381},
-year = {2018}
+
+@inproceedings{Sandler2018,
+	title={MobileNetV2: Inverted Residuals and Linear Bottlenecks},
+	author={Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},
+	booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+	pages={4510--4520},
+	year={2018}
 }
+
 @techreport{AruniRoyChowdhuryPrakharSharma2018,
 abstract = {This paper investigates the presence of duplicate neurons or filters in neural networks. This phenomenon is prevalent in networks and increases with the number of filters in a layer. We observe the emergence of duplicate filters over training iterations, study the factors that affect their concentration and compare existing network reducing operations. We validate our findings using convolutional and fully-connected networks on the CIFAR-10 dataset.},
 author = {{Aruni RoyChowdhury, Prakhar Sharma}, Erik G. Learned-Miller},
@@ -1316,6 +1299,15 @@ title = {{MobileNets: Efficient Convolutional Neural Networks for Mobile Vision 
 url = {http://arxiv.org/abs/1704.04861},
 year = {2017}
 }
+
+@article{Kingma2014AdamAM,
+	title={Adam: A Method for Stochastic Optimization},
+	author={Diederik P. Kingma and Jimmy Ba},
+	journal={CoRR},
+	year={2014},
+	volume={abs/1412.6980}
+}
+
 @article{Redmona,
 abstract = {We present some updates to YOLO! We made a bunch of little design changes to make it better. We also trained this new network that's pretty swell. It's a little bigger than last time but more accurate. It's still fast though, don't worry. At 320 × 320 YOLOv3 runs in 22 ms at 28.2 mAP, as accurate as SSD but three times faster. When we look at the old .5 IOU mAP detection metric YOLOv3 is quite good. It achieves 57.9 AP 50 in 51 ms on a Titan X, com-pared to 57.5 AP 50 in 198 ms by RetinaNet, similar perfor-mance but 3.8× faster. As always, all the code is online at https://pjreddie.com/yolo/.},
 author = {Redmon, Joseph and Farhadi, Ali},
@@ -1334,17 +1326,15 @@ title = {{Understanding How Image Quality Affects Deep Neural Networks}},
 url = {http://arxiv.org/abs/1604.04004},
 year = {2016}
 }
-@article{Huang2016,
-abstract = {Recent work has shown that convolutional networks can be substantially deeper, more accurate, and efficient to train if they contain shorter connections between layers close to the input and those close to the output. In this paper, we embrace this observation and introduce the Dense Convolutional Network (DenseNet), which connects each layer to every other layer in a feed-forward fashion. Whereas traditional convolutional networks with L layers have L connections - one between each layer and its subsequent layer - our network has L(L+1)/2 direct connections. For each layer, the feature-maps of all preceding layers are used as inputs, and its own feature-maps are used as inputs into all subsequent layers. DenseNets have several compelling advantages: they alleviate the vanishing-gradient problem, strengthen feature propagation, encourage feature reuse, and substantially reduce the number of parameters. We evaluate our proposed architecture on four highly competitive object recognition benchmark tasks (CIFAR-10, CIFAR-100, SVHN, and ImageNet). DenseNets obtain significant improvements over the state-of-the-art on most of them, whilst requiring less computation to achieve high performance. Code and pre-trained models are available at https://github.com/liuzhuang13/DenseNet .},
-archivePrefix = {arXiv},
-arxivId = {1608.06993},
-author = {Huang, Gao and Liu, Zhuang and van der Maaten, Laurens and Weinberger, Kilian Q.},
-eprint = {1608.06993},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Huang et al. - 2016 - Densely Connected Convolutional Networks.pdf:pdf},
-month = {aug},
-title = {{Densely Connected Convolutional Networks}},
-url = {http://arxiv.org/abs/1608.06993},
-year = {2016}
+
+@inproceedings{Huang2016,
+	title={Densely connected convolutional networks.},
+	author={Huang, Gao and Liu, Zhuang and Van Der Maaten, Laurens and Weinberger, Kilian Q},
+	booktitle={CVPR},
+	volume={1},
+	number={2},
+	pages={3},
+	year={2017}
 }
 @article{Kumar2018,
 abstract = {In the framework of convolutional neural networks that lie at the heart of deep learning, downsampling is often performed with a max-pooling operation that only retains the element with maximum activation, while completely discarding the information contained in other elements in a pooling region. To address this issue, a novel pooling scheme, Ordinal Pooling Network (OPN), is introduced in this work. OPN rearranges all the elements of a pooling region in a sequence and assigns different weights to these elements based upon their orders in the sequence, where the weights are learned via the gradient-based optimisation. The results of our small-scale experiments on image classification task demonstrate that this scheme leads to a consistent improvement in the accuracy over max-pooling operation. This improvement is expected to increase in deeper networks, where several layers of pooling become necessary.},
@@ -1762,23 +1752,16 @@ title = {{MergeNet: A Deep Net Architecture for Small Obstacle Discovery}},
 url = {http://arxiv.org/abs/1803.06508},
 year = {2018}
 }
-@article{Razavian,
-abstract = {Recent results indicate that the generic descriptors ex-tracted from the convolutional neural networks are very powerful. This paper adds to the mounting evidence that this is indeed the case. We report on a series of exper-iments conducted for different recognition tasks using the publicly available code and model of the OverFeat net-work which was trained to perform object classification on ILSVRC13. We use features extracted from the OverFeat network as a generic image representation to tackle the di-verse range of recognition tasks of object image classifica-tion, scene recognition, fine grained recognition, attribute detection and image retrieval applied to a diverse set of datasets. We selected these tasks and datasets as they grad-ually move further away from the original task and data the OverFeat network was trained to solve. Astonishingly, we report consistent superior results compared to the highly tuned state-of-the-art systems in all the visual classification tasks on various datasets. For instance retrieval it consis-tently outperforms low memory footprint methods except for sculptures dataset. The results are achieved using a linear SVM classifier (or L2 distance in case of retrieval) applied to a feature representation of size 4096 extracted from a layer in the net. The representations are further modified using simple augmentation techniques e.g. jittering. The results strongly suggest that features obtained from deep learning with convolutional nets should be the primary can-didate in most visual recognition tasks.},
-author = {Razavian, Ali Sharif and Azizpour, Hossein and Sullivan, Josephine and {Carlsson Cvap}, Stefan},
-title = {{CNN Features off-the-shelf: an Astounding Baseline for Recognition}},
-url = {https://arxiv.org/pdf/1403.6382.pdf}
+
+
+@inproceedings{Chen2018c,
+	title={Domain adaptive faster r-cnn for object detection in the wild},
+	author={Chen, Yuhua and Li, Wen and Sakaridis, Christos and Dai, Dengxin and Van Gool, Luc},
+	booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+	pages={3339--3348},
+	year={2018}
 }
-@article{Chen2018c,
-abstract = {Object detection typically assumes that training and test data are drawn from an identical distribution, which, however, does not always hold in practice. Such a distribution mismatch will lead to a significant performance drop. In this work, we aim to improve the cross-domain robustness of object detection. We tackle the domain shift on two levels: 1) the image-level shift, such as image style, illumination, etc, and 2) the instance-level shift, such as object appearance, size, etc. We build our approach based on the recent state-of-the-art Faster R-CNN model, and design two domain adaptation components, on image level and instance level, to reduce the domain discrepancy. The two domain adaptation components are based on H-divergence theory, and are implemented by learning a domain classifier in adversarial training manner. The domain classifiers on different levels are further reinforced with a consistency regularization to learn a domain-invariant region proposal network (RPN) in the Faster R-CNN model. We evaluate our newly proposed approach using multiple datasets including Cityscapes, KITTI, SIM10K, etc. The results demonstrate the effectiveness of our proposed approach for robust object detection in various domain shift scenarios.},
-archivePrefix = {arXiv},
-arxivId = {1803.03243},
-author = {Chen, Yuhua and Li, Wen and Sakaridis, Christos and Dai, Dengxin and {Van Gool}, Luc},
-eprint = {1803.03243},
-month = {mar},
-title = {{Domain Adaptive Faster R-CNN for Object Detection in the Wild}},
-url = {http://arxiv.org/abs/1803.03243},
-year = {2018}
-}
+
 @article{Vass,
 abstract = {Lens distortion is often an issue in post production houses when combining footage taken with different cameras or integrating computer graphics into live action plates. While this error of the imaging process has been studied thoroughly for many years in the field of computer vision, almost none of the existing tools have all the key features users need. Some algorithms work well for any kind of distortion but are hard to calibrate, while others are fully automatic but fail for fisheye or anamorphic lenses. In this paper the different approaches of removing lens distortion are summarized, and a semi-automatic system is introduced that fits the need of post production facilities.},
 author = {Vass, Gergely and Perlaki, Tam{\'{a}}s},
@@ -1840,16 +1823,13 @@ author = {Domingos, Pedro},
 title = {{A Few Useful Things to Know about Machine Learning}},
 url = {https://homes.cs.washington.edu/{~}pedrod/papers/cacm12.pdf}
 }
-@article{Girshick2013,
-abstract = {Object detection performance, as measured on the canonical PASCAL VOC dataset, has plateaued in the last few years. The best-performing methods are complex ensemble systems that typically combine multiple low-level image features with high-level context. In this paper, we propose a simple and scalable detection algorithm that improves mean average precision (mAP) by more than 30{\%} relative to the previous best result on VOC 2012---achieving a mAP of 53.3{\%}. Our approach combines two key insights: (1) one can apply high-capacity convolutional neural networks (CNNs) to bottom-up region proposals in order to localize and segment objects and (2) when labeled training data is scarce, supervised pre-training for an auxiliary task, followed by domain-specific fine-tuning, yields a significant performance boost. Since we combine region proposals with CNNs, we call our method R-CNN: Regions with CNN features. We also compare R-CNN to OverFeat, a recently proposed sliding-window detector based on a similar CNN architecture. We find that R-CNN outperforms OverFeat by a large margin on the 200-class ILSVRC2013 detection dataset. Source code for the complete system is available at http://www.cs.berkeley.edu/{\~{}}rbg/rcnn.},
-archivePrefix = {arXiv},
-arxivId = {1311.2524},
-author = {Girshick, Ross and Donahue, Jeff and Darrell, Trevor and Malik, Jitendra},
-eprint = {1311.2524},
-month = {nov},
-title = {{Rich feature hierarchies for accurate object detection and semantic segmentation}},
-url = {http://arxiv.org/abs/1311.2524},
-year = {2013}
+
+@inproceedings{Girshick2013,
+	title={Rich feature hierarchies for accurate object detection and semantic segmentation},
+	author={Girshick, Ross and Donahue, Jeff and Darrell, Trevor and Malik, Jitendra},
+	booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+	pages={580--587},
+	year={2014}
 }
 @article{Sermanet2013,
 abstract = {We present an integrated framework for using Convolutional Networks for classification, localization and detection. We show how a multiscale and sliding window approach can be efficiently implemented within a ConvNet. We also introduce a novel deep learning approach to localization by learning to predict object boundaries. Bounding boxes are then accumulated rather than suppressed in order to increase detection confidence. We show that different tasks can be learned simultaneously using a single shared network. This integrated framework is the winner of the localization task of the ImageNet Large Scale Visual Recognition Challenge 2013 (ILSVRC2013) and obtained very competitive results for the detection and classifications tasks. In post-competition work, we establish a new state of the art for the detection task. Finally, we release a feature extractor from our best model called OverFeat.},
@@ -1981,13 +1961,15 @@ file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/A
 title = {{Shallow Networks for High-Accuracy Road Object-Detection}},
 url = {https://arxiv.org/pdf/1606.01561.pdf}
 }
-@article{Huang,
-abstract = {The goal of this paper is to serve as a guide for se-lecting a detection architecture that achieves the right speed/memory/accuracy balance for a given application and platform. To this end, we investigate various ways to trade accuracy for speed and memory usage in modern con-volutional object detection systems. A number of successful systems have been proposed in recent years, but apples-to-apples comparisons are difficult due to different base fea-ture extractors (e.g., VGG, Residual Networks), different default image resolutions, as well as different hardware and software platforms. We present a unified implementation of the Faster R-CNN [31], R-FCN [6] and SSD [26] systems, which we view as " meta-architectures " and trace out the speed/accuracy trade-off curve created by using alterna-tive feature extractors and varying other critical parameters such as image size within each of these meta-architectures. On one extreme end of this spectrum where speed and mem-ory are critical, we present a detector that achieves real time speeds and can be deployed on a mobile device. On the opposite end in which accuracy is critical, we present a detector that achieves state-of-the-art performance mea-sured on the COCO detection task.},
-author = {Huang, Jonathan and Rathod, Vivek and Sun, Chen and Zhu, Menglong and Korattikara, Anoop and Fathi, Alireza and Fischer, Ian and Wojna, Zbigniew and Song, Yang and Guadarrama, Sergio and Murphy, Kevin and Research, Google},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Huang et al. - 2016 - Speedaccuracy trade-offs for modern convolutional object detectors.pdf:pdf},
-title = {{Speed/accuracy trade-offs for modern convolutional object detectors}},
-url = {https://arxiv.org/pdf/1611.10012.pdf}
+
+@inproceedings{Huang,
+	title={Speed/accuracy trade-offs for modern convolutional object detectors},
+	author={Huang, Jonathan and Rathod, Vivek and Sun, Chen and Zhu, Menglong and Korattikara, Anoop and Fathi, Alireza and Fischer, Ian and Wojna, Zbigniew and Song, Yang and Guadarrama, Sergio and others},
+	booktitle={IEEE CVPR},
+	volume={4},
+	year={2017}
 }
+
 @article{Xiang,
 abstract = {SSD [18] is one of the state-of-the-art object detection algorithms, and it combines high detection accuracy with real-time speed. However, it is widely recognized that SSD is less accurate in detecting small objects compared to large objects, because it ignores the context from out-side the proposal boxes. In this paper, we present CSSD– a shorthand for context-aware single-shot multibox object detector. CSSD is built on top of SSD, with additional lay-ers modeling multi-scale contexts. We describe two vari-ants of CSSD, which differ in their context layers, using di-lated convolution layers (DiCSSD) and deconvolution lay-ers (DeCSSD) respectively. The experimental results show that the multi-scale context modeling significantly improves the detection accuracy. In addition, we study the relation-ship between effective receptive fields (ERFs) and the the-oretical receptive fields (TRFs), particularly on a VGGNet. The empirical results further strengthen our conclusion that SSD coupled with context layers achieves better detection results especially for small objects (+3.2{\%}AP @0.5 on MS-COCO compared to the newest SSD [19]), while maintain-ing comparable runtime performance.},
 author = {Xiang, Wei and Zhang, Dong-Qing and Athitsos, Vassilis and Yu, Heather},
@@ -2041,13 +2023,15 @@ file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/I
 title = {{Transfer learning from synthetic to real images using variational autoencoders for robotic applications}},
 url = {https://arxiv.org/pdf/1709.06762.pdf}
 }
-@article{He,
-abstract = {Though recent advanced convolutional neural networks (CNNs) have been improving the image recognition ac-curacy, the models are getting more complex and time-consuming. For real-world applications in industrial and commercial scenarios, engineers and developers are often faced with the requirement of constrained time budget. In this paper, we investigate the accuracy of CNNs under con-strained time cost. Under this constraint, the designs of the network architectures should exhibit as trade-offs among the factors like depth, numbers of filters, filter sizes, etc. With a series of controlled comparisons, we progressively modify a baseline model while preserving its time complex-ity. This is also helpful for understanding the importance of the factors in network designs. We present an architecture that achieves very competitive accuracy in the ImageNet dataset (11.8{\%} top-5 error, 10-view test), yet is 20{\%} faster than " AlexNet " [14] (16.0{\%} top-5 error, 10-view test).},
-author = {He, Kaiming and Sun, Jian},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/He, Sun - Unknown - Convolutional Neural Networks at Constrained Time Cost.pdf:pdf},
-title = {{Convolutional Neural Networks at Constrained Time Cost}},
-url = {https://arxiv.org/pdf/1412.1710.pdf}
+
+@inproceedings{He,
+	title={Convolutional neural networks at constrained time cost},
+	author={He, Kaiming and Sun, Jian},
+	booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+	pages={5353--5360},
+	year={2015}
 }
+
 @article{Laskar,
 abstract = {We propose a new deep learning based approach for camera relocalization. Our approach localizes a given query image by using a convolutional neural network (CNN) for first retrieving similar database images and then predicting the relative pose between the query and the database images, whose poses are known. The camera lo-cation for the query image is obtained via triangulation from two relative translation estimates using a RANSAC based approach. Each relative pose estimate provides a hy-pothesis for the camera orientation and they are fused in a second RANSAC scheme. The neural network is trained for relative pose estimation in an end-to-end manner using training image pairs. In contrast to previous work, our ap-proach does not require scene-specific training of the net-work, which improves scalability, and it can also be ap-plied to scenes which are not available during the training of the network. As another main contribution, we release a challenging indoor localisation dataset covering 5 differ-ent scenes registered to a common coordinate frame. We evaluate our approach using both our own dataset and the standard 7 Scenes benchmark. The results show that the proposed approach generalizes well to previously unseen scenes and compares favourably to other recent CNN-based methods .},
 author = {Laskar, Zakaria and Melekhov, Iaroslav and Kalia, Surya and Kannala, Juho},
@@ -2063,18 +2047,14 @@ keywords = {deep neural networks,relative camera pose estimation,spa-tial pyrami
 title = {{Relative Camera Pose Estimation Using Convolutional Neural Networks}},
 url = {https://users.aalto.fi/{~}kannalj1/publications/acivs2017.pdf}
 }
-@article{YoungwanLee,
-abstract = {Since convolutional neural network(CNN)models emerged,several tasks in computer vision have actively deployed CNN models for feature extraction. However,the conventional CNN models have a high computational cost and require high memory capacity, which is impractical and unaffordable for commercial applications such as real-time on-road object detection on embedded boards or mobile platforms. To tackle this limitation of CNN models, this paper proposes a wide-residual-inception (WR-Inception) network, which constructs the architecture based on a residual inception unit that captures objects of various sizes on the same feature map, as well as shallower and wider layers, compared to state-of-the-art networks like ResNet. To verify the proposed networks, this paper conducted two experiments; one is a classification task on CIFAR-10/100 and the other is an on-road object detection task using a Single-Shot Multi-box Detector(SSD) on the KITTI dataset.},
-archivePrefix = {arXiv},
-arxivId = {1702.01243},
-author = {Lee, Youngwan and Kim, Huien and Park, Eunsoo and Cui, Xuenan and Kim, Hakil and Engineering, Communication},
-eprint = {1702.01243},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Lee et al. - 2016 - Wide-Residual-Inception Networks for Real-time Object Detection Youngwan.pdf:pdf},
-month = {feb},
-pages = {2--8},
-title = {{Wide-Residual-Inception Networks for Real-time Object Detection Youngwan}},
-url = {https://arxiv.org/pdf/1702.01243.pdf http://arxiv.org/abs/1702.01243},
-year = {2016}
+
+@inproceedings{YoungwanLee,
+	title={Wide-Residual-Inception networks for real-time object detection},
+	author={Lee, Youngwan and Kim, Huieun and Park, Eunsoo and Cui, Xuenan and Kim, Hakil},
+	booktitle={Intelligent Vehicles Symposium (IV), 2017 IEEE},
+	pages={758--764},
+	year={2017},
+	organization={IEEE}
 }
 @inproceedings{ChengchengNing2017,
 author = {{Chengcheng Ning} and {Huajun Zhou} and {Yan Song} and {Jinhui Tang}},
@@ -2287,13 +2267,15 @@ title = {{Deep Rotation Equivariant Network}},
 url = {http://arxiv.org/abs/1705.08623},
 year = {2017}
 }
+
 @article{Rena,
-abstract = {—State-of-the-art object detection networks depend on region proposal algorithms to hypothesize object locations. Advances like SPPnet [1] and Fast R-CNN [2] have reduced the running time of these detection networks, exposing region proposal computation as a bottleneck. In this work, we introduce a Region Proposal Network (RPN) that shares full-image convolutional features with the detection network, thus enabling nearly cost-free region proposals. An RPN is a fully convolutional network that simultaneously predicts object bounds and objectness scores at each position. The RPN is trained end-to-end to generate high-quality region proposals, which are used by Fast R-CNN for detection. We further merge RPN and Fast R-CNN into a single network by sharing their convolutional features—using the recently popular terminology of neural networks with " attention " mechanisms, the RPN component tells the unified network where to look. For the very deep VGG-16 model [3], our detection system has a frame rate of 5fps (including all steps) on a GPU, while achieving state-of-the-art object detection accuracy on PASCAL VOC 2007, 2012, and MS COCO datasets with only 300 proposals per image. In ILSVRC and COCO 2015 competitions, Faster R-CNN and RPN are the foundations of the 1st-place winning entries in several tracks. Code has been made publicly available.},
-author = {Ren, Shaoqing and He, Kaiming and Girshick, Ross and Sun, Jian},
-file = {:home/phil/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Ren et al. - 2015 - Faster R-CNN Towards Real-Time Object Detection with Region Proposal Networks.pdf:pdf},
-keywords = {Convolutional Neural Network,Index Terms—Object Detection,Region Proposal},
-title = {{Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks}},
-url = {https://arxiv.org/pdf/1506.01497.pdf}
+	title={Faster R-CNN: towards real-time object detection with region proposal networks},
+	author={Ren, Shaoqing and He, Kaiming and Girshick, Ross and Sun, Jian},
+	journal={IEEE Transactions on Pattern Analysis \& Machine Intelligence},
+	number={6},
+	pages={1137--1149},
+	year={2017},
+	publisher={IEEE}
 }
 @article{Mohta2017,
 abstract = {One of the most challenging tasks for a flying robot is to autonomously navigate between target locations quickly and reliably while avoiding obstacles in its path, and with little to no a-priori knowledge of the operating environment. This challenge is addressed in the present paper. We describe the system design and software architecture of our proposed solution, and showcase how all the distinct components can be integrated to enable smooth robot operation. We provide critical insight on hardware and software component selection and development, and present results from extensive experimental testing in real-world warehouse environments. Experimental testing reveals that our proposed solution can deliver fast and robust aerial robot autonomous navigation in cluttered, GPS-denied environments.},
