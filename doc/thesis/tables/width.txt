@@ -1,11 +1,11 @@
-\begin{tabular}{ll}
+\begin{tabular}{llrr}
 \toprule
-          Width & Simulated MAV Race $ap_{60}$ \\
+          Width & Simulated MAV Race $[ap_{60}]$ &   Weights &  Reduction in Weights [\%] \\
 \midrule
-            $1$ &              $0.51 \pm 0.04$ \\
-  $\frac{1}{2}$ &              $0.43 \pm 0.03$ \\
-  $\frac{1}{4}$ &              $0.41 \pm 0.05$ \\
-  $\frac{1}{8}$ &              $0.40 \pm 0.02$ \\
- $\frac{1}{16}$ &              $0.38 \pm 0.00$ \\
+            $1$ &                $0.51 \pm 0.04$ &  12133646 &                      100.0 \\
+  $\frac{1}{2}$ &                $0.43 \pm 0.03$ &   3039638 &                       25.1 \\
+  $\frac{1}{4}$ &                $0.41 \pm 0.05$ &    763034 &                        6.3 \\
+  $\frac{1}{8}$ &                $0.40 \pm 0.02$ &    192332 &                        1.6 \\
+ $\frac{1}{16}$ &                $0.38 \pm 0.00$ &     48881 &                        0.4 \\
 \bottomrule
 \end{tabular}

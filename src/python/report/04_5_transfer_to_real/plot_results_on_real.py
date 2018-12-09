@@ -8,31 +8,24 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'mavlabgates',
-    'distortion',
-    'blur',
     'hsv',
-    # 'exposure',
-    'chromatic',
-    'blur_distortion',
-    'gray',
-    'gray_background',
     'background',
-    'all',
-
+    'chromatic',
+   'distortion',
+    'blur',
+    'gray',
+    'mavlabgates',
+    'blur_distortion',
 ]
 titles = [
-    'no\n augmentation',
+    'hsv',
+    'VOC \n background',
+    'chromatic',
     'distortion',
     'blur',
-    'hsv',
-    'exposure',
-    'chromatic',
-    'blur \n+ distortion',
     'gray',
-    'gray \n+background',
-    'background',
-    'all',
+    'no\n augmentation',
+    'blur \n + distortion',
     'SnakeGate',
 ]
 
@@ -120,7 +113,8 @@ plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right'
 
 plt.xticks(np.arange(len(models)+1) - 1, titles)
 plt.ylabel('$ap_{60}$')
-plt.ylim(0, 0.6)
+plt.minorticks_on()
+plt.ylim(0, 0.7)
 # plt.legend(handles, datasets_title)
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                     wspace=0.3, hspace=0.3)

@@ -31,33 +31,39 @@ for iou in ious:
     for d in datasets:
         for it in range(n_iterations):
             column = []
+            weights = []
             for m in models:
                 try:
                     new_frame = pd.read_pickle('out/{0:s}_i{1:02d}/test_{2:s}/results_total.pkl'.format(m, it, d))
+                    # w = ModelSummary.from_file('out/{0:s}_i{1:02d}/model.h5'.format(m, it)).weights
                     cell = new_frame['{}_ap{:.6f}_i0{}'.format(d, iou, it)][0]
                     column.append(cell)
+                    # weights.append(w)
                 except FileNotFoundError as e:
                     column.append(-1)
                     print(e)
                     continue
-            frame['{}_iou{}_i0{}'.format(d, iou,it)] = column
+            frame['{}_iou{}_i0{}'.format(d, iou, it)] = column
             print(frame.to_string())
 
-column_names = ['$1$', '$\\frac{1}{2}$','$\\frac{1}{4}$', '$\\frac{1}{8}$', '$\\frac{1}{16}$']
+column_names = ['$1$', '$\\frac{1}{2}$', '$\\frac{1}{4}$', '$\\frac{1}{8}$', '$\\frac{1}{16}$']
 table = pd.DataFrame()
 table['Width'] = column_names
-iou=0.6
+iou = 0.6
 for i_d, d in enumerate(datasets):
     column_content = []
     for i_m, _ in enumerate(models):
         results = []
         for i_i in range(n_iterations):
-            result = frame['{}_iou{}_i0{}'.format(d, iou,i_i)][i_m]
+            result = frame['{}_iou{}_i0{}'.format(d, iou, i_i)][i_m]
             if result >= 0:
                 results.append(result)
         column_content.append('${:.2f} \pm {:.2f}$'.format(np.mean(results), np.std(results)))
-    table[datasets_title[i_d] + ' $ap_{' + str(int(np.round(iou*100,0))) + '}$'] = column_content
+    table[datasets_title[i_d] + ' $[ap_{' + str(int(np.round(iou * 100, 0))) + '}]$'] = column_content
+
+table['Weights'] = [12133646, 3039638, 763034, 192332, 48881]
+table['Reduction in Weights [\%]'] = np.round((np.array([12133646, 3039638, 763034, 192332, 48881])/12133646)*100,1)
 
 print(table.to_string(index=False))
-print(table.to_latex(index=False,escape=False))
-save_file(table.to_latex(index=False,escape=False), 'width.txt', 'doc/thesis/tables/', raw=True)
+print(table.to_latex(index=False, escape=False))
+save_file(table.to_latex(index=False, escape=False), 'width.txt', 'doc/thesis/tables/', raw=True)

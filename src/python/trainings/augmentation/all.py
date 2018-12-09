@@ -77,7 +77,7 @@ for i in range(4):
                     'resource/ext/samples/iros2018_course3_test',
                     'resource/ext/samples/flight_basement_mavlab_gates_bg0',
                     'resource/ext/samples/flight_basement_mavlab_gates_bg1',
-                    'resource/ext/samples/train_frontal_voc',
+                    # 'resource/ext/samples/train_frontal_voc',
                     # 'resource/ext/samples/various_environments20k',
                     # 'resource/ext/samples/realbg20k'
                     ]

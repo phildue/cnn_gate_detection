@@ -58,35 +58,34 @@ Lens distortion and motion blur are chosen due to their presence in the real wor
 \begin{figure}[bhtp]
 	\centering
 	\begin{minipage}{0.33\textwidth}
+				\caption{Original Image.}
 		\includegraphics[width=\textwidth]{fig/gate_example}
-		\caption{Original Image.}
+
 		\label{fig:orig}
 	\end{minipage}
 	\begin{minipage}{0.33\textwidth}
+
+						\caption{Chromatic Aberration. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.} 		
+				
 		\includegraphics[width=\textwidth]{fig/gate_example_chromatic}
-		\caption{Chromatic Aberration. It can be seen how the red and green channel are shifted relative to each other. Thus two bars appear in the image.} 		
-		\label{fig:chromatic}
+				\label{fig:chromatic}
 	\end{minipage}
 	\begin{minipage}{0.33\textwidth}
+				\caption{Lens Distortion. It can be seen how the previously straight lines appear as circular shape.}
 		\includegraphics[width=\textwidth]{fig/gate_example_distorted}
-		\caption{Lens Distortion. It can be seen how the previously straight lines appear as circular shape.}		
+		
 		\label{fig:distortion}
 	\end{minipage}
 	
 	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_focusblur}
-		\caption{Out-of-Focus blur.}
+
 		\label{fig:focusblur}
 	\end{minipage}
 	\begin{minipage}{0.33\textwidth}
 		\includegraphics[width=\textwidth]{fig/gate_example_motionblur_v}
 		\caption{Vertical Motion Blur.}
 		\label{fig:motionblur}
-	\end{minipage}
-	\begin{minipage}{0.33\textwidth}
-		\includegraphics[width=\textwidth]{fig/gate_example_exposure}
-		\caption{Exposure. It can be seen how lighter areas appear particularly light, while dark areas remain dark.}
-		\label{fig:exposure}
 	\end{minipage}
 \end{figure}
 
@@ -150,29 +149,6 @@ k(x,y) = \frac{1}{2\sigma_x\sigma_y\pi}e^{-\frac{1}{2}({\frac{(x-\mu_x)^2}{\sigm
 \end{equation}
 
 Where $\sigma_x$ and $\sigma_y$ are the variance in direction x and y, used to model directional (motion) blur and $\mu_x$, $\mu_y$ are at the kernel center. 
-
-\paragraph{Exposure.}
-
-Exposure is the time the sensor records light in order to create an image. Over- and Underexposure are caused when this time is too short or too long, leading to too dark or too bright images.
-
-Cameras typically have Autoexposure-functionality which adapts the exposure time depending on light conditions. However, the adoption is not instant, sudden light changes can lead to over- or underexposure. This particularly applies during a fast flight. The effect can be modelled following \cite{Carlson2018}:
-
-\begin{equation}
-f(S) = \frac{255}{1 + e^{-S}}
-\end{equation}
-
-The image can be re-exposed with:
-
-\begin{equation}
-I' = f(S+\Delta S)
-\end{equation}
-
-where $S$ is obtained from :
-\begin{equation}
-S = f^{-1}(I)
-\end{equation}
-
-An example for overexposure is displayed in \Cref{fig:exposure}. 
 
 \paragraph{Variations in \ac{HSV}}
 

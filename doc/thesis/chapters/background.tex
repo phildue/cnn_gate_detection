@@ -70,7 +70,36 @@ The modular structure of \acp{CNN} allows to create highly non-linear models tha
 
 Among these parameters depth is considered one of the preliminary parameters to improve performance \cite{He}. \citeauthor{Simonyan2014} \cite{Simonyan2014} achieve first places in the 2014 ImageNet Classification challenge using a network that only contained filters of size 3-by-3 but up to 19 layers. \citeauthor{Szegedy2014} \cite{Szegedy2014} achieve similar performance using a network with 22 layers. The proposed network included an \textit{Inception}-module, an architectural element that allows deeper networks at a constant computational budget. 
 
-Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how networks with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
+\paragraph{Residual Connections.}
+
+An issue that prevented training even deeper networks is the \textit{vanishing gradient problem}. As the gradient distributes across nodes its magnitude gets smaller with increasing amount of nodes. Hence, the training becomes slow and the risk of converging in a local minima increases. This was addressed by \citeauthor{He2015} \cite{He2015} who propose the use of residual connections. Instead of propagating the gradient from the last to the first layer these connections allow the gradient to flow directly into all layers. This circumvents the vanishing gradient problem. The use of residual connections allowed to train a network 101 layers and improved on state of the art at that time.
+
+\paragraph{Wide-Residual Networks.}
+
+However, later work by \citeauthor{Zagoruyko2016} \cite{Zagoruyko2016} shows how residual networks do not behave like a single deep model but more like an ensemble of more shallow networks. Moreover, the study shows that similar performance can be achieved by particularly wide networks and residual connections. Being of similar performance the proposed \acp{WRN} are computationally more efficient to execute.
+
+While wide residual networks can achieve similar performance to deep residual networks with reduced inference time the computational requirements are still large. This work addresses the detection of \ac{EWFO} with very limited resources. Hence, a network in which the vanishing gradient problem would appear is likely to be already too computationally expensive to be applied on a \ac{MAV}.
+
+\paragraph{Fully Convolution Networks.}
+
+Instead the work focuses on much smaller networks that are fast to execute. Execution time is also the motivation for \acp{FCN}. Instead of using a fully connected layer in the last stage, these networks only apply local operations. This saves many computations in the last layer and enables the application of models on various input sizes.
+
+\paragraph{Dilated Convolutions.}
+
+However, \ac{FCN} in combination with a small amount of layers introduce a limited receptive field. If the network is too shallow the last layer cannot take into account the whole input image. A way to increase the receptive field without increasing the number of computations is the use of sparse kernels, also called Atrous/Dilated convolutions.
+
+\paragraph{Depthwise Separable Convolutions.}
+
+Another line of research to reduce the number of computations in \acp{CNN} address the convolution operation. \textit{MobileNet} \cite{Howard2017} and \textit{QuickNet} \cite{Ghosh2017} make extensive use of \acp{DSC}. \acp{DSC} replace the original 3D-convolution by several 2D-convolutions followed by a pointwise convolution. This reduces the total number of operations from $N = k_w \cdot k_h \cdot w_n \cdot w_{n+1}$ to $N=(k_w \cdot k_h + w_n)+w_n \cdot w_{n+1}$. \textit{MobileNetV2} \cite{Sandler2018} further includes linear bottlenecks to reduce the total number of operations. These are convolutions with a 1by1 kernel and linear activation.
+
+\paragraph{Channel Shuffling.}
+
+\cite{Zhang2017a} addresses the computational costs of pointwise convolutions. Instead of applying a pointwise convolution on the whole input volume, group convolutions are applied on by dividing the channels in subsets. These channels are shuffled to enable cross-channel information propagation.
+
+\paragraph{Dense Connections.}
+\textit{DenseNet} \cite{Huang2016} proposes the use of dense connections in \acp{CNN}. Thereby the input of each convolutional layer does not only consist if its direct previous layer but of a concatenation of the activations of all its previous layers. By enabling feature reuse the total amount of parameters shall be reduced.
+
+Despite a large amount of research conducted in finding suitable architectures there has not yet been a single way that always achieves a goal. It has been shown how models with a large amount of parameters combined with vast amounts of training data perform well on various vision tasks and objects. However, there is no guarantee that the found representation is also the most suitable/efficient one. The research resulted in a collection of rules an best practices that need to be considered with the task at hand. This work investigates the design of a \ac{CNN} for the detection of \ac{EWFO}.
 
 \subsubsection{\ac{CNN}-based Object Detection}
 
@@ -96,7 +125,11 @@ Better results could be achieved by predicting offsets to predefined regions as 
 
 An issue that arises with discretization of the object detection task is that objects can appear at different scales. For small objects it is required to have a high resolution of bounding box locations to have a sufficient representation of the input image. For example many small objects can appear next to each other. A too coarse resolution could not capture the fact that there are multiple objects present. Furthermore, it is required to take into account fine grain features to predict such an object. In contrast, for large objects small changes in location do not make a difference. In contrary, a too fine resolution can cause the detector focus on noise and thus lead to bad predictions or unstable training. Therefore, \ac{SSD} introduces the prediction of objects at multiple output grids at different layers of the network. Thus, the output grid can be defined depending on the object size and the network can extract features based on the object scale. Follow up work in \cite{Redmon, Redmona} also included the concept of anchor boxes and prediction layers at multiple scales, making \ac{SSD} and \ac{Yolo} converge to a very similar solution.
 
-In \cite{Huang} one and two stage detectors are compared in terms of accuracy as well as resource requirements. While two stage detectors with very deep networks tend to achieve the best performance, one stage detectors are generally faster. The experiments also show how the inference time of two stage detectors can be reduced without loosing too much accuracy when the amount of bounding box proposals is limited. However, single shot detectors are still the fastest method with the lowest memory profile. Furthermore, for the single class case the region proposal stage of a two stage detector can be used directly. Hence, in this work we investigate the detection of a \ac{EWFO} with a one stage detector. 
+\if false
+A common problem of one stage detectors is the imbalance between background and object samples. Most methods upweigh the positive samples and/or use hard negative mining. \cite{Lin} introduces the \textit{Focal Loss} which focuses on sparse positive samples by design.
+\fi
+
+In \cite{Huang} one and two stage detectors are compared in terms of accuracy as well as resource requirements. While two stage detectors with very deep networks tend to achieve the best performance, one stage detectors are generally faster. The experiments also show how the inference time of two stage detectors can be reduced without loosing too much accuracy when the amount of bounding box proposals is limited. However, single shot detectors are still the fastest method with the lowest memory profile. Furthermore, for the single class case the region proposal stage of a two stage detector can be used directly. Hence, in this work we investigate the the detection of a \ac{EWFO} with a one stage detector. The \textit{TinyYoloV3} architecture is 9-layer network with a suitable size to be applied on a \ac{MAV}. This work uses this approach as the baseline model.
 
 The anchor box concept allows to incorporate prior knowledge about possible objects but also introduces additional hyperparameters that need to be tuned for an application. Therefore the alternative approach of \textit{CornerNet}\cite{Law2018} avoids the anchor box concept by defining objects as paired key points. Each bounding box is defined as two corners. The network predicts a heatmap with potential corner locations as well as which corners belong together. This would be an interesting approach for the detection of \ac{EWFO}. However, as the publication was quite recent the approach could not be taken into account. 
 
