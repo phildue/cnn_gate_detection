@@ -131,7 +131,7 @@ Furthermore, we hypothesized that due to the empty part a detector for \acp{EWFO
 Also, we hypothesized that in contrast to a more complex object the detection of \acp{EWFO} can not be improved by using a deeper network. While this could be confirmed for the \ac{EWFO}, in the experiments there is neither an improvement for the other objects. Yet it can be seen how the deeper network is less confused when adding the \textit{Cat} structure.
 
 \section{Providing Background}
-
+\label{sec:exp_background}
 In the previous experiments it could be seen how the performance of a detector drops significantly when applying it in an environment that is different to the training environment. In this section it is investigated how to make the the detector less dependent on such domain shifts.
 
 A simple method is to create more data by placing the object in front of backgrounds of different images. This way the detector can learn to be background invariant. However, with this placement the object is not aligned with its context anymore. The light conditions do not fit to the remaining image and also perspective properties are violated that otherwise could be exploited by the detector. Another method is to create new environments in simulation and change light conditions and background there. This requires more manual work but leads to geometrically aligned images. Yet, the images consist only of synthetic elements.
@@ -331,6 +331,15 @@ The detector is trained with 20 000 samples where 3000 are generated with the ne
 	\item $\Delta H$,$\Delta S$,$\Delta V$ are drawn from $\mathcal{U}^H(.9, 1.1)$, $\mathcal{U}^S(0.8, 1.2)$, $\mathcal{U}^V(0.8, 1.2)$
 \end{itemize}
 
+Initial experiments show relatively poor results on the \textit{Hallway} dataset. In this data set the objects are placed in front of a window which causes the objects to appear quite dark. Also the background is light and contains many details. We hypothesize that the lack of colour and the background confuse the detector. In order to examine two additional networks are trained:
+
+\begin{itemize}
+	\item \textit{Gray} is trained by transforming 50\% of the images to grayscale images during training. This should force the network to learn more colour invariant features and thus improve the results on the \textit{Hallway} dataset. 
+	\item \textit{VOC Background} is trained by including the images created with backgrounds chosen from the VOC dataset (\Cref{sec:exp_background}. We hypothesize that by providing more variance in the background, the network will be more robust against details in the background. This should improve the results on the \textit{Hallway} dataset.
+\end{itemize}
+
+Next to evaluating the network on real data a comparison to the baseline is given. \textit{SnakeGate} is evaluated on each of the test sets. The colour filter is tuned for each environment. As the initial sampling of \textit{SnakeGate} is stochastic, mean and standard deviation of 5 repeated runs are presented.
+
 \subsection{Results}
 
 \begin{figure}[hbtp]
@@ -339,7 +348,7 @@ The detector is trained with 20 000 samples where 3000 are generated with the ne
 	\label{fig:augmentation}
 \end{figure}
 
-\Cref{fig:augmentation} shows the results on the various real datasets. Throughout the augmentation methods it can be seen how best results are achieved on the \textit{Cyberzoo} set. Lower results are achieved on the \textit{Basement} and finally the \textit{Hallway} set.
+\Cref{fig:augmentation} shows the results of the network with different augmentation methods on the various test sets. Furthermore, the results of \textit{SnakeGate} are presented. Throughout the augmentation methods it can be seen how best results are achieved on the \textit{Cyberzoo} set. Lower results are achieved on the \textit{Basement} and finally the \textit{Hallway} set.
 
 Compared to no augmentation all techniques lead to an improvement. The distortion is among the highest results for all data sets. Shortly after follows blur and chromatic aberration. However, for chromatic aberration the results on basement and hallway are lower than for blur an distortion. Combining blur and distortion does not lead to an improvement compared to the individual methods. Image augmentation with variations in \ac{HSV} and exposure achieve the lowest results.
 

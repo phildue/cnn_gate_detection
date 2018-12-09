@@ -18,23 +18,23 @@ from utils.workdir import cd_work
 
 cd_work()
 img_res = 416, 416
-for i in range(2):
-    model_dir = 'mavnet_i{0:02d}'.format(i)
+for i in range(4):
+    model_dir = 'thintail_i{0:02d}'.format(i)
     initial_epoch = 0
     epochs = 100
 
     architecture = [
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+        {'name': 'max_pool', 'size': (2, 2)},
+        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'max_pool', 'size': (2, 2)},
         {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
         {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
