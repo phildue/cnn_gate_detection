@@ -343,14 +343,24 @@ Next to evaluating the network on real data a comparison to the baseline is give
 \subsection{Results}
 
 \begin{figure}[hbtp]
+	\includegraphics[width=\textwidth]{fig/augmentation_overview}
+	\caption{An overview over all applied augmentation methods. The results are presented as the mean $ap_{60}$ over the three data sets. The results of 4 runs are reported. It can be seen how \textit{blur} and \textit{distortion} as well as \textit{grey} lead to an improvement in performance compared to not using augmentation.}
+	\label{fig:augmentation_overview}
+\end{figure}
+
+\Cref{fig:augmentation_overview} shows the mean performance of networks trained with different augmentation methods. Variations in \ac{HSV}, chromatic aberration as well as including backgrounds from the Pascal VOC datasets lead to a deterioration in performance compared to not using any augmentation. In contrast, including blur, distortion and gray images leads to an improvement. The overall best results can be achieved by including distortion and gray images in the training.
+
+\begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/augmentation}
-	\caption{.}
+	\caption{The results of \Cref{fig:augmentation_overview} in more detail for the different data sets. It can be seen how \textit{grey} improves the performance mainly on \textit{Cyberzoo} and \textit{Hallway} while the performance on \textit{Basement} gets worse. In contrast \textit{distortion} leads to a more overall improvement. Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.}
 	\label{fig:augmentation}
 \end{figure}
 
-\Cref{fig:augmentation} shows the results of the network with different augmentation methods on the various test sets. Furthermore, the results of \textit{SnakeGate} are presented. Throughout the augmentation methods it can be seen how best results are achieved on the \textit{Cyberzoo} set. Lower results are achieved on the \textit{Basement} and finally the \textit{Hallway} set.
+\Cref{fig:augmentation} shows the results for the best augmentation methods in more detail. It can be seen how \textit{grey} improves the performance mainly on \textit{Cyberzoo} and \textit{Hallway}. In contrast, on \textit{Basement} the performance drops compared to not using any augmentation. \textit{Distortion} leads to a more even improvement for all data sets.
 
-Compared to no augmentation all techniques lead to an improvement. The distortion is among the highest results for all data sets. Shortly after follows blur and chromatic aberration. However, for chromatic aberration the results on basement and hallway are lower than for blur an distortion. Combining blur and distortion does not lead to an improvement compared to the individual methods. Image augmentation with variations in \ac{HSV} and exposure achieve the lowest results.
+Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.
+
+\Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway} show example predictions on the various data sets of the network trained with distortion. On \textit{Cyberzoo} and \textit{Basement} several very accurate predictions can be seen, even under heavy occlusion. On \textit{Hallway} this is rather an exception. Yet on all data sets several images where the object is clearly visible, are wrongly or not at all detected.
 
 \begin{figure}[hbtp]
 \centering
@@ -366,9 +376,8 @@ Compared to no augmentation all techniques lead to an improvement. The distortio
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/cyberzoo_notnice2.jpg}
 \end{minipage}
-\caption{Predictions in the \textit{Cyberzoo} environment. Several gates are detected with good localization, even when occluded by another gate (3.). Yet the gate which is in front is not detected. Also, the perfect visible gate (4.) is not well detected. Instead many false positives are predicted.}
-\end{figure}
-\begin{figure}[hbtp]
+\caption{Predictions in the \textit{Cyberzoo} environment of the network trained with distortion. Several gates are detected with good localization, even when occluded by another gate (3.). Yet the gate which is in front is not detected. Also, the perfect visible gate (4.) is not well detected. Instead many false positives are predicted.}
+\label{fig:example_cyberzoo}
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/basement_nice1.jpg}
 \end{minipage}
@@ -381,9 +390,8 @@ Compared to no augmentation all techniques lead to an improvement. The distortio
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/basement_notnice2.jpg}
 \end{minipage}
-\caption{Predictions in the \textit{Basement} environment. The network produces very nice detections in cases of heavy occlusion (1 and 2). However, in other cases where the gate is visible at least equally well (3 and 4) the gate is not detected or with bad localization.}
-\end{figure}
-\begin{figure}[hbtp]
+\caption{Predictions in the \textit{Basement} environment of the network trained with distortio. The network produces very nice detections in cases of heavy occlusion (1 and 2). However, in other cases where the gate is visible at least equally well (3 and 4) the gate is not detected or with bad localization.}
+\label{fig:example_basement}
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/hallway_nice1.jpg}
 \end{minipage}
@@ -396,18 +404,27 @@ Compared to no augmentation all techniques lead to an improvement. The distortio
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/hallway_notnice2.jpg}
 \end{minipage}
-\caption{Predictions in the \textit{Hallway} environment. In some images (1 and 2) the network predicts a half way correct bounding box. Yet in the majority of images such as 3 and 4 the gate is not detected, although clearly visible. }
+\caption{Predictions in the \textit{Hallway} environment of the network trained with distortion. In some images (1 and 2) the network predicts a half way correct bounding box. Yet in the majority of images such as 3 and 4 the gate is not detected, although clearly visible. }
+\label{fig:example_hallway}
 \end{figure}
 
 \subsection{Discussion}
 
-In the results without the augmentation it can be seen that there is a large reality gap. Without augmentation the results on the real data are very low. 
+In this experiment the detector is evaluated on real data. Compared to simulation, only on \textit{Cyberzoo} comparable results can be achieved. On the more difficult data sets \textit{Hallway} and \textit{Basement} the performance drop is quite significant. On \textit{Hallway} almost no detection can be achieved. Hence, there seems to still be a big reality gap.
+
+Several image augmentation techniques are applied in order to bridge this gap. Thereby \textit{distortion} and \textit{grey} lead to an improvement. With \textit{grey} affecting the colour feature this would mean the network trained without augmentation overfitted to the colour in simulation. If that is the case the network trained with 
+
+One difference is the colour. Especially on the \textit{Hallway} data set the objects do not appear orange. In contrast in \textit{Cyberzoo} the colour is very distinctive. Image augmentation techniques that mainly address this feature are variations in \ac{HSV}, chromatic aberration and including grey images. If the network overfits to the colour in the simulated set one would expect that any of these methods leads to an
+
+Overall the best results are achieved in \textit{Cyberzoo}. This is not surprising as there the light conditions are relatively easy. The background is black and the object is clearly visible. With the colour being a significant feature in this data set, it is even more surprising that the network trained with \textit{Gray} augmentation here achieves the highest results.
+
+\textit{Basement} has more difficult light conditions and more overlapping objects. Compared to that the performance difference to \textit{Cyberzoo} is relatively low. In \textit{Hallway} the light conditions are very difficult as the objects stand in front of the window. The detector seems to struggle with this too. Several networks achieve an average precision of 0. It seems that despite having similar examples in the training set, the detector can not transfer the results to the real world.
 
 Applying image augmentation seems to help bridging this gap as the results improve when applying these techniques. Thereby certain techniques are more suitable than others. Distortion and blur are the most significant effects that could also be observed when visually inspecting the dataset. Correspondingly the respective image augmentation techniques show the most improvement. Other techniques were mainly included as other authors reported improvements not because such effects could be observed in the dataset. These effects also showed minor improvements.
 
 Surprisingly, the methods that vary colour are of minor effect. As this is a relatively distinctive feature in simulation one would have expected the detector is more sensitive to it.
 
-Overall the best results are achieved in \textit{Cyberzoo}. This is not surprising as there the light conditions are relatively easy. The background is black and the object is clearly visible. \textit{Basement} has more difficult light conditions and more overlapping objects. Compared to that the performance difference to \textit{Cyberzoo} is relatively low. In \textit{Hallway} the light conditions are very difficult as the objects stand in front of the window. The detector seems to struggle with this too. Several iteration achieve an average precision of 0. Furthermore, here the results show the highest variance. It seems that despite having similar examples in the training set, the detector can not transfer the results to the real world.
+
 
 \subsection{Conclusion}
 
