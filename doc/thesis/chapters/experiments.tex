@@ -278,11 +278,11 @@ Furthermore, we investigated whether the detector can learn to detect the object
 
 \section{Optimizing the Architecture}
 \label{sec:exp_arch}
-The baseline network architecture is optimized to detect solid feature rich objects of multiple classes. In order to sufficiently represent and distinguish such complex objects many weights are required. This leads to a high computational complexity and longer inference time. Also, more weights require typically more data to train and are more prune to overfit to a training set. The features of \acp{EWFO} are relatively simple hence less weights should be required. This section investigates whether equal performance can be reached when using a more shallow/thinner architecture.
+The baseline network architecture is optimized to detect solid feature -rich objects of multiple classes. In order to sufficiently represent and distinguish such complex objects many weights are required. This leads to a high computational complexity and longer inference time. Also, more weights require typically more data to train on and are more prune to overfit to a training set. The features of \acp{EWFO} are relatively simple hence less weights should be required. This section investigates whether equal performance can be reached when using a more shallow/thinner architecture.
 
-The width in a \acp{CNN} determines how many features can be extracted in one layer. Wider networks can extract and retain more information than thinner layers. As the information in \acp{EWFO} is limited to basic geometric shapes and colour, we hypothesize a thinner network should be able to learn the detection task equally well. Only when reducing the width too strong the performance should drop significantly as a minimum of weights is required. We examine this by reducing the number training networks with a thinner architecture. Therefore the number of filters in each layer of the \textit{SmallYoloV3} network are reduced to $\frac{1}{2}$, $\frac{1}{4}$, $\frac{1}{8}$ and $\frac{1}{16}$ of its original number. The network is trained on the training set consisting of various racing courts. All architectures are tested on the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
+The width in a \acp{CNN} determines how many features can be extracted in one layer. Wider networks can extract and retain more information than thinner layers. As the information in \acp{EWFO} is limited to basic geometric shapes and colour, we hypothesize a thinner network should be able to learn the detection task equally well. Only when reducing the width too strong, the performance should drop significantly as a minimum of weights is required. We examine this by training networks with thinner architectures. Therefore the number of filters in each layer of the \textit{SmallYoloV3} network is reduced to $\frac{1}{2}$, $\frac{1}{4}$, $\frac{1}{8}$ and $\frac{1}{16}$ of its original number. The network is trained on the training set consisting of various racing courts. All architectures are tested on the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
 
-The depth of a network has multiple effects. Deeper networks contain more non-linear elements and can thus represent more complex functions/features. \acp{EWFO} have simple features and thus only a few layers should be required. In fact the features that are relevant to detect an \acp{EWFO} are typically lines on the border of its location. Hence, a detector would only need to detect those edges in order to determine whether an object is present. This should be possible with a few amount of layers. On the other hand in a \acp{MAV} race the objects appear overlapping and in difficult angles. In such cases the above is not valid anymore. For overlapping objects a detector would need to distinguish which line/edge belongs to which object. Such complex relations can be better represented with a deeper network. We investigate these hypotheses in an experiment. Therefore we remove layers but use larger pooling operations. The network is trained on the training set consisting of various racing courts introduced in the previous section. Additionally, \textit{VGGYoloV3} is trained on the data. All architectures are tested on the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
+The depth of a network has multiple effects. Deeper networks contain more non-linear elements and can thus represent more complex functions/features. \acp{EWFO} have simple features and thus only a few layers should be required. In fact the features that are relevant to detect an \acp{EWFO} are typically lines on the border of its location. Hence, a detector would only need to detect those edges in order to determine whether an object is present. This should be possible with a few amount of layers. On the other hand, in an \acp{MAV} race the objects appear overlapping and in difficult angles. In such cases the above is not valid anymore. For overlapping objects a detector would need to distinguish which line/edge belongs to which object. Such complex relations can be better represented with a deeper network. We investigate these hypotheses in an experiment. Therefore we remove layers but use larger pooling operations. The network is trained on the training set consisting of various racing courts introduced in the previous section. Additionally, \textit{VGGYoloV3} is trained on the data.\todo{what? on which data?} All architectures are tested on the simulated \ac{MAV} race introduced in \Cref{sec:datasets}.
 
 It should be noted that throughout the thesis many more architectures have been evaluated. For example using larger kernels, dilated convolutions, varying pooling operations at different layers. However, in the end none of these architectures led consistently to an increased efficiency (performance/weights). While under certain conditions improvements could be observed, these usually disappeared when applying the detector on a different test set. Overall reduction in weights led to a similar decrease in performance as can be seen in the results of this experiment. Therefore, we keep the basic structure of the baseline architecture as it follows a pattern that is intuitive to understand. We show how the results change when varying the parameters of the architecture on a high level basis (depth/width).
 
@@ -297,7 +297,7 @@ It should be noted that throughout the thesis many more architectures have been 
 	\label{tab:depth}
 \end{table}
 
-\Cref{tab:width} shows the results of networks with varying width. The best architecture is the baseline with 51\%. Reducing to the width leads to a decrease in performance, particularly when only half the amount of filters is used. A further reduction in weights leads to a more gradual decrease in performance in steps of 1-2\%. The lowest result is obtained when using a width of $\frac{1}{16}$.
+\Cref{tab:width} shows the results of networks with varying width. The best architecture is the baseline with 51\%. Reducing the width leads to a decrease in performance, particularly when only half the amount of filters is used. A further reduction in weights leads to a more gradual decrease in performance in steps of 1-2\%. The lowest result is obtained when using a width of $\frac{1}{16}$.
 
 \begin{table}[hbtp]
 	\centering
@@ -308,10 +308,11 @@ It should be noted that throughout the thesis many more architectures have been 
 
 \subsection{Discussion}
 
-Similarly to the results in \Cref{sec:empty} the very deep network does not improve in performance. Hence, depth does not seem to help when detecting objects with more overlap and in difficult view angles. However, a certain amount of layers seems to be crucial. When decreasing the number of layers further than 9 the performance gradually decreases. A possible reason is that with less layers the pooling has to be increased in order to keep the receptive field large enough. Yet aggressive pooling removes spatial information quickly. While this is of less influence for the detection task, it can be harmful for the localization. 
+Similarly to the results in \Cref{sec:empty}, the very deep network does not improve the detection performance. Hence, depth does not seem to help when detecting objects with more overlap and in difficult view angles. However, a certain amount of layers seems to be crucial. When decreasing the number of layers further than 9 the performance gradually decreases. A possible reason is that with less layers the pooling has to be increased in order to keep the receptive field large enough. Yet aggressive pooling removes spatial information quickly. While this is of less influence for the detection task, it can be harmful for the localization. 
 
-For lower width we hypothesized that the performance will only be effected for a very small amount of filters. However, the results show how the performance decreases already with half the amount of filters by 8\%. Further reduction leads to smaller decreases until a performance of 38\% is reached. That is despite using only 0.4\% of the weights of the original architecture the performance drops only by 13\%. 
+For lower width, we hypothesized that the performance will only be affected for a very small amount of filters. However, the results show how the performance decreases already with half the amount of filters by 8\%. Further reduction leads to smaller decreases until a performance of 38\% is reached. That is despite using only 0.4\% of the weights of the original architecture the performance drops only by 13\%. \todo{the last sentence reads weirdly}
 
+\todo{you don't show the plots you had presented in previous presentations?}
 
 \subsection{Conclusion}
 
@@ -322,9 +323,9 @@ We investigated how width affects the performance for the detection of \acp{EWFO
 
 \section{Transferring the detector to the real world}
 
-After having gained several insights in simulation it is time to perform experiments on real data. This section investigates the reality gap and several methods to reduce it.
+After having gained several insights in simulation, it is time to perform experiments on real data. This section investigates the reality gap and several methods to reduce it.
 
-As a test set the real world dataset introduced in \Cref{sec:datasets} is used. The examples in \Cref{fig:example_real_set} show several properties that are different to the samples created in simulation. The objects used in this dataset consist of square bars and a black pole. In contrast the \ac{CAD} models used for synthesizing data consist of round bars and are uniformly coloured. Also, the aspect ratio between both objects is different. In contrast to the synthetic objects, the objects in the real world set are more wide than high. Finally, the colour is not exactly the same. A network only trained on the available \ac{CAD} models is likely to overfit to the colour and object shape. In order to evaluate this hypothesis a new 3D Model is created and samples are included in the training set. The new model can be seen in \Cref{fig:mavlabgateexample}.
+As a test set the real world dataset introduced in \Cref{sec:datasets} is used. The examples in \Cref{fig:example_real_set} show several properties that are different to the samples created in simulation. The objects used in this dataset consist of square bars and a black pole. In contrast, the \ac{CAD} models used for synthesizing data consist of round bars and are uniformly coloured. Also, the aspect ratio between both objects is different. In contrast to the synthetic objects, the objects in the real world set are more wide than high. Finally, the colour is not exactly the same. A network only trained on the available \ac{CAD} models is likely to overfit to the colour and object shape. In order to evaluate this hypothesis a new 3D Model is created and samples are included in the training set. The new model can be seen in \Cref{fig:mavlabgateexample}.
 
 \begin{figure}[hbtp]
 	\centering
@@ -335,7 +336,7 @@ As a test set the real world dataset introduced in \Cref{sec:datasets} is used. 
 
 Furthermore, it can be seen how motion blur and lens distortion change object appearance. We hypothesize that including such effects in the training data can improve the performance on the real data. The experiments in \cite{Carlson2018} show how the incorporation of sensor effects particularly improves the performance of models learned on fully synthesized data. We study this incorporation by applying image augmentation with the models introduced in \Cref{sec:postprocessing}.
 
-The detector is trained with 20 000 samples where 3000 are generated with the new 3D model. During training one or several image augmentation methods. The parameters chosen visually:
+The detector is trained with 20 000 samples where 3000 are generated with the new 3D model. During training one or several image augmentation methods are used. The parameters chosen visually are the following:
 
 \begin{itemize}
 	\item Distortion: $k_1 = k_2 = 0.7$.
@@ -344,28 +345,29 @@ The detector is trained with 20 000 samples where 3000 are generated with the ne
 	\item $\Delta H$,$\Delta S$,$\Delta V$ are drawn from $\mathcal{U}^H(.9, 1.1)$, $\mathcal{U}^S(0.8, 1.2)$, $\mathcal{U}^V(0.8, 1.2)$
 \end{itemize}
 
-Initial experiments show relatively poor results on the \textit{Hallway} dataset. In this data set the objects are placed in front of a window which causes the objects to appear quite dark. Also the background is light and contains many details. We hypothesize that the lack of colour and the background confuse the detector. In order to examine two additional networks are trained:
+Initial experiments show relatively poor results on the \textit{Hallway} dataset. In this data set the objects are placed in front of a window which causes the objects to appear quite dark. Also the background is light and contains many details. We hypothesize that the lack of colour and the background confuse the detector. In order to examine these hypotheses, two additional networks are trained:
 
 \begin{itemize}
 	\item \textit{Grey} is trained by transforming 50\% of the images to grayscale images during training. This should force the network to learn more colour invariant features and thus improve the results on the \textit{Hallway} dataset. 
-	\item \textit{VOC Background} is trained by including the images created with backgrounds chosen from the VOC dataset (\Cref{sec:exp_background}. We hypothesize that by providing more variance in the background, the network will be more robust against details in the background. This should improve the results on the \textit{Hallway} dataset.
+	\item \textit{VOC Background} is trained by including the images created with backgrounds chosen from the VOC dataset (\Cref{sec:exp_background}). We hypothesize that by providing more variance in the background, the network will be more robust against details in the background. This should improve the results on the \textit{Hallway} dataset.
 \end{itemize}
 
-Next to evaluating the network on real data a comparison to the baseline is given. \textit{SnakeGate} is evaluated on each of the test sets. The colour filter is tuned for each environment. As the initial sampling of \textit{SnakeGate} is stochastic, mean and standard deviation of 5 repeated runs are presented.
+Next to evaluate the network on real data a comparison to the baseline is given. \textit{SnakeGate} is evaluated on each of the test sets. The colour filter is tuned for each environment. As the initial sampling of \textit{SnakeGate} is stochastic, mean and standard deviation of 5 repeated runs are presented.
 
 \subsection{Results}
 
 \begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/augmentation_overview}
-	\caption{An overview over all applied augmentation methods. The results are presented as the mean $ap_{60}$ over the three data sets. The results of 4 runs are reported. It can be seen how \textit{blur} and \textit{distortion} as well as \textit{grey} lead to an improvement in performance compared to not using augmentation.}
+	\caption{An overview of performance over all applied augmentation methods. The results are presented as the mean $ap_{60}$ over the three data sets. The results of 4 runs are reported. It can be seen how \textit{blur} and \textit{distortion} as well as \textit{grey} lead to an improvement in performance compared to not using augmentation.}
 	\label{fig:augmentation_overview}
 \end{figure}
 
+\todo{Did you mention the datasets somewhere else before?}
 \Cref{fig:augmentation_overview} shows the mean performance of networks trained with different augmentation methods. Variations in \ac{HSV}, chromatic aberration as well as including backgrounds from the Pascal VOC datasets lead to a deterioration in performance compared to not using any augmentation. In contrast, including blur, distortion and gray images leads to an improvement. The overall best results can be achieved by including distortion and gray images in the training.
 
 \begin{figure}[hbtp]
 	\includegraphics[width=\textwidth]{fig/augmentation}
-	\caption{The results of \Cref{fig:augmentation_overview} in more detail for the different data sets. It can be seen how \textit{grey} improves the performance mainly on \textit{Cyberzoo} and \textit{Hallway} while the performance on \textit{Basement} gets worse. In contrast \textit{distortion} leads to a more overall improvement. Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.}
+	\caption{The results of \Cref{fig:augmentation_overview} in more details for the different data sets. It can be seen how \textit{grey} improves the performance mainly on \textit{Cyberzoo} and \textit{Hallway} while the performance on \textit{Basement} gets worse. In contrast \textit{distortion} leads to a more overall improvement. Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.}
 	\label{fig:augmentation}
 \end{figure}
 
@@ -373,7 +375,7 @@ Next to evaluating the network on real data a comparison to the baseline is give
 
 Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.
 
-\Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway} show example predictions on the various data sets of the network trained with distortion. On \textit{Cyberzoo} and \textit{Basement} several very accurate predictions can be seen, even under heavy occlusion. On \textit{Hallway} this is rather an exception. Yet on all data sets several images where the object is clearly visible, are wrongly or not at all detected.
+\Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway} show example predictions of the network trained with distortion on the various data sets. On \textit{Cyberzoo} and \textit{Basement} several very accurate predictions can be seen, even under heavy occlusion, while on \textit{Hallway} this is rather an exception. Yet on all data sets, several images where the object is clearly visible are wrongly or not at all detected.
 
 \begin{figure}[hbtp]
 \centering
@@ -403,7 +405,7 @@ Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the resu
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/basement_notnice2.jpg}
 \end{minipage}
-\caption{Predictions in the \textit{Basement} environment of the network trained with distortio. The network produces very nice detections in cases of heavy occlusion (1 and 2). However, in other cases where the gate is visible at least equally well (3 and 4) the gate is not detected or with bad localization.}
+\caption{Predictions in the \textit{Basement} environment of the network trained with distortion. The network produces very nice detections in cases of heavy occlusion (1 and 2). However, in other cases where the gate is visible at least equally well (3 and 4) the gate is not detected or with bad localization.}
 \label{fig:example_basement}
 \begin{minipage}{0.24\textwidth}
 	\includegraphics[width=\textwidth]{fig/examples/hallway_nice1.jpg}
@@ -423,29 +425,31 @@ Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the resu
 
 \subsection{Discussion}
 
-In this experiment the detector is evaluated on real data. Compared to simulation, only on \textit{Cyberzoo} comparable results can be achieved. On the more difficult data sets \textit{Hallway} and \textit{Basement} the performance drop is quite significant. On \textit{Hallway} almost no detection can be achieved. Hence, there seems to still be a big reality gap.
+In this experiment the detector is evaluated on real data. Only on \textit{Cyberzoo} results comparable to simulation can be achieved. On the more difficult data sets \textit{Hallway} and \textit{Basement} the performance drop is quite significant. On \textit{Hallway} almost no detection can be achieved. Hence, there seems to still be a big reality gap.
 
-Where exactly the gap lays in is difficult to identify. Among image augmentation that addresses the colour feature such as \textit{HSV} and \textit{Grey} only \textit{Grey} leads to an improvement. Thereby the main improvement is obtained on the \textit{Cyberzoo} dataset where illumination/colour is of smaller influence. 
+Where exactly the gap lays in is difficult to identify. Among image augmentation that addresses the colour feature such as \textit{HSV} and \textit{Grey}, only \textit{Grey} leads to an improvement. Thereby the main improvement is obtained on the \textit{Cyberzoo} dataset where illumination/colour is of smaller influence. 
 
-Lens distortion and blurring leads to an overall improvement on the datasets. However, the improvement cannot be particularly appointed to certain samples that suffer from heavy distortion or motion blur. Also, a high variance in the results can be observed which makes it difficult to conclude something. This holds especially for \textit{Basement} and \textit{Hallway} which are comparable small data sets. Potentially a more sophisticated real world test set could give better insights.
+Lens distortion and blurring lead to an overall improvement on the datasets. However, the improvement cannot be particularly appointed to certain samples that suffer from heavy distortion or motion blur. Also, a high variance in the results can be observed which makes it difficult to conclude something. This holds especially for \textit{Basement} and \textit{Hallway} which are comparable small data sets. Potentially a more sophisticated real world test set could give better insights.
 
-For \textit{Hallway} the results are particularly low. We hypothesized that the reason is the noise in the background and that including backgrounds from the Pascal VOC dataset can lead to an improvement on this dataset. However, including these samples seem to further confused the detector. The results deteriorate. On \textit{Hallway} the images are also taken against light background which makes the gate appear dark. We hypothesized that including grey images in the training improves the results on this dataset. We can observe an improvement from 8\% to 16\% by applying this technique. Hence, it seems that the technique helped a bit however it is not the predominant problem on this dataset.
+For \textit{Hallway} the results are particularly low. We hypothesized that the reason is the noise in the background and that including backgrounds from the Pascal VOC dataset can lead to an improvement on this dataset. However, including these samples seem to further confuse the detector. The results deteriorate. On \textit{Hallway} the images are also taken against light background which makes the gate appear dark. We hypothesized that including grey images in the training improves the results on this dataset. We can observe an improvement from 8\% to 16\% by applying this technique. Hence, it seems that the technique helped a bit however it is not the predominant problem on this dataset.
 
 Compared to \textit{SnakeGate} the network achieves better results. Especially, when including distortion the results improve by 10\%. Hence, the learning based detector seems to have learned a more robust detection of the racing gates.
 
-In several examples in \Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway} it can be seen how clearly visible objects are not detected. In simulation this is less of a problem. Hence, it seems that there is still a gap between the simulated data and the one present in the real world.
+In several examples in \Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway}, it can be seen how clearly visible objects are not detected. In simulation this is less of a problem. Hence, it seems that there is still a gap between the simulated data and the one present in the real world.
 
 \subsection{Conclusion}
 
 We investigated how the detector performs in the real world and if image augmentation can bridge the reality gap. We can conclude that image augmentation can improve the results on the real world data. In particular the modelling of lens distortion and the incorporation of grey images improve the results. Nevertheless, these results are preliminary as the variance in the results does not allow a final conclusion. Potentially, a more sophisticated test set could give more insights.
 
-In more difficult environments the performance drops significantly. Also, several clearly visible objects can not be detected. As this typically not happens in simulation we can conclude that there is still a large reality gap. Potentially, the results can be improved when including real world data in the training set. Such experiments should be conducted in future work.
+\todo{you could make a list of the real world dataset properties which bring difficulties in the detection. that is interesting for future work.}
+
+In more difficult environments the performance drops significantly. Also, several clearly visible objects can not be detected. As this typically not happens in simulation, we can conclude that there is still a large reality gap. Potentially, the results can be improved when including real world data in the training set. Such experiments should be conducted in future work.
 
 Overall an improvement of the learning based detector compared to the baseline can be reported. The results in simulation show potential further improvement with better training data.
 
 
-\section{Deploying the detector on a \ac{MAV}}
-\}
+\section{Deploying the detector on an \ac{MAV}}
+
 In the application of the detection of \acp{EWFO} on a \acp{MAV} detection accuracy is only one important metric. Equally relevant are inference speed and energy requirements. The example control loop in which the detector of this work is integrated, contains a filtering stage which fuses measurements of different sensors over time to infer a global state. This stage can deal with outliers and henceforth it can be more important to have more bad detections in high frequency than only slow but good ones. This section studies the deployment of a detector for \acp{EWFO} on a \ac{MAV} in the example of the target system of this work. Therefore the performance-accuracy trade-off is studied and an experiment in a real world flight is conducted.
 
 As explained in \Cref{sec:background} the execution time strongly depends on the used hardware as well as its low level implementation. Therefore the inference time of several layers is measured on the JeVois using the \textit{Darknet} framework. The results are displayed in \Cref{fig:bottleneck_jevois}. Each sample corresponds to the number of computations and their computational time in one layer. Dashed lines connect samples at the same resolution. It is apparent how the same amount of computations at a spatial resolution of 20x15 is more than 4 times faster than at a resolution of 160x120. We assume this is because parallelism is better exploited at the lower scale.
