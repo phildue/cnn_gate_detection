@@ -1,9 +1,9 @@
 \begin{tabular}{llll}
 \toprule
-Trained/Tested &          Gate &          Sign &          Cats \\
+Trained/Tested &          Gate &        Sign &          Cats \\
 \midrule
-          Gate &  0.55 +- 0.04 &  0.01 +- 0.00 &  0.37 +- 0.06 \\
-          Sign &  0.02 +- 0.01 &  0.74 +- 0.06 &  0.05 +- 0.04 \\
-          Cats &  0.06 +- 0.03 &  0.03 +- 0.00 &  0.78 +- 0.01 \\
+          Gate &  0.58 +- 0.01 &  nan +- nan &  0.33 +- 0.12 \\
+          Sign &    nan +- nan &  nan +- nan &    nan +- nan \\
+          Cats &    nan +- nan &  nan +- nan &    nan +- nan \\
 \bottomrule
 \end{tabular}

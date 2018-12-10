@@ -2,11 +2,11 @@
 \toprule
 Trained/Tested &          Gate &          Sign &          Cats \\
 \midrule
-          Gate &  0.24 +- 0.06 &  0.02 +- 0.02 &  0.23 +- 0.06 \\
-          Sign &  0.00 +- 0.00 &  0.44 +- 0.11 &  0.02 +- 0.02 \\
-          Cats &  0.05 +- 0.01 &  0.01 +- 0.01 &  0.04 +- 0.03 \\
-     EWFO Deep &  0.23 +- 0.00 &  0.01 +- 0.00 &  0.27 +- 0.00 \\
-     Sign Deep &  0.00 +- 0.00 &  0.38 +- 0.00 &  0.00 +- 0.00 \\
-     Cats Deep &  0.01 +- 0.00 &  0.00 +- 0.00 &  0.04 +- 0.00 \\
+          Gate &  0.26 +- 0.06 &  0.03 +- 0.02 &  0.36 +- 0.03 \\
+          Sign &    nan +- nan &    nan +- nan &    nan +- nan \\
+          Cats &    nan +- nan &    nan +- nan &    nan +- nan \\
+     EWFO Deep &    nan +- nan &    nan +- nan &    nan +- nan \\
+     Sign Deep &    nan +- nan &    nan +- nan &    nan +- nan \\
+     Cats Deep &    nan +- nan &    nan +- nan &    nan +- nan \\
 \bottomrule
 \end{tabular}
