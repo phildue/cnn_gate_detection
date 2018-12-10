@@ -108,7 +108,7 @@ For each object a test set of 200 samples is created within the \textit{Dark}-En
 \begin{table}[hbtp]
 	\centering
 	\input{tables/all_basement.txt}
-	\caption{Performance of two architectures when the test environment is similar to the training environment. Each trained network (row) is evaluated on each test set (column). It can be seen how the detectors exploit the structure that is placed in the object. In contrary, the detector of \acp{EWFO} only gets confused when the structure inside the object is very different from the training set.}
+	\caption{Performance of two architectures when the test environment is similar to the training environment (datasets \textit{Test Dark Gate}, \textit{Test Dark Sign}, \textit{Test Dark Cats}). Each trained network (row) is evaluated on each test set (column). It can be seen how the detectors exploit the structure that is placed in the object. In contrary, the detector of \acp{EWFO} only gets confused when the structure inside the object is very different from the training set.}
 	\label{tab:all_basement}
 \end{table}
 
@@ -119,7 +119,7 @@ For detecting the \textit{Gate}-object, the lowest performance of 0.55\% is achi
 \begin{table}[hbtp]
 	\centering
 	\input{tables/diff_iros.txt}
-	\caption{Change in performance when the detectors are tested in another environment than their training environment. The most severe drop can be seen at the \textit{Cats}-object. The drop for \acp{EWFO} is comparable to the \textit{Sign}-object}
+	\caption{Change in performance when the detectors are tested in another environment than their training environment (datasets \textit{Test IROS Gate}, \textit{Test IROS Sign}, \textit{Test IROS Cats}). The most severe drop can be seen at the \textit{Cats}-object. The drop for \textit{Gate} is comparable to the \textit{Sign}-object}
 	\label{tab:diff_iros}
 \end{table}
 
@@ -127,7 +127,7 @@ For detecting the \textit{Gate}-object, the lowest performance of 0.55\% is achi
 
 \subsection{Discussion}
 
-From the previous observations, it can be seen how the detector exploits the added structure in the filled objects, for which the performance is much better than for the \textit{Gate} object. Also, when the detectors trained with added structure are applied on the empty object the performance drops. Thereby the network size is of minor effect. No performance boost is achieved even for the more complex \textit{Cats} object.\todo{not super clear logical connection}
+From the previous observations, it can be seen how the detector exploits the added structure in the filled objects, for which the performance is much better than for the \textit{Gate} object. Also, when the detectors trained with added structure are applied on the empty object the performance drops. Thereby the network size is of minor effect. No performance boost is achieved even for the more complex \textit{Cats} object.
 
 When the test environment changes, the most complex object can almost not be detected anymore. It seems that the detector particularly overfitted to lightning conditions and background. This is surprising as the background in the \textit{IROS}-environment is lighter and thus the object is better visible than in the \textit{Dark}-environment.
 
@@ -135,14 +135,13 @@ The simple but solid object is subject to a smaller performance drop when the en
 
 The detector for the \textit{Gate}-object is less subjective to changes in the empty part as expected. When applying the detector on objects with the \textit{Cats} structure some performance can still be reached. The deep architecture does not suffer any performance drop in this case. This is likely because the \textit{Cat} structure is of similar shape and colour as the background. When adding a very different structure such as the \textit{Sign} object, the performance drops almost to zero.
 
-The background dependency is also lower as expected. When moving to a new environment the performance drop is not higher than for the other objects.\todo{you say as expected. since it's good results, you can maybe explain a bit more why.}
-
+The background dependency is also lower as expected. When moving to a new environment the performance drop is not higher than for the other objects. Potentially, all detector overfitted to the environmental conditions of the training room.
 
 \subsection{Conclusion}
 
 In this section we compared the \ac{EWFO} investigated in this work to objects of similar shape that contain a structure inside the empty part. We hypothesized that a \ac{EWFO} is harder to detect as it provides less features that the detector can use. This hypothesis can be confirmed as when adding structure inside the empty part the performance get significantly better. 
 
-Furthermore, we hypothesized that due to the empty part a detector for \acp{EWFO} is more dependent on the training environment than for other objects. However, this hypothesis could not be confirmed. The performance drop for other objects is at least equally high. \todo{any potential explanation?}
+Furthermore, we hypothesized that due to the empty part a detector for \acp{EWFO} is more dependent on the training environment than for other objects. However, this hypothesis could not be confirmed. The performance drop for other objects is at least equally high. Its possible that all networks overfitted to the environmental conditions in the training set. However, this hypothesis would need to be confirmed in further experiments.
 
 Also, we hypothesized that in contrast to a more complex object the detection of \acp{EWFO} can not be improved by using a deeper network. While this could be confirmed for the \ac{EWFO}, in the experiments there is neither an improvement for the other objects. Yet it can be seen how the deeper network is less confused when adding the \textit{Cat} structure.
 
@@ -170,7 +169,7 @@ With both methods a dataset with 20 000 samples is created. The view points are 
 
 For the dataset with random backgrounds, 2000 view points are created in a black environment. Subsequently the black image part is replaced with a randomly selected image from the Pascal VOC dataset \cite{Everingham2010}.
 
-The simulated dataset is created using \textit{Daylight} and \textit{Dark} environment which have different lightning conditions. Additionally, the backgrounds in both environments are varied such that a higher variance in background textures is achieved. Thereby the background texture that is present in the \textit{IROS} environment is not used.\todo{maybe give more details on the background. is it the different transformations u explained in the methodology?}
+The simulated dataset is created using \textit{Daylight} and \textit{Dark} environment which have different lightning conditions. Additionally, the backgrounds in both environments are varied such that a higher variance in background textures is achieved. Thereby the background texture that is present in the \textit{IROS} environment is not used.
 
 
 \subsection{Results}
@@ -186,7 +185,7 @@ The simulated dataset is created using \textit{Daylight} and \textit{Dark} envir
 
 For both methods the detectors became less subjective to patterns present in the empty part. The detector trained on simulated images achieves equal performance when there is a \textit{Cat} structure present. Also, the performance drop for the \textit{Sign} structure is less severe. Interestingly, the detector trained with random backgrounds even detects more gates when there is a \textit{Sign} structure present in the empty part.
 
-Another observation is the higher variance in the results. Especially, when trained with random backgrounds the standard deviation is quite high. \todo{double check this with another iteration}
+Another observation is the higher variance in the results. Especially, when trained with random backgrounds the standard deviation is quite high. 
 
 
 \subsection{Discussion}
@@ -385,7 +384,7 @@ Next to evaluate the network on real data a comparison to the baseline is given.
 
 \Cref{fig:augmentation} shows the results for the best augmentation methods in more detail. It can be seen how \textit{grey} improves the performance mainly on \textit{Cyberzoo} and \textit{Hallway}. In contrast, on \textit{Basement} the performance drops compared to not using any augmentation. \textit{Distortion} leads to a more even improvement for all data sets.
 
-Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high.
+Particularly for \textit{Cyberzoo} and \textit{Hallway} the variance in the results is high. This is less the case for the \textit{Basement} dataset.
 
 \Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway} show example predictions of the network trained with distortion on the various data sets. On \textit{Cyberzoo} and \textit{Basement} several very accurate predictions can be seen, even under heavy occlusion, while on \textit{Hallway} this is rather an exception. Yet on all data sets, several images where the object is clearly visible are wrongly or not at all detected.
 
@@ -441,11 +440,11 @@ In this experiment the detector is evaluated on real data. Only on \textit{Cyber
 
 Where exactly the gap lays in is difficult to identify. Among image augmentation that addresses the colour feature such as \textit{HSV} and \textit{Grey}, only \textit{Grey} leads to an improvement. Thereby the main improvement is obtained on the \textit{Cyberzoo} dataset where illumination/colour is of smaller influence. 
 
-Lens distortion and blurring lead to an overall improvement on the datasets. However, the improvement cannot be particularly appointed to certain samples that suffer from heavy distortion or motion blur. Also, a high variance in the results can be observed which makes it difficult to conclude something. This holds especially for \textit{Basement} and \textit{Hallway} which are comparable small data sets. Potentially a more sophisticated real world test set could give better insights.
+Lens distortion and blurring lead to an overall improvement on the datasets. However, the improvement cannot be particularly appointed to certain samples that suffer from heavy distortion or motion blur. Also, a high variance in the results can be observed which makes it difficult to conclude something. This holds especially for \textit{Basement} and \textit{Hallway} which are comparable small data sets. Potentially a larger real world test sets could give better insights.
 
 For \textit{Hallway} the results are particularly low. We hypothesized that the reason is the noise in the background and that including backgrounds from the Pascal VOC dataset can lead to an improvement on this dataset. However, including these samples seem to further confuse the detector. The results deteriorate. On \textit{Hallway} the images are also taken against light background which makes the gate appear dark. We hypothesized that including grey images in the training improves the results on this dataset. We can observe an improvement from 8\% to 16\% by applying this technique. Hence, it seems that the technique helped a bit however it is not the predominant problem on this dataset.
 
-Compared to \textit{SnakeGate} the network achieves better results. Especially, when including distortion the results improve by 10\%. Hence, the learning based detector seems to have learned a more robust detection of the racing gates.
+Compared to \textit{SnakeGate} the network achieves better results. Especially, when including distortion the results improve by 16\%. Hence, the learning based detector seems to have learned a more robust detection of the racing gates.
 
 In several examples in \Cref{fig:example_cyberzoo,fig:example_basement,fig:example_hallway}, it can be seen how clearly visible objects are not detected. In simulation this is less of a problem. Hence, it seems that there is still a gap between the simulated data and the one present in the real world.
 
@@ -453,9 +452,10 @@ In several examples in \Cref{fig:example_cyberzoo,fig:example_basement,fig:examp
 
 We investigated how the detector performs in the real world and if image augmentation can bridge the reality gap. We can conclude that image augmentation can improve the results on the real world data. In particular the modelling of lens distortion and the incorporation of grey images improve the results. Nevertheless, these results are preliminary as the variance in the results does not allow a final conclusion. Potentially, a more sophisticated test set could give more insights.
 
-\todo{you could make a list of the real world dataset properties which bring difficulties in the detection. that is interesting for future work.}
 
-In more difficult environments the performance drops significantly. Also, several clearly visible objects can not be detected. As this typically not happens in simulation, we can conclude that there is still a large reality gap. Potentially, the results can be improved when including real world data in the training set. Such experiments should be conducted in future work.
+In more difficult environments the performance drops significantly. Also, several clearly visible objects can not be detected. As this typically not happens in simulation, we can conclude that there is still a large reality gap.
+
+What exactly the reality gap is, is difficult to identify. The most apparent differences such as colour and deformation by distortion or general noise are addressed. It is possible that the data generated with the simulator is limited by the graphical engine. Even though the \textit{UnrealEngine} creates high quality images, it cannot fully capture the complexity of real world data. Potentially, the results can be improved when including real world data in the training set. Such experiments should be conducted in future work.
 
 Overall an improvement of the learning based detector compared to the baseline can be reported. The results in simulation show potential further improvement with better training data.
 
@@ -473,11 +473,11 @@ As explained in \Cref{sec:background}, the execution time strongly depends on th
 	\label{fig:bottleneck_jevois}
 \end{figure}
 
-This means most speed can be gained when reducing the number of computations in the early layers where the spatial resolution is high. In \Cref{sec:exp_arch} it could be seen that already a small amount of filters in the early layers is enough to detect \acp{EWFO}. However, even evaluating 4 kernels at a resolution of 320x240 already takes 55 ms (\Cref{fig:bottleneck_jevois} red triangle). A total network of that size would require more than 100 ms and is thus too slow to be deployed in the control loop.
+This means most speed can be gained when reducing the number of computations in the early layers where the spatial resolution is high. \Cref{sec:exp_arch} it could be seen that already a small amount of filters in the early layers is enough to detect \acp{EWFO}. However, even evaluating 4 kernels at a resolution of 320x240 already takes 55 ms (\Cref{fig:bottleneck_jevois} red triangle). A total network of that size would require more than 100 ms and is thus too slow to be deployed in the control loop.
 
 Current research mostly aims at reducing the computations when the convolved volumes are deep or the operations are performed on \acp{CPU} that do not support floating point operations. However, the bottleneck on the JeVois happens at shallow volumes and the hardware can perform floating point operations. Furthermore, \acp{EWFO} consist of thin elements that are spread over large parts of the image. Hence, we hypothesize that simply reducing the image resolution will lead to large drops in performance. An alternative is to increase the stride parameter in the early layers of the network. This reduces the number of locations at which the kernel is evaluated. \acp{EWFO} are sparse and spread over large parts of the image, while most of the image does not contain useful information. Hence, we hypothesize that increasing the stride parameter in the early layers will perform better than reducing the image resolution.
 
-In order to evaluate our hypotheses, the network is trained with different architectures. Subsequently, performance on the real data and inference time on the \textit{JeVois} are measured.
+In order to evaluate our hypotheses, the network is trained with different configurations. Based on the results in \Cref{sec:exp_arch} the architecture with $\frac{1}{4}$ of the original width is chosen. Stepwise the first pooling layers are removed and instead the convolutions are applied with larger strides. Subsequently, performance on the real data and inference time on the \textit{JeVois} are measured. Therefore the detectors are evaluated for 1 minute and the mean inference time is reported.
 
 The \textit{JeVois} supports aspect ratios of 4:3 and resolutions of 160x120, 320x240 and 640x480. Although, the detector does not depend on the image size, the object appearance can change at lower image resolution. Hence, during training the images are scaled to 160x160 or 320x320 respectively. The anchor boxes are scaled in similar fashion. Finally, as the input image resolution decreases, the output grid size decreases by the same factor. This is not desirable as the output resolution should stay the same. Hence, when decreasing the input image pooling layers are removed such that the output grid stays at 20,20 or 10,10 respectively.
 
@@ -497,7 +497,7 @@ The plot shows how the different networks are generally slower than \textit{Snak
 
 \subsection{Discussion}
 
-In this section, different methods to increase the speed of the detector were investigated. As expected the performance is better when keeping a higher resolution but increasing the stride parameter. At a resolution of $160\times120$, the performance of the detector drops almost to the level of \textit{SnakeGate}. In contrast the network with one stride layer achieves the best results.
+As expected the performance is better when keeping a higher resolution but increasing the stride parameter. At a resolution of $160\times120$, the performance of the detector drops almost to the level of \textit{SnakeGate}. In contrast the network with one stride layer achieves the best results.
 
 Replacing the first pooling layers with larger strides gives a speed up of 17 ms/frame without loosing any performance. Further replacing the pooling layers leads to a stepwise decrease in performance. Hence, replacing the pooling layers with larger strides can be used to trade-off between performance and inference speed.
 

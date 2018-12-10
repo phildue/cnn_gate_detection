@@ -23,11 +23,7 @@ legend = [
     'VOC Background',
 ]
 
-title = [
-    'Gate',
-    'Sign',
-    'Cats'
-]
+title = ['gate $[ap_{60}]$', 'sign $[ap_{60}]$', 'cats $[ap_{60}]$']
 iou = 0.6
 n_iterations = 4
 frame = pd.DataFrame()
@@ -61,12 +57,12 @@ def create_table(setname, filename, shift=0):
                 result = frame['test_{}_{}_i0{}'.format(setname, c, i_i)][i_m + shift]
                 if result >= 0:
                     results.append(result)
-            column_content.append('{:.2f} +- {:.2f}'.format(np.mean(results), np.std(results)))
+            column_content.append('${:.2f} \pm {:.2f}$'.format(np.mean(results), np.std(results)))
         table[title[i_c]] = column_content
 
     print(table.to_string(index=False))
-    print(table.to_latex(index=False))
-    save_file(table.to_latex(index=False), filename, 'doc/thesis/tables/', raw=True)
+    print(table.to_latex(index=False,escape=False))
+    save_file(table.to_latex(index=False,escape=False), filename, 'doc/thesis/tables/', raw=True)
 
 
 

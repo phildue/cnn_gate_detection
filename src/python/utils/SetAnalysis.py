@@ -43,6 +43,8 @@ class SetAnalysis:
         n_objects = 0
         for l in self.labels:
             n_objects += len(l.objects)
+
+        print('Total Objects:' + str(n_objects))
         return n_objects / len(self.labels)
 
     def area_distribution(self):
