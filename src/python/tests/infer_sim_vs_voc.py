@@ -27,11 +27,11 @@ datasets = [
 ]
 
 work_dir = 'out/'
-n_iterations = 2
+n_iterations = 4
 ObjectLabel.classes = ['gate']
 for i_d, dataset in enumerate(datasets):
     for i_m, model in enumerate(models):
-        for i in range(0, n_iterations):
+        for i in range(2, n_iterations):
             model_folder = model + '_i0{}'.format(i)
             try:
                 infer_on_set(result_path=work_dir + model_folder + '/test_' + dataset + '/',

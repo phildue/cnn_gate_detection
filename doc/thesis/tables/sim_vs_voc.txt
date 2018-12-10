@@ -4,6 +4,6 @@
 \midrule
     Single Background &  0.26 +- 0.06 &  0.03 +- 0.02 &  0.36 +- 0.03 \\
  Simulated Background &  0.74 +- 0.05 &  0.54 +- 0.22 &  0.71 +- 0.07 \\
-       VOC Background &    nan +- nan &    nan +- nan &    nan +- nan \\
+       VOC Background &  0.30 +- 0.22 &  0.45 +- 0.19 &  0.34 +- 0.20 \\
 \bottomrule
 \end{tabular}
