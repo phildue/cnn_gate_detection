@@ -8,27 +8,24 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'width4',
-    'background',
-    'chromatic',
-    'hsv',
+    # 'hsv',
+    # 'background',
+    # 'chromatic',
     'blur',
-    'blur_distortion',
+    # 'blur_distortion',
     'gray',
     'distortion',
     'mavlabgates',
-
 ]
 titles = [
-    'width4',
-    'VOC \n background',
-    'chromatic',
-    'hsv',
-    'blur',
-    'blur \n + distortion',
-    'gray',
-    'distortion',
-    'no\n augmentation',
+    # 'hsv',
+    # 'VOC \n background',
+    # 'chromatic',
+    'Blur',
+    # 'blur \n + distortion',
+    'Grey',
+    'Distortion',
+    'No\n Augmentation',
     'SnakeGate',
 ]
 
@@ -47,7 +44,7 @@ datasets_title = [
 ious = [0.6]
 n_iterations = 5
 frame = pd.DataFrame()
-frame['Name'] = models + ['SnakeGate']
+# frame['Name'] = models + ['SnakeGate']
 for iou in ious:
     for d in datasets:
         for it in range(n_iterations):
@@ -93,15 +90,14 @@ iou = 0.6
 # save_file(table.to_latex(index=False, escape=False), 'augmentation.txt', 'doc/thesis/tables/', raw=True)
 
 plt.figure(figsize=(10, 3))
-plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-',zorder=0)
-plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--',zorder=0)
-w = 1 / len(models)
+plt.grid(b=True, which='major', color=(0.75, 0.75, 0.75), linestyle='-', zorder=0)
+plt.grid(b=True, which='minor', color=(0.75, 0.75, 0.75), linestyle='--', zorder=0)
+w = 1 / (len(datasets)) / 2
 handles = []
-
-for i_m in range(len(models)+1):
+for i_d, d in enumerate(datasets):
     mean = []
     err = []
-    for i_d, d in enumerate(datasets):
+    for i_m in range(len(models) + 1):
         results = []
         for i_i in range(n_iterations):
             result = frame['{}_iou{}_i0{}'.format(d, iou, i_i)][i_m]
@@ -109,18 +105,20 @@ for i_m in range(len(models)+1):
                 results.append(result)
         mean.append(np.mean(results))
         err.append(np.std(results))
-    h = plt.bar(i_m+1, np.mean(mean,0), width=w, capsize=2, ecolor='gray',zorder=3)
-    plt.errorbar(i_m+1, np.mean(mean,0), np.mean(err,0), 0, fmt=' ', ecolor='gray', capsize=2,
+    h = plt.bar(np.arange(len(models) + 1) + 0.5 + i_d * w - (len(models) + 1) * w, mean, width=w, capsize=2,
+                ecolor='gray', zorder=3)
+    plt.errorbar(np.arange(len(models) + 1) + 0.5 + i_d * w - (len(models) + 1) * w, mean, err, 0, fmt=' ',
+                 ecolor='gray', capsize=2,
                  elinewidth=1, zorder=3)
     handles.append(h)
-# plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right')
+plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0), loc='center right')
 
-plt.xticks(np.arange(len(models)+1)+1, titles)
-plt.ylabel('$ap_{60}$')
+plt.xticks(np.arange(len(models) + 1), titles)
+plt.ylabel('Average Precision')
 plt.minorticks_on()
 plt.ylim(0, 0.7)
 # plt.legend(handles, datasets_title)
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                     wspace=0.3, hspace=0.3)
-plt.savefig('doc/thesis/fig/augmentation_overview.png')
+plt.savefig('doc/presentation/augmentation.png',dpi=600, bbox_inches='ticht')
 plt.show(True)

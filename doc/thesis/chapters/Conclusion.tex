@@ -19,7 +19,7 @@ As no real training data were available, images and corresponding object labels 
 	
 	In summary, we propose to fully synthesize environments when creating training data for the detection of \acp{EWFO} on \acp{MAV}. Furthermore, the precision can be improved by training the detector based on view angles it will see in the real world, possibly by simulating the flight behaviour. In order to transfer the detector to the real world, we recommend to use image augmentation. Particularly augmenting the images by modelling lens distortion improves the performance on the investigated dataset.
 
-	\item[\textbf{RQ2}]How can \acp{EWFO} be detected using a \acp{CNN} on a \acp{MAV}?
+	\item[\textbf{RQ2}]How can \acp{EWFO} be detected using a \ac{CNN} on a \acp{MAV}?
 	
 	The \textit{YoloV3} can be adapted to the detection of \acp{EWFO}. The experiments showed how the detector can be confused by structures that are present within the empty part of the object. This was resolved by providing samples from different backgrounds and light conditions. We hypothesized that many backgrounds are required to achieve background invariance. However, the experiments showed that a small number of different environments is already enough to make the detector more robust against such confusion.
 		

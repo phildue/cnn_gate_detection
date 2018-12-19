@@ -18,26 +18,27 @@ show_t = args.show
 
 cd_work()
 models = [
-    '320',
+    # '320',
     # '320_strides1',
     # '320_strides2',
     # '160',
+    'yolo_lowres160'
 
 ]
 
 preprocessing = [
-    [TransformResize((240, 320))],
     # [TransformResize((240, 320))],
     # [TransformResize((240, 320))],
-    # [TransformResize((120, 160))],
+    # [TransformResize((240, 320))],
+    [TransformResize((120, 160))],
 
 ]
 
 img_res = [
-    (240, 320),
     # (240, 320),
     # (240, 320),
-    # (120, 160),
+    # (240, 320),
+    (120, 160),
 
 ]
 
@@ -65,7 +66,7 @@ for dataset in datasets:
                 for iou in [0.4, 0.6, 0.8]:
                     prediction_dir = model_dir + '/test_{}'.format(dataset)
                     labels_true, labels_pred, img_files = load_predictions(
-                        '{}/predictions.pkl'.format(prediction_dir))
+                        '{}/predictions160.pkl'.format(prediction_dir))
 
                     images = [imread(f, 'bgr') for f in img_files]
 

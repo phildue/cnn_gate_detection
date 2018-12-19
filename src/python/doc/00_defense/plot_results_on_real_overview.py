@@ -8,26 +8,24 @@ from utils.workdir import cd_work
 
 cd_work()
 models = [
-    'width4',
-    'background',
-    'chromatic',
-    'hsv',
+    # 'background',
+    # 'chromatic',
+    # 'hsv',
     'blur',
-    'blur_distortion',
+    # 'blur_distortion',
     'gray',
     'distortion',
     'mavlabgates',
 
 ]
 titles = [
-    'width4',
-    'VOC \n background',
-    'chromatic',
-    'hsv',
-    'blur',
-    'blur \n + distortion',
-    'gray',
-    'distortion',
+    # 'VOC \n background',
+    # 'chromatic',
+    # 'hsv',
+    'Blur',
+    # 'blur \n + distortion',
+    'Grey',
+    'Distortion',
     'no\n augmentation',
     'SnakeGate',
 ]
@@ -116,11 +114,11 @@ for i_m in range(len(models)+1):
 # plt.legend(handles, datasets_title, bbox_to_anchor=(1.0, 1.0),loc='center right')
 
 plt.xticks(np.arange(len(models)+1)+1, titles)
-plt.ylabel('$ap_{60}$')
+plt.ylabel('Average Precision')
 plt.minorticks_on()
 plt.ylim(0, 0.7)
 # plt.legend(handles, datasets_title)
 plt.subplots_adjust(left=None, bottom=0.2, right=None, top=None,
                     wspace=0.3, hspace=0.3)
-plt.savefig('doc/thesis/fig/augmentation_overview.png')
+plt.savefig('doc/presentation/augmentation_overview.png',dpi=600)
 plt.show(True)

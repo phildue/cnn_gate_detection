@@ -26,8 +26,9 @@ models = [
     # 'hsv',
     # 'exposure',
     # 'chromatic',
-    # 'mavlabgates'
-    'blur_distortion',
+    # 'mavlabgates',
+    'yolo_lowres160'
+    # 'blur_distortion',
 ]
 
 datasets = [
@@ -36,8 +37,8 @@ datasets = [
     'jevois_hallway',
 ]
 
-preprocessing= [
-TransformResize((120, 160))
+preprocessing = [
+    TransformResize((120, 160))
 ]
 
 work_dir = 'out/'
@@ -50,39 +51,31 @@ for dataset in datasets:
             try:
 
                 summary = ModelSummary.from_file(work_dir + model_folder + '/summary.pkl')
-                anchors = summary.anchors/4
+                anchors = summary.anchors
                 img_res = (120, 160)
                 architecture = summary.architecture
                 color_format = summary.color_format
                 network, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=[
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-                    # {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-                    # {'name': 'max_pool', 'size': (2, 2)},
                     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'max_pool', 'size': (2, 2)},
                     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'max_pool', 'size': (2, 2)},
                     {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'max_pool', 'size': (2, 2)},
-                    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'max_pool', 'size': (2, 2)},
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
+                    # {'name': 'max_pool', 'size': (2, 2)},
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1024, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 512, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'predict'},
-                    {'name': 'route', 'index': [9]},
-                    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'route', 'index': [-4]},
+                    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'upsample', 'size': 2},
                     {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
-                    {'name': 'route', 'index': [-1, 8]},
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'predict'},
-                    {'name': 'route', 'index': [9]},
-                    {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-                    {'name': 'upsample', 'size': 4},
-                    {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 0, 'right': 0},
                     {'name': 'route', 'index': [-1, 6]},
-                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 128, 'strides': (1, 1), 'alpha': 0.1},
+                    {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 256, 'strides': (1, 1), 'alpha': 0.1},
                     {'name': 'predict'}
                 ],
                                                        anchors=anchors,

@@ -20,18 +20,16 @@ cd_work()
 
 # models = [name for name in os.listdir('out/0108/')]
 models = [
-    'width4'
-    # 'background',
-    # 'gray',
-    # 'gray_background',
-    # 'all',
-    # 'distortion',
-    # 'blur',
-    # 'hsv',
-    # 'exposure',
-    # 'chromatic',
-    # 'mavlabgates'
-    # 'blur_distortion',
+    # 'depth1',
+    # 'depth2',
+    # 'depth3',
+    # 'racecourt',
+    # 'vgg',
+    # 'width1',
+    # 'width2',
+    # 'width3',
+    'width4',
+
 ]
 
 datasets = [
@@ -54,37 +52,7 @@ for dataset in datasets:
                 img_res = (480, 640)
                 architecture = summary.architecture
                 color_format = summary.color_format
-                network, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=[
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 1, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 4, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 32, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'max_pool', 'size': (2, 2)},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 64, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'predict'},
-        {'name': 'route', 'index': [11]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'upsample', 'size': 2},
-        {'name': 'crop', 'top': 1, 'bottom': 0, 'left': 0, 'right': 0},
-        {'name': 'route', 'index': [-1, 10]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'predict'},
-        {'name': 'route', 'index': [11]},
-        {'name': 'conv_leaky', 'kernel_size': (1, 1), 'filters': 8, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'upsample', 'size': 4},
-        {'name': 'crop', 'top': 2, 'bottom': 0, 'left': 0, 'right': 0},
-        {'name': 'route', 'index': [-1, 8]},
-        {'name': 'conv_leaky', 'kernel_size': (3, 3), 'filters': 16, 'strides': (1, 1), 'alpha': 0.1},
-        {'name': 'predict'}
-    ],
+                network, output_grids = build_detector(img_shape=(img_res[0], img_res[1], 3), architecture=summary.architecture,
                                                      anchors=anchors,
                                                      n_polygon=4)
                 network.load_weights(work_dir + model_folder + '/model.h5')
